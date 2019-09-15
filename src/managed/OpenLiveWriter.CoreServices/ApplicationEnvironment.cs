@@ -2,182 +2,205 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 #define PORTABLE
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using Microsoft.Win32;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.CoreServices.Settings;
-using OpenLiveWriter.Localization;
 
 namespace OpenLiveWriter.CoreServices
 {
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using Microsoft.Win32;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.CoreServices.Settings;
+    using OpenLiveWriter.Localization;
 
+    /// <summary>
+    /// Class ApplicationEnvironment.
+    /// </summary>
     public class ApplicationEnvironment
     {
-        // Changing the taskbar application id in upgrade scenarios can break the jumplist
-        // in the sense that it will be empty (no drafts/posts) until the post list cache is
-        // refreshed, which happens on initial configuration, post-publishing, and draft-saving.
-        // We use a unique, culture-invariant, hard-coded string here to avoid any inadvertent breaking changes.
+        /// <summary>
+        /// The taskbar application identifier.
+        /// </summary>
+        /// <remarks>
+        /// Changing the taskbar application id in upgrade scenarios can break the jumplist
+        /// in the sense that it will be empty (no drafts/posts) until the post list cache is
+        /// refreshed, which happens on initial configuration, post-publishing, and draft-saving.
+        /// We use a unique, culture-invariant, hard-coded string here to avoid any inadvertent breaking changes.
+        /// </remarks>
         public static string TaskbarApplicationId = "Open Live Writer - {3DDDAFC5-5C01-4BCF-B81A-A4976A0999E9}";
 
         private const string DefaultProductName = "Open Live Writer";
         private const string AppDataFolderName = "OpenLiveWriter";              // Squirrel installs the app to the folder that matches nuspec's ID.
         private const string DefaultSettingsRootKeyName = @"Software\\OpenLiveWriter";
 
-        public static void Initialize()
-        {
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        public static void Initialize() =>
             Initialize(Assembly.GetCallingAssembly());
-        }
 
-        public static void Initialize(Assembly rootAssembly)
-        {
+        /// <summary>
+        /// Initializes the specified root assembly.
+        /// </summary>
+        /// <param name="rootAssembly">The root assembly.</param>
+        public static void Initialize(Assembly rootAssembly) =>
             Initialize(rootAssembly, Path.GetDirectoryName(rootAssembly.Location));
-        }
 
-        public static void Initialize(Assembly rootAssembly, string installationDirectory)
-        {
+        /// <summary>
+        /// Initializes the specified root assembly.
+        /// </summary>
+        /// <param name="rootAssembly">The root assembly.</param>
+        /// <param name="installationDirectory">The installation directory.</param>
+        public static void Initialize(Assembly rootAssembly, string installationDirectory) =>
             Initialize(rootAssembly, installationDirectory, DefaultSettingsRootKeyName, DefaultProductName);
-        }
 
+        /// <summary>
+        /// Initializes the specified root assembly.
+        /// </summary>
+        /// <param name="rootAssembly">The root assembly.</param>
+        /// <param name="installationDirectory">The installation directory.</param>
+        /// <param name="settingsRootKeyName">Name of the settings root key.</param>
+        /// <param name="productName">Name of the product.</param>
         public static void Initialize(Assembly rootAssembly, string installationDirectory, string settingsRootKeyName, string productName)
         {
             // initialize name and version based on assembly metadata
-            string rootAssemblyPath = rootAssembly.Location;
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(rootAssemblyPath);
-            _companyName = fileVersionInfo.CompanyName;
-            _productName = productName;
-            _productVersion = String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}.{3}", fileVersionInfo.ProductMajorPart, fileVersionInfo.ProductMinorPart, fileVersionInfo.ProductBuildPart, fileVersionInfo.ProductPrivatePart);
-            _appVersion = new Version(_productVersion);
+            var rootAssemblyPath = rootAssembly.Location;
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(rootAssemblyPath);
+            CompanyName = fileVersionInfo.CompanyName;
+            ProductName = productName;
+            ProductVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}.{3}", fileVersionInfo.ProductMajorPart, fileVersionInfo.ProductMinorPart, fileVersionInfo.ProductBuildPart, fileVersionInfo.ProductPrivatePart);
+            _appVersion = new Version(ProductVersion);
 
-            Debug.Assert(_appVersion.Build < UInt16.MaxValue &&
-                         _appVersion.Revision < UInt16.MaxValue &&
-                         _appVersion.Major < UInt16.MaxValue &&
-                         _appVersion.Minor < UInt16.MaxValue, "Invalid ApplicationVersion: " + _appVersion);
+            Debug.Assert(
+                _appVersion.Build < ushort.MaxValue &&
+                _appVersion.Revision < ushort.MaxValue &&
+                _appVersion.Major < ushort.MaxValue &&
+                _appVersion.Minor < ushort.MaxValue,
+                $"Invalid ApplicationVersion: {_appVersion}");
 
             // set installation directory and executable name
-            _installationDirectory = installationDirectory;
-            _mainExecutableName = Path.GetFileName(rootAssemblyPath);
+            InstallationDirectory = installationDirectory;
+            MainExecutableName = Path.GetFileName(rootAssemblyPath);
 
             // initialize icon/user-agent, etc.
-            _userAgent = FormatUserAgentString(ProductName, true);
-            _productIcon = ResourceHelper.LoadAssemblyResourceIcon("Images.ApplicationIcon.ico");
-            _productIconSmall = ResourceHelper.LoadAssemblyResourceIcon("Images.ApplicationIcon.ico", 16, 16);
+            UserAgent = FormatUserAgentString(ProductName, true);
+            ProductIcon = ResourceHelper.LoadAssemblyResourceIcon("Images.ApplicationIcon.ico");
+            ProductIconSmall = ResourceHelper.LoadAssemblyResourceIcon("Images.ApplicationIcon.ico", 16, 16);
 
             // initialize IsHighContrastWhite and IsHighContrastBlack
             InitializeIsHighContrastBlackWhite();
 
-            _settingsRootKeyName = settingsRootKeyName;
+            SettingsRootKeyName = settingsRootKeyName;
             string dataPath;
 
             // see if we're running in portable mode
 #if PORTABLE
-            dataPath = Path.Combine(_installationDirectory, "UserData");
+            dataPath = Path.Combine(InstallationDirectory, "UserData");
             if (Directory.Exists(dataPath))
             {
-                _portable = true;
+                portable = true;
+
                 // initialize application data directories
-                _applicationDataDirectory = Path.Combine(dataPath, "AppData\\Roaming");
-                _localApplicationDataDirectory = Path.Combine(dataPath, "AppData\\Local");
+                ApplicationDataDirectory = Path.Combine(dataPath, "AppData\\Roaming");
+                LocalApplicationDataDirectory = Path.Combine(dataPath, "AppData\\Local");
 
                 // initialize settings
-                _userSettingsRoot = new SettingsPersisterHelper(XmlFileSettingsPersister.Open(Path.Combine(dataPath, "UserSettings.xml")));
-                _machineSettingsRoot = new SettingsPersisterHelper(XmlFileSettingsPersister.Open(Path.Combine(dataPath, "MachineSettings.xml")));
-                _preferencesSettingsRoot = _userSettingsRoot.GetSubSettings(ApplicationConstants.PREFERENCES_SUB_KEY);
+                UserSettingsRoot = new SettingsPersisterHelper(XmlFileSettingsPersister.Open(Path.Combine(dataPath, "UserSettings.xml")));
+                MachineSettingsRoot = new SettingsPersisterHelper(XmlFileSettingsPersister.Open(Path.Combine(dataPath, "MachineSettings.xml")));
+                PreferencesSettingsRoot = UserSettingsRoot.GetSubSettings(ApplicationConstants.PREFERENCES_SUB_KEY);
             }
             else
 #endif
             {
-                _portable = false;
+                portable = false;
+
                 // initialize application data directories.
-                _applicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
-                _localApplicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataFolderName);
+                ApplicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
+                LocalApplicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataFolderName);
 
                 // initialize settings
-                _userSettingsRoot = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.CurrentUser, SettingsRootKeyName));
-                _machineSettingsRoot = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.LocalMachine, SettingsRootKeyName));
-                _preferencesSettingsRoot = _userSettingsRoot.GetSubSettings(ApplicationConstants.PREFERENCES_SUB_KEY);
+                UserSettingsRoot = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.CurrentUser, SettingsRootKeyName));
+                MachineSettingsRoot = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.LocalMachine, SettingsRootKeyName));
+                PreferencesSettingsRoot = UserSettingsRoot.GetSubSettings(ApplicationConstants.PREFERENCES_SUB_KEY);
 
                 dataPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             }
 
-            string postsDirectoryPostEditor = PreferencesSettingsRoot.GetSubSettings("PostEditor").GetString("PostsDirectory", null);
+            var postsDirectoryPostEditor = PreferencesSettingsRoot.GetSubSettings("PostEditor").GetString("PostsDirectory", null);
 
             if (string.IsNullOrEmpty(postsDirectoryPostEditor))
             {
-                _myWeblogPostsFolder = _userSettingsRoot.GetString("PostsDirectory", null);
-                if (string.IsNullOrEmpty(_myWeblogPostsFolder))
+                myWeblogPostsFolder = UserSettingsRoot.GetString("PostsDirectory", null);
+                if (string.IsNullOrEmpty(myWeblogPostsFolder))
                 {
-                    if ((_productName == DefaultProductName) && (string.IsNullOrEmpty(dataPath)))
+                    if ((ProductName == DefaultProductName) && string.IsNullOrEmpty(dataPath))
                     {
                         throw new DirectoryException(MessageId.PersonalDirectoryFail);
                     }
                     else
                     {
-                        _myWeblogPostsFolder = Path.Combine(dataPath, "My Weblog Posts");
+                        myWeblogPostsFolder = Path.Combine(dataPath, "My Weblog Posts");
                     }
                 }
 
-                PreferencesSettingsRoot.GetSubSettings("PostEditor").SetString("PostsDirectory", _myWeblogPostsFolder);
+                PreferencesSettingsRoot.GetSubSettings("PostEditor").SetString("PostsDirectory", myWeblogPostsFolder);
             }
             else
             {
-                _myWeblogPostsFolder = postsDirectoryPostEditor;
+                myWeblogPostsFolder = postsDirectoryPostEditor;
             }
 
             // initialize diagnostics
             InitializeLogFilePath();
-            _applicationDiagnostics = new ApplicationDiagnostics(LogFilePath, rootAssembly.GetName().Name);
+            applicationDiagnostics = new ApplicationDiagnostics(LogFilePath, rootAssembly.GetName().Name);
 
-            if (!Directory.Exists(_applicationDataDirectory))
-                Directory.CreateDirectory(_applicationDataDirectory);
-            if (!Directory.Exists(_localApplicationDataDirectory))
-                Directory.CreateDirectory(_localApplicationDataDirectory);
-        }
-
-        // allow override of product-name for user-agent (useful to cloak product's
-        // real identify during private beta testing)
-        public static void OverrideUserAgent(string productName, bool browserBased)
-        {
-            _userAgent = FormatUserAgentString(productName, browserBased);
-
-        }
-
-        public static string CompanyName
-        {
-            get
+            if (!Directory.Exists(ApplicationDataDirectory))
             {
-                return _companyName;
+                Directory.CreateDirectory(ApplicationDataDirectory);
+            }
+
+            if (!Directory.Exists(LocalApplicationDataDirectory))
+            {
+                Directory.CreateDirectory(LocalApplicationDataDirectory);
             }
         }
-        private static string _companyName = string.Empty;
 
-        public static string ProductName_Short
-        {
-            get
-            {
-                return _productName_short;
-            }
-            set
-            {
-                _productName_short = value;
-            }
-        }
-        private static string _productName_short = string.Empty;
+        /// <summary>
+        /// Overrides the user agent.
+        /// </summary>
+        /// <param name="productName">Name of the product.</param>
+        /// <param name="browserBased">if set to <c>true</c> [browser based].</param>
+        /// <remarks>
+        /// allow override of product-name for user-agent (useful to cloak product's real identify during private beta testing).
+        /// </remarks>
+        public static void OverrideUserAgent(string productName, bool browserBased) => UserAgent = FormatUserAgentString(productName, browserBased);
 
-        public static string ProductName
-        {
-            get
-            {
-                return _productName;
-            }
-        }
-        private static string _productName;
+        /// <summary>
+        /// Gets the name of the company.
+        /// </summary>
+        /// <value>The name of the company.</value>
+        public static string CompanyName { get; private set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the product name short.
+        /// </summary>
+        /// <value>The product name short.</value>
+        public static string ProductName_Short { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets the name of the product.
+        /// </summary>
+        /// <value>The name of the product.</value>
+        public static string ProductName { get; private set; }
+
+        /// <summary>
+        /// Gets the product name qualified.
+        /// </summary>
+        /// <value>The product name qualified.</value>
         public static string ProductNameQualified
         {
             get
@@ -190,113 +213,83 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        public static string ProductNameVersioned
-        {
-            get { return Res.Get(StringId.ProductNameVersioned); }
-        }
+        /// <summary>
+        /// Gets the product name versioned.
+        /// </summary>
+        /// <value>The product name versioned.</value>
+        public static string ProductNameVersioned => Res.Get(StringId.ProductNameVersioned);
 
-        public static string ProductVersion
-        {
-            get
-            {
-                return _productVersion;
-            }
-        }
-        private static string _productVersion;
+        /// <summary>
+        /// Gets the product version.
+        /// </summary>
+        /// <value>The product version.</value>
+        public static string ProductVersion { get; private set; }
 
-        public static string ProductVersionMajor
-        {
-            get
-            {
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Major, _appVersion.Build);
-            }
-        }
+        /// <summary>
+        /// Gets the product version major.
+        /// </summary>
+        /// <value>The product version major.</value>
+        public static string ProductVersionMajor => string.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Major, _appVersion.Build);
 
-        public static string ProductVersionMinor
-        {
-            get
-            {
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Minor, _appVersion.Revision);
-            }
-        }
+        /// <summary>
+        /// Gets the product version minor.
+        /// </summary>
+        /// <value>The product version minor.</value>
+        public static string ProductVersionMinor => string.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Minor, _appVersion.Revision);
+
         private static Version _appVersion;
 
-        public static string ProductDisplayVersion
-        {
-            get
-            {
-                return _productDisplayVersion;
-            }
-            set
-            {
-                _productDisplayVersion = value;
-            }
-        }
-        private static string _productDisplayVersion;
+        /// <summary>
+        /// Gets or sets the product display version.
+        /// </summary>
+        /// <value>The product display version.</value>
+        public static string ProductDisplayVersion { get; set; }
 
-        public static string InstallationDirectory
-        {
-            get
-            {
-                return _installationDirectory;
-            }
-        }
-        private static string _installationDirectory;
+        /// <summary>
+        /// Gets the installation directory.
+        /// </summary>
+        /// <value>The installation directory.</value>
+        public static string InstallationDirectory { get; private set; }
 
-        public static string MainExecutableName
-        {
-            get
-            {
-                return _mainExecutableName;
-            }
-        }
-        private static string _mainExecutableName;
+        /// <summary>
+        /// Gets the name of the main executable.
+        /// </summary>
+        /// <value>The name of the main executable.</value>
+        public static string MainExecutableName { get; private set; }
 
-        public static string ApplicationDataDirectory
-        {
-            get
-            {
-                return _applicationDataDirectory;
-            }
-        }
-        private static string _applicationDataDirectory;
+        /// <summary>
+        /// Gets the application data directory.
+        /// </summary>
+        /// <value>The application data directory.</value>
+        public static string ApplicationDataDirectory { get; private set; }
 
-        public static string LocalApplicationDataDirectory
-        {
-            get
-            {
-                return _localApplicationDataDirectory;
-            }
-        }
-        private static string _localApplicationDataDirectory;
+        /// <summary>
+        /// Gets the local application data directory.
+        /// </summary>
+        /// <value>The local application data directory.</value>
+        public static string LocalApplicationDataDirectory { get; private set; }
 
-        public static string UserAgent
-        {
-            get
-            {
-                return _userAgent;
-            }
-        }
-        private static string _userAgent;
+        /// <summary>
+        /// Gets the user agent.
+        /// </summary>
+        /// <value>The user agent.</value>
+        public static string UserAgent { get; private set; }
 
-        public static Icon ProductIcon
-        {
-            get
-            {
-                return _productIcon;
-            }
-        }
-        private static Icon _productIcon;
+        /// <summary>
+        /// Gets the product icon.
+        /// </summary>
+        /// <value>The product icon.</value>
+        public static Icon ProductIcon { get; private set; }
 
-        public static Icon ProductIconSmall
-        {
-            get
-            {
-                return _productIconSmall;
-            }
-        }
-        private static Icon _productIconSmall;
+        /// <summary>
+        /// Gets the product icon small.
+        /// </summary>
+        /// <value>The product icon small.</value>
+        public static Icon ProductIconSmall { get; private set; }
 
+        /// <summary>
+        /// Initializes the is high contrast black white.
+        /// </summary>
         private static void InitializeIsHighContrastBlackWhite()
         {
             if (System.Windows.Forms.SystemInformation.HighContrast)
@@ -305,83 +298,73 @@ namespace OpenLiveWriter.CoreServices
                     SystemColors.Window.G.Equals(255) &&
                     SystemColors.Window.B.Equals(255))
                 {
-                    _IsHighContrastWhite = true;
+                    IsHighContrastWhite = true;
                 }
                 else
                 {
-                    _IsHighContrastBlack = true;
+                    IsHighContrastBlack = true;
                 }
             }
         }
 
-        public static bool IsHighContrastWhite
-        {
-            get
-            {
-                return _IsHighContrastWhite;
-            }
-        }
-        private static bool _IsHighContrastWhite;
+        /// <summary>
+        /// Gets a value indicating whether this instance is high contrast white.
+        /// </summary>
+        /// <value><c>true</c> if this instance is high contrast white; otherwise, <c>false</c>.</value>
+        public static bool IsHighContrastWhite { get; private set; }
 
-        public static bool IsHighContrastBlack
-        {
-            get
-            {
-                return _IsHighContrastBlack;
-            }
-        }
-        private static bool _IsHighContrastBlack;
+        /// <summary>
+        /// Gets a value indicating whether this instance is high contrast black.
+        /// </summary>
+        /// <value><c>true</c> if this instance is high contrast black; otherwise, <c>false</c>.</value>
+        public static bool IsHighContrastBlack { get; private set; }
 
-        public static string SettingsRootKeyName
-        {
-            get
-            {
-                return _settingsRootKeyName;
-            }
-        }
-        private static string _settingsRootKeyName;
+        /// <summary>
+        /// Gets the name of the settings root key.
+        /// </summary>
+        /// <value>The name of the settings root key.</value>
+        public static string SettingsRootKeyName { get; private set; }
 
-        public static SettingsPersisterHelper UserSettingsRoot
-        {
-            get
-            {
-                return _userSettingsRoot;
-            }
-        }
-        private static SettingsPersisterHelper _userSettingsRoot;
+        /// <summary>
+        /// Gets the user settings root.
+        /// </summary>
+        /// <value>The user settings root.</value>
+        public static SettingsPersisterHelper UserSettingsRoot { get; private set; }
 
-        public static SettingsPersisterHelper MachineSettingsRoot
-        {
-            get
-            {
-                return _machineSettingsRoot;
-            }
-        }
-        private static SettingsPersisterHelper _machineSettingsRoot;
+        /// <summary>
+        /// Gets the machine settings root.
+        /// </summary>
+        /// <value>The machine settings root.</value>
+        public static SettingsPersisterHelper MachineSettingsRoot { get; private set; }
 
-        public static SettingsPersisterHelper PreferencesSettingsRoot
-        {
-            get
-            {
-                return _preferencesSettingsRoot;
-            }
-        }
-        private static SettingsPersisterHelper _preferencesSettingsRoot;
+        /// <summary>
+        /// Gets the preferences settings root.
+        /// </summary>
+        /// <value>The preferences settings root.</value>
+        public static SettingsPersisterHelper PreferencesSettingsRoot { get; private set; }
 
-        private const string CUSTOMCOLORS_NAME = "CustomColors";
+        private const string CustomColorsName = "CustomColors";
+
+        /// <summary>
+        /// Gets or sets the custom colors.
+        /// </summary>
+        /// <value>The custom colors.</value>
         public static int[] CustomColors
         {
             get
             {
                 try
                 {
-                    string strVal = PreferencesSettingsRoot.GetString(CUSTOMCOLORS_NAME, null);
+                    var strVal = PreferencesSettingsRoot.GetString(CustomColorsName, null);
                     if (strVal != null)
                     {
-                        string[] parts = StringHelper.Split(strVal, ",");
-                        int[] retVal = new int[parts.Length];
-                        for (int i = 0; i < retVal.Length; i++)
+                        var parts = StringHelper.Split(strVal, ",");
+                        var retVal = new int[parts.Length];
+                        for (var i = 0; i < retVal.Length; i++)
+                        {
                             retVal[i] = int.Parse(parts[i], CultureInfo.InvariantCulture);
+                        }
+
                         return retVal;
                     }
                 }
@@ -407,50 +390,55 @@ namespace OpenLiveWriter.CoreServices
                             (0 | 255 << 8 | 255 << 16),
                             (255 | 0 << 8 | 0 << 16),
                             (255 | 0 << 8 | 255 << 16),
-                            (255 | 255 << 8 | 0 << 16)
+                            (255 | 255 << 8 | 0 << 16),
                         };
             }
+
             set
             {
                 if (value == null)
                 {
-                    PreferencesSettingsRoot.Unset(CUSTOMCOLORS_NAME);
+                    PreferencesSettingsRoot.Unset(CustomColorsName);
                 }
                 else
                 {
-                    StringBuilder sb = new StringBuilder();
-                    string delim = "";
-                    foreach (int i in value)
+                    var sb = new StringBuilder();
+                    var delim = string.Empty;
+                    foreach (var i in value)
                     {
                         sb.Append(delim);
                         sb.Append(i.ToString(CultureInfo.InvariantCulture));
                         delim = ",";
                     }
-                    PreferencesSettingsRoot.SetString(CUSTOMCOLORS_NAME, sb.ToString());
+
+                    PreferencesSettingsRoot.SetString(CustomColorsName, sb.ToString());
                 }
             }
         }
 
-        public static string LogFilePath
-        {
-            get
-            {
-                return _logFilePath;
-            }
-        }
-        private static string _logFilePath;
+        /// <summary>
+        /// Gets the log file path.
+        /// </summary>
+        /// <value>The log file path.</value>
+        public static string LogFilePath { get; private set; }
 
+        /// <summary>
+        /// Initializes the log file path.
+        /// </summary>
         private static void InitializeLogFilePath()
         {
 #if DEBUG
-            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            LogFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 #else
             _logFilePath = LocalApplicationDataDirectory ;
 #endif
-            _logFilePath = Path.Combine(_logFilePath, String.Format(CultureInfo.InvariantCulture, "{0}.log", ProductName));
-
+            LogFilePath = Path.Combine(LogFilePath, string.Format(CultureInfo.InvariantCulture, "{0}.log", ProductName));
         }
 
+        /// <summary>
+        /// Gets the application diagnostics.
+        /// </summary>
+        /// <value>The application diagnostics.</value>
         public static ApplicationDiagnostics ApplicationDiagnostics
         {
             get
@@ -458,77 +446,97 @@ namespace OpenLiveWriter.CoreServices
                 // WinLive 218929 : If we are null, most likely something went wrong before we are fully
                 // initialized and we are trying to watson. Just create a new instance here
                 // using temp paths.
-                if (_applicationDiagnostics == null)
+                if (applicationDiagnostics == null)
                 {
-                    string templogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        String.Format(CultureInfo.InvariantCulture, "{0}.log", DefaultProductName));
-                    _applicationDiagnostics = new ApplicationDiagnostics(templogPath, Assembly.GetCallingAssembly().GetName().Name);
+                    var templogPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        string.Format(CultureInfo.InvariantCulture, "{0}.log", DefaultProductName));
+                    applicationDiagnostics = new ApplicationDiagnostics(templogPath, Assembly.GetCallingAssembly().GetName().Name);
                 }
-                return _applicationDiagnostics;
+
+                return applicationDiagnostics;
             }
         }
-        private static ApplicationDiagnostics _applicationDiagnostics;
 
+        private static ApplicationDiagnostics applicationDiagnostics;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is portable mode.
+        /// </summary>
+        /// <value><c>true</c> if this instance is portable mode; otherwise, <c>false</c>.</value>
+        /// <exception cref="System.InvalidOperationException">ApplicationEnvironment has not been initialized</exception>
         public static bool IsPortableMode
         {
             get
             {
-                if (_portable == null)
+                if (portable == null)
+                {
                     throw new InvalidOperationException("ApplicationEnvironment has not been initialized");
-                return _portable.Value;
+                }
+
+                return portable.Value;
             }
         }
-        private static bool? _portable;
 
+        private static bool? portable;
+
+        /// <summary>
+        /// Formats the user agent string.
+        /// </summary>
+        /// <param name="productName">Name of the product.</param>
+        /// <param name="browserBased">if set to <c>true</c> [browser based].</param>
+        /// <returns>System.String.</returns>
         public static string FormatUserAgentString(string productName, bool browserBased)
         {
             // get browser version
-            int majorBrowserVersion, minorBrowserVersion;
-            SafeGetBrowserVersion(out majorBrowserVersion, out minorBrowserVersion);
+            SafeGetBrowserVersion(out var majorBrowserVersion, out var minorBrowserVersion);
 
             // get os version
-            Version osVersion = Environment.OSVersion.Version;
+            var osVersion = Environment.OSVersion.Version;
 
             // format user-agent string
             string userAgent;
             if (browserBased)
             {
                 // e.g. "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 7.0; Open Live Writer 1.0)"
-                userAgent = String.Format(CultureInfo.InvariantCulture,
-                                          "Mozilla/4.0 (compatible; MSIE {0}.{1}; Windows NT {2}.{3}; {4} 1.0)",
-                                          majorBrowserVersion,
-                                          minorBrowserVersion,
-                                          osVersion.Major,
-                                          osVersion.Minor,
-                                          productName);
+                userAgent = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Mozilla/4.0 (compatible; MSIE {0}.{1}; Windows NT {2}.{3}; {4} 1.0)",
+                    majorBrowserVersion,
+                    minorBrowserVersion,
+                    osVersion.Major,
+                    osVersion.Minor,
+                    productName);
             }
             else
             {
                 // e.g. "Open Live Writer 1.0 (Windows NT 7.0)"
-                userAgent = String.Format(CultureInfo.InvariantCulture,
-                                          "{0} 1.0 (Windows NT {1}.{2})",
-                                          productName,
-                                          osVersion.Major,
-                                          osVersion.Minor);
+                userAgent = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0} 1.0 (Windows NT {1}.{2})",
+                    productName,
+                    osVersion.Major,
+                    osVersion.Minor);
             }
 
             return userAgent;
         }
 
+        /// <summary>
+        /// Gets the browser version.
+        /// </summary>
+        /// <value>The browser version.</value>
         public static Version BrowserVersion
         {
             get
             {
-                int majorBrowserVersion, minorBrowserVersion;
-                SafeGetBrowserVersion(out majorBrowserVersion, out minorBrowserVersion);
+                SafeGetBrowserVersion(out var majorBrowserVersion, out var minorBrowserVersion);
                 return new Version(majorBrowserVersion, minorBrowserVersion);
             }
         }
 
         private static void SafeGetBrowserVersion(out int majorBrowserVersion, out int minorBrowserVersion)
         {
-            majorBrowserVersion = 6;
-            minorBrowserVersion = 0;
             try
             {
                 BrowserHelper.GetInstalledVersion(out majorBrowserVersion, out minorBrowserVersion);
@@ -552,31 +560,38 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 #endif
-        private static string _myWeblogPostsFolder;
 
-        public static string MyWeblogPostsFolder
-        {
-            get
-            {
-                return PreferencesSettingsRoot.GetSubSettings("PostEditor").GetString("PostsDirectory", null); 
-            }
-        }
+        private static string myWeblogPostsFolder;
 
+        /// <summary>
+        /// Gets my weblog posts folder.
+        /// </summary>
+        /// <value>My weblog posts folder.</value>
+        public static string MyWeblogPostsFolder => PreferencesSettingsRoot.GetSubSettings("PostEditor").GetString("PostsDirectory", null);
+
+        /// <summary>
+        /// Gets or sets the insert image directory.
+        /// </summary>
+        /// <value>The insert image directory.</value>
         public static string InsertImageDirectory
         {
             get
             {
-                using (SettingsPersisterHelper settings = UserSettingsRoot.GetSubSettings("Preferences\\PostEditor"))
+                using (var settings = UserSettingsRoot.GetSubSettings("Preferences\\PostEditor"))
                 {
-                    string insertImageDirectory = settings.GetString("ImageInsertDir", null);
+                    var insertImageDirectory = settings.GetString("ImageInsertDir", null);
                     if (string.IsNullOrEmpty(insertImageDirectory) || !Directory.Exists(insertImageDirectory))
+                    {
                         insertImageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                    }
+
                     return insertImageDirectory;
                 }
             }
+
             set
             {
-                using (SettingsPersisterHelper settings = UserSettingsRoot.GetSubSettings("Preferences\\PostEditor"))
+                using (var settings = UserSettingsRoot.GetSubSettings("Preferences\\PostEditor"))
                 {
                     settings.SetString("ImageInsertDir", value);
                 }

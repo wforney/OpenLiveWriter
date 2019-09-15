@@ -1,170 +1,219 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Windows.Forms;
-using OpenLiveWriter.BlogClient;
-using OpenLiveWriter.BlogClient.Clients.StaticSite;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.Controls.Wizard;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization;
-using System.Runtime.InteropServices;
-
 namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 {
+    using System;
+    using System.Collections;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Windows.Forms;
 
+    using OpenLiveWriter.BlogClient;
+    using OpenLiveWriter.BlogClient.Clients.StaticSite;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.Controls.Wizard;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.Localization;
+
+    /// <summary>
+    /// Class WeblogConfigurationWizardController.
+    /// Implements the <see cref="OpenLiveWriter.Controls.Wizard.WizardController" />
+    /// Implements the <see cref="OpenLiveWriter.BlogClient.IBlogClientUIContext" />
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.Controls.Wizard.WizardController" />
+    /// <seealso cref="OpenLiveWriter.BlogClient.IBlogClientUIContext" />
+    /// <seealso cref="System.IDisposable" />
     public class WeblogConfigurationWizardController : WizardController, IBlogClientUIContext, IDisposable
     {
         #region Creation and Initialization and Disposal
 
+        /// <summary>
+        /// Welcomes the specified owner.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>System.String.</returns>
         public static string Welcome(IWin32Window owner)
         {
-            TemporaryBlogSettings temporarySettings = TemporaryBlogSettings.CreateNew();
-            using (WeblogConfigurationWizardController controller = new WeblogConfigurationWizardController(temporarySettings))
+            var temporarySettings = TemporaryBlogSettings.CreateNew();
+            using (var controller = new WeblogConfigurationWizardController(temporarySettings))
             {
                 return controller.WelcomeWeblog(owner);
             }
         }
 
-        public static string Add(IWin32Window owner, bool permitSwitchingWeblogs)
-        {
-            bool switchToWeblog;
-            return Add(owner, permitSwitchingWeblogs, out switchToWeblog);
-        }
+        /// <summary>
+        /// Adds the specified owner.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="permitSwitchingWeblogs">if set to <c>true</c> [permit switching weblogs].</param>
+        /// <returns>System.String.</returns>
+        public static string Add(IWin32Window owner, bool permitSwitchingWeblogs) => Add(owner, permitSwitchingWeblogs, out var switchToWeblog);
 
+        /// <summary>
+        /// Adds the specified owner.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="permitSwitchingWeblogs">if set to <c>true</c> [permit switching weblogs].</param>
+        /// <param name="switchToWeblog">if set to <c>true</c> [switch to weblog].</param>
+        /// <returns>System.String.</returns>
         public static string Add(IWin32Window owner, bool permitSwitchingWeblogs, out bool switchToWeblog)
         {
-            TemporaryBlogSettings temporarySettings = TemporaryBlogSettings.CreateNew();
+            var temporarySettings = TemporaryBlogSettings.CreateNew();
 
             temporarySettings.IsNewWeblog = true;
             temporarySettings.SwitchToWeblog = true;
 
-            using (WeblogConfigurationWizardController controller = new WeblogConfigurationWizardController(temporarySettings))
+            using (var controller = new WeblogConfigurationWizardController(temporarySettings))
             {
                 return controller.AddWeblog(owner, ApplicationEnvironment.ProductNameQualified, permitSwitchingWeblogs, out switchToWeblog);
             }
         }
 
+        /// <summary>
+        /// Adds the blog.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="blogToAdd">The blog to add.</param>
+        /// <returns>System.String.</returns>
         public static string AddBlog(IWin32Window owner, Uri blogToAdd)
         {
-            TemporaryBlogSettings temporarySettings = TemporaryBlogSettings.CreateNew();
+            var temporarySettings = TemporaryBlogSettings.CreateNew();
 
             temporarySettings.IsNewWeblog = true;
             temporarySettings.SwitchToWeblog = true;
 
-            string username;
-            string password;
-            Uri homepageUrl;
-
-            ParseAddBlogUri(blogToAdd, out username, out password, out homepageUrl);
+            ParseAddBlogUri(blogToAdd, out var username, out var password, out var homepageUrl);
             temporarySettings.HomepageUrl = homepageUrl.ToString();
             temporarySettings.Credentials.Username = username;
             temporarySettings.Credentials.Password = password;
             temporarySettings.SavePassword = false;
 
-            using (WeblogConfigurationWizardController controller = new WeblogConfigurationWizardController(temporarySettings))
+            using (var controller = new WeblogConfigurationWizardController(temporarySettings))
             {
-                bool dummy;
-                return controller.AddWeblogSkipType(owner, ApplicationEnvironment.ProductNameQualified, false, out dummy);
+                return controller.AddWeblogSkipType(owner, ApplicationEnvironment.ProductNameQualified, false, out var dummy);
             }
         }
 
+        /// <summary>
+        /// Edits the temporary settings.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="settings">The settings.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public static bool EditTemporarySettings(IWin32Window owner, TemporaryBlogSettings settings)
         {
-            using (WeblogConfigurationWizardController controller = new WeblogConfigurationWizardController(settings))
+            using (var controller = new WeblogConfigurationWizardController(settings))
+            {
                 return controller.EditWeblogTemporarySettings(owner);
+            }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeblogConfigurationWizardController"/> class.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
         private WeblogConfigurationWizardController(TemporaryBlogSettings settings)
-            : base()
-        {
-            _temporarySettings = settings;
-        }
+            : base() => this._temporarySettings = settings;
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
-            //clear any cached credential information that may have been set by the wizard
-            ClearTransientCredentials();
+            // clear any cached credential information that may have been set by the wizard
+            this.ClearTransientCredentials();
 
-            System.GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="WeblogConfigurationWizardController"/> class.
+        /// </summary>
         ~WeblogConfigurationWizardController()
         {
             Debug.Fail("Wizard controller was not disposed");
         }
 
+        /// <summary>
+        /// Welcomes the weblog.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>System.String.</returns>
         private string WelcomeWeblog(IWin32Window owner)
         {
-            _preventSwitchingToWeblog = true;
+            this._preventSwitchingToWeblog = true;
+
             // welcome is the same as add with one additional step on the front end
             WizardStep wizardStep;
-            addWizardStep(
-                wizardStep = new WizardStep(new WeblogConfigurationWizardPanelWelcome(),
-                StringId.ConfigWizardWelcome,
-                null, null, new NextCallback(OnWelcomeCompleted), null, null));
+            this.addWizardStep(
+                wizardStep = new WizardStep(
+                    new WeblogConfigurationWizardPanelWelcome(),
+                    StringId.ConfigWizardWelcome,
+                    null,
+                    null,
+                    new NextCallback(this.OnWelcomeCompleted),
+                    null,
+                    null));
             wizardStep.WantsFocus = false;
 
-            addWizardStep(
-                new WizardStep(new WeblogConfigurationWizardPanelConfirmation(),
-                StringId.ConfigWizardComplete,
-                new DisplayCallback(OnConfirmationDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnConfirmationCompleted),
-                null,
-                null));
+            this.addWizardStep(
+                new WizardStep(
+                    new WeblogConfigurationWizardPanelConfirmation(),
+                    StringId.ConfigWizardComplete,
+                    new DisplayCallback(this.OnConfirmationDisplayed),
+                    new VerifyStepCallback(this.OnValidatePanel),
+                    new NextCallback(this.OnConfirmationCompleted),
+                    null,
+                    null));
 
-            bool switchToWeblog;
-            return ShowBlogWizard(ApplicationEnvironment.ProductNameQualified, owner, out switchToWeblog);
+            return this.ShowBlogWizard(ApplicationEnvironment.ProductNameQualified, owner, out var switchToWeblog);
         }
 
         private string AddWeblogSkipType(IWin32Window owner, string caption, bool permitSwitchingWeblogs, out bool switchToWeblog)
         {
-            _preventSwitchingToWeblog = !permitSwitchingWeblogs;
+            this._preventSwitchingToWeblog = !permitSwitchingWeblogs;
 
-            _temporarySettings.IsSpacesBlog = false;
-            _temporarySettings.IsSharePointBlog = false;
+            this._temporarySettings.IsSpacesBlog = false;
+            this._temporarySettings.IsSharePointBlog = false;
 
-            AddBasicInfoSubStep();
+            this.AddBasicInfoSubStep();
 
-            AddConfirmationStep();
+            this.AddConfirmationStep();
 
-            return ShowBlogWizard(caption, owner, out switchToWeblog);
+            return this.ShowBlogWizard(caption, owner, out switchToWeblog);
         }
 
         private string AddWeblog(IWin32Window owner, string caption, bool permitSwitchingWeblogs, out bool switchToWeblog)
         {
-            _preventSwitchingToWeblog = !permitSwitchingWeblogs;
+            this._preventSwitchingToWeblog = !permitSwitchingWeblogs;
 
-            AddChooseBlogTypeStep();
-            AddConfirmationStep();
+            this.AddChooseBlogTypeStep();
+            this.AddConfirmationStep();
 
-            return ShowBlogWizard(caption, owner, out switchToWeblog);
+            return this.ShowBlogWizard(caption, owner, out switchToWeblog);
         }
 
         private string ShowBlogWizard(string caption, IWin32Window owner, out bool switchToWeblog)
         {
             // blog id to return
             string blogId = null;
-            if (ShowDialog(owner, caption) == DialogResult.OK)
+            if (this.ShowDialog(owner, caption) == DialogResult.OK)
             {
                 // save the blog settings
-                using (BlogSettings blogSettings = BlogSettings.ForBlogId(_temporarySettings.Id))
+                using (var blogSettings = BlogSettings.ForBlogId(this._temporarySettings.Id))
                 {
-                    _temporarySettings.Save(blogSettings);
+                    this._temporarySettings.Save(blogSettings);
                     blogId = blogSettings.Id;
                 }
 
                 // note the last added weblog (for re-selection in subsequent invocations of the dialog)
-                WeblogConfigurationWizardSettings.LastServiceName = _temporarySettings.ServiceName;
+                WeblogConfigurationWizardSettings.LastServiceName = this._temporarySettings.ServiceName;
             }
 
-            switchToWeblog = _temporarySettings.SwitchToWeblog;
+            switchToWeblog = this._temporarySettings.SwitchToWeblog;
 
             return blogId;
         }
@@ -172,20 +221,22 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         private bool EditWeblogTemporarySettings(IWin32Window owner)
         {
             // first step conditional on blog type
-            if (_temporarySettings.IsSharePointBlog)
+            if (this._temporarySettings.IsSharePointBlog)
             {
-                AddSharePointBasicInfoSubStep(true);
-            } else if (_temporarySettings.IsStaticSiteBlog)
+                this.AddSharePointBasicInfoSubStep(true);
+            }
+            else if (this._temporarySettings.IsStaticSiteBlog)
             {
-                AddStaticSiteInitialSubStep();
-            } else
+                this.AddStaticSiteInitialSubStep();
+            }
+            else
             {
-                AddBasicInfoSubStep();
+                this.AddBasicInfoSubStep();
             }
 
-            AddConfirmationStep();
+            this.AddConfirmationStep();
 
-            if (ShowDialog(owner, Res.Get(StringId.UpdateAccountConfigurationTitle)) == DialogResult.OK)
+            if (this.ShowDialog(owner, Res.Get(StringId.UpdateAccountConfigurationTitle)) == DialogResult.OK)
             {
                 return true;
             }
@@ -195,68 +246,60 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
         }
 
-        private void AddChooseBlogTypeStep()
-        {
-            addWizardStep(
-                new WizardStep(new WeblogConfigurationWizardPanelBlogType(),
-                StringId.ConfigWizardChooseWeblogType,
-                new DisplayCallback(OnChooseBlogTypeDisplayed),
-                null,
-                new NextCallback(OnChooseBlogTypeCompleted),
-                null,
-                null));
-        }
+        private void AddChooseBlogTypeStep() => this.addWizardStep(
+                new WizardStep(
+                    new WeblogConfigurationWizardPanelBlogType(),
+                    StringId.ConfigWizardChooseWeblogType,
+                    new DisplayCallback(this.OnChooseBlogTypeDisplayed),
+                    null,
+                    new NextCallback(this.OnChooseBlogTypeCompleted),
+                    null,
+                    null));
 
-        private void AddBasicInfoSubStep()
-        {
-            WeblogConfigurationWizardPanelBasicInfo panel = new WeblogConfigurationWizardPanelBasicInfo();
-            addWizardSubStep(
-                new WizardSubStep(panel,
-                StringId.ConfigWizardBasicInfo,
-                new DisplayCallback(OnBasicInfoDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnBasicInfoCompleted),
-                null,
-                null));
-        }
+        private void AddBasicInfoSubStep() => this.addWizardSubStep(
+                new WizardSubStep(
+                    new WeblogConfigurationWizardPanelBasicInfo(),
+                    StringId.ConfigWizardBasicInfo,
+                    new DisplayCallback(this.OnBasicInfoDisplayed),
+                    new VerifyStepCallback(this.OnValidatePanel),
+                    new NextCallback(this.OnBasicInfoCompleted),
+                    null,
+                    null));
 
         private void AddSharePointBasicInfoSubStep(bool showAuthenticationStep)
         {
-            addWizardSubStep(
-                new WizardSubStep(new WeblogConfigurationWizardPanelSharePointBasicInfo(),
-                StringId.ConfigWizardSharePointHomepage,
-                new DisplayCallback(OnBasicInfoDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnSharePointBasicInfoCompleted),
-                new NextCallback(OnSharePointBasicInfoUndone),
-                null));
+            this.addWizardSubStep(
+                new WizardSubStep(
+                    new WeblogConfigurationWizardPanelSharePointBasicInfo(),
+                    StringId.ConfigWizardSharePointHomepage,
+                    new DisplayCallback(this.OnBasicInfoDisplayed),
+                    new VerifyStepCallback(this.OnValidatePanel),
+                    new NextCallback(this.OnSharePointBasicInfoCompleted),
+                    new NextCallback(this.OnSharePointBasicInfoUndone),
+                    null));
 
-            _authenticationRequired = showAuthenticationStep;
+            this._authenticationRequired = showAuthenticationStep;
         }
 
-        private void AddGoogleBloggerOAuthSubStep()
-        {
-            addWizardSubStep(
-                new WizardSubStep(new WeblogConfigurationWizardPanelGoogleBloggerAuthentication(_temporarySettings.Id, this),
-                null,
-                new DisplayCallback(OnBasicInfoDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnGoogleBloggerOAuthCompleted),
-                null,
-                new BackCallback(OnGoogleBloggerOAuthBack)));
-        }
+        private void AddGoogleBloggerOAuthSubStep() => this.addWizardSubStep(
+                new WizardSubStep(
+                    new WeblogConfigurationWizardPanelGoogleBloggerAuthentication(this._temporarySettings.Id, this),
+                    null,
+                    new DisplayCallback(this.OnBasicInfoDisplayed),
+                    new VerifyStepCallback(this.OnValidatePanel),
+                    new NextCallback(this.OnGoogleBloggerOAuthCompleted),
+                    null,
+                    new BackCallback(this.OnGoogleBloggerOAuthBack)));
 
-        private void AddConfirmationStep()
-        {
-            addWizardStep(
-                new WizardStep(new WeblogConfigurationWizardPanelConfirmation(),
-                StringId.ConfigWizardComplete,
-                new DisplayCallback(OnConfirmationDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnConfirmationCompleted),
-                null,
-                null));
-        }
+        private void AddConfirmationStep() => this.addWizardStep(
+                new WizardStep(
+                    new WeblogConfigurationWizardPanelConfirmation(),
+                    StringId.ConfigWizardComplete,
+                    new DisplayCallback(this.OnConfirmationDisplayed),
+                    new VerifyStepCallback(this.OnValidatePanel),
+                    new NextCallback(this.OnConfirmationCompleted),
+                    null,
+                    null));
 
         private DialogResult ShowDialog(IWin32Window owner, string title)
         {
@@ -264,29 +307,30 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 DialogResult result;
 
-                using (_wizardForm = new WeblogConfigurationWizard(this))
+                using (this._wizardForm = new WeblogConfigurationWizard(this))
+                using (new BlogClientUIContextScope(this._wizardForm))
                 {
-                    using (new BlogClientUIContextScope(_wizardForm))
+                    this._owner = this._wizardForm;
+
+                    this._wizardForm.Text = title;
+
+                    // Show in taskbar if it's a top-level window.  This is true during welcome
+                    if (owner == null)
                     {
-                        _owner = _wizardForm;
-
-                        _wizardForm.Text = title;
-
-                        // Show in taskbar if it's a top-level window.  This is true during welcome
-                        if (owner == null)
-                        {
-                            _wizardForm.ShowInTaskbar = true;
-                            _wizardForm.StartPosition = FormStartPosition.CenterScreen;
-                        }
-
-                        result = _wizardForm.ShowDialog(owner);
-
-                        _owner = null;
+                        this._wizardForm.ShowInTaskbar = true;
+                        this._wizardForm.StartPosition = FormStartPosition.CenterScreen;
                     }
+
+                    result = this._wizardForm.ShowDialog(owner);
+
+                    this._owner = null;
                 }
-                _wizardForm = null;
-                if (_detectionOperation != null && !_detectionOperation.IsDone)
-                    _detectionOperation.Cancel();
+
+                this._wizardForm = null;
+                if (this._detectionOperation != null && !this._detectionOperation.IsDone)
+                {
+                    this._detectionOperation.Cancel();
+                }
 
                 return result;
             }
@@ -295,18 +339,16 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         #endregion
 
         #region Welcome Panel
-        private void OnWelcomeCompleted(Object stepControl)
-        {
+        private void OnWelcomeCompleted(Object stepControl) =>
             //setup the next steps based on which choice the user selected.
-            addWizardSubStep(
+            this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelBlogType(),
                 StringId.ConfigWizardChooseWeblogType,
-                new DisplayCallback(OnChooseBlogTypeDisplayed),
+                new DisplayCallback(this.OnChooseBlogTypeDisplayed),
                 null,
-                new NextCallback(OnChooseBlogTypeCompleted),
+                new NextCallback(this.OnChooseBlogTypeCompleted),
                 null,
                 null));
-        }
         #endregion
 
         #region Choose Blog Type Panel
@@ -315,15 +357,15 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             // Fixes for 483356: In account configuration wizard, hitting back in select provider or success screens causes anomalous behavior
             // Need to clear cached credentials and cached blogname otherwise they'll be used downstream in the wizard...
-            ClearTransientCredentials();
-            _temporarySettings.BlogName = string.Empty;
+            this.ClearTransientCredentials();
+            this._temporarySettings.BlogName = string.Empty;
 
             // Bug 681904: Insure that the next and cancel are always available when this panel is displayed.
-            NextEnabled = true;
-            CancelEnabled = true;
+            this.NextEnabled = true;
+            this.CancelEnabled = true;
 
             // get reference to panel
-            WeblogConfigurationWizardPanelBlogType panelBlogType = stepControl as WeblogConfigurationWizardPanelBlogType;
+            var panelBlogType = stepControl as WeblogConfigurationWizardPanelBlogType;
 
             // notify it that it is being displayed (reset dirty state)
             panelBlogType.OnDisplayPanel();
@@ -332,39 +374,39 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         private void OnChooseBlogTypeCompleted(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelBlogType panelBlogType = stepControl as WeblogConfigurationWizardPanelBlogType;
+            var panelBlogType = stepControl as WeblogConfigurationWizardPanelBlogType;
 
             // if the user is changing types then blank out the blog info
             if (panelBlogType.UserChangedSelection)
             {
-                _temporarySettings.HomepageUrl = String.Empty;
-                _temporarySettings.Credentials.Clear();
+                this._temporarySettings.HomepageUrl = String.Empty;
+                this._temporarySettings.Credentials.Clear();
             }
 
             // set the user's choice
-            _temporarySettings.IsSharePointBlog = panelBlogType.IsSharePointBlog;
-            _temporarySettings.IsGoogleBloggerBlog = panelBlogType.IsGoogleBloggerBlog;
-            _temporarySettings.IsStaticSiteBlog = panelBlogType.IsStaticSiteBlog;
+            this._temporarySettings.IsSharePointBlog = panelBlogType.IsSharePointBlog;
+            this._temporarySettings.IsGoogleBloggerBlog = panelBlogType.IsGoogleBloggerBlog;
+            this._temporarySettings.IsStaticSiteBlog = panelBlogType.IsStaticSiteBlog;
 
             // did this bootstrap a custom account wizard?
-            _providerAccountWizard = panelBlogType.ProviderAccountWizard;
+            this._providerAccountWizard = panelBlogType.ProviderAccountWizard;
 
             // add the next wizard sub step as appropriate
-            if (_temporarySettings.IsSharePointBlog)
+            if (this._temporarySettings.IsSharePointBlog)
             {
-                AddSharePointBasicInfoSubStep(false);
+                this.AddSharePointBasicInfoSubStep(false);
             }
-            else if (_temporarySettings.IsGoogleBloggerBlog)
+            else if (this._temporarySettings.IsGoogleBloggerBlog)
             {
-                AddGoogleBloggerOAuthSubStep();
+                this.AddGoogleBloggerOAuthSubStep();
             }
-            else if (_temporarySettings.IsStaticSiteBlog)
+            else if (this._temporarySettings.IsStaticSiteBlog)
             {
-                AddStaticSiteInitialSubStep();
+                this.AddStaticSiteInitialSubStep();
             }
             else
             {
-                AddBasicInfoSubStep();
+                this.AddBasicInfoSubStep();
             }
         }
 
@@ -379,7 +421,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             username = null;
             password = null;
 
-            string[] userInfoSplit = System.Web.HttpUtility.UrlDecode(blogToAdd.UserInfo).Split(':');
+            var userInfoSplit = System.Web.HttpUtility.UrlDecode(blogToAdd.UserInfo).Split(':');
             if (userInfoSplit.Length > 0)
             {
                 username = userInfoSplit[0];
@@ -398,77 +440,74 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             // Fixes for 483356: In account configuration wizard, hitting back in select provider or success screens causes anomalous behavior
             // Need to clear cached credentials and cached blogname otherwise they'll be used downstream in the wizard...
-            _temporarySettings.BlogName = string.Empty;
+            this._temporarySettings.BlogName = string.Empty;
 
             // get reference to data interface for panel
-            IAccountBasicInfoProvider basicInfo = stepControl as IAccountBasicInfoProvider;
+            var basicInfo = stepControl as IAccountBasicInfoProvider;
 
             // populate basic data
-            basicInfo.ProviderAccountWizard = _providerAccountWizard;
-            basicInfo.AccountId = _temporarySettings.Id;
-            basicInfo.HomepageUrl = _temporarySettings.HomepageUrl;
-            basicInfo.ForceManualConfiguration = _temporarySettings.ForceManualConfig;
-            basicInfo.Credentials = _temporarySettings.Credentials;
-            basicInfo.SavePassword = basicInfo.Credentials.Password != String.Empty && (_temporarySettings.SavePassword ?? true);
+            basicInfo.ProviderAccountWizard = this._providerAccountWizard;
+            basicInfo.AccountId = this._temporarySettings.Id;
+            basicInfo.HomepageUrl = this._temporarySettings.HomepageUrl;
+            basicInfo.ForceManualConfiguration = this._temporarySettings.ForceManualConfig;
+            basicInfo.Credentials = this._temporarySettings.Credentials;
+            basicInfo.SavePassword = basicInfo.Credentials.Password != String.Empty && (this._temporarySettings.SavePassword ?? true);
         }
 
         private delegate void PerformBlogAutoDetection();
-        private void OnBasicInfoCompleted(Object stepControl)
-        {
-            OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(PerformWeblogAndSettingsAutoDetectionSubStep));
-        }
+        private void OnBasicInfoCompleted(Object stepControl) => this.OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(this.PerformWeblogAndSettingsAutoDetectionSubStep));
 
         private void OnBasicInfoAndAuthenticationCompleted(IAccountBasicInfoProvider basicInfo, PerformBlogAutoDetection performBlogAutoDetection)
         {
             // copy the settings
-            _temporarySettings.HomepageUrl = basicInfo.HomepageUrl;
-            _temporarySettings.ForceManualConfig = basicInfo.ForceManualConfiguration;
-            _temporarySettings.Credentials = basicInfo.Credentials;
-            _temporarySettings.SavePassword = basicInfo.SavePassword;
+            this._temporarySettings.HomepageUrl = basicInfo.HomepageUrl;
+            this._temporarySettings.ForceManualConfig = basicInfo.ForceManualConfiguration;
+            this._temporarySettings.Credentials = basicInfo.Credentials;
+            this._temporarySettings.SavePassword = basicInfo.SavePassword;
 
             // clear the transient credentials so we don't accidentally use cached credentials
-            ClearTransientCredentials();
+            this.ClearTransientCredentials();
 
-            if (!_temporarySettings.ForceManualConfig)
+            if (!this._temporarySettings.ForceManualConfig)
             {
                 // perform auto-detection
                 performBlogAutoDetection();
             }
             else
             {
-                PerformSelectProviderSubStep();
+                this.PerformSelectProviderSubStep();
             }
         }
 
         private void OnSharePointBasicInfoCompleted(Object stepControl)
         {
-            if (_authenticationRequired)
-                AddSharePointAuthenticationStep((IAccountBasicInfoProvider)stepControl);
+            if (this._authenticationRequired)
+                this.AddSharePointAuthenticationStep((IAccountBasicInfoProvider)stepControl);
             else
-                OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(PerformSharePointAutoDetectionSubStep));
+                this.OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(this.PerformSharePointAutoDetectionSubStep));
         }
 
         private void OnSharePointBasicInfoUndone(Object stepControl)
         {
-            if (_authenticationRequired && !_authenticationStepAdded)
+            if (this._authenticationRequired && !this._authenticationStepAdded)
             {
-                AddSharePointAuthenticationStep((IAccountBasicInfoProvider)stepControl);
-                next();
+                this.AddSharePointAuthenticationStep((IAccountBasicInfoProvider)stepControl);
+                this.next();
             }
         }
 
         private void AddSharePointAuthenticationStep(IAccountBasicInfoProvider basicInfoProvider)
         {
-            if (!_authenticationStepAdded)
+            if (!this._authenticationStepAdded)
             {
-                addWizardSubStep(new WizardSubStep(new WeblogConfigurationWizardPanelSharePointAuthentication(basicInfoProvider),
+                this.addWizardSubStep(new WizardSubStep(new WeblogConfigurationWizardPanelSharePointAuthentication(basicInfoProvider),
                                                    StringId.ConfigWizardSharePointLogin,
-                                                   new WizardController.DisplayCallback(OnSharePointAuthenticationDisplayed),
-                                                   new VerifyStepCallback(OnValidatePanel),
-                                                   new WizardController.NextCallback(OnSharePointAuthenticationComplete),
+                                                   new WizardController.DisplayCallback(this.OnSharePointAuthenticationDisplayed),
+                                                   new VerifyStepCallback(this.OnValidatePanel),
+                                                   new WizardController.NextCallback(this.OnSharePointAuthenticationComplete),
                                                    null,
-                                                   new WizardController.BackCallback(OnSharePointAuthenticationBack)));
-                _authenticationStepAdded = true;
+                                                   new WizardController.BackCallback(this.OnSharePointAuthenticationBack)));
+                this._authenticationStepAdded = true;
             }
         }
 
@@ -477,25 +516,22 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         #region Static Site Generator support
         private StaticSiteConfig staticSiteConfig;
 
-        private void AddStaticSiteInitialSubStep()
-        {
-            addWizardSubStep(
+        private void AddStaticSiteInitialSubStep() => this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelStaticSiteInitial(),
                 null,
-                new DisplayCallback(OnStaticSiteInitialDisplayed),
-                new VerifyStepCallback(OnStaticSiteValidatePanel),
-                new NextCallback(OnStaticSiteInitialCompleted),
+                new DisplayCallback(this.OnStaticSiteInitialDisplayed),
+                new VerifyStepCallback(this.OnStaticSiteValidatePanel),
+                new NextCallback(this.OnStaticSiteInitialCompleted),
                 null,
-                new BackCallback(OnStaticSiteBack)));
-        }
+                new BackCallback(this.OnStaticSiteBack)));
 
         private void OnStaticSiteInitialDisplayed(Object stepControl)
         {
             // Populate data
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSiteInitial);
             // Load static config from credentials provided
-            staticSiteConfig = StaticSiteConfig.LoadConfigFromBlogSettings( _temporarySettings);
-            panel.LoadFromConfig(staticSiteConfig);
+            this.staticSiteConfig = StaticSiteConfig.LoadConfigFromBlogSettings(this._temporarySettings);
+            panel.LoadFromConfig(this.staticSiteConfig);
         }
 
         private void OnStaticSiteInitialCompleted(Object stepControl)
@@ -503,22 +539,22 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSiteInitial);
 
             // Fill blog settings
-            _temporarySettings.SetProvider(
-                StaticSiteClient.PROVIDER_ID, 
+            this._temporarySettings.SetProvider(
+                StaticSiteClient.PROVIDER_ID,
                 StaticSiteClient.SERVICE_NAME,
                 StaticSiteClient.POST_API_URL,
                 StaticSiteClient.CLIENT_TYPE
                 );
 
             // Save config
-            panel.SaveToConfig(staticSiteConfig);
+            panel.SaveToConfig(this.staticSiteConfig);
 
-            if(!staticSiteConfig.Initialised)
+            if (!this.staticSiteConfig.Initialised)
             {
                 // Set initialised flag so detection isn't undertaken again
-                staticSiteConfig.Initialised = true;
+                this.staticSiteConfig.Initialised = true;
                 // Attempt parameter detection
-                var detectionResult = StaticSiteConfigDetector.AttmeptAutoDetect(staticSiteConfig);
+                var detectionResult = StaticSiteConfigDetector.AttmeptAutoDetect(this.staticSiteConfig);
                 if (detectionResult)
                 {
                     // Successful detection of parameters
@@ -531,117 +567,104 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
 
             // Go to next step
-            AddStaticSiteFeaturesSubStep();
+            this.AddStaticSiteFeaturesSubStep();
         }
 
-        private void AddStaticSitePaths1SubStep()
-        {
-            addWizardSubStep(
+        private void AddStaticSitePaths1SubStep() => this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelStaticSitePaths1(),
                 null,
-                new DisplayCallback(OnStaticSiteConfigProviderDisplayed),
-                new VerifyStepCallback(OnStaticSiteValidatePanel),
-                new NextCallback(OnStaticSitePaths1Completed),
+                new DisplayCallback(this.OnStaticSiteConfigProviderDisplayed),
+                new VerifyStepCallback(this.OnStaticSiteValidatePanel),
+                new NextCallback(this.OnStaticSitePaths1Completed),
                 null,
-                new BackCallback(OnStaticSiteBack)));
-        }
+                new BackCallback(this.OnStaticSiteBack)));
 
         private void OnStaticSitePaths1Completed(Object stepControl)
         {
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSitePaths1);
 
             // Save panel values into config
-            panel.SaveToConfig(staticSiteConfig);
+            panel.SaveToConfig(this.staticSiteConfig);
 
             // Go to next step
-            AddStaticSitePaths2SubStep();
+            this.AddStaticSitePaths2SubStep();
         }
 
-        private void AddStaticSitePaths2SubStep()
-        {
-            addWizardSubStep(
+        private void AddStaticSitePaths2SubStep() => this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelStaticSitePaths2(),
                 null,
-                new DisplayCallback(OnStaticSiteConfigProviderDisplayed),
-                new VerifyStepCallback(OnStaticSiteValidatePanel),
-                new NextCallback(OnStaticSitePaths2Completed),
+                new DisplayCallback(this.OnStaticSiteConfigProviderDisplayed),
+                new VerifyStepCallback(this.OnStaticSiteValidatePanel),
+                new NextCallback(this.OnStaticSitePaths2Completed),
                 null,
-                new BackCallback(OnStaticSiteBack)));
-        }
+                new BackCallback(this.OnStaticSiteBack)));
 
         private void OnStaticSitePaths2Completed(Object stepControl)
         {
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSitePaths2);
 
             // Save panel values into config
-            panel.SaveToConfig(staticSiteConfig);
+            panel.SaveToConfig(this.staticSiteConfig);
 
             // Go to next step
-            AddStaticSiteCommandsSubStep();
+            this.AddStaticSiteCommandsSubStep();
         }
 
-        private void AddStaticSiteFeaturesSubStep()
-        {
-            addWizardSubStep(
+        private void AddStaticSiteFeaturesSubStep() => this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelStaticSiteFeatures(),
                 null,
-                new DisplayCallback(OnStaticSiteConfigProviderDisplayed),
-                new VerifyStepCallback(OnStaticSiteValidatePanel),
-                new NextCallback(OnStaticSiteFeaturesCompleted),
+                new DisplayCallback(this.OnStaticSiteConfigProviderDisplayed),
+                new VerifyStepCallback(this.OnStaticSiteValidatePanel),
+                new NextCallback(this.OnStaticSiteFeaturesCompleted),
                 null,
-                new BackCallback(OnStaticSiteBack)));
-        }
+                new BackCallback(this.OnStaticSiteBack)));
 
         private void OnStaticSiteFeaturesCompleted(Object stepControl)
         {
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSiteFeatures);
 
             // Save panel values into config
-            panel.SaveToConfig(staticSiteConfig);
+            panel.SaveToConfig(this.staticSiteConfig);
 
             // Go to next step
-            AddStaticSitePaths1SubStep();
+            this.AddStaticSitePaths1SubStep();
         }
 
-        private void AddStaticSiteCommandsSubStep()
-        {
-            addWizardSubStep(
+        private void AddStaticSiteCommandsSubStep() => this.addWizardSubStep(
                 new WizardSubStep(new WeblogConfigurationWizardPanelStaticSiteCommands(),
                 null,
-                new DisplayCallback(OnStaticSiteConfigProviderDisplayed),
-                new VerifyStepCallback(OnStaticSiteValidatePanel),
-                new NextCallback(OnStaticSiteCommandsCompleted),
+                new DisplayCallback(this.OnStaticSiteConfigProviderDisplayed),
+                new VerifyStepCallback(this.OnStaticSiteValidatePanel),
+                new NextCallback(this.OnStaticSiteCommandsCompleted),
                 null,
-                new BackCallback(OnStaticSiteBack)));
-        }
+                new BackCallback(this.OnStaticSiteBack)));
 
         private void OnStaticSiteCommandsCompleted(Object stepControl)
         {
             var panel = (stepControl as WeblogConfigurationWizardPanelStaticSiteCommands);
 
             // Save panel values into config
-            panel.SaveToConfig(staticSiteConfig);
+            panel.SaveToConfig(this.staticSiteConfig);
 
             // Go to next step
-            PerformStaticSiteWizardCompletion();
+            this.PerformStaticSiteWizardCompletion();
         }
 
-        private void OnStaticSiteBack(object step)
-        {
+        private void OnStaticSiteBack(object step) =>
             // Save panel values before going back
-            (step as IWizardPanelStaticSite).SaveToConfig(staticSiteConfig);
-        }
+            (step as IWizardPanelStaticSite).SaveToConfig(this.staticSiteConfig);
 
         private bool OnStaticSiteValidatePanel(object step)
         {
-            var newConfig = staticSiteConfig.Clone();
-            IWizardPanelStaticSite panel = step as IWizardPanelStaticSite;
+            var newConfig = this.staticSiteConfig.Clone();
+            var panel = step as IWizardPanelStaticSite;
             panel.SaveToConfig(newConfig);
 
             try
             {
                 panel.ValidateWithConfig(newConfig);
-            } catch(StaticSiteConfigValidationException ex)
+            }
+            catch (StaticSiteConfigValidationException ex)
             {
                 MessageBox.Show(ex.Text, ex.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -653,25 +676,25 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         private void PerformStaticSiteWizardCompletion()
         {
             // Fill blog settings
-            _temporarySettings.SetProvider(
+            this._temporarySettings.SetProvider(
                 StaticSiteClient.PROVIDER_ID,
                 StaticSiteClient.SERVICE_NAME,
                 StaticSiteClient.POST_API_URL,
                 StaticSiteClient.CLIENT_TYPE
                 );
 
-            _temporarySettings.HomepageUrl = staticSiteConfig.SiteUrl;
-            _temporarySettings.BlogName = staticSiteConfig.SiteTitle;
+            this._temporarySettings.HomepageUrl = this.staticSiteConfig.SiteUrl;
+            this._temporarySettings.BlogName = this.staticSiteConfig.SiteTitle;
 
             // Fill config into credentials
-            staticSiteConfig.SaveToCredentials(_temporarySettings.Credentials);
+            this.staticSiteConfig.SaveToCredentials(this._temporarySettings.Credentials);
 
             // Perform auto-detection
-            addWizardSubStep(new WizardAutoDetectionStep(
+            this.addWizardSubStep(new WizardAutoDetectionStep(
                 (IBlogClientUIContext)this,
-                _temporarySettings, 
+                this._temporarySettings,
                 null,
-                new WizardSettingsAutoDetectionOperation(_editWithStyleStep)));
+                new WizardSettingsAutoDetectionOperation(this._editWithStyleStep)));
         }
 
         private void OnStaticSiteConfigProviderDisplayed(Object stepControl)
@@ -680,7 +703,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             var panel = (stepControl as IWizardPanelStaticSite);
 
             // Load panel values from config
-            panel.LoadFromConfig(staticSiteConfig);
+            panel.LoadFromConfig(this.staticSiteConfig);
         }
 
         #endregion
@@ -691,15 +714,15 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             // Clear the provider so the user will be forced to do autodetection
             // until we have successfully configured a publishing interface
-            _temporarySettings.ClearProvider();
-            _detectionOperation = new WizardWeblogAndSettingsAutoDetectionOperation(_editWithStyleStep);
+            this._temporarySettings.ClearProvider();
+            this._detectionOperation = new WizardWeblogAndSettingsAutoDetectionOperation(this._editWithStyleStep);
 
             // perform the step
-            addWizardSubStep(new WizardAutoDetectionStep(
+            this.addWizardSubStep(new WizardAutoDetectionStep(
                 (IBlogClientUIContext)this,
-                _temporarySettings,
-                new NextCallback(OnWeblogAndSettingsAutoDetectionCompleted),
-                _detectionOperation));
+                this._temporarySettings,
+                new NextCallback(this.OnWeblogAndSettingsAutoDetectionCompleted),
+                this._detectionOperation));
         }
 
         private WizardWeblogAndSettingsAutoDetectionOperation _detectionOperation;
@@ -708,56 +731,44 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             // Clear the provider so the user will be forced to do autodetection
             // until we have successfully configured a publishing interface
-            _temporarySettings.ClearProvider();
+            this._temporarySettings.ClearProvider();
 
-            AddAutoDetectionStep();
+            this.AddAutoDetectionStep();
         }
 
         private void AddAutoDetectionStep()
         {
-            _detectionOperation = new WizardSharePointAutoDetectionOperation(_editWithStyleStep);
+            this._detectionOperation = new WizardSharePointAutoDetectionOperation(this._editWithStyleStep);
 
-            WizardSharePointAutoDetectionStep sharePointDetectionStep =
+            var sharePointDetectionStep =
                 new WizardSharePointAutoDetectionStep(
                 (IBlogClientUIContext)this,
-                _temporarySettings,
-                new NextCallback(OnWeblogAndSettingsAutoDetectionCompleted),
-                _detectionOperation);
+                this._temporarySettings,
+                new NextCallback(this.OnWeblogAndSettingsAutoDetectionCompleted),
+                this._detectionOperation);
 
-            if (!_authenticationStepAdded)
-                sharePointDetectionStep.AuthenticationErrorOccurred += new EventHandler(sharePointDetectionStep_AuthenticationErrorOccurred);
+            if (!this._authenticationStepAdded)
+                sharePointDetectionStep.AuthenticationErrorOccurred += new EventHandler(this.sharePointDetectionStep_AuthenticationErrorOccurred);
 
-            addWizardSubStep(sharePointDetectionStep);
+            this.addWizardSubStep(sharePointDetectionStep);
         }
-        private void sharePointDetectionStep_AuthenticationErrorOccurred(object sender, EventArgs e)
-        {
-            this._authenticationRequired = true;
-        }
+        private void sharePointDetectionStep_AuthenticationErrorOccurred(object sender, EventArgs e) => this._authenticationRequired = true;
 
         private void OnSharePointAuthenticationDisplayed(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSharePointAuthentication panelBlogType = stepControl as WeblogConfigurationWizardPanelSharePointAuthentication;
+            var panelBlogType = stepControl as WeblogConfigurationWizardPanelSharePointAuthentication;
 
             // set value
-            panelBlogType.Credentials = _temporarySettings.Credentials;
-            panelBlogType.SavePassword = _temporarySettings.Credentials.Password != String.Empty;
+            panelBlogType.Credentials = this._temporarySettings.Credentials;
+            panelBlogType.SavePassword = this._temporarySettings.Credentials.Password != String.Empty;
         }
 
-        private void OnSharePointAuthenticationComplete(Object stepControl)
-        {
-            OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(PerformSharePointAutoDetectionSubStep));
-        }
+        private void OnSharePointAuthenticationComplete(Object stepControl) => this.OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(this.PerformSharePointAutoDetectionSubStep));
 
-        private void OnSharePointAuthenticationBack(Object stepControl)
-        {
-            _authenticationStepAdded = false;
-        }
+        private void OnSharePointAuthenticationBack(Object stepControl) => this._authenticationStepAdded = false;
 
-        private void OnGoogleBloggerOAuthCompleted(Object stepControl)
-        {
-            OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(PerformWeblogAndSettingsAutoDetectionSubStep));
-        }
+        private void OnGoogleBloggerOAuthCompleted(Object stepControl) => this.OnBasicInfoAndAuthenticationCompleted((IAccountBasicInfoProvider)stepControl, new PerformBlogAutoDetection(this.PerformWeblogAndSettingsAutoDetectionSubStep));
 
         private void OnGoogleBloggerOAuthBack(Object stepControl)
         {
@@ -768,29 +779,29 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         private void OnWeblogAndSettingsAutoDetectionCompleted(Object stepControl)
         {
             // if we weren't able to identify a specific weblog
-            if (_temporarySettings.HostBlogId == String.Empty)
+            if (this._temporarySettings.HostBlogId == String.Empty)
             {
                 // if we have a list of weblogs then show the blog list
-                if (_temporarySettings.HostBlogs.Length > 0)
+                if (this._temporarySettings.HostBlogs.Length > 0)
                 {
-                    PerformSelectBlogSubStep();
+                    this.PerformSelectBlogSubStep();
                 }
                 else // kick down to select a provider
                 {
-                    PerformSelectProviderSubStep();
+                    this.PerformSelectProviderSubStep();
                 }
             }
             else
             {
-                PerformSelectImageEndpointIfNecessary();
+                this.PerformSelectImageEndpointIfNecessary();
             }
         }
 
         private void PerformSelectImageEndpointIfNecessary()
         {
-            if (_temporarySettings.HostBlogId != string.Empty
-                && _temporarySettings.AvailableImageEndpoints != null
-                && _temporarySettings.AvailableImageEndpoints.Length > 0)
+            if (this._temporarySettings.HostBlogId != string.Empty
+                && this._temporarySettings.AvailableImageEndpoints != null
+                && this._temporarySettings.AvailableImageEndpoints.Length > 0)
             {
                 /*
                 if (_temporarySettings.AvailableImageEndpoints.Length == 1)
@@ -804,7 +815,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 */
 
                 // currently we always show the image endpoint selection UI if we find at least one.
-                PerformSelectImageEndpointSubStep();
+                this.PerformSelectImageEndpointSubStep();
             }
         }
 
@@ -812,55 +823,52 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         #region Select Provider Panel
 
-        void PerformSelectProviderSubStep()
-        {
-            addWizardSubStep(new WizardSubStep(
+        void PerformSelectProviderSubStep() => this.addWizardSubStep(new WizardSubStep(
                 new WeblogConfigurationWizardPanelSelectProvider(),
                 StringId.ConfigWizardSelectProvider,
-                new DisplayCallback(OnSelectProviderDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnSelectProviderCompleted),
+                new DisplayCallback(this.OnSelectProviderDisplayed),
+                new VerifyStepCallback(this.OnValidatePanel),
+                new NextCallback(this.OnSelectProviderCompleted),
                 null,
                 null));
-        }
 
         void OnSelectProviderDisplayed(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectProvider panelSelectProvider = stepControl as WeblogConfigurationWizardPanelSelectProvider;
+            var panelSelectProvider = stepControl as WeblogConfigurationWizardPanelSelectProvider;
 
             // show the panel
             panelSelectProvider.ShowPanel(
-                _temporarySettings.ServiceName,
-                _temporarySettings.HomepageUrl,
-                _temporarySettings.Id,
-                _temporarySettings.Credentials);
+                this._temporarySettings.ServiceName,
+                this._temporarySettings.HomepageUrl,
+                this._temporarySettings.Id,
+                this._temporarySettings.Credentials);
         }
 
         void OnSelectProviderCompleted(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectProvider panelSelectProvider = stepControl as WeblogConfigurationWizardPanelSelectProvider;
+            var panelSelectProvider = stepControl as WeblogConfigurationWizardPanelSelectProvider;
 
             // record the provider and blog info
-            IBlogProviderDescription provider = panelSelectProvider.SelectedBlogProvider;
-            _temporarySettings.SetProvider(provider.Id, provider.Name, provider.PostApiUrl, provider.ClientType);
-            _temporarySettings.HostBlogId = String.Empty;
+            var provider = panelSelectProvider.SelectedBlogProvider;
+            this._temporarySettings.SetProvider(provider.Id, provider.Name, provider.PostApiUrl, provider.ClientType);
+            this._temporarySettings.HostBlogId = String.Empty;
             if (panelSelectProvider.TargetBlog != null)
-                _temporarySettings.SetBlogInfo(panelSelectProvider.TargetBlog);
-            _temporarySettings.HostBlogs = panelSelectProvider.UsersBlogs;
+                this._temporarySettings.SetBlogInfo(panelSelectProvider.TargetBlog);
+            this._temporarySettings.HostBlogs = panelSelectProvider.UsersBlogs;
 
             // If we don't yet have a HostBlogId then the user needs to choose from
             // among available weblogs
-            if (_temporarySettings.HostBlogId == String.Empty)
+            if (this._temporarySettings.HostBlogId == String.Empty)
             {
-                PerformSelectBlogSubStep();
+                this.PerformSelectBlogSubStep();
             }
             else
             {
                 // if we have not downloaded an editing template yet for this
                 // weblog then execute this now
-                PerformSettingsAutoDetectionSubStepIfNecessary();
+                this.PerformSettingsAutoDetectionSubStepIfNecessary();
             }
         }
 
@@ -868,38 +876,35 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         #region Select Blog Panel
 
-        void PerformSelectBlogSubStep()
-        {
-            addWizardSubStep(new WizardSubStep(
+        void PerformSelectBlogSubStep() => this.addWizardSubStep(new WizardSubStep(
                 new WeblogConfigurationWizardPanelSelectBlog(),
                 StringId.ConfigWizardSelectWeblog,
-                new DisplayCallback(OnSelectBlogDisplayed),
-                new VerifyStepCallback(OnValidatePanel),
-                new NextCallback(OnSelectBlogCompleted),
+                new DisplayCallback(this.OnSelectBlogDisplayed),
+                new VerifyStepCallback(this.OnValidatePanel),
+                new NextCallback(this.OnSelectBlogCompleted),
                 null,
                 null));
-        }
 
         void OnSelectBlogDisplayed(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectBlog panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
+            var panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
 
             // show the panel
-            panelSelectBlog.ShowPanel(_temporarySettings.HostBlogs, _temporarySettings.HostBlogId);
+            panelSelectBlog.ShowPanel(this._temporarySettings.HostBlogs, this._temporarySettings.HostBlogId);
         }
 
         private void OnSelectBlogCompleted(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectBlog panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
+            var panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
 
             // get the selected blog
-            _temporarySettings.SetBlogInfo(panelSelectBlog.SelectedBlog);
+            this._temporarySettings.SetBlogInfo(panelSelectBlog.SelectedBlog);
 
             // if we have not downloaded an editing template yet for this
             // weblog then execute this now
-            PerformSettingsAutoDetectionSubStepIfNecessary();
+            this.PerformSettingsAutoDetectionSubStepIfNecessary();
         }
 
         #endregion
@@ -908,14 +913,14 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         void PerformSelectImageEndpointSubStep()
         {
-            WeblogConfigurationWizardPanelSelectBlog panel = new WeblogConfigurationWizardPanelSelectBlog();
+            var panel = new WeblogConfigurationWizardPanelSelectBlog();
             panel.LabelText = Res.Get(StringId.CWSelectImageEndpointText);
-            addWizardSubStep(new WizardSubStep(
+            this.addWizardSubStep(new WizardSubStep(
                                 panel,
                                 StringId.ConfigWizardSelectImageEndpoint,
-                                new DisplayCallback(OnSelectImageEndpointDisplayed),
-                                new VerifyStepCallback(OnValidatePanel),
-                                new NextCallback(OnSelectImageEndpointCompleted),
+                                new DisplayCallback(this.OnSelectImageEndpointDisplayed),
+                                new VerifyStepCallback(this.OnValidatePanel),
+                                new NextCallback(this.OnSelectImageEndpointCompleted),
                                 null,
                                 null));
         }
@@ -923,21 +928,21 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         void OnSelectImageEndpointDisplayed(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectBlog panelSelectImageEndpoint = stepControl as WeblogConfigurationWizardPanelSelectBlog;
+            var panelSelectImageEndpoint = stepControl as WeblogConfigurationWizardPanelSelectBlog;
 
             // show the panel
-            panelSelectImageEndpoint.ShowPanel(_temporarySettings.AvailableImageEndpoints, _temporarySettings.OptionOverrides[BlogClientOptions.IMAGE_ENDPOINT] as string);
+            panelSelectImageEndpoint.ShowPanel(this._temporarySettings.AvailableImageEndpoints, this._temporarySettings.OptionOverrides[BlogClientOptions.IMAGE_ENDPOINT] as string);
         }
 
         private void OnSelectImageEndpointCompleted(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelSelectBlog panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
+            var panelSelectBlog = stepControl as WeblogConfigurationWizardPanelSelectBlog;
 
             // get the selected blog
-            IDictionary optionOverrides = _temporarySettings.HomePageOverrides;
+            var optionOverrides = this._temporarySettings.HomePageOverrides;
             optionOverrides[BlogClientOptions.IMAGE_ENDPOINT] = panelSelectBlog.SelectedBlog.Id;
-            _temporarySettings.HomePageOverrides = optionOverrides;
+            this._temporarySettings.HomePageOverrides = optionOverrides;
         }
 
         #endregion
@@ -946,25 +951,20 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         private void PerformSettingsAutoDetectionSubStepIfNecessary()
         {
-            if (_temporarySettings.TemplateFiles.Length == 0)
+            if (this._temporarySettings.TemplateFiles.Length == 0)
             {
-                PerformSettingsAutoDetectionSubStep();
+                this.PerformSettingsAutoDetectionSubStep();
             }
         }
 
-        private void PerformSettingsAutoDetectionSubStep()
-        {
+        private void PerformSettingsAutoDetectionSubStep() =>
             // perform the step
-            addWizardSubStep(new WizardAutoDetectionStep(
+            this.addWizardSubStep(new WizardAutoDetectionStep(
                 (IBlogClientUIContext)this,
-                _temporarySettings, new NextCallback(OnPerformSettingsAutoDetectionCompleted),
-                new WizardSettingsAutoDetectionOperation(_editWithStyleStep)));
-        }
+                this._temporarySettings, new NextCallback(this.OnPerformSettingsAutoDetectionCompleted),
+                new WizardSettingsAutoDetectionOperation(this._editWithStyleStep)));
 
-        private void OnPerformSettingsAutoDetectionCompleted(object stepControl)
-        {
-            PerformSelectImageEndpointIfNecessary();
-        }
+        private void OnPerformSettingsAutoDetectionCompleted(object stepControl) => this.PerformSelectImageEndpointIfNecessary();
 
         #endregion
 
@@ -973,20 +973,20 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         void OnConfirmationDisplayed(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelConfirmation panelConfirmation = stepControl as WeblogConfigurationWizardPanelConfirmation;
+            var panelConfirmation = stepControl as WeblogConfigurationWizardPanelConfirmation;
 
             // show the panel
-            panelConfirmation.ShowPanel(_temporarySettings, _preventSwitchingToWeblog);
+            panelConfirmation.ShowPanel(this._temporarySettings, this._preventSwitchingToWeblog);
         }
 
         void OnConfirmationCompleted(Object stepControl)
         {
             // get reference to panel
-            WeblogConfigurationWizardPanelConfirmation panelConfirmation = stepControl as WeblogConfigurationWizardPanelConfirmation;
+            var panelConfirmation = stepControl as WeblogConfigurationWizardPanelConfirmation;
 
             // save settings
-            _temporarySettings.BlogName = panelConfirmation.WeblogName;
-            _temporarySettings.SwitchToWeblog = panelConfirmation.SwitchToWeblog;
+            this._temporarySettings.BlogName = panelConfirmation.WeblogName;
+            this._temporarySettings.SwitchToWeblog = panelConfirmation.SwitchToWeblog;
         }
 
         #endregion
@@ -995,18 +995,16 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         private bool OnValidatePanel(Object panelControl)
         {
-            WeblogConfigurationWizardPanel wizardPanel = panelControl as WeblogConfigurationWizardPanel;
+            var wizardPanel = panelControl as WeblogConfigurationWizardPanel;
             return wizardPanel.ValidatePanel();
         }
 
         /// <summary>
         /// Clear any cached credential information for the blog
         /// </summary>
-        private void ClearTransientCredentials()
-        {
+        private void ClearTransientCredentials() =>
             //clear any cached credential information associated with this blog (fixes bug 373063)
-            new BlogCredentialsAccessor(_temporarySettings.Id, _temporarySettings.Credentials).TransientCredentials = null;
-        }
+            new BlogCredentialsAccessor(this._temporarySettings.Id, this._temporarySettings.Credentials).TransientCredentials = null;
 
         #endregion
 
@@ -1025,11 +1023,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         #region IBlogClientUIContext Members
 
-        IntPtr IWin32Window.Handle { get { return _wizardForm.Handle; } }
-        bool ISynchronizeInvoke.InvokeRequired { get { return _wizardForm.InvokeRequired; } }
-        IAsyncResult ISynchronizeInvoke.BeginInvoke(Delegate method, object[] args) { return _wizardForm.BeginInvoke(method, args); }
-        object ISynchronizeInvoke.EndInvoke(IAsyncResult result) { return _wizardForm.EndInvoke(result); }
-        object ISynchronizeInvoke.Invoke(Delegate method, object[] args) { return _wizardForm.Invoke(method, args); }
+        IntPtr IWin32Window.Handle { get { return this._wizardForm.Handle; } }
+        bool ISynchronizeInvoke.InvokeRequired { get { return this._wizardForm.InvokeRequired; } }
+        IAsyncResult ISynchronizeInvoke.BeginInvoke(Delegate method, object[] args) => this._wizardForm.BeginInvoke(method, args);
+        object ISynchronizeInvoke.EndInvoke(IAsyncResult result) => this._wizardForm.EndInvoke(result);
+        object ISynchronizeInvoke.Invoke(Delegate method, object[] args) => this._wizardForm.Invoke(method, args);
 
         #endregion
 

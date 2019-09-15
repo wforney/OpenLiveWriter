@@ -1,14 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices.Threading;
-
 namespace OpenLiveWriter.Api
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Windows.Forms;
+    using OpenLiveWriter.CoreServices.Threading;
+
     /// <summary>
     /// Encapsulates a method that has one parameter and returns a value.
     /// </summary>
@@ -46,10 +46,13 @@ namespace OpenLiveWriter.Api
         /// {
         ///     DoSomethingExpensive();
         /// });</code></example>
-        public static void ExecuteWithResponsiveUI(Task task)
-        {
-            ExecuteWithResponsiveUI<object, object>(null, delegate { task(); return null; });
-        }
+        public static void ExecuteWithResponsiveUI(Task task) => ExecuteWithResponsiveUI<object, object>(
+            null,
+            delegate
+            {
+                task();
+                return null;
+            });
 
         /// <summary>
         /// <para>Executes a potentially long-running task on a background thread
@@ -77,26 +80,28 @@ namespace OpenLiveWriter.Api
         /// </example>
         public static TResult ExecuteWithResponsiveUI<TParam, TResult>(TParam arg, Task<TParam, TResult> task)
         {
-            TResult result = default(TResult);
+            TResult result = default;
 
             if (Application.MessageLoop)
             {
                 Exception e = null;
-                Thread t = ThreadHelper.NewThread(new ThreadStart(delegate
-                {
-                    try
-                    {
-                        result = task(arg);
-                    }
-                    catch (Exception ex)
-                    {
-                        e = ex;
-                    }
-                }),
-                "ExecWithResponsiveUI",
-                true,
-                true,
-                true);
+                var t = ThreadHelper.NewThread(
+                    new ThreadStart(
+                        delegate
+                        {
+                            try
+                            {
+                                result = task(arg);
+                            }
+                            catch (Exception ex)
+                            {
+                                e = ex;
+                            }
+                        }),
+                    "ExecWithResponsiveUI",
+                    true,
+                    true,
+                    true);
 
                 t.Start();
 
@@ -111,7 +116,9 @@ namespace OpenLiveWriter.Api
                     throw e;
                 }
                 else
+                {
                     return result;
+                }
             }
             else
             {

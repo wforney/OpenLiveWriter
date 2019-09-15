@@ -76,6 +76,7 @@
     <Compile Include="CommandBarButtonLightweightControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CommandBarButtonStyle.cs" />
     <Compile Include="CommandBarContainerLightweightControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,9 +149,11 @@
     <Compile Include="DynamicCommandMenuOverflowForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ExecuteEventHandlerArgs.cs" />
     <Compile Include="GenericCommandHandler.cs" />
     <Compile Include="IColorPickerCommand.cs" />
     <Compile Include="ICommandContextMenuControlHandler.cs" />
+    <Compile Include="ICommandTextDisplayProperties.cs" />
     <Compile Include="IFontControlCommand.cs" />
     <Compile Include="IMainFrameWindow.cs" />
     <Compile Include="ISessionHandler.cs" />

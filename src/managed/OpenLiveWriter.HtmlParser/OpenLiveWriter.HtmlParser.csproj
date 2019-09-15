@@ -37,6 +37,7 @@
     <Compile Include="Parser\HtmlUtils.cs" />
     <Compile Include="Parser\IElementSource.cs" />
     <Compile Include="Parser\JavascriptParser.cs" />
+    <Compile Include="Parser\LazySubstring.cs" />
     <Compile Include="Parser\LiteralElementMethods.cs" />
     <Compile Include="Parser\ParseMethods.cs" />
     <Compile Include="Parser\ReplaceOperation.cs" />

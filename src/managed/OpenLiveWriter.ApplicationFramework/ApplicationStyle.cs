@@ -1,15 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Drawing;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// The ApplicationStyle class.  Defines common application style elements.
     /// </summary>
@@ -30,16 +29,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public string DisplayName
         {
-            get
-            {
-                return displayName;
-            }
+            get => this.displayName;
             set
             {
-                if (displayName != value)
+                if (this.displayName != value)
                 {
-                    displayName = value;
-                    OnChanged(EventArgs.Empty);
+                    this.displayName = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -47,21 +43,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the preview image of the ApplicationStyle.
         /// </summary>
-        public virtual Image PreviewImage
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual Image PreviewImage => null;
 
-        public virtual Font NormalApplicationFont
-        {
-            get
-            {
-                return Res.DefaultFont;
-            }
-        }
+        /// <summary>
+        /// Gets the normal application font.
+        /// </summary>
+        /// <value>The normal application font.</value>
+        public virtual Font NormalApplicationFont => Res.DefaultFont;
 
         /// <summary>
         /// The active selection color.
@@ -78,16 +66,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color ActiveSelectionColor
         {
-            get
-            {
-                return activeSelectionColor;
-            }
+            get => this.activeSelectionColor;
             set
             {
-                if (activeSelectionColor != value)
+                if (this.activeSelectionColor != value)
                 {
-                    activeSelectionColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeSelectionColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -107,16 +92,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color InactiveSelectionColor
         {
-            get
-            {
-                return inactiveSelectionColor;
-            }
+            get => this.inactiveSelectionColor;
             set
             {
-                if (inactiveSelectionColor != value)
+                if (this.inactiveSelectionColor != value)
                 {
-                    inactiveSelectionColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveSelectionColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -136,16 +118,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color MenuBitmapAreaColor
         {
-            get
-            {
-                return menuBitmapAreaColor;
-            }
+            get => this.menuBitmapAreaColor;
             set
             {
-                if (menuBitmapAreaColor != value)
+                if (this.menuBitmapAreaColor != value)
                 {
-                    menuBitmapAreaColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.menuBitmapAreaColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -165,16 +144,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color MenuSelectionColor
         {
-            get
-            {
-                return menuSelectionColor;
-            }
+            get => this.menuSelectionColor;
             set
             {
-                if (menuSelectionColor != value)
+                if (this.menuSelectionColor != value)
                 {
-                    menuSelectionColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.menuSelectionColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -194,16 +170,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color PrimaryWorkspaceTopColor
         {
-            get
-            {
-                return primaryWorkspaceTopColor;
-            }
+            get => this.primaryWorkspaceTopColor;
             set
             {
-                if (primaryWorkspaceTopColor != value)
+                if (this.primaryWorkspaceTopColor != value)
                 {
-                    primaryWorkspaceTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -223,16 +196,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color PrimaryWorkspaceBottomColor
         {
-            get
-            {
-                return primaryWorkspaceBottomColor;
-            }
+            get => this.primaryWorkspaceBottomColor;
             set
             {
-                if (primaryWorkspaceBottomColor != value)
+                if (this.primaryWorkspaceBottomColor != value)
                 {
-                    primaryWorkspaceBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -252,16 +222,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color SecondaryWorkspaceTopColor
         {
-            get
-            {
-                return secondaryWorkspaceTopColor;
-            }
+            get => this.secondaryWorkspaceTopColor;
             set
             {
-                if (secondaryWorkspaceTopColor != value)
+                if (this.secondaryWorkspaceTopColor != value)
                 {
-                    secondaryWorkspaceTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.secondaryWorkspaceTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -281,16 +248,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color SecondaryWorkspaceBottomColor
         {
-            get
-            {
-                return secondaryWorkspaceBottomColor;
-            }
+            get => this.secondaryWorkspaceBottomColor;
             set
             {
-                if (secondaryWorkspaceBottomColor != value)
+                if (this.secondaryWorkspaceBottomColor != value)
                 {
-                    secondaryWorkspaceBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.secondaryWorkspaceBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -312,16 +276,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color PrimaryWorkspaceCommandBarTopColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarTopColor;
-            }
+            get => this.primaryWorkspaceCommandBarTopColor;
             set
             {
-                if (primaryWorkspaceCommandBarTopColor != value)
+                if (this.primaryWorkspaceCommandBarTopColor != value)
                 {
-                    primaryWorkspaceCommandBarTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -341,16 +302,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Color PrimaryWorkspaceCommandBarBottomColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarBottomColor;
-            }
+            get => this.primaryWorkspaceCommandBarBottomColor;
             set
             {
-                if (primaryWorkspaceCommandBarBottomColor != value)
+                if (this.primaryWorkspaceCommandBarBottomColor != value)
                 {
-                    primaryWorkspaceCommandBarBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -370,16 +328,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarTopBevelFirstLineColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarTopBevelFirstLineColor;
-            }
+            get => this.primaryWorkspaceCommandBarTopBevelFirstLineColor;
             set
             {
-                if (primaryWorkspaceCommandBarTopBevelFirstLineColor != value)
+                if (this.primaryWorkspaceCommandBarTopBevelFirstLineColor != value)
                 {
-                    primaryWorkspaceCommandBarTopBevelFirstLineColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarTopBevelFirstLineColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -399,16 +354,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarTopBevelSecondLineColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarTopBevelSecondLineColor;
-            }
+            get => this.primaryWorkspaceCommandBarTopBevelSecondLineColor;
             set
             {
-                if (primaryWorkspaceCommandBarTopBevelSecondLineColor != value)
+                if (this.primaryWorkspaceCommandBarTopBevelSecondLineColor != value)
                 {
-                    primaryWorkspaceCommandBarTopBevelSecondLineColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarTopBevelSecondLineColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -428,16 +380,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarBottomBevelFirstLineColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarBottomBevelFirstLineColor;
-            }
+            get => this.primaryWorkspaceCommandBarBottomBevelFirstLineColor;
             set
             {
-                if (primaryWorkspaceCommandBarBottomBevelFirstLineColor != value)
+                if (this.primaryWorkspaceCommandBarBottomBevelFirstLineColor != value)
                 {
-                    primaryWorkspaceCommandBarBottomBevelFirstLineColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarBottomBevelFirstLineColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -457,16 +406,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarBottomBevelSecondLineColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarBottomBevelSecondLineColor;
-            }
+            get => this.primaryWorkspaceCommandBarBottomBevelSecondLineColor;
             set
             {
-                if (primaryWorkspaceCommandBarBottomBevelSecondLineColor != value)
+                if (this.primaryWorkspaceCommandBarBottomBevelSecondLineColor != value)
                 {
-                    primaryWorkspaceCommandBarBottomBevelSecondLineColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarBottomBevelSecondLineColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -486,16 +432,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarTextColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarTextColor;
-            }
+            get => this.primaryWorkspaceCommandBarTextColor;
             set
             {
-                if (primaryWorkspaceCommandBarTextColor != value)
+                if (this.primaryWorkspaceCommandBarTextColor != value)
                 {
-                    primaryWorkspaceCommandBarTextColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarTextColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -515,16 +458,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color PrimaryWorkspaceCommandBarDisabledTextColor
         {
-            get
-            {
-                return primaryWorkspaceCommandBarDisabledTextColor;
-            }
+            get => this.primaryWorkspaceCommandBarDisabledTextColor;
             set
             {
-                if (primaryWorkspaceCommandBarDisabledTextColor != value)
+                if (this.primaryWorkspaceCommandBarDisabledTextColor != value)
                 {
-                    primaryWorkspaceCommandBarDisabledTextColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarDisabledTextColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -544,16 +484,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public int PrimaryWorkspaceCommandBarTopLayoutMargin
         {
-            get
-            {
-                return primaryWorkspaceCommandBarTopLayoutMargin;
-            }
+            get => this.primaryWorkspaceCommandBarTopLayoutMargin;
             set
             {
-                if (primaryWorkspaceCommandBarTopLayoutMargin != value)
+                if (this.primaryWorkspaceCommandBarTopLayoutMargin != value)
                 {
-                    primaryWorkspaceCommandBarTopLayoutMargin = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarTopLayoutMargin = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -573,16 +510,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public int PrimaryWorkspaceCommandBarLeftLayoutMargin
         {
-            get
-            {
-                return primaryWorkspaceCommandBarLeftLayoutMargin;
-            }
+            get => this.primaryWorkspaceCommandBarLeftLayoutMargin;
             set
             {
-                if (primaryWorkspaceCommandBarLeftLayoutMargin != value)
+                if (this.primaryWorkspaceCommandBarLeftLayoutMargin != value)
                 {
-                    primaryWorkspaceCommandBarLeftLayoutMargin = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarLeftLayoutMargin = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -602,16 +536,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public int PrimaryWorkspaceCommandBarBottomLayoutMargin
         {
-            get
-            {
-                return primaryWorkspaceCommandBarBottomLayoutMargin;
-            }
+            get => this.primaryWorkspaceCommandBarBottomLayoutMargin;
             set
             {
-                if (primaryWorkspaceCommandBarBottomLayoutMargin != value)
+                if (this.primaryWorkspaceCommandBarBottomLayoutMargin != value)
                 {
-                    primaryWorkspaceCommandBarBottomLayoutMargin = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarBottomLayoutMargin = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -631,16 +562,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public int PrimaryWorkspaceCommandBarRightLayoutMargin
         {
-            get
-            {
-                return primaryWorkspaceCommandBarRightLayoutMargin;
-            }
+            get => this.primaryWorkspaceCommandBarRightLayoutMargin;
             set
             {
-                if (primaryWorkspaceCommandBarRightLayoutMargin != value)
+                if (this.primaryWorkspaceCommandBarRightLayoutMargin != value)
                 {
-                    primaryWorkspaceCommandBarRightLayoutMargin = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarRightLayoutMargin = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -660,16 +588,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public int PrimaryWorkspaceCommandBarSeparatorLayoutMargin
         {
-            get
-            {
-                return primaryWorkspaceCommandBarSeparatorLayoutMargin;
-            }
+            get => this.primaryWorkspaceCommandBarSeparatorLayoutMargin;
             set
             {
-                if (primaryWorkspaceCommandBarSeparatorLayoutMargin != value)
+                if (this.primaryWorkspaceCommandBarSeparatorLayoutMargin != value)
                 {
-                    primaryWorkspaceCommandBarSeparatorLayoutMargin = value;
-                    OnChanged(EventArgs.Empty);
+                    this.primaryWorkspaceCommandBarSeparatorLayoutMargin = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -691,16 +616,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color BorderColor
         {
-            get
-            {
-                return borderColor;
-            }
+            get => this.borderColor;
             set
             {
-                if (borderColor != value)
+                if (this.borderColor != value)
                 {
-                    borderColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.borderColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -720,16 +642,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color WindowColor
         {
-            get
-            {
-                return windowColor;
-            }
+            get => this.windowColor;
             set
             {
-                if (windowColor != value)
+                if (this.windowColor != value)
                 {
-                    windowColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.windowColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -749,16 +668,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color WorkspacePaneControlColor
         {
-            get
-            {
-                return workspacePaneControlColor;
-            }
+            get => this.workspacePaneControlColor;
             set
             {
-                if (workspacePaneControlColor != value)
+                if (this.workspacePaneControlColor != value)
                 {
-                    workspacePaneControlColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.workspacePaneControlColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -778,16 +694,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color AlertControlColor
         {
-            get
-            {
-                return alertControlColor;
-            }
+            get => this.alertControlColor;
             set
             {
-                if (alertControlColor != value)
+                if (this.alertControlColor != value)
                 {
-                    alertControlColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.alertControlColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -807,16 +720,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ActiveTabTopColor
         {
-            get
-            {
-                return activeTabTopColor;
-            }
+            get => this.activeTabTopColor;
             set
             {
-                if (activeTabTopColor != value)
+                if (this.activeTabTopColor != value)
                 {
-                    activeTabTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeTabTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -836,16 +746,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ActiveTabBottomColor
         {
-            get
-            {
-                return activeTabBottomColor;
-            }
+            get => this.activeTabBottomColor;
             set
             {
-                if (activeTabBottomColor != value)
+                if (this.activeTabBottomColor != value)
                 {
-                    activeTabBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeTabBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -865,16 +772,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ActiveTabHighlightColor
         {
-            get
-            {
-                return activeTabHighlightColor;
-            }
+            get => this.activeTabHighlightColor;
             set
             {
-                if (activeTabHighlightColor != value)
+                if (this.activeTabHighlightColor != value)
                 {
-                    activeTabHighlightColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeTabHighlightColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -894,16 +798,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ActiveTabLowlightColor
         {
-            get
-            {
-                return activeTabLowlightColor;
-            }
+            get => this.activeTabLowlightColor;
             set
             {
-                if (activeTabLowlightColor != value)
+                if (this.activeTabLowlightColor != value)
                 {
-                    activeTabLowlightColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeTabLowlightColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -923,16 +824,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ActiveTabTextColor
         {
-            get
-            {
-                return activeTabTextColor;
-            }
+            get => this.activeTabTextColor;
             set
             {
-                if (activeTabTextColor != value)
+                if (this.activeTabTextColor != value)
                 {
-                    activeTabTextColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.activeTabTextColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -952,16 +850,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color InactiveTabTopColor
         {
-            get
-            {
-                return inactiveTabTopColor;
-            }
+            get => this.inactiveTabTopColor;
             set
             {
-                if (inactiveTabTopColor != value)
+                if (this.inactiveTabTopColor != value)
                 {
-                    inactiveTabTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveTabTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -981,16 +876,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color InactiveTabBottomColor
         {
-            get
-            {
-                return inactiveTabBottomColor;
-            }
+            get => this.inactiveTabBottomColor;
             set
             {
-                if (inactiveTabBottomColor != value)
+                if (this.inactiveTabBottomColor != value)
                 {
-                    inactiveTabBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveTabBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1010,16 +902,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color InactiveTabHighlightColor
         {
-            get
-            {
-                return inactiveTabHighlightColor;
-            }
+            get => this.inactiveTabHighlightColor;
             set
             {
-                if (inactiveTabHighlightColor != value)
+                if (this.inactiveTabHighlightColor != value)
                 {
-                    inactiveTabHighlightColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveTabHighlightColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1039,16 +928,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color InactiveTabLowlightColor
         {
-            get
-            {
-                return inactiveTabLowlightColor;
-            }
+            get => this.inactiveTabLowlightColor;
             set
             {
-                if (inactiveTabLowlightColor != value)
+                if (this.inactiveTabLowlightColor != value)
                 {
-                    inactiveTabLowlightColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveTabLowlightColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1068,16 +954,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color InactiveTabTextColor
         {
-            get
-            {
-                return inactiveTabTextColor;
-            }
+            get => this.inactiveTabTextColor;
             set
             {
-                if (inactiveTabTextColor != value)
+                if (this.inactiveTabTextColor != value)
                 {
-                    inactiveTabTextColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.inactiveTabTextColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1097,16 +980,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ToolWindowBorderColor
         {
-            get
-            {
-                return toolWindowBorderColor;
-            }
+            get => this.toolWindowBorderColor;
             set
             {
-                if (toolWindowBorderColor != value)
+                if (this.toolWindowBorderColor != value)
                 {
-                    toolWindowBorderColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.toolWindowBorderColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1126,16 +1006,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ToolWindowTitleBarTopColor
         {
-            get
-            {
-                return toolWindowTitleBarTopColor;
-            }
+            get => this.toolWindowTitleBarTopColor;
             set
             {
-                if (toolWindowTitleBarTopColor != value)
+                if (this.toolWindowTitleBarTopColor != value)
                 {
-                    toolWindowTitleBarTopColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.toolWindowTitleBarTopColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1155,16 +1032,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ToolWindowTitleBarBottomColor
         {
-            get
-            {
-                return toolWindowTitleBarBottomColor;
-            }
+            get => this.toolWindowTitleBarBottomColor;
             set
             {
-                if (toolWindowTitleBarBottomColor != value)
+                if (this.toolWindowTitleBarBottomColor != value)
                 {
-                    toolWindowTitleBarBottomColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.toolWindowTitleBarBottomColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1184,16 +1058,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ToolWindowTitleBarTextColor
         {
-            get
-            {
-                return toolWindowTitleBarTextColor;
-            }
+            get => this.toolWindowTitleBarTextColor;
             set
             {
-                if (toolWindowTitleBarTextColor != value)
+                if (this.toolWindowTitleBarTextColor != value)
                 {
-                    toolWindowTitleBarTextColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.toolWindowTitleBarTextColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1213,16 +1084,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Color ToolWindowBackgroundColor
         {
-            get
-            {
-                return toolWindowBackgroundColor;
-            }
+            get => this.toolWindowBackgroundColor;
             set
             {
-                if (toolWindowBackgroundColor != value)
+                if (this.toolWindowBackgroundColor != value)
                 {
-                    toolWindowBackgroundColor = value;
-                    OnChanged(EventArgs.Empty);
+                    this.toolWindowBackgroundColor = value;
+                    this.OnChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1235,11 +1103,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Initializes a new instance of the ApplicationStyle class.
         /// </summary>
-        public ApplicationStyle()
-        {
+        public ApplicationStyle() =>
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -1248,11 +1114,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -1262,10 +1129,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-        }
+        private void InitializeComponent() => this.components = new Container();
 
         #endregion
 
@@ -1277,10 +1141,6 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        protected virtual void OnChanged(EventArgs e)
-        {
-            if (Changed != null)
-                Changed(this, e);
-        }
+        protected virtual void OnChanged(EventArgs e) => Changed?.Invoke(this, e);
     }
 }

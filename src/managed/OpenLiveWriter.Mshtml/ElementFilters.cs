@@ -1,220 +1,350 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Globalization;
-using mshtml;
-using OpenLiveWriter.CoreServices;
-
 namespace OpenLiveWriter.Mshtml
 {
+    using System;
+    using System.Collections;
+    using System.Globalization;
+    using mshtml;
+    using OpenLiveWriter.CoreServices;
+
     /// <summary>
     /// Utility class for implementing IHTMLElementFilter methods (useful for grabbing elements out of MarkupRanges).
     /// </summary>
     public class ElementFilters
     {
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ElementFilters"/> class from being created.
+        /// </summary>
         private ElementFilters()
         {
-            //no instances
+            // no instances
         }
 
-        public static IHTMLElementFilter CreateTagIdFilter(string tagId)
-        {
-            return new IHTMLElementFilter(new TagIdElementFilter(tagId).Filter);
-        }
+        /// <summary>
+        /// Creates the tag identifier filter.
+        /// </summary>
+        /// <param name="tagId">The tag identifier.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateTagIdFilter(string tagId) => new IHTMLElementFilter(new TagIdElementFilter(tagId).Filter);
 
-        public static IHTMLElementFilter CreateIdFilter(string id)
-        {
-            return new IHTMLElementFilter(new IdElementFilter(id).Filter);
-        }
+        /// <summary>
+        /// Creates the identifier filter.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateIdFilter(string id) => new IHTMLElementFilter(new IdElementFilter(id).Filter);
 
-        public static IHTMLElementFilter CreateEqualFilter(IHTMLElement element)
-        {
-            return new IHTMLElementFilter(new EqualElementFilter(element).Filter);
-        }
+        /// <summary>
+        /// Creates the equal filter.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateEqualFilter(IHTMLElement element) => new IHTMLElementFilter(new EqualElementFilter(element).Filter);
 
-        public static IHTMLElementFilter CreateControlElementFilter()
-        {
-            return new IHTMLElementFilter(new ControlElementFilter().Filter);
-        }
+        /// <summary>
+        /// Creates the control element filter.
+        /// </summary>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateControlElementFilter() => new IHTMLElementFilter(new ControlElementFilter().Filter);
 
-        public static IHTMLElementFilter CreateClassFilter(string className)
-        {
-            return new IHTMLElementFilter(new ClassElementFilter(className).Filter);
-        }
+        /// <summary>
+        /// Creates the class filter.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateClassFilter(string className) => new IHTMLElementFilter(new ClassElementFilter(className).Filter);
 
-        public static IHTMLElementFilter CreateElementNameFilter(string name)
-        {
-            return new IHTMLElementFilter(new ElementNameFilter(name).Filter);
-        }
+        /// <summary>
+        /// Creates the element name filter.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateElementNameFilter(string name) => new IHTMLElementFilter(new ElementNameFilter(name).Filter);
 
-        public static IHTMLElementFilter CreateElementAttributeFilter(string attributeName)
-        {
-            return new IHTMLElementFilter(new ElementAttributeFilter(attributeName).Filter);
-        }
+        /// <summary>
+        /// Creates the element attribute filter.
+        /// </summary>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateElementAttributeFilter(string attributeName) => new IHTMLElementFilter(new ElementAttributeFilter(attributeName).Filter);
 
-        public static IHTMLElementFilter CreateElementBackgroundColorInlineStyleFilter()
-        {
-            return new IHTMLElementFilter(new ElementBackgroundColorInlineStyleFilter().Filter);
-        }
+        /// <summary>
+        /// Creates the element background color inline style filter.
+        /// </summary>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateElementBackgroundColorInlineStyleFilter() => new IHTMLElementFilter(new ElementBackgroundColorInlineStyleFilter().Filter);
 
-        public static IHTMLElementFilter CreateElementEqualsFilter(IHTMLElement e)
-        {
-            return new IHTMLElementFilter(new ElementEqualsFilter(e).Filter);
-        }
+        /// <summary>
+        /// Creates the element equals filter.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateElementEqualsFilter(IHTMLElement e) => new IHTMLElementFilter(new ElementEqualsFilter(e).Filter);
 
-        public static IHTMLElementFilter CreateElementPassFilter()
-        {
-            return new IHTMLElementFilter(new ElementPassFilter().Filter);
-        }
+        /// <summary>
+        /// Creates the element pass filter.
+        /// </summary>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateElementPassFilter() => new IHTMLElementFilter(new ElementPassFilter().Filter);
 
-        public static IHTMLElementFilter CreateCompoundElementFilter(params IHTMLElementFilter[] filters)
-        {
-            return new IHTMLElementFilter(new CompoundElementFilter(filters).MergeElementFilters);
-        }
+        /// <summary>
+        /// Creates the compound element filter.
+        /// </summary>
+        /// <param name="filters">The filters.</param>
+        /// <returns>IHTMLElementFilter.</returns>
+        public static IHTMLElementFilter CreateCompoundElementFilter(params IHTMLElementFilter[] filters) => new IHTMLElementFilter(new CompoundElementFilter(filters).MergeElementFilters);
 
+        /// <summary>
+        /// Class TagIdElementFilter.
+        /// </summary>
         private class TagIdElementFilter
         {
-            private string _tagId;
-            public TagIdElementFilter(string tagId)
-            {
-                _tagId = tagId;
-            }
+            /// <summary>
+            /// The tag identifier.
+            /// </summary>
+            private readonly string tagId;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return String.Compare(e.tagName, _tagId, StringComparison.OrdinalIgnoreCase) == 0;
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TagIdElementFilter"/> class.
+            /// </summary>
+            /// <param name="tagId">The tag identifier.</param>
+            public TagIdElementFilter(string tagId) => this.tagId = tagId;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => string.Compare(e.tagName, this.tagId, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
+        /// <summary>
+        /// Class IdElementFilter.
+        /// </summary>
         private class IdElementFilter
         {
-            private string _id;
-            public IdElementFilter(string id)
-            {
-                _id = id;
-            }
+            /// <summary>
+            /// The identifier.
+            /// </summary>
+            private readonly string id;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return e.id == _id;
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="IdElementFilter"/> class.
+            /// </summary>
+            /// <param name="id">The identifier.</param>
+            public IdElementFilter(string id) => this.id = id;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => e.id == this.id;
         }
 
+        /// <summary>
+        /// Class ElementPassFilter.
+        /// </summary>
         private class ElementPassFilter
         {
-            public bool Filter(IHTMLElement e)
-            {
-                return true;
-            }
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => true;
         }
 
+        /// <summary>
+        /// Class EqualElementFilter.
+        /// </summary>
         private class EqualElementFilter
         {
-            private IHTMLElement _element;
-            public EqualElementFilter(IHTMLElement element)
-            {
-                _element = element;
-            }
+            /// <summary>
+            /// The element.
+            /// </summary>
+            private readonly IHTMLElement element;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return HTMLElementHelper.ElementsAreEqual(e, _element);
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="EqualElementFilter"/> class.
+            /// </summary>
+            /// <param name="element">The element.</param>
+            public EqualElementFilter(IHTMLElement element) => this.element = element;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => HTMLElementHelper.ElementsAreEqual(e, this.element);
         }
 
+        /// <summary>
+        /// Class ControlElementFilter.
+        /// </summary>
         private class ControlElementFilter
         {
-            public bool Filter(IHTMLElement e)
-            {
-                return (e as IHTMLControlElement) != null;
-            }
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => (e as IHTMLControlElement) != null;
         }
 
+        /// <summary>
+        /// Class ClassElementFilter.
+        /// </summary>
         private class ClassElementFilter
         {
-            private string _className;
-            public ClassElementFilter(string className)
-            {
-                _className = className;
-            }
+            /// <summary>
+            /// The class name.
+            /// </summary>
+            private readonly string className;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return e.className == _className;
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ClassElementFilter"/> class.
+            /// </summary>
+            /// <param name="className">Name of the class.</param>
+            public ClassElementFilter(string className) => this.className = className;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => e.className == this.className;
         }
 
+        /// <summary>
+        /// Class ElementNameFilter.
+        /// </summary>
         private class ElementNameFilter
         {
-            private string _name;
-            public ElementNameFilter(string name)
-            {
-                _name = name;
-            }
+            /// <summary>
+            /// The name.
+            /// </summary>
+            private readonly string name;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return e.tagName.Equals(_name, StringComparison.OrdinalIgnoreCase);
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ElementNameFilter"/> class.
+            /// </summary>
+            /// <param name="name">The name.</param>
+            public ElementNameFilter(string name) => this.name = name;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => e.tagName.Equals(this.name, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Class ElementAttributeFilter.
+        /// </summary>
         private class ElementAttributeFilter
         {
-            private string _attributeName;
-            public ElementAttributeFilter(string attributeName)
-            {
-                _attributeName = attributeName.ToUpper(CultureInfo.InvariantCulture);
-            }
+            /// <summary>
+            /// The attribute name.
+            /// </summary>
+            private readonly string attributeName;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ElementAttributeFilter"/> class.
+            /// </summary>
+            /// <param name="attributeName">Name of the attribute.</param>
+            public ElementAttributeFilter(string attributeName) => this.attributeName = attributeName.ToUpper(CultureInfo.InvariantCulture);
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
             public bool Filter(IHTMLElement e)
             {
-                string attributeName = e.getAttribute(_attributeName, 2) as string;
-                return !String.IsNullOrEmpty(attributeName);
+                string attributeName = e.getAttribute(this.attributeName, 2) as string;
+                return !string.IsNullOrEmpty(attributeName);
             }
         }
 
+        /// <summary>
+        /// Class ElementBackgroundColorInlineStyleFilter.
+        /// </summary>
         private class ElementBackgroundColorInlineStyleFilter
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ElementBackgroundColorInlineStyleFilter"/> class.
+            /// </summary>
             public ElementBackgroundColorInlineStyleFilter()
             {
             }
 
-            public bool Filter(IHTMLElement e)
-            {
-                return !String.IsNullOrEmpty((string)e.style.backgroundColor);
-            }
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => !string.IsNullOrEmpty((string)e.style.backgroundColor);
         }
 
+        /// <summary>
+        /// Class ElementEqualsFilter.
+        /// </summary>
         private class ElementEqualsFilter
         {
-            private IHTMLElement _element;
-            public ElementEqualsFilter(IHTMLElement e)
-            {
-                _element = e;
-            }
+            /// <summary>
+            /// The element.
+            /// </summary>
+            private readonly IHTMLElement element;
 
-            public bool Filter(IHTMLElement e)
-            {
-                return e.sourceIndex == _element.sourceIndex;
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ElementEqualsFilter"/> class.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            public ElementEqualsFilter(IHTMLElement e) => this.element = e;
+
+            /// <summary>
+            /// Filters the specified e.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+            public bool Filter(IHTMLElement e) => e.sourceIndex == this.element.sourceIndex;
         }
 
+        /// <summary>
+        /// Class CompoundElementFilter.
+        /// </summary>
         private class CompoundElementFilter
         {
-            private IHTMLElementFilter[] _filters;
-            public CompoundElementFilter(IHTMLElementFilter[] filters)
-            {
-                _filters = filters;
-            }
+            /// <summary>
+            /// The filters.
+            /// </summary>
+            private readonly IHTMLElementFilter[] filters;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CompoundElementFilter"/> class.
+            /// </summary>
+            /// <param name="filters">The filters.</param>
+            public CompoundElementFilter(IHTMLElementFilter[] filters) => this.filters = filters;
+
+            /// <summary>
+            /// Merges the element filters.
+            /// </summary>
+            /// <param name="e">The e.</param>
+            /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
             public bool MergeElementFilters(IHTMLElement e)
             {
-                foreach (IHTMLElementFilter filter in _filters)
+                foreach (var filter in this.filters)
                 {
                     if (filter(e))
+                    {
                         return true;
+                    }
                 }
+
                 return false;
             }
         }
@@ -222,380 +352,488 @@ namespace OpenLiveWriter.Mshtml
         /// <summary>
         /// Returns true if this is an element that triggers a paragraph break.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public static bool IsTableElement(IHTMLElement e)
-        {
-            if (TableTagNames[e.tagName] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is table element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsTableElement(IHTMLElement e) => TableTagNames[e.tagName] != null;
+
+        /// <summary>
+        /// The table elements.
+        /// </summary>
         public static IHTMLElementFilter TABLE_ELEMENTS = new IHTMLElementFilter(IsTableElement);
 
         /// <summary>
         /// Returns true if this element is the body element.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public static bool IsBodyElement(IHTMLElement e)
-        {
-            return (e as IHTMLBodyElement) != null;
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is body element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBodyElement(IHTMLElement e) => (e as IHTMLBodyElement) != null;
+
+        /// <summary>
+        /// The body element.
+        /// </summary>
         public static IHTMLElementFilter BODY_ELEMENT = new IHTMLElementFilter(IsBodyElement);
 
         /// <summary>
         /// Returns true if this is an element that triggers a paragraph break.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public static bool IsBlockElement(IHTMLElement e)
-        {
-            if (BlockTagNames[e.tagName] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is block element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBlockElement(IHTMLElement e) => BlockTagNames[e.tagName] != null;
+
+        /// <summary>
+        /// The block elements.
+        /// </summary>
         public static IHTMLElementFilter BLOCK_ELEMENTS = new IHTMLElementFilter(IsBlockElement);
 
         /// <summary>
-        /// Returns true if this is one of the header element
+        /// Returns true if this is one of the header element.
         /// </summary>
-        public static bool IsHeaderElement(IHTMLElement e)
-        {
-            if (HeaderTagNames[e.tagName] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is header element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsHeaderElement(IHTMLElement e) => HeaderTagNames[e.tagName] != null;
+
+        /// <summary>
+        /// The header elements.
+        /// </summary>
         public static IHTMLElementFilter HEADER_ELEMENTS = new IHTMLElementFilter(IsHeaderElement);
 
-        public static bool IsBlockOrTableElement(IHTMLElement e)
-        {
-            return IsBlockElement(e) || IsTableElement(e);
-        }
+        /// <summary>
+        /// Determines whether [is block or table element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is block or table element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBlockOrTableElement(IHTMLElement e) => IsBlockElement(e) || IsTableElement(e);
 
-        public static bool IsBlockOrTableCellElement(IHTMLElement e)
-        {
-            return ((BlockTagNames[e.tagName] != null) || IsTableCellElement(e));
-        }
+        /// <summary>
+        /// Determines whether [is block or table cell element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is block or table cell element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBlockOrTableCellElement(IHTMLElement e) => (BlockTagNames[e.tagName] != null) || IsTableCellElement(e);
+
+        /// <summary>
+        /// The block or table cell elements.
+        /// </summary>
         public static IHTMLElementFilter BLOCK_OR_TABLE_CELL_ELEMENTS = new IHTMLElementFilter(IsBlockOrTableCellElement);
 
-        public static bool IsBlockOrTableCellOrBodyElement(IHTMLElement e)
-        {
-            return ((BlockTagNames[e.tagName] != null) || IsTableCellElement(e)) || e is IHTMLBodyElement;
-        }
+        /// <summary>
+        /// Determines whether [is block or table cell or body element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is block or table cell or body element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBlockOrTableCellOrBodyElement(IHTMLElement e) => (BlockTagNames[e.tagName] != null) || IsTableCellElement(e) || e is IHTMLBodyElement;
 
-        public static bool IsBlockQuoteElement(IHTMLElement e)
-        {
-            return e.tagName.ToUpperInvariant() == "BLOCKQUOTE";
-        }
+        /// <summary>
+        /// Determines whether [is block quote element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is block quote element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsBlockQuoteElement(IHTMLElement e) => e.tagName.ToUpperInvariant() == "BLOCKQUOTE";
+
+        /// <summary>
+        /// The blockquote element.
+        /// </summary>
         public static IHTMLElementFilter BLOCKQUOTE_ELEMENT = new IHTMLElementFilter(IsBlockQuoteElement);
 
-        public static bool IsTableCellElement(IHTMLElement e)
-        {
-            return (e is IHTMLTableCell);
-        }
+        /// <summary>
+        /// Determines whether [is table cell element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is table cell element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsTableCellElement(IHTMLElement e) => e is IHTMLTableCell;
+
+        /// <summary>
+        /// The table cell element.
+        /// </summary>
         public static IHTMLElementFilter TABLE_CELL_ELEMENT = new IHTMLElementFilter(IsTableCellElement);
 
-        public static bool IsInlineElement(IHTMLElement e)
-        {
-            if (InlineTagNames[e.tagName] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        /// <summary>
+        /// Determines whether [is inline element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is inline element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsInlineElement(IHTMLElement e) => InlineTagNames[e.tagName] != null;
+
+        /// <summary>
+        /// The inline elements.
+        /// </summary>
         public static IHTMLElementFilter INLINE_ELEMENTS = new IHTMLElementFilter(IsInlineElement);
 
-        public static bool IsAnchorElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("A");
-        }
+        /// <summary>
+        /// Determines whether [is anchor element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is anchor element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsAnchorElement(IHTMLElement e) => e.tagName.Equals("A");
+
+        /// <summary>
+        /// The anchor elements.
+        /// </summary>
         public static IHTMLElementFilter ANCHOR_ELEMENTS = new IHTMLElementFilter(IsAnchorElement);
 
-        public static bool IsParagraphElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("P");
-        }
+        /// <summary>
+        /// Determines whether [is paragraph element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is paragraph element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsParagraphElement(IHTMLElement e) => e.tagName.Equals("P");
+
+        /// <summary>
+        /// The paragraph elements.
+        /// </summary>
         public static IHTMLElementFilter PARAGRAPH_ELEMENTS = new IHTMLElementFilter(IsParagraphElement);
 
-        public static bool IsLTRElement(IHTMLElement e)
-        {
-            return IsDirElement(e, "ltr");
-        }
+        /// <summary>
+        /// Determines whether [is LTR element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is LTR element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsLTRElement(IHTMLElement e) => IsDirElement(e, "ltr");
 
-        public static bool IsRTLElement(IHTMLElement e)
-        {
-            return IsDirElement(e, "rtl");
-        }
+        /// <summary>
+        /// Determines whether [is RTL element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is RTL element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsRTLElement(IHTMLElement e) => IsDirElement(e, "rtl");
 
+        /// <summary>
+        /// Determines whether [is dir element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns><c>true</c> if [is dir element] [the specified e]; otherwise, <c>false</c>.</returns>
         private static bool IsDirElement(IHTMLElement e, string direction)
         {
             if (IsBlockOrTableCellElement(e))
             {
-                IHTMLElement2 e2 = (IHTMLElement2)e;
-                string dir = e2.currentStyle.direction;
-                if (null != dir)
-                    return String.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
+                var e2 = (IHTMLElement2)e;
+                var dir = e2.currentStyle.direction;
+                if (dir != null)
+                {
+                    return string.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
+                }
             }
+
             return false;
         }
 
-        public static bool IsUnorderedListElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("UL");
-        }
+        /// <summary>
+        /// Determines whether [is unordered list element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is unordered list element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsUnorderedListElement(IHTMLElement e) => e.tagName.Equals("UL");
+
+        /// <summary>
+        /// The unordered list elements.
+        /// </summary>
         public static IHTMLElementFilter UNORDERED_LIST_ELEMENTS = new IHTMLElementFilter(IsUnorderedListElement);
 
-        public static bool IsListElement(IHTMLElement e)
-        {
-            return IsUnorderedListElement(e) || IsOrderedListElement(e);
-        }
+        /// <summary>
+        /// Determines whether [is list element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is list element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsListElement(IHTMLElement e) => IsUnorderedListElement(e) || IsOrderedListElement(e);
+
+        /// <summary>
+        /// The list elements.
+        /// </summary>
         public static IHTMLElementFilter LIST_ELEMENTS = new IHTMLElementFilter(IsListElement);
 
-        public static bool IsListItemElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("LI");
-        }
+        /// <summary>
+        /// Determines whether [is list item element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is list item element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsListItemElement(IHTMLElement e) => e.tagName.Equals("LI");
+
+        /// <summary>
+        /// The list item elements.
+        /// </summary>
         public static IHTMLElementFilter LIST_ITEM_ELEMENTS = new IHTMLElementFilter(IsListItemElement);
 
-        public static bool IsOrderedListElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("OL");
-        }
+        /// <summary>
+        /// Determines whether [is ordered list element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is ordered list element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsOrderedListElement(IHTMLElement e) => e.tagName.Equals("OL");
+
+        /// <summary>
+        /// The ordered list elements.
+        /// </summary>
         public static IHTMLElementFilter ORDERED_LIST_ELEMENTS = new IHTMLElementFilter(IsOrderedListElement);
 
-        public static bool IsImageElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("IMG");
-        }
+        /// <summary>
+        /// Determines whether [is image element] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is image element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsImageElement(IHTMLElement e) => e.tagName.Equals("IMG");
+
+        /// <summary>
+        /// The image elements.
+        /// </summary>
         public static IHTMLElementFilter IMAGE_ELEMENTS = new IHTMLElementFilter(IsImageElement);
 
         /// <summary>
         /// Returns true if the specified element triggers something to be visible in the document
         /// when it contains no text.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public static bool IsVisibleEmptyElement(IHTMLElement e)
-        {
-            return e.tagName.Equals("HR") || e.tagName.Equals("IMG") || e.tagName.Equals("EMBED") ||
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is visible empty element] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsVisibleEmptyElement(IHTMLElement e) => e.tagName.Equals("HR") || e.tagName.Equals("IMG") || e.tagName.Equals("EMBED") ||
                    e.tagName.Equals("OBJECT") || IsBlockElement(e) || IsTableElement(e);
-        }
+
+        /// <summary>
+        /// The visible empty elements.
+        /// </summary>
         public static IHTMLElementFilter VISIBLE_EMPTY_ELEMENTS = new IHTMLElementFilter(IsVisibleEmptyElement);
 
-        public static bool RequiresEndTag(string tagName)
-        {
-            return NoEndTagRequired[tagName.ToUpper(CultureInfo.InvariantCulture)] == null;
-        }
+        /// <summary>
+        /// Requireses the end tag.
+        /// </summary>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public static bool RequiresEndTag(string tagName) => NoEndTagRequired[tagName.ToUpper(CultureInfo.InvariantCulture)] == null;
+
         /// <summary>
         /// Returns true if the specified tag needs an end tag in its text representation.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public static bool RequiresEndTag(IHTMLElement e)
-        {
-            return NoEndTagRequired[e.tagName] == null && !(e is IHTMLUnknownElement);
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public static bool RequiresEndTag(IHTMLElement e) => NoEndTagRequired[e.tagName] == null && !(e is IHTMLUnknownElement);
+
+        /// <summary>
+        /// The end tag required.
+        /// </summary>
         public static IHTMLElementFilter END_TAG_REQUIRED = new IHTMLElementFilter(RequiresEndTag);
 
         /// <summary>
         /// Returns true if this element is supposed to have an end tag, but IE will still render it correctly
         /// without one.
         /// </summary>
-        public static bool IsEndTagOptional(IHTMLElement e)
-        {
-            if (EndTagOptionalNames[e.tagName] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is end tag optional] [the specified e]; otherwise, <c>false</c>.</returns>
+        public static bool IsEndTagOptional(IHTMLElement e) => EndTagOptionalNames[e.tagName] != null;
+
+        /// <summary>
+        /// The end tag optional elements.
+        /// </summary>
         public static IHTMLElementFilter END_TAG_OPTIONAL_ELEMENTS = new IHTMLElementFilter(IsEndTagOptional);
 
         /// <summary>
-        /// Look up table holding the names of all block-formatted tags.
+        /// Gets the look up table holding the names of all block-formatted tags.
         /// </summary>
+        /// <value>The table tag names.</value>
         private static Hashtable TableTagNames
         {
             get
             {
-                if (_tableTagNames == null)
+                if (tableTagNames == null)
                 {
-                    _tableTagNames = new Hashtable();
-                    _tableTagNames["TABLE"] = "TABLE";
-                    _tableTagNames["TR"] = "TR";
-                    _tableTagNames["TD"] = "TD";
-                    _tableTagNames["TH"] = "TH";
-                    _tableTagNames["CAPTION"] = "CAPTION";
-                    _tableTagNames["COL"] = "COL";
-                    _tableTagNames["COLGROUP"] = "COLGROUP";
-                    _tableTagNames["THEAD"] = "THEAD";
-                    _tableTagNames["TBODY"] = "TBODY";
-                    _tableTagNames["TFOOT"] = "TFOOT";
+                    tableTagNames = new Hashtable();
+                    tableTagNames["TABLE"] = "TABLE";
+                    tableTagNames["TR"] = "TR";
+                    tableTagNames["TD"] = "TD";
+                    tableTagNames["TH"] = "TH";
+                    tableTagNames["CAPTION"] = "CAPTION";
+                    tableTagNames["COL"] = "COL";
+                    tableTagNames["COLGROUP"] = "COLGROUP";
+                    tableTagNames["THEAD"] = "THEAD";
+                    tableTagNames["TBODY"] = "TBODY";
+                    tableTagNames["TFOOT"] = "TFOOT";
                 }
-                return _tableTagNames;
+
+                return tableTagNames;
             }
         }
-        private static Hashtable _tableTagNames;
+
+        /// <summary>
+        /// The table tag names.
+        /// </summary>
+        private static Hashtable tableTagNames;
 
         /// <summary>
         /// Look up table holding the names of all block-formatted tags.
         /// </summary>
+        /// <value>The block tag names.</value>
         private static Hashtable BlockTagNames
         {
             get
             {
-                if (_blockTagNames == null)
+                if (blockTagNames == null)
                 {
-                    _blockTagNames = new Hashtable();
-                    _blockTagNames["DIV"] = "DIV";
-                    _blockTagNames["BODY"] = "BODY";
-                    _blockTagNames["P"] = "P";
-                    _blockTagNames["PRE"] = "PRE";
-                    _blockTagNames["BR"] = "BR";
-                    _blockTagNames["H1"] = "H1";
-                    _blockTagNames["H2"] = "H2";
-                    _blockTagNames["H3"] = "H3";
-                    _blockTagNames["H4"] = "H4";
-                    _blockTagNames["H5"] = "H5";
-                    _blockTagNames["H6"] = "H6";
-                    _blockTagNames["HR"] = "HR";
-                    _blockTagNames["BLOCKQUOTE"] = "BLOCKQUOTE";
-                    //_blockTagNames["TABLE"] = "TABLE";
-                    //_blockTagNames["TR"] = "TR";
-                    //_blockTagNames["TD"] = "TD";
-                    //_blockTagNames["TH"] = "TH";
-                    //_blockTagNames["UL"] = "UL";
-                    //_blockTagNames["OL"] = "OL";
-                    _blockTagNames["LI"] = "LI";
+                    blockTagNames = new Hashtable();
+                    blockTagNames["DIV"] = "DIV";
+                    blockTagNames["BODY"] = "BODY";
+                    blockTagNames["P"] = "P";
+                    blockTagNames["PRE"] = "PRE";
+                    blockTagNames["BR"] = "BR";
+                    blockTagNames["H1"] = "H1";
+                    blockTagNames["H2"] = "H2";
+                    blockTagNames["H3"] = "H3";
+                    blockTagNames["H4"] = "H4";
+                    blockTagNames["H5"] = "H5";
+                    blockTagNames["H6"] = "H6";
+                    blockTagNames["HR"] = "HR";
+                    blockTagNames["BLOCKQUOTE"] = "BLOCKQUOTE";
+                    ////_blockTagNames["TABLE"] = "TABLE";
+                    ////_blockTagNames["TR"] = "TR";
+                    ////_blockTagNames["TD"] = "TD";
+                    ////_blockTagNames["TH"] = "TH";
+                    ////_blockTagNames["UL"] = "UL";
+                    ////_blockTagNames["OL"] = "OL";
+                    blockTagNames["LI"] = "LI";
                 }
-                return _blockTagNames;
+
+                return blockTagNames;
             }
         }
-        private static Hashtable _blockTagNames;
+
+        /// <summary>
+        /// The block tag names.
+        /// </summary>
+        private static Hashtable blockTagNames;
 
         /// <summary>
         /// Look up table holding the names of all tags displayed "inline" (they don't force line breaks).
         /// </summary>
+        /// <value>The inline tag names.</value>
         private static Hashtable InlineTagNames
         {
             get
             {
-                if (_inlineTagNames == null)
+                if (inlineTagNames == null)
                 {
-                    _inlineTagNames = new Hashtable();
-                    _inlineTagNames["A"] = "A";
-                    _inlineTagNames["ABBR"] = "ABBR";
-                    _inlineTagNames["ACRONYM"] = "ACRONYM";
-                    _inlineTagNames["APPLET"] = "APPLET";
-                    _inlineTagNames["B"] = "B";
-                    _inlineTagNames["BASEFONT"] = "BASEFONT";
-                    _inlineTagNames["BDO"] = "BDO";
-                    _inlineTagNames["BIG"] = "BIG";
-                    _inlineTagNames["BUTTON"] = "BUTTON";
-                    _inlineTagNames["CITE"] = "CITE";
-                    _inlineTagNames["CODE"] = "CODE";
-                    _inlineTagNames["DEL"] = "DEL";
-                    _inlineTagNames["DFN"] = "DFN";
-                    _inlineTagNames["EM"] = "EM";
-                    _inlineTagNames["FONT"] = "FONT";
-                    _inlineTagNames["I"] = "I";
-                    _inlineTagNames["IFRAME"] = "IFRAME";
-                    _inlineTagNames["IMG"] = "IMG";
-                    _inlineTagNames["INPUT"] = "INPUT";
-                    _inlineTagNames["INS"] = "INS";
-                    _inlineTagNames["KBD"] = "KBD";
-                    _inlineTagNames["LABEL"] = "LABEL";
-                    _inlineTagNames["MAP"] = "MAP";
-                    _inlineTagNames["OBJECT"] = "OBJECT";
-                    _inlineTagNames["Q"] = "Q";
-                    _inlineTagNames["S"] = "S";
-                    _inlineTagNames["SAMP"] = "SAMP";
-                    _inlineTagNames["SCRIPT"] = "SCRIPT";
-                    _inlineTagNames["SELECT"] = "SELECT";
-                    _inlineTagNames["SMALL"] = "SMALL";
-                    _inlineTagNames["SPAN"] = "SPAN";
-                    _inlineTagNames["STRONG"] = "STRONG";
-                    _inlineTagNames["STRIKE"] = "STRIKE";
-                    _inlineTagNames["STYLE"] = "STYLE";
-                    _inlineTagNames["SUB"] = "SUB";
-                    _inlineTagNames["SUP"] = "SUP";
-                    _inlineTagNames["TT"] = "TT";
-                    _inlineTagNames["TEXTAREA"] = "TEXTAREA";
-                    _inlineTagNames["U"] = "U";
-                    _inlineTagNames["VAR"] = "VAR";
+                    inlineTagNames = new Hashtable();
+                    inlineTagNames["A"] = "A";
+                    inlineTagNames["ABBR"] = "ABBR";
+                    inlineTagNames["ACRONYM"] = "ACRONYM";
+                    inlineTagNames["APPLET"] = "APPLET";
+                    inlineTagNames["B"] = "B";
+                    inlineTagNames["BASEFONT"] = "BASEFONT";
+                    inlineTagNames["BDO"] = "BDO";
+                    inlineTagNames["BIG"] = "BIG";
+                    inlineTagNames["BUTTON"] = "BUTTON";
+                    inlineTagNames["CITE"] = "CITE";
+                    inlineTagNames["CODE"] = "CODE";
+                    inlineTagNames["DEL"] = "DEL";
+                    inlineTagNames["DFN"] = "DFN";
+                    inlineTagNames["EM"] = "EM";
+                    inlineTagNames["FONT"] = "FONT";
+                    inlineTagNames["I"] = "I";
+                    inlineTagNames["IFRAME"] = "IFRAME";
+                    inlineTagNames["IMG"] = "IMG";
+                    inlineTagNames["INPUT"] = "INPUT";
+                    inlineTagNames["INS"] = "INS";
+                    inlineTagNames["KBD"] = "KBD";
+                    inlineTagNames["LABEL"] = "LABEL";
+                    inlineTagNames["MAP"] = "MAP";
+                    inlineTagNames["OBJECT"] = "OBJECT";
+                    inlineTagNames["Q"] = "Q";
+                    inlineTagNames["S"] = "S";
+                    inlineTagNames["SAMP"] = "SAMP";
+                    inlineTagNames["SCRIPT"] = "SCRIPT";
+                    inlineTagNames["SELECT"] = "SELECT";
+                    inlineTagNames["SMALL"] = "SMALL";
+                    inlineTagNames["SPAN"] = "SPAN";
+                    inlineTagNames["STRONG"] = "STRONG";
+                    inlineTagNames["STRIKE"] = "STRIKE";
+                    inlineTagNames["STYLE"] = "STYLE";
+                    inlineTagNames["SUB"] = "SUB";
+                    inlineTagNames["SUP"] = "SUP";
+                    inlineTagNames["TT"] = "TT";
+                    inlineTagNames["TEXTAREA"] = "TEXTAREA";
+                    inlineTagNames["U"] = "U";
+                    inlineTagNames["VAR"] = "VAR";
                 }
-                return _inlineTagNames;
+
+                return inlineTagNames;
             }
         }
-        private static Hashtable _inlineTagNames;
+
+        /// <summary>
+        /// The inline tag names.
+        /// </summary>
+        private static Hashtable inlineTagNames;
 
         /// <summary>
         /// Look up table holding the names of all header tags.
         /// </summary>
+        /// <value>The header tag names.</value>
         private static Hashtable HeaderTagNames
         {
             get
             {
-                if (_headerTagNames == null)
+                if (headerTagNames == null)
                 {
-                    _headerTagNames = new Hashtable();
-                    _headerTagNames["H1"] = "H1";
-                    _headerTagNames["H2"] = "H2";
-                    _headerTagNames["H3"] = "H3";
-                    _headerTagNames["H4"] = "H4";
-                    _headerTagNames["H5"] = "H5";
-                    _headerTagNames["H6"] = "H6";
+                    headerTagNames = new Hashtable();
+                    headerTagNames["H1"] = "H1";
+                    headerTagNames["H2"] = "H2";
+                    headerTagNames["H3"] = "H3";
+                    headerTagNames["H4"] = "H4";
+                    headerTagNames["H5"] = "H5";
+                    headerTagNames["H6"] = "H6";
                 }
-                return _headerTagNames;
+
+                return headerTagNames;
             }
         }
-        private static Hashtable _headerTagNames;
+
+        /// <summary>
+        /// The header tag names.
+        /// </summary>
+        private static Hashtable headerTagNames;
 
         /// <summary>
         /// Look up table holding the names of all tags that render correctly in IE even if they don't have a
         /// corresponding end tag.
         /// </summary>
+        /// <value>The end tag optional names.</value>
         private static Hashtable EndTagOptionalNames
         {
             get
             {
-                if (_endTagOptionalNames == null)
+                if (endTagOptionalNames == null)
                 {
-                    _endTagOptionalNames = new Hashtable();
-                    _endTagOptionalNames["P"] = "P";
-                    _endTagOptionalNames["LI"] = "LI";
-                    _endTagOptionalNames["H1"] = "H1";
-                    _endTagOptionalNames["H2"] = "H2";
-                    _endTagOptionalNames["H3"] = "H3";
-                    _endTagOptionalNames["H4"] = "H4";
-                    _endTagOptionalNames["H5"] = "H5";
-                    _endTagOptionalNames["H6"] = "H6";
-                    _endTagOptionalNames["TR"] = "TR";
-                    _endTagOptionalNames["TD"] = "TD";
-                    _endTagOptionalNames["TH"] = "TH";
-                    _endTagOptionalNames["COLGROUP"] = "COLGROUP";
-                    _endTagOptionalNames["THEAD"] = "THEAD";
-                    _endTagOptionalNames["TBODY"] = "TBODY";
-                    _endTagOptionalNames["TFOOT"] = "TFOOT";
-                    _endTagOptionalNames["OPTION"] = "OPTION";
-                    _endTagOptionalNames["DT"] = "DT";
-                    _endTagOptionalNames["DD"] = "DD";
+                    endTagOptionalNames = new Hashtable();
+                    endTagOptionalNames["P"] = "P";
+                    endTagOptionalNames["LI"] = "LI";
+                    endTagOptionalNames["H1"] = "H1";
+                    endTagOptionalNames["H2"] = "H2";
+                    endTagOptionalNames["H3"] = "H3";
+                    endTagOptionalNames["H4"] = "H4";
+                    endTagOptionalNames["H5"] = "H5";
+                    endTagOptionalNames["H6"] = "H6";
+                    endTagOptionalNames["TR"] = "TR";
+                    endTagOptionalNames["TD"] = "TD";
+                    endTagOptionalNames["TH"] = "TH";
+                    endTagOptionalNames["COLGROUP"] = "COLGROUP";
+                    endTagOptionalNames["THEAD"] = "THEAD";
+                    endTagOptionalNames["TBODY"] = "TBODY";
+                    endTagOptionalNames["TFOOT"] = "TFOOT";
+                    endTagOptionalNames["OPTION"] = "OPTION";
+                    endTagOptionalNames["DT"] = "DT";
+                    endTagOptionalNames["DD"] = "DD";
                 }
-                return _endTagOptionalNames;
+
+                return endTagOptionalNames;
             }
         }
-        private static Hashtable _endTagOptionalNames;
+
+        /// <summary>
+        /// The end tag optional names.
+        /// </summary>
+        private static Hashtable endTagOptionalNames;
 
         /// <summary>
         /// A table of tags that require don't support end tags.
         /// This operation useful for testing elements that don't need explicit end tags in XHTML.
         /// </summary>
+        /// <value>The no end tag required.</value>
         private static Hashtable NoEndTagRequired
         {
             get
@@ -617,9 +855,14 @@ namespace OpenLiveWriter.Mshtml
                     m_noEndTagRequired.Add(HTMLTokens.Meta, HTMLTokens.Meta);
                     m_noEndTagRequired.Add(HTMLTokens.Param, HTMLTokens.Param);
                 }
+
                 return m_noEndTagRequired;
             }
         }
+
+        /// <summary>
+        /// The m no end tag required.
+        /// </summary>
         private static Hashtable m_noEndTagRequired;
     }
 }

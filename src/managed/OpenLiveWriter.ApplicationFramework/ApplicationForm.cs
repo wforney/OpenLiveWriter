@@ -1,22 +1,22 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using OpenLiveWriter.Localization.Bidi;
-using OpenLiveWriter.Interop.Windows;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.ApplicationFramework.Skinning;
-
 // @RIBBON TODO: Need to cleanly remove the UI code is made obsolete by the ribbon.
 
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Diagnostics;
+    using System.ComponentModel;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+    using OpenLiveWriter.Localization.Bidi;
+    using OpenLiveWriter.Interop.Windows;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.ApplicationFramework.Skinning;
+
     /// <summary>
     /// Application form.
     /// </summary>
@@ -25,7 +25,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components;
+        private readonly IContainer components;
 
         /// <summary>
         /// Initializes a new instance of the ApplicationForm class.
@@ -33,25 +33,29 @@ namespace OpenLiveWriter.ApplicationFramework
         public ApplicationForm()
         {
             //	Shut up!
-            if (components == null)
-                components = null;
+            if (this.components == null)
+            {
+                this.components = null;
+            }
 
             //
             // Required for Windows Form Designer support
             //
-            InitializeComponent();
+            this.InitializeComponent();
 
-            Text = ApplicationEnvironment.ProductNameQualified;
+            this.Text = ApplicationEnvironment.ProductNameQualified;
 
             //	Turn on double buffered painting.
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
             if (!BidiHelper.IsRightToLeft)
-                SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            {
+                this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            }
 
             //	Attach our command manager event handler.
-            ColorizedResources.Instance.ColorizationChanged += new EventHandler(Instance_ColorizationChanged);
-            SizeChanged += new EventHandler(ApplicationForm_SizeChanged);
+            ColorizedResources.Instance.ColorizationChanged += new EventHandler(this.Instance_ColorizationChanged);
+            SizeChanged += new EventHandler(this.ApplicationForm_SizeChanged);
         }
 
         /// <summary>
@@ -69,9 +73,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     oldMainMenu.Dispose();
                 }
                 */
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -88,10 +92,10 @@ namespace OpenLiveWriter.ApplicationFramework
             //
             // ApplicationForm
             //
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 14);
-            this.ClientSize = new System.Drawing.Size(442, 422);
+            this.AutoScaleBaseSize = new Size(5, 14);
+            this.ClientSize = new Size(442, 422);
             this.Name = "ApplicationForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.ResumeLayout(false);
 
         }
@@ -107,8 +111,8 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnClosed(e);
 
             //	Detach our command management event handler.
-            ColorizedResources.Instance.ColorizationChanged -= new EventHandler(Instance_ColorizationChanged);
-            SizeChanged -= new EventHandler(ApplicationForm_SizeChanged);
+            ColorizedResources.Instance.ColorizationChanged -= new EventHandler(this.Instance_ColorizationChanged);
+            SizeChanged -= new EventHandler(this.ApplicationForm_SizeChanged);
         }
 
         /// <summary>
@@ -121,23 +125,18 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 foreach (MenuItem subMenu in menu.MenuItems)
                 {
-                    DisposeMenu(subMenu);
+                    this.DisposeMenu(subMenu);
                 }
+
                 menu.Dispose();
             }
         }
 
         #region Custom Main Menu Background Painting
 
-        protected virtual bool MainMenuVisible
-        {
-            get { return false; } // true; }
-        }
+        protected virtual bool MainMenuVisible => false;
 
-        private void Instance_ColorizationChanged(object sender, EventArgs e)
-        {
-            UpdateMainMenuBrush();
-        }
+        private void Instance_ColorizationChanged(object sender, EventArgs e) => this.UpdateMainMenuBrush();
 
         private void ApplicationForm_SizeChanged(object sender, EventArgs e)
         {
@@ -147,91 +146,112 @@ namespace OpenLiveWriter.ApplicationFramework
         private void UpdateMainMenuBrush()
         {
             // screen states where there is no menu yet
-            if (Menu == null)
+            if (this.Menu == null)
+            {
                 return;
+            }
 
-            if (WindowState == FormWindowState.Minimized)
+            if (this.WindowState == FormWindowState.Minimized)
+            {
                 return;
+            }
 
             // alias colorized resources
-            ColorizedResources cres = ColorizedResources.Instance;
+            var cres = ColorizedResources.Instance;
 
             // dispose any existing brush and/or bitmaps
-            if (_hMainMenuBrush != IntPtr.Zero)
-                DisposeGDIObject(ref _hMainMenuBrush);
-            if (_hMainMenuBitmap != IntPtr.Zero)
-                DisposeGDIObject(ref _hMainMenuBitmap);
-            if (_hMainMenuBrushBitmap != IntPtr.Zero)
-                DisposeGDIObject(ref _hMainMenuBrushBitmap);
-            if (_mainMenuBitmap != null)
+            if (this.hMainMenuBrush != IntPtr.Zero)
             {
-                Bitmap tmp = _mainMenuBitmap;
-                _mainMenuBitmap = null;
+                this.DisposeGDIObject(ref this.hMainMenuBrush);
+            }
+
+            if (this.hMainMenuBitmap != IntPtr.Zero)
+            {
+                this.DisposeGDIObject(ref this.hMainMenuBitmap);
+            }
+
+            if (this.hMainMenuBrushBitmap != IntPtr.Zero)
+            {
+                this.DisposeGDIObject(ref this.hMainMenuBrushBitmap);
+            }
+
+            if (this.mainMenuBitmap != null)
+            {
+                var tmp = this.mainMenuBitmap;
+                this.mainMenuBitmap = null;
                 tmp.Dispose();
             }
 
             // create a brush which contains the menu background
-            _mainMenuBitmap = new Bitmap(Width, -RelativeWindowBounds.Y);
-            _hMainMenuBitmap = _mainMenuBitmap.GetHbitmap();
-            using (Graphics g = Graphics.FromImage(_mainMenuBitmap))
+            this.mainMenuBitmap = new Bitmap(this.Width, -this.RelativeWindowBounds.Y);
+            this.hMainMenuBitmap = this.mainMenuBitmap.GetHbitmap();
+            using (var g = Graphics.FromImage(this.mainMenuBitmap))
             {
-                Rectangle bounds = MenuBounds;
-                Debug.WriteLine("MenuBounds: " + bounds);
+                var bounds = this.MenuBounds;
+                Debug.WriteLine($"MenuBounds: {bounds}");
                 if (cres.CustomMainMenuPainting)
                 {
                     // paint custom menu background
-                    CustomPaintMenuBackground(g, bounds);
+                    this.CustomPaintMenuBackground(g, bounds);
                 }
                 else
                 {
-                    using (Brush brush = new SolidBrush(SystemMainMenuColor))
+                    using (Brush brush = new SolidBrush(this.SystemMainMenuColor))
+                    {
                         g.FillRectangle(brush, bounds);
+                    }
                 }
             }
 
-            _hMainMenuBrushBitmap = _mainMenuBitmap.GetHbitmap();
-            _hMainMenuBrush = Gdi32.CreatePatternBrush(_hMainMenuBrushBitmap);
+            this.hMainMenuBrushBitmap = this.mainMenuBitmap.GetHbitmap();
+            this.hMainMenuBrush = Gdi32.CreatePatternBrush(this.hMainMenuBrushBitmap);
 
             // set the brush
-            MENUINFO mi = new MENUINFO();
-            mi.cbSize = Marshal.SizeOf(typeof(MENUINFO));
-            mi.fMask = MIM.BACKGROUND;
-            mi.hbrBack = _hMainMenuBrush;
-            User32.SetMenuInfo(Menu.Handle, ref mi);
-            User32.DrawMenuBar(Handle);
+            var mi = new MENUINFO
+            {
+                cbSize = Marshal.SizeOf(typeof(MENUINFO)),
+                fMask = MIM.BACKGROUND,
+                hbrBack = this.hMainMenuBrush
+            };
+            User32.SetMenuInfo(this.Menu.Handle, ref mi);
+            User32.DrawMenuBar(this.Handle);
         }
 
         private void DisposeGDIObject(ref IntPtr hObject)
         {
-            IntPtr tmp = hObject;
+            var tmp = hObject;
             hObject = IntPtr.Zero;
             Gdi32.DeleteObject(tmp);
         }
 
         private void CustomPaintMenuBackground(Graphics g, Rectangle menuBounds)
         {
-            ColorizedResources cres = ColorizedResources.Instance;
+            var cres = ColorizedResources.Instance;
 
             // Fill in the background--important for narrow window sizes when the main menu items are stacked
             using (Brush brush = new SolidBrush(cres.MainMenuGradientTopColor))
-                g.FillRectangle(brush, new Rectangle(0, 0, Width, -RelativeWindowBounds.Y));
+            {
+                g.FillRectangle(brush, new Rectangle(0, 0, this.Width, -this.RelativeWindowBounds.Y));
+            }
 
             // Fill in the gradient
             using (Brush brush = new LinearGradientBrush(menuBounds, cres.MainMenuGradientTopColor, cres.MainMenuGradientBottomColor, LinearGradientMode.Vertical))
+            {
                 g.FillRectangle(brush, menuBounds);
+            }
         }
 
         /// <summary>
         /// The bounds of the menu, relative to the outer bounds of the window.
         /// </summary>
-        private Rectangle MenuBounds
-        {
-            get
-            {
-                return new Rectangle(new Point(-RelativeWindowBounds.X, -RelativeWindowBounds.Y - SystemInformation.MenuHeight),
-                                     new Size(ClientSize.Width, SystemInformation.MenuHeight));
-            }
-        }
+        private Rectangle MenuBounds =>
+            new Rectangle(
+                new Point(
+                    -this.RelativeWindowBounds.X,
+                    -this.RelativeWindowBounds.Y - SystemInformation.MenuHeight),
+                new Size(
+                    this.ClientSize.Width,
+                    SystemInformation.MenuHeight));
 
         /// <summary>
         /// The outer bounds of the window, expressed in client coordinates.
@@ -240,29 +260,29 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                RECT rect = new RECT();
-                User32.GetWindowRect(Handle, ref rect);
-                return RectangleToClient(RectangleHelper.Convert(rect));
+                var rect = new RECT();
+                User32.GetWindowRect(this.Handle, ref rect);
+                return this.RectangleToClient(RectangleHelper.Convert(rect));
             }
         }
 
-        private IntPtr _hMainMenuBrush = IntPtr.Zero;
-        private Bitmap _mainMenuBitmap = null;
-        private IntPtr _hMainMenuBitmap = IntPtr.Zero;
-        private IntPtr _hMainMenuBrushBitmap = IntPtr.Zero;
+        private IntPtr hMainMenuBrush = IntPtr.Zero;
+        private Bitmap mainMenuBitmap = null;
+        private IntPtr hMainMenuBitmap = IntPtr.Zero;
+        private IntPtr hMainMenuBrushBitmap = IntPtr.Zero;
 
         void IMainMenuBackgroundPainter.PaintBackground(Graphics g, Rectangle menuItemBounds)
         {
             if (ColorizedResources.Instance.CustomMainMenuPainting)
             {
-                if (_mainMenuBitmap != null)
+                if (this.mainMenuBitmap != null)
                 {
                     try
                     {
                         // This has to be GDI+, not GDI, in order for the menu text
                         // anti-aliasing to look good
                         g.DrawImage(
-                            _mainMenuBitmap,
+                            this.mainMenuBitmap,
                             menuItemBounds,
                             menuItemBounds,
                             GraphicsUnit.Pixel);
@@ -276,11 +296,11 @@ namespace OpenLiveWriter.ApplicationFramework
 
                 try
                 {
-                    GraphicsState graphicsState = g.Save();
+                    var graphicsState = g.Save();
                     try
                     {
                         g.SetClip(menuItemBounds);
-                        CustomPaintMenuBackground(g, menuItemBounds);
+                        this.CustomPaintMenuBackground(g, menuItemBounds);
                     }
                     finally
                     {
@@ -294,8 +314,10 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else
             {
-                using (SolidBrush brush = new SolidBrush(SystemMainMenuColor))
+                using (var brush = new SolidBrush(this.SystemMainMenuColor))
+                {
                     g.FillRectangle(brush, 0, 0, menuItemBounds.Width, menuItemBounds.Height);
+                }
             }
         }
 
@@ -309,8 +331,11 @@ namespace OpenLiveWriter.ApplicationFramework
                 case WM.NCACTIVATE:
                 case WM.ERASEBKGND:
                     {
-                        if (MainMenuVisible)
-                            NonClientPaint(ref m);
+                        if (this.MainMenuVisible)
+                        {
+                            this.NonClientPaint(ref m);
+                        }
+
                         break;
                     }
             }
@@ -321,20 +346,25 @@ namespace OpenLiveWriter.ApplicationFramework
             try
             {
                 // screen states where we can't do the nc paint
-                if (!IsHandleCreated)
+                if (!this.IsHandleCreated)
+                {
                     return;
-                if (_mainMenuBitmap == null)
-                    return;
+                }
 
-                IntPtr hDC = User32.GetWindowDC(Handle);
+                if (this.mainMenuBitmap == null)
+                {
+                    return;
+                }
+
+                var hDC = User32.GetWindowDC(this.Handle);
                 try
                 {
-                    using (Graphics g = Graphics.FromHdc(hDC))
+                    using (var g = Graphics.FromHdc(hDC))
                     {
                         // destination rect
-                        int frameWidth = User32.GetSystemMetrics(SM.CXSIZEFRAME);
+                        var frameWidth = User32.GetSystemMetrics(SM.CXSIZEFRAME);
                         Debug.Assert(frameWidth != 0);
-                        int frameHeight = User32.GetSystemMetrics(SM.CYSIZEFRAME);
+                        var frameHeight = User32.GetSystemMetrics(SM.CYSIZEFRAME);
                         Debug.Assert(frameHeight != 0);
 
                         /*
@@ -344,42 +374,41 @@ namespace OpenLiveWriter.ApplicationFramework
                             ClientSize.Width, 1) ;
                         */
                         // takes into account narrow window sizes where the main menu items start stacking vertically
-                        Rectangle destinationRect = new Rectangle(-RelativeWindowBounds.X, -RelativeWindowBounds.Y - 1, ClientSize.Width, 1);
+                        var destinationRect = new Rectangle(-this.RelativeWindowBounds.X, -this.RelativeWindowBounds.Y - 1, this.ClientSize.Width, 1);
 
                         if (ColorizedResources.Instance.CustomMainMenuPainting)
                         {
                             // source rect (from menu bitmap)
-                            Rectangle sourceRect = new Rectangle(
+                            var sourceRect = new Rectangle(
                                 destinationRect.X,
-                                _mainMenuBitmap.Height - 1,
-                                ClientSize.Width,
+                                this.mainMenuBitmap.Height - 1,
+                                this.ClientSize.Width,
                                 1);
 
                             //GdiPaint.BitBlt(g, _hMainMenuBitmap, sourceRect, destinationRect.Location);
-                            g.DrawImage(_mainMenuBitmap, destinationRect, sourceRect, GraphicsUnit.Pixel);
+                            g.DrawImage(this.mainMenuBitmap, destinationRect, sourceRect, GraphicsUnit.Pixel);
                         }
                         else
                         {
-                            using (Brush b = new SolidBrush(SystemMainMenuColor))
+                            using (Brush b = new SolidBrush(this.SystemMainMenuColor))
+                            {
                                 g.FillRectangle(b, destinationRect);
+                            }
                         }
                     }
                 }
                 finally
                 {
-                    User32.ReleaseDC(Handle, hDC);
+                    User32.ReleaseDC(this.Handle, hDC);
                 }
             }
             catch (Exception ex)
             {
-                Trace.Fail("Unexpected exception during non-client painting: " + ex.ToString());
+                Trace.Fail($"Unexpected exception during non-client painting: {ex.ToString()}");
             }
         }
 
-        private Color SystemMainMenuColor
-        {
-            get { return ColorizedResources.Instance.WorkspaceBackgroundColor; }
-        }
+        private Color SystemMainMenuColor => ColorizedResources.Instance.WorkspaceBackgroundColor;
 
         #endregion
     }

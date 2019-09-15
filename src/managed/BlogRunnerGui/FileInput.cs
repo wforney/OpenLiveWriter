@@ -1,79 +1,113 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="FileInput.cs" company=".NET Foundation">
+// Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 
 namespace BlogRunnerGui
 {
-    public enum DialogStyle { Open, Save }
+    using System;
+    using System.ComponentModel;
+    using System.Windows.Forms;
 
+    /// <summary>
+    /// The dialog style enumeration.
+    /// </summary>
+    public enum DialogStyle
+    {
+        /// <summary>
+        /// An open dialog.
+        /// </summary>
+        Open,
+
+        /// <summary>
+        /// A save dialog.
+        /// </summary>
+        Save,
+    }
+
+    /// <summary>
+    /// Class FileInput.
+    /// Implements the <see cref="System.Windows.Forms.UserControl" />
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.UserControl" />
     [DefaultEvent("PathChanged")]
     public partial class FileInput : UserControl
     {
-        public FileInput()
-        {
-            InitializeComponent();
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileInput"/> class.
+        /// </summary>
+        public FileInput() => this.InitializeComponent();
 
+        /// <summary>
+        /// Occurs when [path changed].
+        /// </summary>
         public event EventHandler PathChanged;
 
-        [
-            EditorBrowsable(EditorBrowsableState.Always),
-            Browsable(true),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            Bindable(true)
-        ]
+        /// <summary>
+        /// Gets or sets the text associated with this control.
+        /// </summary>
+        /// <value>The text.</value>
+        [Bindable(true)]
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
         public override string Text
         {
-            get { return label1.Text; }
-            set { label1.Text = value; }
+            get => this.label1.Text;
+            set => this.label1.Text = value;
         }
 
+        /// <summary>
+        /// Gets or sets the dialog style.
+        /// </summary>
+        public DialogStyle DialogStyle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
+        /// <value>The path.</value>
         public string Path
         {
-            get { return textBox1.Text; }
-            set { textBox1.Text = value; }
+            get => this.textBox1.Text;
+            set => this.textBox1.Text = value;
         }
 
-        public DialogStyle DialogStyle;
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.Control.GotFocus" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+        protected override void OnGotFocus(EventArgs e) => this.textBox1.Focus();
 
-        protected override void OnGotFocus(EventArgs e)
-        {
-            textBox1.Focus();
-        }
-
+        /// <summary>
+        /// Handles the Click event of the button1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void button1_Click(object sender, EventArgs e)
         {
-            FileDialog fd;
-            if (DialogStyle == DialogStyle.Open)
-                fd = openFileDialog1;
-            else
-                fd = saveFileDialog1;
-
+            var fd = this.DialogStyle == DialogStyle.Open ? this.openFileDialog1 : (FileDialog)this.saveFileDialog1;
             if (fd.ShowDialog(this) == DialogResult.OK)
             {
-                textBox1.Text = fd.FileName;
+                this.textBox1.Text = fd.FileName;
             }
         }
 
+        /// <summary>
+        /// Handles the TextChanged event of the textBox1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            string path = textBox1.Text.Trim('"');
-            if (path != textBox1.Text)
+            var path = this.textBox1.Text.Trim('"');
+            if (path != this.textBox1.Text)
             {
-                textBox1.Text = path;
-                textBox1.SelectionStart = textBox1.TextLength;
+                this.textBox1.Text = path;
+                this.textBox1.SelectionStart = this.textBox1.TextLength;
                 return;
             }
 
-            if (PathChanged != null)
-                PathChanged(this, EventArgs.Empty);
+            this.PathChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

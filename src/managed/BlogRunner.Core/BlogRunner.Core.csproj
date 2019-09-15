@@ -41,13 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlogUtil.cs" />
+    <Compile Include="BodyContentPostTest.cs" />
     <Compile Include="Config\Blog.cs" />
+    <Compile Include="Config\BlogApi.cs" />
+    <Compile Include="Config\BlogRunnerCommandLineOptions.cs" />
     <Compile Include="Config\Config.cs" />
-    <Compile Include="Config\CoreCommandLineOptions.cs" />
     <Compile Include="Config\Provider.cs" />
+    <Compile Include="ITestResults.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="PostTest.cs" />
+    <Compile Include="RoundtripTest.cs" />
     <Compile Include="Test.cs" />
-    <Compile Include="ITestResult.cs" />
+    <Compile Include="TestResultImpl.cs" />
     <Compile Include="TestRunner.cs" />
     <Compile Include="Tests\CompositePostTest.cs" />
     <Compile Include="Tests\SupportsEmbedsTest.cs" />
@@ -87,6 +92,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(RepoRoot)\writer.build.targets" />

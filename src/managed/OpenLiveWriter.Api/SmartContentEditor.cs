@@ -1,14 +1,13 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.Api
 {
+    using System;
+    using System.Windows.Forms;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// <para>Sidebar editor for SmartContent</para>
     /// <para>There is a single instance of a given SmartContentEditor created for each Open Live Writer
@@ -17,14 +16,15 @@ namespace OpenLiveWriter.Api
     /// </summary>
     public class SmartContentEditor : UserControl
     {
-        private bool _layedOut = false;
+        private bool layedOut = false;
+
         /// <summary>
         /// Initialize a new SmartContentEditor instance.
         /// </summary>
         public SmartContentEditor()
         {
-            InitializeComponent();
-            Font = Res.DefaultFont;
+            this.InitializeComponent();
+            this.Font = Res.DefaultFont;
         }
 
         /// <summary>
@@ -34,17 +34,15 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public virtual ISmartContent SelectedContent
         {
-            get
-            {
-                return _selectedContent;
-            }
+            get => this.selectedContent;
             set
             {
-                _selectedContent = value;
-                OnSelectedContentChanged();
+                this.selectedContent = value;
+                this.OnSelectedContentChanged();
             }
         }
-        private ISmartContent _selectedContent;
+
+        private ISmartContent selectedContent;
 
         /// <summary>
         /// Notification that the currently selected SmartContent object
@@ -58,11 +56,7 @@ namespace OpenLiveWriter.Api
         /// has changed. The editor should adapt its state to the current
         /// selection when this event is fired.
         /// </summary>
-        protected virtual void OnSelectedContentChanged()
-        {
-            if (SelectedContentChanged != null)
-                SelectedContentChanged(this, EventArgs.Empty);
-        }
+        protected virtual void OnSelectedContentChanged() => SelectedContentChanged?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Event fired by the SmartContentEditor whenever it makes a change
@@ -74,20 +68,13 @@ namespace OpenLiveWriter.Api
         /// Event fired by the SmartContentEditor whenever it makes a change
         /// to the underlying properties of the SmartContent.
         /// </summary>
-        protected virtual void OnContentEdited()
-        {
-            if (ContentEdited != null)
-                ContentEdited(this, EventArgs.Empty);
-        }
+        protected virtual void OnContentEdited() => ContentEdited?.Invoke(this, EventArgs.Empty);
 
         private void InitializeComponent()
         {
-            //
             // SmartContentEditor
-            //
             this.Name = "SmartContentEditor";
             this.Size = new System.Drawing.Size(200, 500);
-
         }
 
         /// <summary>
@@ -98,13 +85,11 @@ namespace OpenLiveWriter.Api
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
-            if (!_layedOut)
+            if (!this.layedOut)
             {
-                _layedOut = true;
+                this.layedOut = true;
                 BidiHelper.RtlLayoutFixup(this);
             }
-
         }
     }
-
 }

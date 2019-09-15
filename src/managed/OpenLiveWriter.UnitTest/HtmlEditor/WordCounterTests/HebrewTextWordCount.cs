@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenLiveWriter.HtmlEditor;
-using System;
-
-namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
+﻿namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
 {
+    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using OpenLiveWriter.HtmlEditor;
+
     [TestClass]
     public class HebrewTextWordCount
     {
@@ -56,7 +56,7 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
         {
             CountText("ДЖem", 1, 4);
         }
-        
+
         [TestMethod]
         public void OneHebrewWordText()
         {
@@ -79,7 +79,7 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
         [TestMethod]
         public void MixedHebrewEnglishWords()
         {
-            CountText("מילה בעברית and an english word", 6);            
+            CountText("מילה בעברית and an english word", 6);
 
         }
 

@@ -1,32 +1,61 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="Provider.cs" company=".NET Foundation">
+// Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
 
 namespace BlogRunner.Core.Config
 {
+    using System.Xml;
+    using System.Xml.Serialization;
+
+    /// <summary>
+    /// The provider class.
+    /// </summary>
     public class Provider
     {
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
         [XmlElement(ElementName = "id")]
-        public string Id;
+        public string Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the blog.
+        /// </summary>
+        /// <value>The blog.</value>
         [XmlElement(ElementName = "blog")]
-        public Blog Blog;
+        public Blog Blog { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
         [XmlElement(ElementName = "name")]
-        public string Name;
+        public string Name { get; set; }
 
-        [XmlIgnore] // This comes from the BlogProviders.xml definitions instead
-        public string ClientType;
+        /// <summary>
+        /// Gets or sets the type of the client.
+        /// </summary>
+        /// <value>The type of the client.</value>
+        /// <remarks>
+        /// This comes from the BlogProviders.xml definitions instead.
+        /// </remarks>
+        [XmlIgnore]
+        public string ClientType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the overrides.
+        /// </summary>
+        /// <value>The overrides.</value>
         [XmlElement(ElementName = "overrides")]
-        public XmlElement Overrides;
+        public XmlElement Overrides { get; set; }
 
+        /// <summary>
+        /// Gets or sets the exclude.
+        /// </summary>
+        /// <value>The exclude.</value>
         [XmlElement(ElementName = "exclude")]
-        public string[] Exclude;
+        public string[] Exclude { get; set; } = new string[] { };
     }
 }

@@ -1,12 +1,12 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Diagnostics;
-using OpenLiveWriter.ApplicationFramework.ApplicationStyles;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+
+    using OpenLiveWriter.ApplicationFramework.ApplicationStyles;
+
     /// <summary>
     /// Provides application management service.
     /// </summary>
@@ -27,13 +27,13 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 if (applicationStyle == null)
+                {
                     applicationStyle = new ApplicationStyleSkyBlue();
+                }
+
                 return applicationStyle;
             }
-            set
-            {
-                applicationStyle = value;
-            }
+            set => applicationStyle = value;
         }
 
         /// <summary>

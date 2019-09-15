@@ -1,29 +1,27 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="BlogUtil.cs" company=".NET Foundation">
+// Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BlogRunner.Core.Config;
-using OpenLiveWriter.Extensibility.BlogClient;
-using System.Xml;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Net;
-using System.IO;
-using OpenLiveWriter.HtmlParser.Parser;
-using System.Net.Cache;
 
 namespace BlogRunner.Core
 {
+    using System;
+
+    /// <summary>
+    /// The blog utility class.
+    /// </summary>
     public class BlogUtil
     {
+        /// <summary>
+        /// Gets the short unique identifier.
+        /// </summary>
+        /// <value>The short unique identifier.</value>
         public static string ShortGuid
         {
             get
             {
-                byte[] bytes = Guid.NewGuid().ToByteArray();
-                long longVal = BitConverter.ToInt64(bytes, 0) ^ BitConverter.ToInt64(bytes, 8);
+                var bytes = Guid.NewGuid().ToByteArray();
+                var longVal = BitConverter.ToInt64(bytes, 0) ^ BitConverter.ToInt64(bytes, 8);
                 return Convert.ToBase64String(BitConverter.GetBytes(longVal)).TrimEnd('=');
             }
         }

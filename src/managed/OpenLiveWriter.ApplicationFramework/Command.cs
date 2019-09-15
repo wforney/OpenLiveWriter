@@ -1,60 +1,24 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Interop.Com.Ribbon;
-using OpenLiveWriter.Localization;
-
 // @RIBBON TODO: Cleanly remove those aspects of the command class that are obviated by the ribbon.
 
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Com.Ribbon;
+    using OpenLiveWriter.Localization;
+
     public delegate void CommandBarButtonContextMenuHandler(Control parent, Point menuLocation, int alternativeLocation, IDisposable disposeWhenDone);
-
-    #region Public Enumerations
-
-    /// <summary>
-    /// Specifies the style of command bar buttons.
-    /// </summary>
-    public enum CommandBarButtonStyle
-    {
-        /// <summary>
-        /// Command bar button is drawn by the system.  System command bar buttons can have text.
-        /// </summary>
-        System,
-
-        /// <summary>
-        /// Command bar button is drawn from the command bar button bitmaps.  Bitmap command bar
-        /// buttons do not have text and are sized to match the command bar buttons.
-        /// </summary>
-        Bitmap,
-
-        /// <summary>
-        /// Special style used for blog provider buttons
-        /// </summary>
-        Provider
-    }
-
-    #endregion Public Enumerations
-
-    public interface ICommandTextDisplayProperties
-    {
-        string LabelTitle { get; set; }
-        string LabelDescription { get; set; }
-        string TooltipTitle { get; set; }
-        string TooltipDescription { get; set; }
-        string Keytip { get; set; }
-    }
 
     public class Command : ICommandTextDisplayProperties, IComparable
     {
@@ -219,9 +183,9 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                if (events == null)
-                    events = new EventHandlerList();
-                return events;
+                if (this.events == null)
+                    this.events = new EventHandlerList();
+                return this.events;
             }
         }
 
@@ -241,11 +205,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(ExecuteEventKey, value);
+                this.Events.AddHandler(ExecuteEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(ExecuteEventKey, value);
+                this.Events.RemoveHandler(ExecuteEventKey, value);
             }
         }
 
@@ -265,11 +229,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(ExecuteWithArgsEventKey, value);
+                this.Events.AddHandler(ExecuteWithArgsEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(ExecuteWithArgsEventKey, value);
+                this.Events.RemoveHandler(ExecuteWithArgsEventKey, value);
             }
         }
 
@@ -289,11 +253,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(ShowCommandBarButtonContextMenuEventKey, value);
+                this.Events.AddHandler(ShowCommandBarButtonContextMenuEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(ShowCommandBarButtonContextMenuEventKey, value);
+                this.Events.RemoveHandler(ShowCommandBarButtonContextMenuEventKey, value);
             }
         }
 
@@ -309,11 +273,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(CommandBarButtonContextMenuDefinitionKey, value);
+                this.Events.AddHandler(CommandBarButtonContextMenuDefinitionKey, value);
             }
             remove
             {
-                Events.RemoveHandler(CommandBarButtonContextMenuDefinitionKey, value);
+                this.Events.RemoveHandler(CommandBarButtonContextMenuDefinitionKey, value);
             }
         }
 
@@ -333,11 +297,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(StateChangedEventKey, value);
+                this.Events.AddHandler(StateChangedEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(StateChangedEventKey, value);
+                this.Events.RemoveHandler(StateChangedEventKey, value);
             }
         }
 
@@ -357,11 +321,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(VisibleOnMainMenuChangedEventKey, value);
+                this.Events.AddHandler(VisibleOnMainMenuChangedEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(VisibleOnMainMenuChangedEventKey, value);
+                this.Events.RemoveHandler(VisibleOnMainMenuChangedEventKey, value);
             }
         }
 
@@ -381,11 +345,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(VisibleOnCommandBarChangedEventKey, value);
+                this.Events.AddHandler(VisibleOnCommandBarChangedEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(VisibleOnCommandBarChangedEventKey, value);
+                this.Events.RemoveHandler(VisibleOnCommandBarChangedEventKey, value);
             }
         }
 
@@ -405,11 +369,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(VisibleOnContextMenuChangedEventKey, value);
+                this.Events.AddHandler(VisibleOnContextMenuChangedEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(VisibleOnContextMenuChangedEventKey, value);
+                this.Events.RemoveHandler(VisibleOnContextMenuChangedEventKey, value);
             }
         }
 
@@ -429,11 +393,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(CommandBarButtonTextChangedEventKey, value);
+                this.Events.AddHandler(CommandBarButtonTextChangedEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(CommandBarButtonTextChangedEventKey, value);
+                this.Events.RemoveHandler(CommandBarButtonTextChangedEventKey, value);
             }
         }
 
@@ -453,11 +417,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             add
             {
-                Events.AddHandler(BeforeShowInMenuEventKey, value);
+                this.Events.AddHandler(BeforeShowInMenuEventKey, value);
             }
             remove
             {
-                Events.RemoveHandler(BeforeShowInMenuEventKey, value);
+                this.Events.RemoveHandler(BeforeShowInMenuEventKey, value);
             }
         }
 
@@ -467,27 +431,27 @@ namespace OpenLiveWriter.ApplicationFramework
 
         public Command(IContainer container)
         {
-            InitializeImageLoaders();
+            this.InitializeImageLoaders();
         }
 
         public Command()
         {
             this.CommandId = CommandId.None;
-            InitializeImageLoaders();
+            this.InitializeImageLoaders();
         }
 
         public Command(CommandId commandId, object tag) : this(commandId)
         {
-            Tag = tag;
+            this.Tag = tag;
         }
 
         public Command(CommandId commandId)
         {
-            UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
+            this.UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
             this.Identifier = commandId.ToString();
             this.CommandId = commandId;
-            InitializeImageLoaders();
-            LoadResources();
+            this.InitializeImageLoaders();
+            this.LoadResources();
         }
 
         #endregion Class Initialization & Termination
@@ -496,51 +460,51 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (key == PropertyKeys.Enabled)
             {
-                value.SetBool(Enabled);
+                value.SetBool(this.Enabled);
             }
             else if (key == PropertyKeys.SmallImage)
             {
-                RibbonHelper.CreateImagePropVariant(SmallImage, out value);
+                RibbonHelper.CreateImagePropVariant(this.SmallImage, out value);
             }
             else if (key == PropertyKeys.SmallHighContrastImage)
             {
                 // If in High Contrast White mode or a disabled icon in High Contrast Black, use regular image
-                RibbonHelper.CreateImagePropVariant(ApplicationEnvironment.IsHighContrastWhite || (ApplicationEnvironment.IsHighContrastBlack && !Enabled) ? SmallImage : SmallHighContrastImage, out value);
+                RibbonHelper.CreateImagePropVariant(ApplicationEnvironment.IsHighContrastWhite || (ApplicationEnvironment.IsHighContrastBlack && !this.Enabled) ? this.SmallImage : this.SmallHighContrastImage, out value);
             }
             else if (key == PropertyKeys.LargeImage)
             {
-                RibbonHelper.CreateImagePropVariant(LargeImage, out value);
+                RibbonHelper.CreateImagePropVariant(this.LargeImage, out value);
             }
             else if (key == PropertyKeys.LargeHighContrastImage)
             {
                 // If in High Contrast White mode or a disabled icon in High Contrast Black, use regular image
-                RibbonHelper.CreateImagePropVariant(ApplicationEnvironment.IsHighContrastWhite || (ApplicationEnvironment.IsHighContrastBlack && !Enabled) ? LargeImage : LargeHighContrastImage, out value);
+                RibbonHelper.CreateImagePropVariant(ApplicationEnvironment.IsHighContrastWhite || (ApplicationEnvironment.IsHighContrastBlack && !this.Enabled) ? this.LargeImage : this.LargeHighContrastImage, out value);
             }
             else if (key == PropertyKeys.Label)
             {
-                value.SetString(LabelTitle ?? String.Empty);
+                value.SetString(this.LabelTitle ?? String.Empty);
             }
             else if (key == PropertyKeys.LabelDescription)
             {
-                value.SetString(LabelDescription ?? String.Empty);
+                value.SetString(this.LabelDescription ?? String.Empty);
             }
             else if (key == PropertyKeys.TooltipTitle)
             {
                 // In order to eliminate some duplicate strings in our localization we will
                 // return the LabelTitle for the TooltipTitle if the TooltipTitle is missing in the markup.
-                value.SetString(TooltipTitle ?? (LabelTitle ?? String.Empty));
+                value.SetString(this.TooltipTitle ?? (this.LabelTitle ?? String.Empty));
             }
             else if (key == PropertyKeys.TooltipDescription)
             {
-                value.SetString(TooltipDescription ?? String.Empty);
+                value.SetString(this.TooltipDescription ?? String.Empty);
             }
             else if (key == PropertyKeys.Keytip)
             {
-                value.SetString(Keytip ?? String.Empty);
+                value.SetString(this.Keytip ?? String.Empty);
             }
             else if (key == PropertyKeys.ContextAvailable)
             {
-                value.SetUInt(Enabled ? (uint)ContextAvailability.Active : (uint)ContextAvailability.NotAvailable);
+                value.SetUInt(this.Enabled ? (uint)ContextAvailability.Active : (uint)ContextAvailability.NotAvailable);
             }
             else if (key == PropertyKeys.RepresentativeString)
             {
@@ -549,11 +513,11 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else if (key == PropertyKeys.BooleanValue)
             {
-                value.SetBool(Latched);
+                value.SetBool(this.Latched);
             }
             else
             {
-                Trace.Fail("Didn't properly update property for " + key + " on command " + CommandId);
+                Trace.Fail("Didn't properly update property for " + key + " on command " + this.CommandId);
                 throw new Exception("Failed to get PropVariant for " + key);
             }
         }
@@ -573,13 +537,13 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                if (identifier == null)
-                    identifier = Guid.NewGuid().ToString();
-                return identifier;
+                if (this.identifier == null)
+                    this.identifier = Guid.NewGuid().ToString();
+                return this.identifier;
             }
             set
             {
-                identifier = value;
+                this.identifier = value;
             }
         }
 
@@ -596,11 +560,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return accessibleDescription;
+                return this.accessibleDescription;
             }
             set
             {
-                accessibleDescription = value;
+                this.accessibleDescription = value;
             }
         }
 
@@ -617,12 +581,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return accessibleName;
+                return this.accessibleName;
             }
             set
             {
-                accessibleName = value;
-                OnStateChanged(EventArgs.Empty);
+                this.accessibleName = value;
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -639,12 +603,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return shortcut;
+                return this.shortcut;
             }
             set
             {
-                Debug.Assert(shortcut == Shortcut.None, "Changing shortcuts is a bad idea. CommandManager.RebuildCommandShortcutTable() will get stale.");
-                shortcut = value;
+                Debug.Assert(this.shortcut == Shortcut.None, "Changing shortcuts is a bad idea. CommandManager.RebuildCommandShortcutTable() will get stale.");
+                this.shortcut = value;
             }
         }
 
@@ -661,12 +625,12 @@ namespace OpenLiveWriter.ApplicationFramework
         //]
         public Keys AdvancedShortcut
         {
-            get { return advancedShortcut; }
+            get { return this.advancedShortcut; }
             set
             {
-                Debug.Assert(advancedShortcut == Keys.None,
+                Debug.Assert(this.advancedShortcut == Keys.None,
                              "Changing shortcuts is a bad idea. CommandManager.RebuildCommandShortcutTable() will get stale.");
-                advancedShortcut = value;
+                this.advancedShortcut = value;
             }
         }
 
@@ -682,11 +646,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return acceleratorMnemonic;
+                return this.acceleratorMnemonic;
             }
             set
             {
-                acceleratorMnemonic = value;
+                this.acceleratorMnemonic = value;
             }
         }
 
@@ -703,14 +667,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return visibleOnContextMenu;
+                return this.visibleOnContextMenu;
             }
             set
             {
-                if (visibleOnContextMenu != value)
+                if (this.visibleOnContextMenu != value)
                 {
-                    visibleOnContextMenu = value;
-                    OnVisibleOnContextMenuChanged(EventArgs.Empty);
+                    this.visibleOnContextMenu = value;
+                    this.OnVisibleOnContextMenuChanged(EventArgs.Empty);
                 }
             }
         }
@@ -728,14 +692,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return visibleOnMainMenu;
+                return this.visibleOnMainMenu;
             }
             set
             {
-                if (visibleOnMainMenu != value)
+                if (this.visibleOnMainMenu != value)
                 {
-                    visibleOnMainMenu = value;
-                    OnVisibleOnMainMenuChanged(EventArgs.Empty);
+                    this.visibleOnMainMenu = value;
+                    this.OnVisibleOnMainMenuChanged(EventArgs.Empty);
                 }
             }
         }
@@ -753,14 +717,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return visibleOnCommandBar;
+                return this.visibleOnCommandBar;
             }
             set
             {
-                if (visibleOnCommandBar != value)
+                if (this.visibleOnCommandBar != value)
                 {
-                    visibleOnCommandBar = value;
-                    OnVisibleOnCommandBarChanged(EventArgs.Empty);
+                    this.visibleOnCommandBar = value;
+                    this.OnVisibleOnCommandBarChanged(EventArgs.Empty);
                 }
             }
         }
@@ -779,11 +743,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return showShortcut;
+                return this.showShortcut;
             }
             set
             {
-                showShortcut = value;
+                this.showShortcut = value;
             }
         }
 
@@ -800,11 +764,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return menuText;
+                return this.menuText;
             }
             set
             {
-                menuText = value;
+                this.menuText = value;
             }
         }
 
@@ -819,11 +783,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return menuFormatArgs;
+                return this.menuFormatArgs;
             }
             set
             {
-                menuFormatArgs = value;
+                this.menuFormatArgs = value;
             }
         }
 
@@ -840,11 +804,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return mainMenuPath;
+                return this.mainMenuPath;
             }
             set
             {
-                mainMenuPath = value;
+                this.mainMenuPath = value;
             }
         }
 
@@ -861,7 +825,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapDisabled;
+                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapDisabled;
             }
         }
 
@@ -878,22 +842,22 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapEnabled;
+                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapEnabled;
             }
         }
 
         [Localizable(false)]
         public bool SuppressMenuBitmap
         {
-            get { return suppressMenuBitmap; }
-            set { suppressMenuBitmap = value; }
+            get { return this.suppressMenuBitmap; }
+            set { this.suppressMenuBitmap = value; }
         }
 
         [Localizable(false)]
         public bool SuppressCommandBarBitmap
         {
-            get { return _suppressCommandBarBitmap; }
-            set { _suppressCommandBarBitmap = value; }
+            get { return this._suppressCommandBarBitmap; }
+            set { this._suppressCommandBarBitmap = value; }
         }
 
         private bool _suppressCommandBarBitmap = false;
@@ -912,18 +876,18 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 //	Attempt to load a custom bitmap for the command.
-                BitmapProperty("MenuBitmapLatchedEnabled", ref menuBitmapLatchedEnabled);
+                this.BitmapProperty("MenuBitmapLatchedEnabled", ref this.menuBitmapLatchedEnabled);
 
                 //	If there was no custom bitmap for the command, load the stock one.
-                if (menuBitmapLatchedEnabled == null)
-                    menuBitmapLatchedEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.Application.CommandMenuBitmapLatchedEnabled.png");
+                if (this.menuBitmapLatchedEnabled == null)
+                    this.menuBitmapLatchedEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.Application.CommandMenuBitmapLatchedEnabled.png");
 
                 //	Done.
-                return menuBitmapLatchedEnabled;
+                return this.menuBitmapLatchedEnabled;
             }
             set
             {
-                menuBitmapLatchedEnabled = value;
+                this.menuBitmapLatchedEnabled = value;
             }
         }
 
@@ -940,7 +904,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return MenuBitmapLatchedEnabled;
+                return this.MenuBitmapLatchedEnabled;
             }
         }
 
@@ -957,7 +921,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapSelected;
+                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapSelected;
             }
         }
 
@@ -974,11 +938,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonStyle;
+                return this.commandBarButtonStyle;
             }
             set
             {
-                commandBarButtonStyle = value;
+                this.commandBarButtonStyle = value;
             }
         }
 
@@ -995,17 +959,17 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonText;
+                return this.commandBarButtonText;
             }
             set
             {
-                if (commandBarButtonText != value)
+                if (this.commandBarButtonText != value)
                 {
                     //	Set the text.
-                    commandBarButtonText = value;
+                    this.commandBarButtonText = value;
 
                     //	Fire the CommandBarButtonTextChanged event.
-                    OnCommandBarButtonTextChanged(EventArgs.Empty);
+                    this.OnCommandBarButtonTextChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1023,16 +987,16 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                BitmapProperty("CommandBarButtonBitmapDisabled", ref commandBarButtonBitmapDisabled);
-                if (commandBarButtonBitmapDisabled == null && CommandBarButtonBitmapEnabled != null)
+                this.BitmapProperty("CommandBarButtonBitmapDisabled", ref this.commandBarButtonBitmapDisabled);
+                if (this.commandBarButtonBitmapDisabled == null && this.CommandBarButtonBitmapEnabled != null)
                 {
-                    commandBarButtonBitmapDisabled = ImageHelper.MakeDisabled(commandBarButtonBitmapEnabled);
+                    this.commandBarButtonBitmapDisabled = ImageHelper.MakeDisabled(this.commandBarButtonBitmapEnabled);
                 }
-                return commandBarButtonBitmapDisabled;
+                return this.commandBarButtonBitmapDisabled;
             }
             set
             {
-                commandBarButtonBitmapDisabled = value;
+                this.commandBarButtonBitmapDisabled = value;
             }
         }
 
@@ -1049,21 +1013,21 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return BitmapProperty("CommandBarButtonBitmapEnabled", ref commandBarButtonBitmapEnabled);
+                return this.BitmapProperty("CommandBarButtonBitmapEnabled", ref this.commandBarButtonBitmapEnabled);
             }
             set
             {
                 // set the value
-                commandBarButtonBitmapEnabled = value;
+                this.commandBarButtonBitmapEnabled = value;
 
                 // since other command bar states can be auto-derived from enabled we
                 // need to null them out so they can be updated
-                commandBarButtonBitmapSelected = null;
-                commandBarButtonBitmapPushed = null;
-                commandBarButtonBitmapDisabled = null;
+                this.commandBarButtonBitmapSelected = null;
+                this.commandBarButtonBitmapPushed = null;
+                this.commandBarButtonBitmapDisabled = null;
 
                 // force state changed
-                OnStateChanged(EventArgs.Empty);
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -1080,16 +1044,16 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                BitmapProperty("CommandBarButtonBitmapSelected", ref commandBarButtonBitmapSelected);
-                if (commandBarButtonBitmapSelected == null && CommandBarButtonBitmapEnabled != null)
+                this.BitmapProperty("CommandBarButtonBitmapSelected", ref this.commandBarButtonBitmapSelected);
+                if (this.commandBarButtonBitmapSelected == null && this.CommandBarButtonBitmapEnabled != null)
                 {
-                    commandBarButtonBitmapSelected = commandBarButtonBitmapEnabled;
+                    this.commandBarButtonBitmapSelected = this.commandBarButtonBitmapEnabled;
                 }
-                return commandBarButtonBitmapSelected;
+                return this.commandBarButtonBitmapSelected;
             }
             set
             {
-                commandBarButtonBitmapSelected = value;
+                this.commandBarButtonBitmapSelected = value;
             }
         }
 
@@ -1106,16 +1070,16 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                BitmapProperty("CommandBarButtonBitmapPushed", ref commandBarButtonBitmapPushed);
-                if (commandBarButtonBitmapPushed == null && CommandBarButtonBitmapEnabled != null)
+                this.BitmapProperty("CommandBarButtonBitmapPushed", ref this.commandBarButtonBitmapPushed);
+                if (this.commandBarButtonBitmapPushed == null && this.CommandBarButtonBitmapEnabled != null)
                 {
-                    commandBarButtonBitmapPushed = commandBarButtonBitmapEnabled;
+                    this.commandBarButtonBitmapPushed = this.commandBarButtonBitmapEnabled;
                 }
-                return commandBarButtonBitmapPushed;
+                return this.commandBarButtonBitmapPushed;
             }
             set
             {
-                commandBarButtonBitmapPushed = value;
+                this.commandBarButtonBitmapPushed = value;
             }
         }
 
@@ -1130,11 +1094,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenuAcceleratorMnemonic;
+                return this.commandBarButtonContextMenuAcceleratorMnemonic;
             }
             set
             {
-                commandBarButtonContextMenuAcceleratorMnemonic = value;
+                this.commandBarButtonContextMenuAcceleratorMnemonic = value;
             }
         }
 
@@ -1151,11 +1115,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenu;
+                return this.commandBarButtonContextMenu;
             }
             set
             {
-                commandBarButtonContextMenu = value;
+                this.commandBarButtonContextMenu = value;
             }
         }
 
@@ -1172,12 +1136,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenuDefinition;
+                return this.commandBarButtonContextMenuDefinition;
             }
             set
             {
-                commandBarButtonContextMenuDefinition = value;
-                RaiseEvent(CommandBarButtonContextMenuDefinitionKey, EventArgs.Empty);
+                this.commandBarButtonContextMenuDefinition = value;
+                this.RaiseEvent(CommandBarButtonContextMenuDefinitionKey, EventArgs.Empty);
             }
         }
 
@@ -1188,19 +1152,19 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenuControlHandler;
+                return this.commandBarButtonContextMenuControlHandler;
             }
             set
             {
-                commandBarButtonContextMenuControlHandler = value;
+                this.commandBarButtonContextMenuControlHandler = value;
             }
         }
         private ICommandContextMenuControlHandler commandBarButtonContextMenuControlHandler = null;
 
         public CommandBarButtonContextMenuHandler CommandBarButtonContextMenuHandler
         {
-            get { return commandBarButtonContextMenuHandler; }
-            set { commandBarButtonContextMenuHandler = value; }
+            get { return this.commandBarButtonContextMenuHandler; }
+            set { this.commandBarButtonContextMenuHandler = value; }
         }
 
         /// <summary>
@@ -1217,11 +1181,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenuDropDown;
+                return this.commandBarButtonContextMenuDropDown;
             }
             set
             {
-                commandBarButtonContextMenuDropDown = value;
+                this.commandBarButtonContextMenuDropDown = value;
             }
         }
 
@@ -1239,11 +1203,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return commandBarButtonContextMenuInvalidateParent;
+                return this.commandBarButtonContextMenuInvalidateParent;
             }
             set
             {
-                commandBarButtonContextMenuInvalidateParent = value;
+                this.commandBarButtonContextMenuInvalidateParent = value;
             }
         }
         private bool commandBarButtonContextMenuInvalidateParent = false;
@@ -1261,11 +1225,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return text;
+                return this.text;
             }
             set
             {
-                text = value;
+                this.text = value;
             }
         }
 
@@ -1283,16 +1247,16 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return largeImage;
+                return this.largeImage;
             }
             set
             {
                 // set the value
-                largeImage.Value = value;
+                this.largeImage.Value = value;
 
-                UpdateInvalidationState(PropertyKeys.LargeImage, InvalidationState.Pending);
+                this.UpdateInvalidationState(PropertyKeys.LargeImage, InvalidationState.Pending);
                 // force state changed
-                OnStateChanged(EventArgs.Empty);
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -1310,17 +1274,17 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return largeHighContrastImage;
+                return this.largeHighContrastImage;
             }
             set
             {
                 // set the value
-                largeHighContrastImage.Value = value;
+                this.largeHighContrastImage.Value = value;
 
-                UpdateInvalidationState(PropertyKeys.LargeHighContrastImage, InvalidationState.Pending);
+                this.UpdateInvalidationState(PropertyKeys.LargeHighContrastImage, InvalidationState.Pending);
 
                 // force state changed
-                OnStateChanged(EventArgs.Empty);
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -1338,17 +1302,17 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return smallImage;
+                return this.smallImage;
             }
             set
             {
                 // set the value
-                smallImage.Value = value;
+                this.smallImage.Value = value;
 
-                UpdateInvalidationState(PropertyKeys.SmallImage, InvalidationState.Pending);
+                this.UpdateInvalidationState(PropertyKeys.SmallImage, InvalidationState.Pending);
 
                 // force state changed
-                OnStateChanged(EventArgs.Empty);
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -1370,17 +1334,17 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 // You'll need to take dpi into consideration as well.
-                return smallHighContrastImage;
+                return this.smallHighContrastImage;
             }
             set
             {
                 // set the value
-                smallHighContrastImage.Value = value;
+                this.smallHighContrastImage.Value = value;
 
-                UpdateInvalidationState(PropertyKeys.SmallHighContrastImage, InvalidationState.Pending);
+                this.UpdateInvalidationState(PropertyKeys.SmallHighContrastImage, InvalidationState.Pending);
 
                 // force state changed
-                OnStateChanged(EventArgs.Empty);
+                this.OnStateChanged(EventArgs.Empty);
             }
         }
 
@@ -1396,17 +1360,17 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual string LabelTitle
         {
-            get { return _labelTitle; }
+            get { return this._labelTitle; }
 
             set
             {
-                if (_labelTitle != value)
+                if (this._labelTitle != value)
                 {
-                    _labelTitle = TextHelper.UnescapeNewlines(value);
+                    this._labelTitle = TextHelper.UnescapeNewlines(value);
 
-                    UpdateInvalidationState(PropertyKeys.Label, InvalidationState.Pending);
+                    this.UpdateInvalidationState(PropertyKeys.Label, InvalidationState.Pending);
 
-                    OnStateChanged(EventArgs.Empty);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1423,15 +1387,15 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string LabelDescription
         {
-            get { return _labelDescription; }
+            get { return this._labelDescription; }
 
             set
             {
-                if (_labelDescription != value)
+                if (this._labelDescription != value)
                 {
-                    _labelDescription = value;
-                    UpdateInvalidationState(PropertyKeys.LabelDescription, InvalidationState.Pending);
-                    OnStateChanged(EventArgs.Empty);
+                    this._labelDescription = value;
+                    this.UpdateInvalidationState(PropertyKeys.LabelDescription, InvalidationState.Pending);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1448,14 +1412,14 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual string TooltipDescription
         {
-            get { return _tooltipDescription; }
+            get { return this._tooltipDescription; }
             set
             {
-                if (_tooltipDescription != value)
+                if (this._tooltipDescription != value)
                 {
-                    _tooltipDescription = value;
-                    UpdateInvalidationState(PropertyKeys.TooltipDescription, InvalidationState.Pending);
-                    OnStateChanged(EventArgs.Empty);
+                    this._tooltipDescription = value;
+                    this.UpdateInvalidationState(PropertyKeys.TooltipDescription, InvalidationState.Pending);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1483,14 +1447,14 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string TooltipTitle
         {
-            get { return _tooltipTitle; }
+            get { return this._tooltipTitle; }
             set
             {
-                if (_tooltipTitle != value)
+                if (this._tooltipTitle != value)
                 {
-                    _tooltipTitle = value;
-                    UpdateInvalidationState(PropertyKeys.TooltipTitle, InvalidationState.Pending);
-                    OnStateChanged(EventArgs.Empty);
+                    this._tooltipTitle = value;
+                    this.UpdateInvalidationState(PropertyKeys.TooltipTitle, InvalidationState.Pending);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1508,11 +1472,11 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return tag;
+                return this.tag;
             }
             set
             {
-                tag = value;
+                this.tag = value;
             }
         }
 
@@ -1528,17 +1492,17 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return on;
+                return this.on;
             }
             set
             {
-                if (on != value)
+                if (this.on != value)
                 {
                     //	Set the value.
-                    on = value;
+                    this.on = value;
 
                     //	Fire the StateChanged event.
-                    OnStateChanged(EventArgs.Empty);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1555,19 +1519,19 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return enabled;
+                return this.enabled;
             }
             set
             {
-                if (enabled != value)
+                if (this.enabled != value)
                 {
                     //	Set the value.
-                    enabled = value;
+                    this.enabled = value;
 
-                    UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
+                    this.UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
 
                     //	Fire the state changed event.
-                    OnStateChanged(EventArgs.Empty);
+                    this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
@@ -1584,16 +1548,16 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return latched;
+                return this.latched;
             }
             set
             {
-                if (latched != value)
+                if (this.latched != value)
                 {
                     //	Set the value.
-                    latched = value;
-                    UpdateInvalidationState(PropertyKeys.BooleanValue, InvalidationState.Pending);
-                    OnStateChanged(null);
+                    this.latched = value;
+                    this.UpdateInvalidationState(PropertyKeys.BooleanValue, InvalidationState.Pending);
+                    this.OnStateChanged(null);
                 }
             }
         }
@@ -1601,18 +1565,15 @@ namespace OpenLiveWriter.ApplicationFramework
 
         #region Public Methods
 
-        public void LoadResources()
-        {
-            CommandResourceLoader.ApplyResources(this);
-        }
+        public void LoadResources() => CommandResourceLoader.ApplyResources(this);
 
         private void InitializeImageLoaders()
         {
-            largeImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(Identifier, "LargeImage") ?? CommandResourceLoader.MissingLarge);
-            smallImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(Identifier, "SmallImage") ?? CommandResourceLoader.MissingSmall);
+            this.largeImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(this.Identifier, "LargeImage") ?? CommandResourceLoader.MissingLarge);
+            this.smallImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(this.Identifier, "SmallImage") ?? CommandResourceLoader.MissingSmall);
 
-            largeHighContrastImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(Identifier, "LargeHighContrastImage") ?? largeImage);
-            smallHighContrastImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(Identifier, "SmallHighContrastImage") ?? smallImage);
+            this.largeHighContrastImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(this.Identifier, "LargeHighContrastImage") ?? this.largeImage);
+            this.smallHighContrastImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(this.Identifier, "SmallHighContrastImage") ?? this.smallImage);
         }
 
         /// <summary>
@@ -1620,9 +1581,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void PerformExecute()
         {
-            if (On && Enabled)
+            if (this.On && this.Enabled)
             {
-                OnExecute(EventArgs.Empty);
+                this.OnExecute(EventArgs.Empty);
             }
             else
             {
@@ -1635,9 +1596,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void PerformExecuteWithArgs(ExecuteEventHandlerArgs args)
         {
-            if (On && Enabled)
+            if (this.On && this.Enabled)
             {
-                OnExecute(args);
+                this.OnExecute(args);
             }
             else
             {
@@ -1649,9 +1610,9 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (verb == CommandExecutionVerb.Execute)
             {
-                if (On && Enabled)
+                if (this.On && this.Enabled)
                 {
-                    OnExecute(args);
+                    this.OnExecute(args);
                 }
                 else
                 {
@@ -1660,7 +1621,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else
             {
-                Debug.Fail("Expected execute verb on " + CommandId);
+                Debug.Fail("Expected execute verb on " + this.CommandId);
             }
         }
 
@@ -1669,13 +1630,13 @@ namespace OpenLiveWriter.ApplicationFramework
             switch (verb)
             {
                 case CommandExecutionVerb.Execute:
-                    PerformExecute();
+                    this.PerformExecute();
                     break;
                 case CommandExecutionVerb.Preview:
-                    Debug.Fail("Preview is not implemented for " + CommandId);
+                    Debug.Fail("Preview is not implemented for " + this.CommandId);
                     break;
                 case CommandExecutionVerb.CancelPreview:
-                    Debug.Fail("CancelPreview is not implemented for " + CommandId);
+                    Debug.Fail("CancelPreview is not implemented for " + this.CommandId);
                     break;
                 default:
                     Debug.Fail("Unexpected CommandExecutionVerb.");
@@ -1687,25 +1648,25 @@ namespace OpenLiveWriter.ApplicationFramework
 
         public virtual int UpdateProperty(ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)
         {
-            Debug.Assert(!_flushing, "UpdateProperty called while flushing pending invalidations!");
+            Debug.Assert(!this._flushing, "UpdateProperty called while flushing pending invalidations!");
             try
             {
                 newValue = new PropVariant();
-                GetPropVariant(key, currentValue, ref newValue);
+                this.GetPropVariant(key, currentValue, ref newValue);
 
                 // Remove key from dictionary since we have updated it.
-                pendingInvalidations.Remove(key);
+                this.pendingInvalidations.Remove(key);
 
                 if (newValue.IsNull())
                 {
-                    Trace.Fail("Didn't properly update property for " + PropertyKeys.GetName(key) + " on command " + CommandId);
+                    Trace.Fail("Didn't properly update property for " + PropertyKeys.GetName(key) + " on command " + this.CommandId);
                     newValue = new PropVariant();
                 }
             }
             catch (Exception ex)
             {
-                UpdateInvalidationState(key, InvalidationState.Error);
-                Trace.Fail("Exception in UpdateProperty for " + PropertyKeys.GetName(key) + " on command " + CommandId + ": " + ex);
+                this.UpdateInvalidationState(key, InvalidationState.Error);
+                Trace.Fail("Exception in UpdateProperty for " + PropertyKeys.GetName(key) + " on command " + this.CommandId + ": " + ex);
                 newValue = new PropVariant();
             }
 
@@ -1721,10 +1682,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// This method can be called to raise the ShowCommandBarButtonContextMenu event.
         /// </summary>
-        public void PerformShowCommandBarButtonContextMenu()
-        {
-            OnShowCommandBarButtonContextMenu(EventArgs.Empty);
-        }
+        public void PerformShowCommandBarButtonContextMenu() => this.OnShowCommandBarButtonContextMenu(EventArgs.Empty);
 
         #endregion Public Methods
 
@@ -1733,10 +1691,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Raises the BeforeShowInMenu event.
         /// </summary>
-        internal void InvokeBeforeShowInMenu(EventArgs e)
-        {
-            OnBeforeShowInMenu(e);
-        }
+        internal void InvokeBeforeShowInMenu(EventArgs e) => this.OnBeforeShowInMenu(e);
 
         #endregion Internal Methods
 
@@ -1746,10 +1701,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Raises the CommandBarButtonTextChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnCommandBarButtonTextChanged(EventArgs e)
-        {
-            RaiseEvent(CommandBarButtonTextChangedEventKey, e);
-        }
+        protected virtual void OnCommandBarButtonTextChanged(EventArgs e) => this.RaiseEvent(CommandBarButtonTextChangedEventKey, e);
 
         /// <summary>
         /// Raises the Execute event.
@@ -1759,8 +1711,8 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             try
             {
-                bool executed = RaiseEvent(ExecuteEventKey, e);
-                Debug.Assert(executed || Events[ExecuteWithArgsEventKey] == null, "Command " + CommandId + " was executed without args, but only arg handlers were registered");
+                bool executed = this.RaiseEvent(ExecuteEventKey, e);
+                Debug.Assert(executed || this.Events[ExecuteWithArgsEventKey] == null, "Command " + this.CommandId + " was executed without args, but only arg handlers were registered");
             }
             catch (Exception ex)
             {
@@ -1776,8 +1728,8 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             try
             {
-                bool executed = RaiseEvent(ExecuteWithArgsEventKey, args);
-                Debug.Assert(executed || Events[ExecuteEventKey] == null, "Command " + CommandId + " was executed with args, but only non-arg handlers were registered");
+                bool executed = this.RaiseEvent(ExecuteWithArgsEventKey, args);
+                Debug.Assert(executed || this.Events[ExecuteEventKey] == null, "Command " + this.CommandId + " was executed with args, but only non-arg handlers were registered");
             }
             catch (Exception ex)
             {
@@ -1789,33 +1741,27 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Raises the ShowCommandBarButtonContextMenu event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnShowCommandBarButtonContextMenu(EventArgs e)
-        {
-            RaiseEvent(ShowCommandBarButtonContextMenuEventKey, e);
-        }
+        protected virtual void OnShowCommandBarButtonContextMenu(EventArgs e) => this.RaiseEvent(ShowCommandBarButtonContextMenuEventKey, e);
 
         public virtual void Invalidate()
         {
-            UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
-            OnStateChanged(EventArgs.Empty);
+            this.UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
+            this.OnStateChanged(EventArgs.Empty);
         }
 
         public void Invalidate(PropertyKey[] keys)
         {
             foreach (PropertyKey key in keys)
-                UpdateInvalidationState(key, InvalidationState.Pending);
+                this.UpdateInvalidationState(key, InvalidationState.Pending);
 
-            OnStateChanged(EventArgs.Empty);
+            this.OnStateChanged(EventArgs.Empty);
         }
 
         /// <summary>
         /// Raises the StateChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnStateChanged(EventArgs e)
-        {
-            RaiseEvent(StateChangedEventKey, e);
-        }
+        protected virtual void OnStateChanged(EventArgs e) => this.RaiseEvent(StateChangedEventKey, e);
 
         public CommandId CommandId { get; set; }
 
@@ -1823,37 +1769,25 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Raises the VisibleOnContextMenuChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnVisibleOnContextMenuChanged(EventArgs e)
-        {
-            RaiseEvent(VisibleOnContextMenuChangedEventKey, e);
-        }
+        protected virtual void OnVisibleOnContextMenuChanged(EventArgs e) => this.RaiseEvent(VisibleOnContextMenuChangedEventKey, e);
 
         /// <summary>
         /// Raises the VisibleOnMainMenuChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnVisibleOnMainMenuChanged(EventArgs e)
-        {
-            RaiseEvent(VisibleOnMainMenuChangedEventKey, e);
-        }
+        protected virtual void OnVisibleOnMainMenuChanged(EventArgs e) => this.RaiseEvent(VisibleOnMainMenuChangedEventKey, e);
 
         /// <summary>
         /// Raises the VisibleOnCommandBarChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnVisibleOnCommandBarChanged(EventArgs e)
-        {
-            RaiseEvent(VisibleOnCommandBarChangedEventKey, e);
-        }
+        protected virtual void OnVisibleOnCommandBarChanged(EventArgs e) => this.RaiseEvent(VisibleOnCommandBarChangedEventKey, e);
 
         /// <summary>
         /// Raises the BeforeShowInMenu event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnBeforeShowInMenu(EventArgs e)
-        {
-            RaiseEvent(BeforeShowInMenuEventKey, e);
-        }
+        protected virtual void OnBeforeShowInMenu(EventArgs e) => this.RaiseEvent(BeforeShowInMenuEventKey, e);
 
         #endregion Protected Events
 
@@ -1868,7 +1802,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 return bitmap;
 
             //	Obtain the type.
-            Type type = GetType();
+            Type type = this.GetType();
 
             //	Attempt to load the bitmap from an Assembly resource stream.
             bitmap = ResourceHelper.LoadAssemblyResourceBitmap(type.Assembly, type.Namespace + ".Images", type.Name + propertyName + ".png", false);
@@ -1883,7 +1817,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         private bool RaiseEvent(object eventKey, EventArgs e)
         {
-            EventHandler eventHandler = (EventHandler)Events[eventKey];
+            EventHandler eventHandler = (EventHandler)this.Events[eventKey];
             if (eventHandler != null)
             {
                 eventHandler(this, e);
@@ -1899,7 +1833,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         private bool RaiseEvent(object eventKey, ExecuteEventHandlerArgs e)
         {
-            ExecuteEventHandler eventHandler = Events[eventKey] as ExecuteEventHandler;
+            ExecuteEventHandler eventHandler = this.Events[eventKey] as ExecuteEventHandler;
             if (eventHandler != null)
             {
                 eventHandler(this, e);
@@ -1917,7 +1851,7 @@ namespace OpenLiveWriter.ApplicationFramework
             if (obj is Command)
             {
                 Command otherCommand = (Command)obj;
-                return CommandId.CompareTo(otherCommand.CommandId);
+                return this.CommandId.CompareTo(otherCommand.CommandId);
             }
             else if (obj == null)
             {
@@ -1942,34 +1876,34 @@ namespace OpenLiveWriter.ApplicationFramework
         private PropertyKey[] _keys = new PropertyKey[MAX_PENDING_INVALIDATIONS];
         public void FlushPendingInvalidations(IUIFramework framework)
         {
-            Debug.Assert(!_flushing, "Flushing while already flushing!?!");
-            _flushing = true;
+            Debug.Assert(!this._flushing, "Flushing while already flushing!?!");
+            this._flushing = true;
 
             try
             {
-                Debug.Assert(pendingInvalidations.Count < _keys.Length, "Need to increase the size of MAX_PENDING_INVALIDATIONS.");
-                pendingInvalidations.Keys.CopyTo(_keys, 0);
+                Debug.Assert(this.pendingInvalidations.Count < this._keys.Length, "Need to increase the size of MAX_PENDING_INVALIDATIONS.");
+                this.pendingInvalidations.Keys.CopyTo(this._keys, 0);
 
-                for (int i = 0; i < pendingInvalidations.Count; i++)
+                for (int i = 0; i < this.pendingInvalidations.Count; i++)
                 {
-                    PropertyKey key = _keys[i];
-                    if (pendingInvalidations[key] == InvalidationState.Pending)
+                    PropertyKey key = this._keys[i];
+                    if (this.pendingInvalidations[key] == InvalidationState.Pending)
                     {
-                        int result = framework.InvalidateUICommand((uint)CommandId,
+                        int result = framework.InvalidateUICommand((uint)this.CommandId,
                                                       PropertyKeyExtensions.GetCommandInvalidationFlags(key),
                                                       key.ToPointer());
-                        pendingInvalidations[key] = result == 0 ? InvalidationState.WaitingForUpdateProperty : InvalidationState.Error;
+                        this.pendingInvalidations[key] = result == 0 ? InvalidationState.WaitingForUpdateProperty : InvalidationState.Error;
                     }
                 }
             }
             catch (Exception)
             {
-                pendingInvalidations.Clear();
+                this.pendingInvalidations.Clear();
                 throw;
             }
             finally
             {
-                _flushing = false;
+                this._flushing = false;
             }
         }
 
@@ -1978,89 +1912,23 @@ namespace OpenLiveWriter.ApplicationFramework
 
         protected internal void UpdateInvalidationState(PropertyKey key, InvalidationState invalidationState)
         {
-            if (pendingInvalidations.ContainsKey(key))
+            if (this.pendingInvalidations.ContainsKey(key))
             {
                 if (invalidationState == InvalidationState.Pending &&
-                    pendingInvalidations[key] == InvalidationState.WaitingForUpdateProperty)
+                    this.pendingInvalidations[key] == InvalidationState.WaitingForUpdateProperty)
                 {
                     // Nothing to do.  We're already waiting for an UpdateProperty callback.
                     return;
                 }
 
-                pendingInvalidations[key] = invalidationState;
+                this.pendingInvalidations[key] = invalidationState;
             }
             else
             {
-                Debug.Assert(!_flushing);
-                pendingInvalidations.Add(key, invalidationState);
-                Debug.Assert(pendingInvalidations.Count <= MAX_PENDING_INVALIDATIONS, "Need to increase MAX_PENDING_INVALIDATIONS?");
+                Debug.Assert(!this._flushing);
+                this.pendingInvalidations.Add(key, invalidationState);
+                Debug.Assert(this.pendingInvalidations.Count <= MAX_PENDING_INVALIDATIONS, "Need to increase MAX_PENDING_INVALIDATIONS?");
             }
-        }
-    }
-
-    public class ExecuteEventHandlerArgs : EventArgs
-    {
-        private Hashtable args = new Hashtable();
-
-        public bool Cancelled { get; set; }
-
-        public bool HasArg(string argName)
-        {
-            return args.Contains(argName);
-        }
-
-        public string GetString(string argName)
-        {
-            return (string)args[argName];
-        }
-
-        public int GetInt(string argName)
-        {
-            return (int)args[argName];
-        }
-
-        public decimal GetDecimal(string argName)
-        {
-            return (decimal)args[argName];
-        }
-
-        public Color GetColor(string argName)
-        {
-            return (Color)args[argName];
-        }
-
-        public ExecuteEventHandlerArgs(string argName, string arg)
-        {
-            args.Add(argName, arg);
-        }
-
-        public ExecuteEventHandlerArgs(string argName, int arg)
-        {
-            args.Add(argName, arg);
-        }
-
-        public ExecuteEventHandlerArgs(string argName, decimal arg)
-        {
-            args.Add(argName, arg);
-        }
-
-        public ExecuteEventHandlerArgs()
-        {
-        }
-
-        public void Add(string argName, int arg)
-        {
-            args.Add(argName, arg);
-        }
-
-        public void Add(string argName, bool arg)
-        {
-            args.Add(argName, arg);
-        }
-
-        public void Add(string argName, Color color)
-        {
-            args.Add(argName, color);
         }
     }
 

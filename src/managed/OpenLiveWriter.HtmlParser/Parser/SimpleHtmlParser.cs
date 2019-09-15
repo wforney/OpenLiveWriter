@@ -1,14 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.Collections;
-using System.Diagnostics;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-
 namespace OpenLiveWriter.HtmlParser.Parser
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Text;
+    using System.Text.RegularExpressions;
+
     /// <summary>
     /// Parser that is suitable for parsing HTML.
     ///
@@ -32,8 +32,10 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         private static readonly Regex endScript = new Regex(@"</script\s*>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex endStyle = new Regex(@"</style\s*>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex begin = new Regex(@"<(?<tagname>[a-z][a-z0-9\.\-_:]*)",
+        private static readonly Regex begin = new Regex(
+            @"<(?<tagname>[a-z][a-z0-9\.\-_:]*)",
             RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
+
         private static readonly Regex attrName = new Regex(@"\s*([a-z][a-z0-9\.\-_:]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex quotedAttrValue = new Regex(@"\s*=\s*([""'])(.*?)\1", RegexOptions.Compiled | RegexOptions.Singleline);
         private static readonly Regex unquotedAttrValue = new Regex(@"\s*=\s*([^\s>]+)", RegexOptions.Compiled);
@@ -49,145 +51,146 @@ namespace OpenLiveWriter.HtmlParser.Parser
         private readonly StatefulMatcher endBeginTagMatcher;
         private readonly StatefulMatcher endMatcher;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleHtmlParser"/> class.
+        /// </summary>
         /// <param name="data">The HTML string.</param>
         public SimpleHtmlParser(string data)
         {
             this.data = data;
 
-            commentMatcher = new StatefulMatcher(data, comment);
-            directiveMatcher = new StatefulMatcher(data, directive);
-            beginMatcher = new StatefulMatcher(data, begin);
-            endMatcher = new StatefulMatcher(data, end);
-            attrNameMatcher = new StatefulMatcher(data, attrName);
-            quotedAttrValueMatcher = new StatefulMatcher(data, quotedAttrValue);
-            unquotedAttrValueMatcher = new StatefulMatcher(data, unquotedAttrValue);
-            endBeginTagMatcher = new StatefulMatcher(data, endBeginTag);
+            this.commentMatcher = new StatefulMatcher(data, comment);
+            this.directiveMatcher = new StatefulMatcher(data, directive);
+            this.beginMatcher = new StatefulMatcher(data, begin);
+            this.endMatcher = new StatefulMatcher(data, end);
+            this.attrNameMatcher = new StatefulMatcher(data, attrName);
+            this.quotedAttrValueMatcher = new StatefulMatcher(data, quotedAttrValue);
+            this.unquotedAttrValueMatcher = new StatefulMatcher(data, unquotedAttrValue);
+            this.endBeginTagMatcher = new StatefulMatcher(data, endBeginTag);
         }
 
-        public int Position
-        {
-            get
-            {
-                if (peekElements.Count != 0)
-                    return peekElements[0].Offset;
-                if (elementStack.Count != 0)
-                    return elementStack.Peek().Offset;
-                else
-                    return pos;
-            }
-        }
+        /// <summary>
+        /// Gets the position.
+        /// </summary>
+        /// <value>The position.</value>
+        public int Position => this.peekElements.Count == 0
+                    ? this.elementStack.Count == 0 ? this.pos : this.elementStack.Peek().Offset
+                    : this.peekElements[0].Offset;
 
+        /// <summary>
+        /// Peeks the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset.</param>
+        /// <returns>Element.</returns>
         public Element Peek(int offset)
         {
             Element e;
-            while (peekElements.Count <= offset && (e = Next(false)) != null)
-                peekElements.Add(e);
+            while (this.peekElements.Count <= offset && (e = this.Next(false)) != null)
+            {
+                this.peekElements.Add(e);
+            }
 
-            if (peekElements.Count > offset)
-                return peekElements[offset];
-            else
-                return null;
+            return this.peekElements.Count > offset ? this.peekElements[offset] : null;
         }
 
-        public Element Next()
-        {
-            return Next(true);
-        }
+        /// <summary>
+        /// Nexts this instance.
+        /// </summary>
+        /// <returns>Element.</returns>
+        public Element Next() => this.Next(true);
+
         /// <summary>
         /// Retrieves the next element from the stream, or null
         /// if the end of the stream has been reached.
         /// </summary>
         private Element Next(bool allowPeekElement)
         {
-            if (allowPeekElement && peekElements.Count > 0)
+            if (allowPeekElement && this.peekElements.Count > 0)
             {
-                Element peekElement = peekElements[0];
-                peekElements.RemoveAt(0);
+                var peekElement = this.peekElements[0];
+                this.peekElements.RemoveAt(0);
                 return peekElement;
             }
 
-            if (elementStack.Count != 0)
+            if (this.elementStack.Count != 0)
             {
-                return elementStack.Pop();
+                return this.elementStack.Pop();
             }
 
-            int dataLen = data.Length;
-            if (dataLen == pos)
+            var dataLen = this.data.Length;
+            if (dataLen == this.pos)
             {
                 // If we're at EOF, return
-
                 return null;
             }
 
             // None of the special cases are true.  Start consuming characters
-
-            int tokenStart = pos;
+            var tokenStart = this.pos;
 
             while (true)
             {
                 // Consume everything until a tag-looking thing
-                while (pos < dataLen && data[pos] != '<')
-                    pos++;
+                while (this.pos < dataLen && this.data[this.pos] != '<')
+                {
+                    this.pos++;
+                }
 
-                if (pos >= dataLen)
+                if (this.pos >= dataLen)
                 {
                     // EOF has been reached.
-                    if (tokenStart != pos)
-                        return new Text(data, tokenStart, pos - tokenStart);
-                    else
-                        return null;
+                    return tokenStart != this.pos ? new Text(this.data, tokenStart, this.pos - tokenStart) : null;
                 }
 
                 // We started parsing right on a tag-looking thing.  Try
                 // parsing it as such.  If it doesn't turn out to be a tag,
                 // we'll return it as text
+                var oldPos = this.pos;
 
-                int oldPos = pos;
-
-                Element element;
-                EndTag trailingEnd;
-                int len = ParseMarkup(out element, out trailingEnd);
+                var len = this.ParseMarkup(out var element, out var trailingEnd);
                 if (len >= 0)
                 {
-                    pos += len;
+                    this.pos += len;
 
                     if (trailingEnd != null)
                     {
                         // empty-element tag detected, add implicit end tag
-                        elementStack.Push(trailingEnd);
+                        this.elementStack.Push(trailingEnd);
                     }
                     else if (element is BeginTag)
                     {
                         // look for <script> or <style> body
-
                         Regex consumeTextUntil = null;
 
-                        BeginTag tag = (BeginTag)element;
+                        var tag = (BeginTag)element;
                         if (tag.NameEquals("script"))
+                        {
                             consumeTextUntil = endScript;
+                        }
                         else if (tag.NameEquals("style"))
+                        {
                             consumeTextUntil = endStyle;
+                        }
 
                         if (consumeTextUntil != null)
                         {
-                            int structuredTextLen = ConsumeStructuredText(data, pos, consumeTextUntil);
-                            pos += structuredTextLen;
+                            var structuredTextLen = this.ConsumeStructuredText(this.data, this.pos, consumeTextUntil);
+                            this.pos += structuredTextLen;
                         }
                     }
 
-                    elementStack.Push(element);
+                    this.elementStack.Push(element);
                     if (oldPos != tokenStart)
                     {
-                        elementStack.Push(new Text(data, tokenStart, oldPos - tokenStart));
+                        this.elementStack.Push(new Text(this.data, tokenStart, oldPos - tokenStart));
                     }
 
-                    return elementStack.Pop();
+                    return this.elementStack.Pop();
                 }
                 else
                 {
                     // '<' didn't begin a tag after all;
                     // consume it and continue
-                    pos++;
+                    this.pos++;
                     continue;
                 }
             }
@@ -200,19 +203,23 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </summary>
         /// <param name="endTagName">The name of the end tag, e.g. "div"
         /// (do NOT include angle brackets).</param>
+        /// <returns>
+        /// The text.
+        /// </returns>
         public string CollectTextUntil(string endTagName)
         {
-            int tagCount = 1;
-            StringBuilder buf = new StringBuilder();
+            var tagCount = 1;
+            var buf = new StringBuilder();
 
             while (true)
             {
-                Element el = Next();
+                var el = this.Next();
 
                 if (el == null)
                 {
                     break;
                 }
+
                 if (el is BeginTag && ((BeginTag)el).NameEquals(endTagName))
                 {
                     tagCount++;
@@ -220,7 +227,9 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 else if (el is EndTag && ((EndTag)el).NameEquals(endTagName))
                 {
                     if (--tagCount == 0)
+                    {
                         break;
+                    }
                 }
                 else if (el is Text)
                 {
@@ -233,7 +242,10 @@ namespace OpenLiveWriter.HtmlParser.Parser
                     // and then call HTMLDocumentHelper.HTMLToPlainText() on the
                     // buf before returning.
                     if (buf.Length != 0)
+                    {
                         buf.Append(' ');
+                    }
+
                     buf.Append(((Text)el).ToString());
                 }
             }
@@ -248,19 +260,23 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </summary>
         /// <param name="endTagName">The name of the end tag, e.g. "div"
         /// (do NOT include angle brackets).</param>
+        /// <returns>
+        /// The text.
+        /// </returns>
         public string CollectHtmlUntil(string endTagName)
         {
-            int tagCount = 1;
-            StringBuilder buf = new StringBuilder();
+            var tagCount = 1;
+            var buf = new StringBuilder();
 
             while (true)
             {
-                Element el = Next();
+                var el = this.Next();
 
                 if (el == null)
                 {
                     break;
                 }
+
                 if (el is BeginTag && ((BeginTag)el).NameEquals(endTagName))
                 {
                     tagCount++;
@@ -268,14 +284,23 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 else if (el is EndTag && ((EndTag)el).NameEquals(endTagName))
                 {
                     if (--tagCount == 0)
+                    {
                         break;
+                    }
                 }
-                buf.Append(data, el.Offset, el.Length);
+
+                buf.Append(this.data, el.Offset, el.Length);
             }
 
             return buf.ToString();
         }
 
+        /// <summary>
+        /// Parses the markup.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="trailingEnd">The trailing end.</param>
+        /// <returns>System.Int32.</returns>
         private int ParseMarkup(out Element element, out EndTag trailingEnd)
         {
             trailingEnd = null;
@@ -283,126 +308,138 @@ namespace OpenLiveWriter.HtmlParser.Parser
             Match m;
 
             // commentMatcher MUST be checked before directiveMatcher!
-            m = commentMatcher.Match(pos);
+            m = this.commentMatcher.Match(this.pos);
             if (m != null)
             {
-                element = new Comment(data, pos, m.Length);
+                element = new Comment(this.data, this.pos, m.Length);
                 return m.Length;
             }
 
             // commentMatcher MUST be checked before directiveMatcher!
-            m = directiveMatcher.Match(pos);
+            m = this.directiveMatcher.Match(this.pos);
             if (m != null)
             {
-                element = new MarkupDirective(data, pos, m.Length);
+                element = new MarkupDirective(this.data, this.pos, m.Length);
                 return m.Length;
             }
 
-            m = endMatcher.Match(pos);
+            m = this.endMatcher.Match(this.pos);
             if (m != null)
             {
-                element = new EndTag(data, pos, m.Length, m.Groups[1].Value);
+                element = new EndTag(this.data, this.pos, m.Length, m.Groups[1].Value);
                 return m.Length;
             }
 
-            m = beginMatcher.Match(pos);
+            m = this.beginMatcher.Match(this.pos);
             if (m != null)
             {
-                return ParseBeginTag(m, out element, out trailingEnd);
+                return this.ParseBeginTag(m, out element, out trailingEnd);
             }
 
             element = null;
             return -1;
         }
 
+        /// <summary>
+        /// Parses the begin tag.
+        /// </summary>
+        /// <param name="beginMatch">The begin match.</param>
+        /// <param name="element">The element.</param>
+        /// <param name="trailingEnd">The trailing end.</param>
+        /// <returns>System.Int32.</returns>
         private int ParseBeginTag(Match beginMatch, out Element element, out EndTag trailingEnd)
         {
             trailingEnd = null;
 
-            Group tagNameGroup = beginMatch.Groups["tagname"];
-            string tagName = tagNameGroup.Value;
+            var tagNameGroup = beginMatch.Groups["tagname"];
+            var tagName = tagNameGroup.Value;
 
-            int tagPos = tagNameGroup.Index + tagNameGroup.Length;
+            var tagPos = tagNameGroup.Index + tagNameGroup.Length;
 
             ArrayList attributes = null;
             LazySubstring extraResidue = null;
-            bool isComplete = false;
+            var isComplete = false;
 
             while (true)
             {
-                Match match = endBeginTagMatcher.Match(tagPos);
+                var match = this.endBeginTagMatcher.Match(tagPos);
                 if (match != null)
                 {
                     tagPos += match.Length;
                     if (match.Groups[1].Success)
                     {
                         isComplete = true;
-                        if (supportTrailingEnd)
-                            trailingEnd = new EndTag(data, tagPos, 0, tagName, true);
+                        if (this.supportTrailingEnd)
+                        {
+                            trailingEnd = new EndTag(this.data, tagPos, 0, tagName, true);
+                        }
                     }
+
                     break;
                 }
 
-                match = attrNameMatcher.Match(tagPos);
+                match = this.attrNameMatcher.Match(tagPos);
                 if (match == null)
                 {
-                    int residueStart = tagPos;
+                    var residueStart = tagPos;
                     int residueEnd;
 
-                    residueEnd = tagPos = data.IndexOfAny(new char[] { '<', '>' }, tagPos);
+                    residueEnd = tagPos = this.data.IndexOfAny(new char[] { '<', '>' }, tagPos);
                     if (tagPos == -1)
                     {
-                        residueEnd = tagPos = data.Length;
+                        residueEnd = tagPos = this.data.Length;
                     }
-                    else if (data[tagPos] == '>')
+                    else if (this.data[tagPos] == '>')
                     {
                         tagPos++;
                     }
                     else
                     {
-                        Debug.Assert(data[tagPos] == '<');
+                        Debug.Assert(this.data[tagPos] == '<', "The tag position should point to the start tag.");
                     }
 
-                    extraResidue = residueStart < residueEnd ? new LazySubstring(data, residueStart, residueEnd - residueStart) : null;
+                    extraResidue = residueStart < residueEnd ? new LazySubstring(this.data, residueStart, residueEnd - residueStart) : null;
                     break;
                 }
                 else
                 {
                     tagPos += match.Length;
-                    LazySubstring attrName = new LazySubstring(data, match.Groups[1].Index, match.Groups[1].Length);
+                    var attrName = new LazySubstring(this.data, match.Groups[1].Index, match.Groups[1].Length);
                     LazySubstring attrValue = null;
-                    match = quotedAttrValueMatcher.Match(tagPos);
+                    match = this.quotedAttrValueMatcher.Match(tagPos);
                     if (match != null)
                     {
-                        attrValue = new LazySubstring(data, match.Groups[2].Index, match.Groups[2].Length);
+                        attrValue = new LazySubstring(this.data, match.Groups[2].Index, match.Groups[2].Length);
                         tagPos += match.Length;
                     }
                     else
                     {
-                        match = unquotedAttrValueMatcher.Match(tagPos);
+                        match = this.unquotedAttrValueMatcher.Match(tagPos);
                         if (match != null)
                         {
-                            attrValue = new LazySubstring(data, match.Groups[1].Index, match.Groups[1].Length);
+                            attrValue = new LazySubstring(this.data, match.Groups[1].Index, match.Groups[1].Length);
                             tagPos += match.Length;
                         }
                     }
 
                     // no attribute value; that's OK
-
                     if (attributes == null)
+                    {
                         attributes = new ArrayList();
+                    }
+
                     attributes.Add(new Attr(attrName, attrValue));
                 }
             }
 
-            int len = tagPos - beginMatch.Index;
-            element = new BeginTag(data, beginMatch.Index, len, tagName, attributes == null ? null : (Attr[])attributes.ToArray(typeof(Attr)), isComplete, extraResidue);
+            var len = tagPos - beginMatch.Index;
+            element = new BeginTag(this.data, beginMatch.Index, len, tagName, attributes == null ? null : (Attr[])attributes.ToArray(typeof(Attr)), isComplete, extraResidue);
             return len;
         }
 
         private int ConsumeStructuredText(string data, int offset, Regex stopAt)
         {
-            Match match = stopAt.Match(data, offset);
+            var match = stopAt.Match(data, offset);
             /*
                         if (!match.Success)
                         {
@@ -415,36 +452,44 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         }
             */
 
-            int end = match.Success ? match.Index : data.Length;
+            var end = match.Success ? match.Index : data.Length;
 
             // HACK: this code should not be aware of parser types
-            IElementSource source = (stopAt == endScript) ? (IElementSource)new JavascriptParser(data, offset, end - offset) : (IElementSource)new CssParser(data, offset, end - offset);
-            Stack stack = new Stack();
+            var source = (stopAt == endScript) ? (IElementSource)new JavascriptParser(data, offset, end - offset) : (IElementSource)new CssParser(data, offset, end - offset);
+            var stack = new Stack();
             Element element;
-            int last = pos;
-            while (null != (element = source.Next()))
+            var last = this.pos;
+            while ((element = source.Next()) != null)
             {
                 stack.Push(element);
             }
+
             foreach (Element el in stack)
             {
-                elementStack.Push(el);
+                this.elementStack.Push(el);
             }
 
             return end - offset;
         }
 
+        /// <summary>
+        /// Class StatefulMatcher.
+        /// </summary>
         private class StatefulMatcher
         {
-#if DEBUG
-            bool warned;
-#endif
-
             private readonly string input;
             private readonly Regex regex;
+#if DEBUG
+            private bool warned;
+#endif
             private int lastStartOffset;
             private Match lastMatch;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="StatefulMatcher"/> class.
+            /// </summary>
+            /// <param name="input">The input.</param>
+            /// <param name="regex">The regex.</param>
             public StatefulMatcher(string input, Regex regex)
             {
                 this.input = input;
@@ -456,6 +501,11 @@ namespace OpenLiveWriter.HtmlParser.Parser
 #endif
             }
 
+            /// <summary>
+            /// Matches the specified position.
+            /// </summary>
+            /// <param name="pos">The position.</param>
+            /// <returns>Match.</returns>
             public Match Match(int pos)
             {
                 /* We need to reexecute the search under any of these three conditions:
@@ -464,87 +514,41 @@ namespace OpenLiveWriter.HtmlParser.Parser
                  * 2) The last search successfully matched before it got to the desired position
                  * 3) The last search was started past the desired position
                  */
-                if (lastMatch == null || (lastMatch.Success && lastMatch.Index < pos) || lastStartOffset > pos)
+                if (this.lastMatch == null || (this.lastMatch.Success && this.lastMatch.Index < pos) || this.lastStartOffset > pos)
                 {
 #if DEBUG
-                    if (lastStartOffset > pos && lastStartOffset != int.MaxValue)
+                    if (this.lastStartOffset > pos && this.lastStartOffset != int.MaxValue)
                     {
-                        Debug.Assert(!warned, "StatefulMatcher moving backwards; this will work but is inefficient");
-                        warned = true;
+                        Debug.Assert(!this.warned, "StatefulMatcher moving backwards; this will work but is inefficient");
+                        this.warned = true;
                     }
 #endif
-                    PerformMatch(pos);
+                    this.PerformMatch(pos);
                 }
 
-                if (lastMatch.Success && pos == lastMatch.Index)
-                    return lastMatch;
-                else
-                    return null;
+                return this.lastMatch.Success && pos == this.lastMatch.Index ? this.lastMatch : null;
             }
 
+            /// <summary>
+            /// Performs the match.
+            /// </summary>
+            /// <param name="pos">The position.</param>
             private void PerformMatch(int pos)
             {
-                lastStartOffset = pos;
-                lastMatch = regex.Match(input, pos);
+                this.lastStartOffset = pos;
+                this.lastMatch = this.regex.Match(this.input, pos);
             }
         }
 
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
         public static void Create()
         {
             // Touch a static variable to make sure all static variables are created
             if (comment == null)
             {
-
             }
         }
     }
-
-    /// <summary>
-    /// String.Substring is very expensive, so we avoid calling it
-    /// until the caller demands it.
-    /// </summary>
-    internal class LazySubstring
-    {
-        private readonly string baseString;
-        private readonly int offset;
-        private readonly int length;
-
-        private string substring;
-
-        public LazySubstring(string baseString, int offset, int length)
-        {
-            this.baseString = baseString;
-            this.offset = offset;
-            this.length = length;
-        }
-
-        public string Value
-        {
-            get
-            {
-                if (substring == null)
-                    substring = baseString.Substring(offset, length);
-                return substring;
-            }
-        }
-
-        public int Offset
-        {
-            get { return offset; }
-        }
-
-        public int Length
-        {
-            get { return length; }
-        }
-
-        public static LazySubstring MaybeCreate(string val)
-        {
-            if (val == null)
-                return null;
-            else
-                return new LazySubstring(val, 0, val.Length);
-        }
-    }
-
 }

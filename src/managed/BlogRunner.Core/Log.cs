@@ -1,27 +1,53 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="Log.cs" company=".NET Foundation">
+// Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace BlogRunner.Core
 {
+    using System;
+
+    /// <summary>
+    /// The log class.
+    /// </summary>
     public class Log
     {
-        public delegate void Action();
-
+        /// <summary>
+        /// The indent level.
+        /// </summary>
         [ThreadStatic]
         private static int indentLevel;
 
+        /// <summary>
+        /// The action delegate.
+        /// </summary>
+        public delegate void Action();
+
+        /// <summary>
+        /// Gets the indent.
+        /// </summary>
+        /// <value>The indent.</value>
+        private static string Indent => new string(' ', indentLevel * 2);
+
+        /// <summary>
+        /// Writes the line.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public static void WriteLine(string message)
         {
             if (indentLevel > 0)
+            {
                 message = Indent + message.Replace("\n", Indent);
+            }
+
             Console.WriteLine(message);
         }
 
+        /// <summary>
+        /// Sections the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="action">The action.</param>
         public static void Section(string name, Action action)
         {
             WriteLine("/== " + name + " ====");
@@ -34,15 +60,8 @@ namespace BlogRunner.Core
             {
                 indentLevel--;
             }
-            WriteLine(@"\== " + name + " ====");
-        }
 
-        private static string Indent
-        {
-            get
-            {
-                return new string(' ', indentLevel * 2);
-            }
+            WriteLine(@"\== " + name + " ====");
         }
     }
 }

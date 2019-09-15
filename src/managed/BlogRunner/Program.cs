@@ -1,104 +1,104 @@
+// <copyright file="Program.cs" company=".NET Foundation">
 // Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BlogRunner.Core.Config;
-using BlogRunner.Core;
-using BlogRunner.Core.Tests;
-using OpenLiveWriter.CoreServices;
-using System.Reflection;
-using System.IO;
-using System.Diagnostics;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using System.Xml;
 
 namespace BlogRunner
 {
-    class Program
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using System.Xml;
+
+    using BlogRunner.Core;
+    using BlogRunner.Core.Config;
+    using BlogRunner.Core.Tests;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+
+    /// <summary>
+    /// Class Program.
+    /// </summary>
+    public class Program
     {
-        delegate Test[] TestFilter(params Test[] tests);
+        /// <summary>
+        /// The test filter delegate.
+        /// </summary>
+        /// <param name="tests">The tests.</param>
+        /// <returns>A filtered test array.</returns>
+        private delegate Test[] TestFilter(params Test[] tests);
 
-        private static void AddTests(List<Test> tests, TestFilter filter)
-        {
-            // New tests go here
-
-            tests.AddRange(filter(
-                new SupportsMultipleCategoriesTest(),
-                new SupportsPostAsDraftTest(),
-                new SupportsFuturePostTest(),
-                new SupportsEmptyTitlesTest()
-                ));
-
-            tests.Add(CreateCompositePostTest(filter,
-                new TitleEncodingTest(),
-                new SupportsEmbedsTest(),
-                new SupportsScriptsTest()
-                ));
-        }
-
-        private static Test CreateCompositePostTest(TestFilter filter, params PostTest[] tests)
-        {
-            return new CompositePostTest(
-                (PostTest[])ArrayHelper.Narrow(
-                                 filter(tests),
-                                 typeof(PostTest)));
-        }
-
-        static int Main(string[] args)
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The return code.</returns>
+        public static int Main(string[] args)
         {
             try
             {
                 ChangeErrorColors(ConsoleColor.Red);
 
-                BlogRunnerCommandLineOptions options = new BlogRunnerCommandLineOptions();
+                var options = new BlogRunnerCommandLineOptions();
                 options.Parse(args, true);
 
                 try
                 {
-
-                    if (options.GetFlagValue(BlogRunnerCommandLineOptions.OPTION_VERBOSE, false))
+                    if (options.GetFlagValue(BlogRunnerCommandLineOptions.OptionVerbose, false))
+                    {
                         Debug.Listeners.Add(new ConsoleTraceListener(true));
+                    }
 
-                    string providersPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OPTION_PROVIDERS, null));
-                    string configPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OPTION_CONFIG, null));
-                    string outputPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OPTION_OUTPUT, providersPath));
-                    List<string> providerIds = new List<string>(options.UnnamedArgs);
-                    string errorLogPath = (string)options.GetValue(BlogRunnerCommandLineOptions.OPTION_ERRORLOG, null);
+                    var providersPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OptionProviders, null));
+                    var configPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OptionConfig, null));
+                    var outputPath = Path.GetFullPath((string)options.GetValue(BlogRunnerCommandLineOptions.OptionOutput, providersPath));
+                    var providerIds = new List<string>(options.UnnamedArgs);
+                    var errorLogPath = (string)options.GetValue(BlogRunnerCommandLineOptions.OptionErrorLog, null);
                     if (errorLogPath != null)
                     {
                         errorLogPath = Path.GetFullPath(errorLogPath);
-                        Console.SetError(new CompositeTextWriter(
-                            Console.Error,
-                            File.CreateText(errorLogPath)));
+                        Console.SetError(
+                            new CompositeTextWriter(
+                                Console.Error,
+                                File.CreateText(errorLogPath)));
                     }
 
-                    ApplicationEnvironment.Initialize(Assembly.GetExecutingAssembly(),
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"\Windows Live\Writer\"));
+                    ApplicationEnvironment.Initialize(
+                        Assembly.GetExecutingAssembly(),
+                        Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                            @"\Windows Live\Writer\"));
                     ApplicationDiagnostics.VerboseLogging = true;
 
-                    Config config = Config.Load(configPath, providersPath);
-                    XmlDocument providers = new XmlDocument();
+                    var config = Config.Load(configPath, providersPath);
+                    var providers = new XmlDocument();
                     providers.Load(providersPath);
 
                     foreach (XmlElement provider in providers.SelectNodes("/providers/provider"))
                     {
-                        string providerId = provider.SelectSingleNode("id/text()").Value;
-                        string clientType = provider.SelectSingleNode("clientType/text()").Value;
+                        var providerId = provider.SelectSingleNode("id/text()").Value;
+                        var clientType = provider.SelectSingleNode("clientType/text()").Value;
 
                         if (providerIds.Count > 0 && !providerIds.Contains(providerId))
+                        {
                             continue;
+                        }
 
-                        Provider p = config.GetProviderById(providerId);
+                        var p = config.GetProviderById(providerId);
                         if (p == null)
+                        {
                             continue;
+                        }
 
                         p.ClientType = clientType;
 
-                        TestResultImpl results = new TestResultImpl();
+                        var results = new TestResultImpl();
 
-                        Blog b = p.Blog;
+                        var b = p.Blog;
                         if (b != null)
                         {
                             Console.Write(provider.SelectSingleNode("name/text()").Value);
@@ -106,15 +106,18 @@ namespace BlogRunner
                             Console.Write(b.HomepageUrl);
                             Console.WriteLine(")");
 
-                            List<Test> tests = new List<Test>();
-                            AddTests(tests, delegate (Test[] testArr)
+                            var tests = new List<Test>();
+                            AddTests(tests, delegate(Test[] testArr)
                                                 {
-                                                    for (int i = 0; i < testArr.Length; i++)
+                                                    for (var i = 0; i < testArr.Length; i++)
                                                     {
-                                                        Test t = testArr[i];
-                                                        string testName = t.GetType().Name;
+                                                        var t = testArr[i];
+                                                        var testName = t.GetType().Name;
                                                         if (testName.EndsWith("Test"))
+                                                        {
                                                             testName = testName.Substring(0, testName.Length - 4);
+                                                        }
+
                                                         if (p.Exclude != null && Array.IndexOf(p.Exclude, testName) >= 0)
                                                         {
                                                             testArr[i] = null;
@@ -123,18 +126,19 @@ namespace BlogRunner
 
                                                     return (Test[])ArrayHelper.Compact(testArr);
                                                 });
-                            TestRunner tr = new TestRunner(tests);
+                            var tr = new TestRunner(tests);
                             tr.RunTests(p, b, provider);
                         }
                     }
 
-                    using (XmlTextWriter xw = new XmlTextWriter(outputPath, Encoding.UTF8))
+                    using (var xw = new XmlTextWriter(outputPath, Encoding.UTF8))
                     {
                         xw.Formatting = Formatting.Indented;
                         xw.Indentation = 1;
                         xw.IndentChar = '\t';
                         providers.WriteTo(xw);
                     }
+
                     return 0;
                 }
                 catch (Exception e)
@@ -144,7 +148,7 @@ namespace BlogRunner
                 }
                 finally
                 {
-                    if (options.GetFlagValue(BlogRunnerCommandLineOptions.OPTION_PAUSE, false))
+                    if (options.GetFlagValue(BlogRunnerCommandLineOptions.OptionPause, false))
                     {
                         Console.WriteLine();
                         Console.WriteLine();
@@ -160,34 +164,84 @@ namespace BlogRunner
             }
         }
 
-        private static void ChangeErrorColors(ConsoleColor color)
+        /// <summary>
+        /// Adds the tests.
+        /// </summary>
+        /// <param name="tests">The tests.</param>
+        /// <param name="filter">The filter.</param>
+        private static void AddTests(List<Test> tests, TestFilter filter)
         {
-            Console.SetError(new ColorChangeTextWriter(Console.Error, color));
+            // New tests go here
+            tests.AddRange(
+                filter(
+                    new SupportsMultipleCategoriesTest(),
+                    new SupportsPostAsDraftTest(),
+                    new SupportsFuturePostTest(),
+                    new SupportsEmptyTitlesTest()));
+
+            tests.Add(CreateCompositePostTest(
+                filter,
+                new TitleEncodingTest(),
+                new SupportsEmbedsTest(),
+                new SupportsScriptsTest()));
         }
 
+        /// <summary>
+        /// Creates the composite post test.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <param name="tests">The tests.</param>
+        /// <returns>A test.</returns>
+        private static Test CreateCompositePostTest(TestFilter filter, params PostTest[] tests) =>
+            new CompositePostTest(
+                (PostTest[])ArrayHelper.Narrow(
+                                 filter(tests),
+                                 typeof(PostTest)));
+
+        /// <summary>
+        /// Changes the error colors.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        private static void ChangeErrorColors(ConsoleColor color) => Console.SetError(new ColorChangeTextWriter(Console.Error, color));
+
+        /// <summary>
+        /// Class ColorChangeTextWriter.
+        /// Implements the <see cref="TextWriter" />.
+        /// </summary>
+        /// <seealso cref="System.IO.TextWriter" />
         private class ColorChangeTextWriter : TextWriter
         {
             private readonly TextWriter tw;
             private readonly ConsoleColor color;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ColorChangeTextWriter"/> class.
+            /// </summary>
+            /// <param name="tw">The text writer.</param>
+            /// <param name="color">The color.</param>
             public ColorChangeTextWriter(TextWriter tw, ConsoleColor color)
             {
                 this.tw = tw;
                 this.color = color;
             }
 
-            public override System.Text.Encoding Encoding
-            {
-                get { return tw.Encoding; }
-            }
+            /// <summary>
+            /// Gets the character encoding in which the output is written when overridden in a derived class.
+            /// </summary>
+            /// <value>The encoding.</value>
+            public override System.Text.Encoding Encoding => this.tw.Encoding;
 
+            /// <summary>
+            /// Writes a character to the text string or stream.
+            /// </summary>
+            /// <param name="value">The character to write to the text stream.</param>
             public override void Write(char value)
             {
-                ConsoleColor oldColor = Console.ForegroundColor;
-                Console.ForegroundColor = color;
+                var oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = this.color;
                 try
                 {
-                    tw.Write(value);
+                    this.tw.Write(value);
                 }
                 finally
                 {
@@ -195,13 +249,19 @@ namespace BlogRunner
                 }
             }
 
+            /// <summary>
+            /// Writes a subarray of characters to the text string or stream.
+            /// </summary>
+            /// <param name="buffer">The character array to write data from.</param>
+            /// <param name="index">The character position in the buffer at which to start retrieving data.</param>
+            /// <param name="count">The number of characters to write.</param>
             public override void Write(char[] buffer, int index, int count)
             {
-                ConsoleColor oldColor = Console.ForegroundColor;
-                Console.ForegroundColor = color;
+                var oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = this.color;
                 try
                 {
-                    tw.Write(buffer, index, count);
+                    this.tw.Write(buffer, index, count);
                 }
                 finally
                 {
@@ -210,32 +270,52 @@ namespace BlogRunner
             }
         }
 
+        /// <summary>
+        /// Class CompositeTextWriter.
+        /// Implements the <see cref="TextWriter" />.
+        /// </summary>
+        /// <seealso cref="System.IO.TextWriter" />
         private class CompositeTextWriter : TextWriter
         {
+            /// <summary>
+            /// The text writer array.
+            /// </summary>
             private readonly TextWriter[] writers;
 
-            public CompositeTextWriter(params TextWriter[] writers)
-            {
-                this.writers = writers;
-            }
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CompositeTextWriter"/> class.
+            /// </summary>
+            /// <param name="writers">The writers.</param>
+            public CompositeTextWriter(params TextWriter[] writers) => this.writers = writers;
 
-            public override Encoding Encoding
-            {
-                get { return Encoding.Unicode; }
-            }
+            /// <summary>
+            /// Gets the character encoding in which the output is written when overridden in a derived class.
+            /// </summary>
+            /// <value>The encoding.</value>
+            public override Encoding Encoding => Encoding.Unicode;
 
+            /// <summary>
+            /// Writes a character to the text string or stream.
+            /// </summary>
+            /// <param name="value">The character to write to the text stream.</param>
             public override void Write(char value)
             {
-                foreach (TextWriter writer in writers)
+                foreach (var writer in this.writers)
                 {
                     writer.Write(value);
                     writer.Flush();
                 }
             }
 
+            /// <summary>
+            /// Writes a subarray of characters to the text string or stream.
+            /// </summary>
+            /// <param name="buffer">The character array to write data from.</param>
+            /// <param name="index">The character position in the buffer at which to start retrieving data.</param>
+            /// <param name="count">The number of characters to write.</param>
             public override void Write(char[] buffer, int index, int count)
             {
-                foreach (TextWriter writer in writers)
+                foreach (var writer in this.writers)
                 {
                     writer.Write(buffer, index, count);
                     writer.Flush();

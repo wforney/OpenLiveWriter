@@ -1,10 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.Api
 {
+    using System.Windows.Forms;
+
     /// <summary>
     /// Base class for plugins that wish to add HTML to the beginning or end
     /// of a post when the post is being previewed or published.

@@ -1,41 +1,51 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Security.Cryptography;
-using System.Net.Mail;
-using System.Diagnostics;
-using System.Threading;
 
 namespace BlogRunnerReporter
 {
-    static class Program
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Net.Mail;
+    using System.Threading;
+
+    /// <summary>
+    /// The program class.
+    /// </summary>
+    public static class Program
     {
-        static int Main(string[] args)
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>System.Int32.</returns>
+        public static int Main(string[] args)
         {
             try
             {
-                string input = Path.GetFullPath(args[0]);
-                string output = Path.GetFullPath(args[1]);
-                string errors = Path.GetFullPath(args[2]);
-                string report = Path.GetFullPath(args[3]);
+                var input = Path.GetFullPath(args[0]);
+                var output = Path.GetFullPath(args[1]);
+                var errors = Path.GetFullPath(args[2]);
+                var report = Path.GetFullPath(args[3]);
 
                 CheckPathExists("input", input);
                 CheckPathExists("output", output);
                 CheckPathExists("errors", errors);
 
-                bool hasErrors = new FileInfo(errors).Length > 0;
-                bool filesDiffer = !Compare(input, output);
+                var hasErrors = new FileInfo(errors).Length > 0;
+                var filesDiffer = !Compare(input, output);
 
                 if (!hasErrors && !filesDiffer)
+                {
                     return 0;
+                }
 
                 if (filesDiffer)
                 {
-                    string diffCommand = Path.Combine(
+                    var diffCommand = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
                         @"Beyond Compare 2\bc2.exe");
 
@@ -45,47 +55,52 @@ namespace BlogRunnerReporter
                     }
                     else
                     {
-                        string diffCommandArgs = string.Format(
+                        var diffCommandArgs = string.Format(
                             CultureInfo.InvariantCulture,
                             @"/silent @bcscript.txt ""{0}"" ""{1}"" ""{2}""",
                             input,
                             output,
                             report);
 
-                        Process p = Process.Start(diffCommand, diffCommandArgs);
+                        var p = Process.Start(diffCommand, diffCommandArgs);
                         p.WaitForExit();
                         Thread.Sleep(3000);
                     }
                 }
 
-                string notificationType =
+                var notificationType =
                     (hasErrors && filesDiffer) ? "changes and errors" :
                     hasErrors ? "errors" :
                     "changes";
 
                 using (Stream outputStream = File.OpenRead(output))
+                using (Stream reportStream = File.Exists(report) ? File.OpenRead(report) : null)
+                using (Stream errorsStream = hasErrors ? File.OpenRead(errors) : null)
                 {
-                    using (Stream reportStream = File.Exists(report) ? File.OpenRead(report) : null)
+                    var msg = new MailMessage("wlwbuild@microsoft.com", "wlwbuild@microsoft.com");
+                    if (filesDiffer)
                     {
-                        using (Stream errorsStream = hasErrors ? File.OpenRead(errors) : null)
+                        msg.Attachments.Add(new Attachment(outputStream, "BlogProvidersB5.xml", "text/xml"));
+                        if (reportStream != null)
                         {
-                            MailMessage msg = new MailMessage("wlwbuild@microsoft.com", "wlwbuild@microsoft.com");
-                            if (filesDiffer)
-                            {
-                                msg.Attachments.Add(new Attachment(outputStream, "BlogProvidersB5.xml", "text/xml"));
-                                if (reportStream != null)
-                                    msg.Attachments.Add(new Attachment(reportStream, "diff.htm", "text/html"));
-                            }
-                            if (errorsStream != null)
-                                msg.Attachments.Add(new Attachment(errorsStream, "errors.txt", "text/plain"));
-
-                            msg.Subject = "Blog provider " + notificationType + " detected";
-                            msg.Body = notificationType + " detected while running blog provider tests. Please see attached.";
-
-                            SmtpClient client = new SmtpClient();
-                            client.DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis;
-                            client.Send(msg);
+                            msg.Attachments.Add(new Attachment(reportStream, "diff.htm", "text/html"));
                         }
+                    }
+
+                    if (errorsStream != null)
+                    {
+                        msg.Attachments.Add(new Attachment(errorsStream, "errors.txt", "text/plain"));
+                    }
+
+                    msg.Subject = "Blog provider " + notificationType + " detected";
+                    msg.Body = notificationType + " detected while running blog provider tests. Please see attached.";
+
+                    using (var client = new SmtpClient
+                    {
+                        DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis,
+                    })
+                    {
+                        client.Send(msg);
                     }
                 }
 
@@ -98,29 +113,49 @@ namespace BlogRunnerReporter
             }
         }
 
+        /// <summary>
+        /// Compares the specified files.
+        /// </summary>
+        /// <param name="file1">The first file.</param>
+        /// <param name="file2">The second file.</param>
+        /// <returns><c>true</c> if the file contents are the same, <c>false</c> otherwise.</returns>
         private static bool Compare(string file1, string file2)
         {
-            FileInfo f1 = new FileInfo(file1);
-            FileInfo f2 = new FileInfo(file2);
+            var f1 = new FileInfo(file1);
+            var f2 = new FileInfo(file2);
 
             if (f1.Length != f2.Length)
+            {
                 return false;
+            }
 
             using (Stream s1 = f1.OpenRead())
             using (Stream s2 = f2.OpenRead())
             {
-                for (int i = 0; i < s1.Length; i++)
+                for (var i = 0; i < s1.Length; i++)
+                {
                     if (s1.ReadByte() != s2.ReadByte())
+                    {
                         return false;
+                    }
+                }
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Checks the path exists.
+        /// </summary>
+        /// <param name="label">The label.</param>
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.ArgumentException">The file does not exist.</exception>
         private static void CheckPathExists(string label, string path)
         {
             if (!File.Exists(path))
-                throw new ArgumentException(label + " file does not exist: " + path);
+            {
+                throw new ArgumentException($"{label} file does not exist: {path}");
+            }
         }
     }
 }

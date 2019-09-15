@@ -1,17 +1,22 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Globalization;
-
 namespace OpenLiveWriter.Api
 {
+    using System;
+    using System.Globalization;
+
     /// <summary>
     /// Attribute which should be applied to all classes derived from WriterPlugin.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class WriterPluginAttribute : Attribute
     {
+        private string description = string.Empty;
+        private string id;
+        private string name;
+        private string publisherUrl = string.Empty;
+
         /// <summary>
         /// Initialize a new instance of WriterPluginAttribute.
         /// </summary>
@@ -19,8 +24,8 @@ namespace OpenLiveWriter.Api
         /// <param name="name">Plugin name (this will appear in the Plugins preferences panel)</param>
         public WriterPluginAttribute(string id, string name)
         {
-            Id = id;
-            Name = name;
+            this.Id = id;
+            this.Name = name;
         }
 
         /// <summary>
@@ -33,9 +38,9 @@ namespace OpenLiveWriter.Api
         [Obsolete("This method is for compatibility with pre-beta plugins, and will be removed in the future.")]
         public WriterPluginAttribute(string id, string name, string imagePath)
         {
-            Id = id;
-            Name = name;
-            ImagePath = imagePath;
+            this.Id = id;
+            this.Name = name;
+            this.ImagePath = imagePath;
         }
 
         /// <summary>
@@ -43,41 +48,36 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Id
         {
-            get
-            {
-                return _id;
-            }
+            get => this.id;
             set
             {
                 if (value == null)
+                {
                     throw new ArgumentNullException("WriterPlugin.Id");
+                }
 
-                if (!ValidateGuid(value))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "The value specifed ({0}) was not a GUID", value), "WriterPlugin.Id");
+                if (!this.ValidateGuid(value))
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            "The value specifed ({0}) was not a GUID",
+                            value),
+                        "WriterPlugin.Id");
+                }
 
-                _id = value;
+                this.id = value;
             }
         }
-        private string _id;
 
         /// <summary>
         /// Plugin name (this will appear in the Plugins preferences panel)
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.Name");
-
-                _name = value;
-            }
+            get => this.name;
+            set => this.name = value ?? throw new ArgumentNullException("WriterPlugin.Name");
         }
-        private string _name;
 
         /// <summary>
         /// Path to embedded image resource used to represent this plugin within the
@@ -90,80 +90,42 @@ namespace OpenLiveWriter.Api
         /// to 16x16, or, if only the center 16x16 pixels of the 20x18 are non-transparent,
         /// the image will simply be cropped to 16x16.
         /// </remarks>
-        public string ImagePath
-        {
-            get
-            {
-
-                return _imagePath;
-            }
-            set
-            {
-                _imagePath = value;
-            }
-        }
-        private string _imagePath;
+        public string ImagePath { get; set; }
 
         /// <summary>
         /// Short description (1-2 sentences) of the plugin (displayed in the Plugins Preferences panel). Optional.
         /// </summary>
         public string Description
         {
-            get
-            {
-                return _description;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.Description");
-
-                _description = value;
-            }
+            get => this.description;
+            set => this.description = value ?? throw new ArgumentNullException("WriterPlugin.Description");
         }
-        private string _description = String.Empty;
 
         /// <summary>
         /// URL of the publisher for the Plugin (linked to from Plugins Preferences panel). Optional.
         /// </summary>
         public string PublisherUrl
         {
-            get
-            {
-                return _publisherUrl;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.PublisherUrl");
-
-                _publisherUrl = value;
-            }
+            get => this.publisherUrl;
+            set => this.publisherUrl = value ?? throw new ArgumentNullException("WriterPlugin.PublisherUrl");
         }
-        private string _publisherUrl = String.Empty;
 
         /// <summary>
         /// Indicates whether the Plugin has editable options. That is, whether it overrides the EditOptions
         /// method of the WriterPlugin base class. Default is false.
         /// </summary>
-        public bool HasEditableOptions
-        {
-            get
-            {
-                return _hasEditableOptions;
-            }
-            set
-            {
-                _hasEditableOptions = value;
-            }
-        }
-        private bool _hasEditableOptions = false;
+        public bool HasEditableOptions { get; set; } = false;
 
+        /// <summary>
+        /// Validates the unique identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
         private bool ValidateGuid(string id)
         {
             try
             {
-                Guid guidId = new Guid(id);
+                var guidId = new Guid(id);
                 return true;
             }
             catch

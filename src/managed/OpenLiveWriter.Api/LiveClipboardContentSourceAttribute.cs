@@ -1,11 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Reflection;
-
 namespace OpenLiveWriter.Api
 {
+    using System;
+
     /// <summary>
     /// Attribute applied to ContentSource and SmartContentSource classes which override the
     /// CreateContentFromLiveClipboard method to enable creation of new content from Live
@@ -14,6 +13,12 @@ namespace OpenLiveWriter.Api
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class LiveClipboardContentSourceAttribute : Attribute
     {
+        private string contentType = string.Empty;
+        private string description = string.Empty;
+        private string imagePath = string.Empty;
+        private string name = string.Empty;
+        private string type = string.Empty;
+
         /// <summary>
         /// Initialize a new instance of a LiveClipboardContentSourceAttribute
         /// </summary>
@@ -22,28 +27,9 @@ namespace OpenLiveWriter.Api
         /// contentType attribute of the &lt;lc:format&gt; tag)</param>
         public LiveClipboardContentSourceAttribute(string name, string contentType)
         {
-            Name = name;
-            ContentType = contentType;
+            this.Name = name;
+            this.ContentType = contentType;
         }
-
-        /// <summary>
-        /// End-user presentable name of data format handled by this ContentSource.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Name");
-
-                _name = value;
-            }
-        }
-        private string _name = String.Empty;
 
         /// <summary>
         /// MIME content-type handled by this ContentSource (corresponds to the
@@ -51,19 +37,18 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string ContentType
         {
-            get
-            {
-                return _contentType;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.ContentType");
-
-                _contentType = value;
-            }
+            get => this.contentType;
+            set => this.contentType = value ?? throw new ArgumentNullException("LiveClipboardContentSource.ContentType");
         }
-        private string _contentType = String.Empty;
+
+        /// <summary>
+        /// End-user presentable name of data format handled by this ContentSource.
+        /// </summary>
+        public string Name
+        {
+            get => this.name;
+            set => this.name = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Name");
+        }
 
         /// <summary>
         /// Path to embedded image resource used to represent this format within the Live Clipboard
@@ -72,19 +57,9 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string ImagePath
         {
-            get
-            {
-                return _imagePath;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.ImagePath");
-
-                _imagePath = value;
-            }
+            get => this.imagePath;
+            set => this.imagePath = value ?? throw new ArgumentNullException("LiveClipboardContentSource.ImagePath");
         }
-        private string _imagePath = String.Empty;
 
         /// <summary>
         /// End-user presentable description of the data format handled by this ContentSource.
@@ -92,19 +67,9 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Description
         {
-            get
-            {
-                return _description;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Description");
-
-                _description = value;
-            }
+            get => this.description;
+            set => this.description = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Description");
         }
-        private string _description = String.Empty;
 
         /// <summary>
         /// Content sub-type handled by this content source. (corresponds to the
@@ -114,18 +79,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Type
         {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Type");
-
-                _type = value;
-            }
+            get => this.type;
+            set => this.type = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Type");
         }
-        private string _type = String.Empty;
     }
 }

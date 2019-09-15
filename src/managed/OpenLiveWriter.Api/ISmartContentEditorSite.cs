@@ -1,11 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-
 namespace OpenLiveWriter.Api
 {
+    using System.Drawing;
+
     /// <summary>
     /// Connection between a SmartContent sidebar editor and its context. Provides
     /// notification of inline image resizing and allows the editor to manipulate

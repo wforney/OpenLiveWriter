@@ -1,51 +1,71 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿// <copyright file="TitleEncodingTest.cs" company=".NET Foundation">
+// Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using OpenLiveWriter.Extensibility.BlogClient;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading;
-using OpenLiveWriter.HtmlParser.Parser;
 
 namespace BlogRunner.Core.Tests
 {
+    using System;
+    using System.Text.RegularExpressions;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.HtmlParser.Parser;
+
+    /// <summary>
+    /// Class TitleEncodingTest.
+    /// Implements the <see cref="BlogRunner.Core.PostTest" />.
+    /// </summary>
+    /// <seealso cref="BlogRunner.Core.PostTest" />
     public class TitleEncodingTest : PostTest
     {
-        private const string TEST_STRING = "<b>&amp;&amp;amp;</b>";
-        private string guid1, guid2;
+        private const string TestString = "<b>&amp;&amp;amp;</b>";
+        private string guid1;
+        private string guid2;
 
+        /// <summary>
+        /// Prepares the post.
+        /// </summary>
+        /// <param name="blogPost">The blog post.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
         protected internal override void PreparePost(BlogPost blogPost, ref bool? publish)
         {
-            guid1 = BlogUtil.ShortGuid;
-            guid2 = BlogUtil.ShortGuid;
+            this.guid1 = BlogUtil.ShortGuid;
+            this.guid2 = BlogUtil.ShortGuid;
 
-            blogPost.Title = guid1 + TEST_STRING + guid2;
+            blogPost.Title = this.guid1 + TestString + this.guid2;
             blogPost.Contents = "foo";
         }
 
+        /// <summary>
+        /// Handles the result.
+        /// </summary>
+        /// <param name="homepageHtml">The homepage HTML.</param>
+        /// <param name="results">The results.</param>
+        /// <exception cref="System.InvalidOperationException">Title encoding test failed--title was not detected.</exception>
         protected internal override void HandleResult(string homepageHtml, ITestResults results)
         {
-            Regex regex = new Regex(Regex.Escape(guid1) + "(.*?)" + Regex.Escape(guid2));
+            var regex = new Regex(Regex.Escape(this.guid1) + "(.*?)" + Regex.Escape(this.guid2));
 
-            SimpleHtmlParser parser = new SimpleHtmlParser(homepageHtml);
-            for (Element e = parser.Next(); e != null; e = parser.Next())
+            var parser = new SimpleHtmlParser(homepageHtml);
+            for (var e = parser.Next(); e != null; e = parser.Next())
             {
                 if (e is Text)
                 {
-                    Match m = regex.Match(e.ToString());
+                    var m = regex.Match(e.ToString());
                     if (m.Success)
                     {
-                        string str = m.Groups[1].Value;
-                        if (str == HtmlUtils.EscapeEntities(TEST_STRING))
+                        var str = m.Groups[1].Value;
+                        if (str == HtmlUtils.EscapeEntities(TestString))
+                        {
                             results.AddResult("requiresHtmlTitles", YES);
-                        else if (str == HtmlUtils.EscapeEntities(HtmlUtils.EscapeEntities(TEST_STRING)))
+                        }
+                        else if (str == HtmlUtils.EscapeEntities(HtmlUtils.EscapeEntities(TestString)))
+                        {
                             results.AddResult("requiresHtmlTitles", NO);
+                        }
                         else
-                            results.AddResult("requiresHtmlTitles", "[ERROR] (value was: " + str + ")");
+                        {
+                            results.AddResult("requiresHtmlTitles", $"[ERROR] (value was: {str})");
+                        }
 
                         return;
                     }
