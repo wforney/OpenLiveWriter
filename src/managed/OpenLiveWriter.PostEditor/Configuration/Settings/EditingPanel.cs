@@ -1,23 +1,21 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Globalization;
-using System.Windows.Forms;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.BlogClient;
-using OpenLiveWriter.BlogClient.Detection;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.PostEditor.Configuration.Settings
 {
+    using System;
+    using System.Drawing;
+    using System.Globalization;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.BlogClient;
+    using OpenLiveWriter.BlogClient.Detection;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.CoreServices.Layout;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// Summary description for EditingPanel.
     /// </summary>
@@ -39,75 +37,79 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         public EditingPanel()
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-            UpdateStrings();
+            this.InitializeComponent();
+            this.UpdateStrings();
         }
 
         public EditingPanel(TemporaryBlogSettings targetBlogSettings, TemporaryBlogSettings editableBlogSettings)
             : base(targetBlogSettings, editableBlogSettings)
         {
-            InitializeComponent();
-            UpdateStrings();
-            PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Settings.Images.EditingPanelBitmap.png");
+            this.InitializeComponent();
+            this.UpdateStrings();
+            this.PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Settings.Images.EditingPanelBitmap.png");
 
-            labelEditUsingStyle.Text = String.Format(CultureInfo.CurrentCulture, labelEditUsingStyle.Text, ApplicationEnvironment.ProductName);
+            this.labelEditUsingStyle.Text = String.Format(CultureInfo.CurrentCulture, this.labelEditUsingStyle.Text, ApplicationEnvironment.ProductName);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (!DesignMode)
+            if (!this.DesignMode)
             {
-                DisplayHelper.AutoFitSystemButton(buttonUpdateStyle);
+                DisplayHelper.AutoFitSystemButton(this.buttonUpdateStyle);
                 // add some padding to the button, otherwise it looks crowded
-                buttonUpdateStyle.Width += (int)Math.Ceiling(DisplayHelper.ScaleX(14));
-                comboBoxRTL.Left = buttonUpdateStyle.Left + 1;
+                this.buttonUpdateStyle.Width += (int)Math.Ceiling(DisplayHelper.ScaleX(14));
+                this.comboBoxRTL.Left = this.buttonUpdateStyle.Left + 1;
 
-                LayoutHelper.FixupGroupBox(groupBoxWeblogStyle);
-                LayoutHelper.FixupGroupBox(groupBoxRTL);
+                LayoutHelper.FixupGroupBox(this.groupBoxWeblogStyle);
+                LayoutHelper.FixupGroupBox(this.groupBoxRTL);
 
-                LayoutHelper.DistributeVertically(8, groupBoxWeblogStyle, groupBoxRTL);
+                LayoutHelper.DistributeVertically(8, this.groupBoxWeblogStyle, this.groupBoxRTL);
 
-                int maxWidth = groupBoxRTL.Width - comboBoxRTL.Left - 8;
-                DisplayHelper.AutoFitSystemCombo(comboBoxRTL, comboBoxRTL.Width, maxWidth, false);
+                int maxWidth = this.groupBoxRTL.Width - this.comboBoxRTL.Left - 8;
+                DisplayHelper.AutoFitSystemCombo(this.comboBoxRTL, this.comboBoxRTL.Width, maxWidth, false);
             }
         }
 
         private void UpdateStrings()
         {
-            groupBoxWeblogStyle.Text = Res.Get(StringId.EditingStyle);
-            label1.Text = Res.Get(StringId.EditingText);
-            labelEditUsingStyle.Text = Res.Get(StringId.EditingUsing);
-            buttonUpdateStyle.Text = Res.Get(StringId.EditingUpdate);
-            PanelName = Res.Get(StringId.EditingName);
-            groupBoxRTL.Text = Res.Get(StringId.EditingRTLName);
-            labelRTL.Text = Res.Get(StringId.EditingRTLExplanation);
+            this.groupBoxWeblogStyle.Text = Res.Get(StringId.EditingStyle);
+            this.label1.Text = Res.Get(StringId.EditingText);
+            this.labelEditUsingStyle.Text = Res.Get(StringId.EditingUsing);
+            this.buttonUpdateStyle.Text = Res.Get(StringId.EditingUpdate);
+            this.PanelName = Res.Get(StringId.EditingName);
+            this.groupBoxRTL.Text = Res.Get(StringId.EditingRTLName);
+            this.labelRTL.Text = Res.Get(StringId.EditingRTLExplanation);
 
-            bool? useRTL = TemporaryBlogSettings.HomePageOverrides.Contains(BlogClientOptions.TEMPLATE_IS_RTL)
-                ? (bool?)StringHelper.ToBool(TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false)
+            bool? useRTL = this.TemporaryBlogSettings.HomePageOverrides.Keys.Contains(BlogClientOptions.TEMPLATE_IS_RTL)
+                ? (bool?)StringHelper.ToBool(this.TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false)
                 : null;
 
-            useRTL = TemporaryBlogSettings.OptionOverrides.Contains(BlogClientOptions.TEMPLATE_IS_RTL)
-                ? StringHelper.ToBool(TemporaryBlogSettings.OptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false)
+            useRTL = this.TemporaryBlogSettings.OptionOverrides.Keys.Contains(BlogClientOptions.TEMPLATE_IS_RTL)
+                ? StringHelper.ToBool(this.TemporaryBlogSettings.OptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false)
                 : useRTL;
 
             // The default setting only comes from the homepage or manifest
-            comboBoxRTL.Items.Add(String.Format(CultureInfo.CurrentUICulture, Res.Get(StringId.EditingRTLDefault), (useRTL == true ? Res.Get(StringId.EditingRTLYes) : Res.Get(StringId.EditingRTLNo))));
-            comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLYes));
-            comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLNo));
+            this.comboBoxRTL.Items.Add(String.Format(CultureInfo.CurrentUICulture, Res.Get(StringId.EditingRTLDefault), (useRTL == true ? Res.Get(StringId.EditingRTLYes) : Res.Get(StringId.EditingRTLNo))));
+            this.comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLYes));
+            this.comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLNo));
 
             // Though the value of the combo box can come from homepage/manifest/user options
-            if (TemporaryBlogSettings.UserOptionOverrides.Contains(BlogClientOptions.TEMPLATE_IS_RTL))
+            if (this.TemporaryBlogSettings.UserOptionOverrides.Keys.Contains(BlogClientOptions.TEMPLATE_IS_RTL))
             {
                 // Select the correct option from the combobox
-                if (StringHelper.ToBool(TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false))
-                    comboBoxRTL.SelectedIndex = 1;
+                if (StringHelper.ToBool(this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL].ToString(), false))
+                {
+                    this.comboBoxRTL.SelectedIndex = 1;
+                }
                 else
-                    comboBoxRTL.SelectedIndex = 2;
+                {
+                    this.comboBoxRTL.SelectedIndex = 2;
+                }
             }
             else
             {
-                comboBoxRTL.SelectedIndex = 0;
+                this.comboBoxRTL.SelectedIndex = 0;
             }
         }
 
@@ -115,31 +117,34 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         {
             try
             {
-                using (Blog blog = new Blog(TemporaryBlogSettings))
+                using (Blog blog = new Blog(this.TemporaryBlogSettings))
                 {
                     if (blog.VerifyCredentials())
                     {
-                        BlogClientUIContextImpl uiContext = new BlogClientUIContextImpl(FindForm());
+                        BlogClientUIContextImpl uiContext = new BlogClientUIContextImpl(this.FindForm());
                         Color? backgroundColor;
                         BlogEditingTemplateFile[] editingTemplates = BlogEditingTemplateDetector.DetectTemplate(
                             uiContext,
-                            panelBrowserParent,
-                            TemporaryBlogSettings,
-                            !BlogIsAutoUpdatable(blog),
+                            this.panelBrowserParent,
+                            this.TemporaryBlogSettings,
+                            !this.BlogIsAutoUpdatable(blog),
                             out backgroundColor); // only probe for manifest if blog is not auto-updatable
                         if (editingTemplates.Length != 0)
                         {
-                            TemporaryBlogSettings.TemplateFiles = editingTemplates;
+                            this.TemporaryBlogSettings.TemplateFiles = editingTemplates;
                             if (backgroundColor != null)
-                                TemporaryBlogSettings.UpdatePostBodyBackgroundColor(backgroundColor.Value);
-                            TemporaryBlogSettingsModified = true;
+                            {
+                                this.TemporaryBlogSettings.UpdatePostBodyBackgroundColor(backgroundColor.Value);
+                            }
+
+                            this.TemporaryBlogSettingsModified = true;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                UnexpectedErrorMessage.Show(FindForm(), ex, "Unexpected Error Updating Style");
+                UnexpectedErrorMessage.Show(this.FindForm(), ex, "Unexpected Error Updating Style");
             }
         }
 
@@ -155,9 +160,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -286,18 +291,26 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             bool? useRTL = null;
 
             // Check to see if it is anything besides default
-            if (comboBoxRTL.Text == Res.Get(StringId.EditingRTLYes))
+            if (this.comboBoxRTL.Text == Res.Get(StringId.EditingRTLYes))
+            {
                 useRTL = true;
-            else if (comboBoxRTL.Text == Res.Get(StringId.EditingRTLNo))
+            }
+            else if (this.comboBoxRTL.Text == Res.Get(StringId.EditingRTLNo))
+            {
                 useRTL = false;
+            }
 
             // If the setting is default we remove it
             if (useRTL != null)
-                TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL] = useRTL;
+            {
+                this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.TEMPLATE_IS_RTL] = useRTL.ToString();
+            }
             else
-                TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.TEMPLATE_IS_RTL);
+            {
+                this.TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.TEMPLATE_IS_RTL);
+            }
 
-            TemporaryBlogSettingsModified = true;
+            this.TemporaryBlogSettingsModified = true;
         }
 
     }

@@ -1,15 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Drawing;
-using System.Globalization;
-using OpenLiveWriter.CoreServices.Settings;
-using OpenLiveWriter.Extensibility.BlogClient;
-
 namespace OpenLiveWriter.BlogClient
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using OpenLiveWriter.CoreServices.Settings;
+    using OpenLiveWriter.Extensibility.BlogClient;
+
     public interface IBlogSettingsAccessor : IDisposable
     {
         string Id { get; }
@@ -32,9 +31,9 @@ namespace OpenLiveWriter.BlogClient
         string ClientType { get; }
         string PostApiUrl { get; }
 
-        IDictionary OptionOverrides { get; }
-        IDictionary UserOptionOverrides { get; }
-        IDictionary HomePageOverrides { get; }
+        IDictionary<string, string> OptionOverrides { get; }
+        IDictionary<string, string> UserOptionOverrides { get; }
+        IDictionary<string, string> HomePageOverrides { get; }
 
         IBlogCredentialsAccessor Credentials { get; }
 
@@ -95,9 +94,12 @@ namespace OpenLiveWriter.BlogClient
         {
             switch (GetStringValue(pluginId, 0))
             {
-                case "1": return true;
-                case "0": return false;
-                default: return null;
+                case "1":
+                    return true;
+                case "0":
+                    return false;
+                default:
+                    return null;
             }
         }
 

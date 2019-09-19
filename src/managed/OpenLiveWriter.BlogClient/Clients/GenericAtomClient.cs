@@ -1,21 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
-using OpenLiveWriter.BlogClient.Detection;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.Localization;
-
 /*
  * TODO
  *
@@ -29,15 +14,27 @@ using OpenLiveWriter.Localization;
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Net;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Xml;
+
+    using OpenLiveWriter.BlogClient.Detection;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.Localization;
+
     [BlogClient("Atom", "Atom")]
     public class GenericAtomClient : AtomClient, ISelfConfiguringClient, IBlogClientForCategorySchemeHack
     {
-        static GenericAtomClient()
-        {
-            AuthenticationManager.Register(new GoogleLoginAuthenticationModule());
-        }
+        static GenericAtomClient() => AuthenticationManager.Register(new GoogleLoginAuthenticationModule());
 
-        private string _defaultCategoryScheme_HACK;
+        private string defaultCategoryScheme_HACK;
 
         public GenericAtomClient(Uri postApiUrl, IBlogCredentialsAccessor credentials) : base(AtomProtocolVersion.V10, postApiUrl, credentials)
         {
@@ -65,20 +62,21 @@ namespace OpenLiveWriter.BlogClient.Clients
                     Debug.Assert(!detector.UseManifestCache,
                                  "This code will not run correctly under the manifest cache, due to option overrides not being set");
 
-                    IDictionary optionOverrides = context.OptionOverrides;
+                    var optionOverrides = context.OptionOverrides;
                     if (optionOverrides == null)
-                        optionOverrides = new Hashtable();
+                    {
+                        optionOverrides = new Dictionary<string, string>();
+                    }
 
-                    bool hasNewCategories = optionOverrides.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES);
-                    bool hasScheme = optionOverrides.Contains(BlogClientOptions.CATEGORY_SCHEME);
+                    var hasNewCategories = optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES);
+                    var hasScheme = optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME);
                     if (!hasNewCategories || !hasScheme)
                     {
-                        string scheme;
-                        bool supportsNewCategories;
-                        GetCategoryInfo(context.HostBlogId,
-                                        optionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string, // may be null
-                                        out scheme,
-                                        out supportsNewCategories);
+                        this.GetCategoryInfo(
+                            context.HostBlogId,
+                            optionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string, // may be null
+                            out var scheme,
+                            out var supportsNewCategories);
 
                         if (scheme == null)
                         {
@@ -87,10 +85,15 @@ namespace OpenLiveWriter.BlogClient.Clients
                         }
                         else
                         {
-                            if (!optionOverrides.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES))
+                            if (!optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES))
+                            {
                                 optionOverrides.Add(BlogClientOptions.SUPPORTS_NEW_CATEGORIES, supportsNewCategories.ToString());
-                            if (!optionOverrides.Contains(BlogClientOptions.CATEGORY_SCHEME))
+                            }
+
+                            if (!optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME))
+                            {
                                 optionOverrides.Add(BlogClientOptions.CATEGORY_SCHEME, scheme);
+                            }
                         }
 
                         context.OptionOverrides = optionOverrides;
@@ -103,20 +106,20 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         private void GetFeaturesXml(string blogId)
         {
-            Uri uri = FeedServiceUrl;
-            XmlDocument serviceDoc = xmlRestRequestHelper.Get(ref uri, RequestFilter);
+            var uri = this.FeedServiceUrl;
+            var serviceDoc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
 
-            foreach (XmlElement entryEl in serviceDoc.SelectNodes("app:service/app:workspace/app:collection", _nsMgr))
+            foreach (XmlElement entryEl in serviceDoc.SelectNodes("app:service/app:workspace/app:collection", this._nsMgr))
             {
-                string href = XmlHelper.GetUrl(entryEl, "@href", uri);
+                var href = XmlHelper.GetUrl(entryEl, "@href", uri);
                 if (blogId == href)
                 {
-                    XmlDocument results = new XmlDocument();
-                    XmlElement rootElement = results.CreateElement("featuresInfo");
+                    var results = new XmlDocument();
+                    var rootElement = results.CreateElement("featuresInfo");
                     results.AppendChild(rootElement);
-                    foreach (XmlElement featuresNode in entryEl.SelectNodes("f:features", _nsMgr))
+                    foreach (XmlElement featuresNode in entryEl.SelectNodes("f:features", this._nsMgr))
                     {
-                        AddFeaturesXml(featuresNode, rootElement, uri);
+                        this.AddFeaturesXml(featuresNode, rootElement, uri);
                     }
                     return;
                 }
@@ -128,30 +131,34 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             if (featuresNode.HasAttribute("href"))
             {
-                string href = XmlHelper.GetUrl(featuresNode, "@href", baseUri);
+                var href = XmlHelper.GetUrl(featuresNode, "@href", baseUri);
                 if (href != null && href.Length > 0)
                 {
-                    Uri uri = new Uri(href);
+                    var uri = new Uri(href);
                     if (baseUri == null || !uri.Equals(baseUri)) // detect simple cycles
                     {
-                        XmlDocument doc = xmlRestRequestHelper.Get(ref uri, RequestFilter);
-                        XmlElement features = (XmlElement)doc.SelectSingleNode(@"f:features", _nsMgr);
+                        var doc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
+                        var features = (XmlElement)doc.SelectSingleNode(@"f:features", this._nsMgr);
                         if (features != null)
-                            AddFeaturesXml(features, containerNode, uri);
+                        {
+                            this.AddFeaturesXml(features, containerNode, uri);
+                        }
                     }
                 }
             }
             else
             {
                 foreach (XmlElement featureEl in featuresNode.SelectNodes("f:feature"))
+                {
                     containerNode.AppendChild(containerNode.OwnerDocument.ImportNode(featureEl, true));
+                }
             }
 
         }
 
         string IBlogClientForCategorySchemeHack.DefaultCategoryScheme
         {
-            set { _defaultCategoryScheme_HACK = value; }
+            set { this.defaultCategoryScheme_HACK = value; }
         }
 
         /// <summary>
@@ -164,12 +171,12 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// <param name="supportsNewCategories">Ignore this value if outScheme == null.</param>
         private void GetCategoryInfo(string blogId, string inScheme, out string outScheme, out bool supportsNewCategories)
         {
-            XmlDocument xmlDoc = GetCategoryXml(ref blogId);
-            foreach (XmlElement categoriesNode in xmlDoc.DocumentElement.SelectNodes("app:categories", _nsMgr))
+            var xmlDoc = this.GetCategoryXml(ref blogId);
+            foreach (XmlElement categoriesNode in xmlDoc.DocumentElement.SelectNodes("app:categories", this._nsMgr))
             {
-                bool hasScheme = categoriesNode.HasAttribute("scheme");
-                string scheme = categoriesNode.GetAttribute("scheme");
-                bool isFixed = categoriesNode.GetAttribute("fixed") == "yes";
+                var hasScheme = categoriesNode.HasAttribute("scheme");
+                var scheme = categoriesNode.GetAttribute("scheme");
+                var isFixed = categoriesNode.GetAttribute("fixed") == "yes";
 
                 // <categories fixed="no" />
                 if (!hasScheme && inScheme == null && !isFixed)
@@ -226,9 +233,12 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             get
             {
-                string scheme = Options.CategoryScheme;
+                var scheme = this.Options.CategoryScheme;
                 if (scheme == null)
-                    scheme = _defaultCategoryScheme_HACK;
+                {
+                    scheme = this.defaultCategoryScheme_HACK;
+                }
+
                 return scheme;
             }
         }
@@ -237,8 +247,8 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             // This sucks. We really want to authenticate against the actual feed,
             // not just the service document.
-            Uri uri = FeedServiceUrl;
-            xmlRestRequestHelper.Get(ref uri, RequestFilter);
+            var uri = this.FeedServiceUrl;
+            xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
         }
 
         protected void EnsureLoggedIn()
@@ -254,48 +264,55 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         public override string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
         {
-            AtomMediaUploader uploader = new AtomMediaUploader(_nsMgr, RequestFilter, Options.ImagePostingUrl, Options);
+            var uploader = new AtomMediaUploader(this._nsMgr, this.RequestFilter, this.Options.ImagePostingUrl, this.Options);
             return uploader.DoBeforePublishUploadWork(uploadContext);
         }
 
         public override BlogInfo[] GetImageEndpoints()
         {
-            EnsureLoggedIn();
+            this.EnsureLoggedIn();
 
-            Uri serviceDocUri = FeedServiceUrl;
-            XmlDocument xmlDoc = xmlRestRequestHelper.Get(ref serviceDocUri, RequestFilter);
+            var serviceDocUri = this.FeedServiceUrl;
+            var xmlDoc = xmlRestRequestHelper.Get(ref serviceDocUri, this.RequestFilter);
 
-            ArrayList blogInfos = new ArrayList();
-            foreach (XmlElement coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", _nsMgr))
+            var blogInfos = new ArrayList();
+            foreach (XmlElement coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", this._nsMgr))
             {
                 // does this collection accept entries?
-                XmlNodeList acceptNodes = coll.SelectNodes("app:accept", _nsMgr);
-                string[] acceptTypes = new string[acceptNodes.Count];
-                for (int i = 0; i < acceptTypes.Length; i++)
+                var acceptNodes = coll.SelectNodes("app:accept", this._nsMgr);
+                var acceptTypes = new string[acceptNodes.Count];
+                for (var i = 0; i < acceptTypes.Length; i++)
+                {
                     acceptTypes[i] = acceptNodes[i].InnerText;
+                }
 
                 if (AcceptsImages(acceptTypes))
                 {
-                    string feedUrl = XmlHelper.GetUrl(coll, "@href", serviceDocUri);
+                    var feedUrl = XmlHelper.GetUrl(coll, "@href", serviceDocUri);
                     if (feedUrl == null || feedUrl.Length == 0)
+                    {
                         continue;
+                    }
 
                     // form title
-                    StringBuilder titleBuilder = new StringBuilder();
-                    foreach (XmlElement titleContainerNode in new XmlElement[] { coll.ParentNode as XmlElement, coll })
+                    var titleBuilder = new StringBuilder();
+                    foreach (var titleContainerNode in new XmlElement[] { coll.ParentNode as XmlElement, coll })
                     {
                         Debug.Assert(titleContainerNode != null);
                         if (titleContainerNode != null)
                         {
-                            XmlElement titleNode = titleContainerNode.SelectSingleNode("atom:title", _nsMgr) as XmlElement;
+                            var titleNode = titleContainerNode.SelectSingleNode("atom:title", this._nsMgr) as XmlElement;
                             if (titleNode != null)
                             {
-                                string titlePart = _atomVer.TextNodeToPlaintext(titleNode);
+                                var titlePart = this._atomVer.TextNodeToPlaintext(titleNode);
                                 if (titlePart.Length != 0)
                                 {
                                     Res.LOCME("loc the separator between parts of the blog name");
                                     if (titleBuilder.Length != 0)
+                                    {
                                         titleBuilder.Append(" - ");
+                                    }
+
                                     titleBuilder.Append(titlePart);
                                 }
                             }
@@ -313,10 +330,10 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             bool acceptsPng = false, acceptsJpeg = false, acceptsGif = false;
 
-            foreach (string contentType in contentTypes)
+            foreach (var contentType in contentTypes)
             {
-                IDictionary values = MimeHelper.ParseContentType(contentType, true);
-                string mainType = values[""] as string;
+                var values = MimeHelper.ParseContentType(contentType, true);
+                var mainType = values[""] as string;
 
                 switch (mainType)
                 {
@@ -348,19 +365,23 @@ namespace OpenLiveWriter.BlogClient.Clients
         public Authorization Authenticate(string challenge, WebRequest request, ICredentials credentials)
         {
             if (!challenge.StartsWith("GoogleLogin ", StringComparison.OrdinalIgnoreCase))
+            {
                 return null;
+            }
 
-            HttpWebRequest httpRequest = (HttpWebRequest)request;
+            var httpRequest = (HttpWebRequest)request;
 
             string service;
             string realm;
-            ParseChallenge(challenge, out realm, out service);
+            this.ParseChallenge(challenge, out realm, out service);
             if (realm != "http://www.google.com/accounts/ClientLogin")
+            {
                 return null;
+            }
 
-            NetworkCredential cred = credentials.GetCredential(request.RequestUri, AuthenticationType);
+            var cred = credentials.GetCredential(request.RequestUri, this.AuthenticationType);
 
-            string auth = _gdataCred.GetCredentialsIfValid(cred.UserName, cred.Password, service);
+            var auth = _gdataCred.GetCredentialsIfValid(cred.UserName, cred.Password, service);
             if (auth != null)
             {
                 return new Authorization(auth, true);
@@ -372,9 +393,13 @@ namespace OpenLiveWriter.BlogClient.Clients
                     _gdataCred.EnsureLoggedIn(cred.UserName, cred.Password, service, !BlogClientUIContext.SilentModeForCurrentThread);
                     auth = _gdataCred.GetCredentialsIfValid(cred.UserName, cred.Password, service);
                     if (auth != null)
+                    {
                         return new Authorization(auth, true);
+                    }
                     else
+                    {
                         return null;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -386,9 +411,9 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         private void ParseChallenge(string challenge, out string realm, out string service)
         {
-            Match m = Regex.Match(challenge, @"\brealm=""([^""]*)""");
+            var m = Regex.Match(challenge, @"\brealm=""([^""]*)""");
             realm = m.Groups[1].Value;
-            Match m2 = Regex.Match(challenge, @"\bservice=""([^""]*)""");
+            var m2 = Regex.Match(challenge, @"\bservice=""([^""]*)""");
             service = m2.Groups[1].Value;
         }
 

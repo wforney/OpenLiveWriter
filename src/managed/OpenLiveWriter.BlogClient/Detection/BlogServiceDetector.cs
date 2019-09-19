@@ -2,31 +2,31 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 #define APIHACK
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Threading;
-using mshtml;
-using OpenLiveWriter.BlogClient.Clients;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.CoreServices.Progress;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.HtmlParser.Parser;
-using OpenLiveWriter.Localization;
-using Google.Apis.Blogger.v3;
-using Google.Apis.Services;
 
 namespace OpenLiveWriter.BlogClient.Detection
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+
+    using mshtml;
+
+    using OpenLiveWriter.BlogClient.Clients;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.CoreServices.Progress;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.HtmlParser.Parser;
+    using OpenLiveWriter.Localization;
+
     public class BlogServiceDetector : BlogServiceDetectorBase
     {
         private IBlogSettingsAccessor _blogSettings;
@@ -34,71 +34,83 @@ namespace OpenLiveWriter.BlogClient.Detection
         public BlogServiceDetector(IBlogClientUIContext uiContext, Control hiddenBrowserParentControl, IBlogSettingsAccessor blogSettings, IBlogCredentialsAccessor credentials)
             : base(uiContext, hiddenBrowserParentControl, blogSettings.Id, blogSettings.HomepageUrl, credentials)
         {
-            _blogSettings = blogSettings;
+            this._blogSettings = blogSettings;
         }
 
         protected override object DetectBlogService(IProgressHost progressHost)
         {
-            using (BlogClientUIContextSilentMode uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
+            using (var uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
             {
                 try
                 {
                     // get the weblog homepage and rsd service description if available
-                    IHTMLDocument2 weblogDOM = GetWeblogHomepageDOM(progressHost);
+                    var weblogDOM = this.GetWeblogHomepageDOM(progressHost);
 
                     // while we have the DOM available, scan for a writer manifest url
-                    if (_manifestDownloadInfo == null)
+                    if (this.manifestDownloadInfo == null)
                     {
-                        string manifestUrl = WriterEditingManifest.DiscoverUrl(_homepageUrl, weblogDOM);
-                        if (manifestUrl != String.Empty)
-                            _manifestDownloadInfo = new WriterEditingManifestDownloadInfo(manifestUrl);
+                        var manifestUrl = WriterEditingManifest.DiscoverUrl(this.homepageUrl, weblogDOM);
+                        if (manifestUrl != string.Empty)
+                        {
+                            this.manifestDownloadInfo = new WriterEditingManifestDownloadInfo(manifestUrl);
+                        }
                     }
 
-                    string html = weblogDOM != null ? HTMLDocumentHelper.HTMLDocToString(weblogDOM) : null;
+                    var html = weblogDOM != null ? HTMLDocumentHelper.HTMLDocToString(weblogDOM) : null;
 
-                    bool detectionSucceeded = false;
-
-                    if (!detectionSucceeded)
-                        detectionSucceeded = AttemptGenericAtomLinkDetection(_homepageUrl, html, !ApplicationDiagnostics.PreferAtom);
-
-                    if (!detectionSucceeded && _blogSettings.IsGoogleBloggerBlog)
-                        detectionSucceeded = AttemptBloggerDetection(_homepageUrl, html);
+                    var detectionSucceeded = false;
 
                     if (!detectionSucceeded)
                     {
-                        RsdServiceDescription rsdServiceDescription = GetRsdServiceDescription(progressHost, weblogDOM);
+                        detectionSucceeded = this.AttemptGenericAtomLinkDetection(this.homepageUrl, html, !ApplicationDiagnostics.PreferAtom);
+                    }
+
+                    if (!detectionSucceeded && this._blogSettings.IsGoogleBloggerBlog)
+                    {
+                        detectionSucceeded = this.AttemptBloggerDetection(this.homepageUrl, html);
+                    }
+
+                    if (!detectionSucceeded)
+                    {
+                        var rsdServiceDescription = this.GetRsdServiceDescription(progressHost, weblogDOM);
 
                         // if there was no rsd service description or we fail to auto-configure from the
                         // rsd description then move on to other auto-detection techniques
-                        if (!(detectionSucceeded = AttemptRsdBasedDetection(progressHost, rsdServiceDescription)))
+                        if (!(detectionSucceeded = this.AttemptRsdBasedDetection(progressHost, rsdServiceDescription)))
                         {
                             // try detection by analyzing the homepage url and contents
-                            UpdateProgress(progressHost, 75, Res.Get(StringId.ProgressAnalyzingHomepage));
+                            this.UpdateProgress(progressHost, 75, Res.Get(StringId.ProgressAnalyzingHomepage));
                             if (weblogDOM != null)
-                                detectionSucceeded = AttemptHomepageBasedDetection(_homepageUrl, html);
+                            {
+                                detectionSucceeded = this.AttemptHomepageBasedDetection(this.homepageUrl, html);
+                            }
                             else
-                                detectionSucceeded = AttemptUrlBasedDetection(_homepageUrl);
+                            {
+                                detectionSucceeded = this.AttemptUrlBasedDetection(this.homepageUrl);
+                            }
 
                             // if we successfully detected then see if we can narrow down
                             // to a specific weblog
                             if (detectionSucceeded)
                             {
-                                if (!BlogProviderParameters.UrlContainsParameters(_postApiUrl))
+                                if (!BlogProviderParameters.UrlContainsParameters(this.postApiUrl))
                                 {
                                     // we detected the provider, now see if we can detect the weblog id
                                     // (or at lease the list of the user's weblogs)
-                                    UpdateProgress(progressHost, 80, Res.Get(StringId.ProgressAnalyzingWeblogList));
-                                    AttemptUserBlogDetection();
+                                    this.UpdateProgress(progressHost, 80, Res.Get(StringId.ProgressAnalyzingWeblogList));
+                                    this.AttemptUserBlogDetection();
                                 }
                             }
                         }
                     }
 
                     if (!detectionSucceeded && html != null)
-                        AttemptGenericAtomLinkDetection(_homepageUrl, html, false);
+                    {
+                        this.AttemptGenericAtomLinkDetection(this.homepageUrl, html, false);
+                    }
 
                     // finished
-                    UpdateProgress(progressHost, 100, String.Empty);
+                    this.UpdateProgress(progressHost, 100, string.Empty);
                 }
                 catch (OperationCancelledException)
                 {
@@ -106,22 +118,26 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
                 catch (BlogClientOperationCancelledException)
                 {
-                    Cancel();
+                    this.Cancel();
                     // WasCancelled == true
                 }
                 catch (BlogAccountDetectorException ex)
                 {
                     if (ApplicationDiagnostics.AutomationMode)
+                    {
                         Trace.WriteLine(ex.ToString());
+                    }
                     else
+                    {
                         Trace.Fail(ex.ToString());
+                    }
                     // ErrorOccurred == true
                 }
                 catch (Exception ex)
                 {
                     // ErrorOccurred == true
                     Trace.Fail(ex.Message, ex.ToString());
-                    ReportError(MessageId.WeblogDetectionUnexpectedError, ex.Message);
+                    this.ReportError(MessageId.WeblogDetectionUnexpectedError, ex.Message);
                 }
 
                 return this;
@@ -133,44 +149,51 @@ namespace OpenLiveWriter.BlogClient.Detection
             const string GENERIC_ATOM_PROVIDER_ID = "D48F1B5A-06E6-4f0f-BD76-74F34F520792";
 
             if (html == null)
+            {
                 return false;
+            }
 
-            HtmlExtractor ex = new HtmlExtractor(html);
+            var ex = new HtmlExtractor(html);
             if (ex
                 .SeekWithin("<head>", "<body>")
                 .SeekWithin("<link href rel='service' type='application/atomsvc+xml'>", "</head>")
                 .Success)
             {
-                IBlogProvider atomProvider = BlogProviderManager.FindProvider(GENERIC_ATOM_PROVIDER_ID);
+                var atomProvider = BlogProviderManager.FindProvider(GENERIC_ATOM_PROVIDER_ID);
 
-                BeginTag bt = ex.Element as BeginTag;
+                var bt = ex.Element as BeginTag;
 
                 if (preferredOnly)
                 {
-                    string classes = bt.GetAttributeValue("class");
+                    var classes = bt.GetAttributeValue("class");
                     if (classes == null)
+                    {
                         return false;
+                    }
+
                     if (!Regex.IsMatch(classes, @"\bpreferred\b"))
+                    {
                         return false;
+                    }
                 }
 
-                string linkUrl = bt.GetAttributeValue("href");
+                var linkUrl = bt.GetAttributeValue("href");
 
                 Debug.WriteLine("Atom service link detected in the blog homepage");
 
-                _providerId = atomProvider.Id;
-                _serviceName = atomProvider.Name;
-                _clientType = atomProvider.ClientType;
-                _blogName = string.Empty;
-                _postApiUrl = GetAbsoluteUrl(url, linkUrl);
+                this.providerId = atomProvider.Id;
+                this.serviceName = atomProvider.Name;
+                this.clientType = atomProvider.ClientType;
+                this.blogName = string.Empty;
+                this.postApiUrl = this.GetAbsoluteUrl(url, linkUrl);
 
-                IBlogClient client = BlogClientManager.CreateClient(atomProvider.ClientType, _postApiUrl, _credentials);
+                var client = BlogClientManager.CreateClient(atomProvider.ClientType, this.postApiUrl, this.credentials);
                 client.VerifyCredentials();
-                _usersBlogs = client.GetUsersBlogs();
-                if (_usersBlogs.Length == 1)
+                this.usersBlogs = client.GetUsersBlogs();
+                if (this.usersBlogs.Length == 1)
                 {
-                    _hostBlogId = _usersBlogs[0].Id;
-                    _blogName = _usersBlogs[0].Name;
+                    this.hostBlogId = this.usersBlogs[0].Id;
+                    this.blogName = this.usersBlogs[0].Name;
                     /*
                                         if (_usersBlogs[0].HomepageUrl != null && _usersBlogs[0].HomepageUrl.Length > 0)
                                             _homepageUrl = _usersBlogs[0].HomepageUrl;
@@ -178,12 +201,12 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
 
                 // attempt to read the blog name from the homepage title
-                if (_blogName == null || _blogName.Length == 0)
+                if (this.blogName == null || this.blogName.Length == 0)
                 {
-                    HtmlExtractor ex2 = new HtmlExtractor(html);
+                    var ex2 = new HtmlExtractor(html);
                     if (ex2.Seek("<title>").Success)
                     {
-                        _blogName = ex2.CollectTextUntil("title");
+                        this.blogName = ex2.CollectTextUntil("title");
                     }
                 }
 
@@ -200,7 +223,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 return linkUrl;
             }
 
-            Uri baseUrl = new Uri(url);
+            var baseUrl = new Uri(url);
             absoluteUrl = new Uri(baseUrl, linkUrl);
             return absoluteUrl.AbsoluteUri;
         }
@@ -209,19 +232,27 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             public bool IsMatch(Element e)
             {
-                BeginTag tag = e as BeginTag;
+                var tag = e as BeginTag;
                 if (tag == null)
+                {
                     return false;
+                }
 
                 if (!tag.NameEquals("meta"))
+                {
                     return false;
+                }
 
                 if (tag.GetAttributeValue("name") != "generator")
+                {
                     return false;
+                }
 
-                string generator = tag.GetAttributeValue("content");
+                var generator = tag.GetAttributeValue("content");
                 if (generator == null || CaseInsensitiveComparer.DefaultInvariant.Compare("blogger", generator) != 0)
+                {
                     return false;
+                }
 
                 return true;
             }
@@ -238,24 +269,24 @@ namespace OpenLiveWriter.BlogClient.Detection
             Debug.Assert(string.IsNullOrEmpty(html), "Google Blogger blogs don't know the homepageUrl");
 
             const string BLOGGER_V3_PROVIDER_ID = "343F1D83-1098-43F4-AE86-93AFC7602855";
-            IBlogProvider bloggerProvider = BlogProviderManager.FindProvider(BLOGGER_V3_PROVIDER_ID);
+            var bloggerProvider = BlogProviderManager.FindProvider(BLOGGER_V3_PROVIDER_ID);
             if (bloggerProvider == null)
             {
                 Trace.Fail("Couldn't retrieve Blogger provider");
                 return false;
             }
 
-            BlogAccountDetector blogAccountDetector = new BlogAccountDetector(bloggerProvider.ClientType, bloggerProvider.PostApiUrl, _credentials);
+            var blogAccountDetector = new BlogAccountDetector(bloggerProvider.ClientType, bloggerProvider.PostApiUrl, this.credentials);
             if (blogAccountDetector.ValidateService())
             {
-                CopySettingsFromProvider(bloggerProvider);
+                this.CopySettingsFromProvider(bloggerProvider);
 
-                _usersBlogs = blogAccountDetector.UsersBlogs;
-                if (_usersBlogs.Length == 1)
+                this.usersBlogs = blogAccountDetector.UsersBlogs;
+                if (this.usersBlogs.Length == 1)
                 {
-                    _hostBlogId = _usersBlogs[0].Id;
-                    _blogName = _usersBlogs[0].Name;
-                    _homepageUrl = _usersBlogs[0].HomepageUrl;
+                    this.hostBlogId = this.usersBlogs[0].Id;
+                    this.blogName = this.usersBlogs[0].Name;
+                    this.homepageUrl = this.usersBlogs[0].HomepageUrl;
                 }
 
                 // If we didn't find the specific blog, we'll prompt the user with the list of blogs
@@ -263,8 +294,8 @@ namespace OpenLiveWriter.BlogClient.Detection
             }
             else
             {
-                AuthenticationErrorOccurred = blogAccountDetector.Exception is BlogClientAuthenticationException;
-                ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
+                this.AuthenticationErrorOccurred = blogAccountDetector.Exception is BlogClientAuthenticationException;
+                this.ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
                 return false;
             }
         }
@@ -273,9 +304,11 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             // always return alse for null description
             if (rsdServiceDescription == null)
+            {
                 return false;
+            }
 
-            string providerId = String.Empty;
+            var providerId = string.Empty;
             BlogAccount blogAccount = null;
 
             // check for a match on rsd engine link
@@ -315,29 +348,31 @@ namespace OpenLiveWriter.BlogClient.Detection
             if (blogAccount != null)
             {
                 // confirm that the credentials are OK
-                UpdateProgress(progressHost, 65, Res.Get(StringId.ProgressVerifyingInterface));
-                BlogAccountDetector blogAccountDetector = new BlogAccountDetector(
-                    blogAccount.ClientType, blogAccount.PostApiUrl, _credentials);
+                this.UpdateProgress(progressHost, 65, Res.Get(StringId.ProgressVerifyingInterface));
+                var blogAccountDetector = new BlogAccountDetector(
+                    blogAccount.ClientType, blogAccount.PostApiUrl, this.credentials);
 
                 if (blogAccountDetector.ValidateService())
                 {
                     // copy basic account info
-                    _providerId = providerId;
-                    _serviceName = blogAccount.ServiceName;
-                    _clientType = blogAccount.ClientType;
-                    _hostBlogId = blogAccount.BlogId;
-                    _postApiUrl = blogAccount.PostApiUrl;
+                    this.providerId = providerId;
+                    this.serviceName = blogAccount.ServiceName;
+                    this.clientType = blogAccount.ClientType;
+                    this.hostBlogId = blogAccount.BlogId;
+                    this.postApiUrl = blogAccount.PostApiUrl;
 
                     // see if we can improve on the blog name guess we already
                     // have from the <title> element of the homepage
-                    BlogInfo blogInfo = blogAccountDetector.DetectAccount(_homepageUrl, _hostBlogId);
+                    var blogInfo = blogAccountDetector.DetectAccount(this.homepageUrl, this.hostBlogId);
                     if (blogInfo != null)
-                        _blogName = blogInfo.Name;
+                    {
+                        this.blogName = blogInfo.Name;
+                    }
                 }
                 else
                 {
                     // report user-authorization error
-                    ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
+                    this.ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
                 }
 
                 // success!
@@ -367,7 +402,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
             if (blogAccountProvider != null)
             {
-                CopySettingsFromProvider(blogAccountProvider);
+                this.CopySettingsFromProvider(blogAccountProvider);
                 return true;
             }
             else
@@ -393,7 +428,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
             if (blogAccountProvider != null)
             {
-                CopySettingsFromProvider(blogAccountProvider);
+                this.CopySettingsFromProvider(blogAccountProvider);
                 return true;
             }
             else
@@ -404,13 +439,13 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private bool AttemptHomepageBasedDetection(string homepageUrl, string homepageContent)
         {
-            if (AttemptUrlBasedDetection(homepageUrl))
+            if (this.AttemptUrlBasedDetection(homepageUrl))
             {
                 return true;
             }
             else
             {
-                return AttemptContentBasedDetection(homepageContent);
+                return this.AttemptContentBasedDetection(homepageContent);
             }
         }
 
@@ -419,8 +454,8 @@ namespace OpenLiveWriter.BlogClient.Detection
             if (weblogDOM != null)
             {
                 // try to download an RSD description
-                UpdateProgress(progressHost, 50, Res.Get(StringId.ProgressAnalyzingInterface));
-                return RsdServiceDetector.DetectFromWeblog(_homepageUrl, weblogDOM);
+                this.UpdateProgress(progressHost, 50, Res.Get(StringId.ProgressAnalyzingInterface));
+                return RsdServiceDetector.DetectFromWeblog(this.homepageUrl, weblogDOM);
             }
             else
             {
@@ -445,15 +480,20 @@ namespace OpenLiveWriter.BlogClient.Detection
             private BlogAccountFromRsdServiceDescription(RsdServiceDescription rsdServiceDescription)
             {
                 // look for supported apis from highest fidelity to lowest
-                RsdApi rsdApi = rsdServiceDescription.ScanForApi("WordPress");
+                var rsdApi = rsdServiceDescription.ScanForApi("WordPress");
                 if (rsdApi == null)
+                {
                     rsdApi = rsdServiceDescription.ScanForApi("MovableType");
+                }
+
                 if (rsdApi == null)
+                {
                     rsdApi = rsdServiceDescription.ScanForApi("MetaWeblog");
+                }
 
                 if (rsdApi != null)
                 {
-                    Init(rsdServiceDescription.EngineName, rsdApi.Name, rsdApi.ApiLink, rsdApi.BlogId);
+                    this.Init(rsdServiceDescription.EngineName, rsdApi.Name, rsdApi.ApiLink, rsdApi.BlogId);
                     return;
                 }
                 else
@@ -479,65 +519,73 @@ namespace OpenLiveWriter.BlogClient.Detection
     /// </summary>
     public class SharePointBlogDetector : BlogServiceDetectorBase
     {
-        private IBlogCredentials _blogCredentials;
+        private IBlogCredentials blogCredentials;
         public SharePointBlogDetector(IBlogClientUIContext uiContext, Control hiddenBrowserParentControl, string localBlogId, string homepageUrl, IBlogCredentialsAccessor credentials, IBlogCredentials blogCredentials)
             : base(uiContext, hiddenBrowserParentControl, localBlogId, homepageUrl, credentials)
         {
-            _blogCredentials = blogCredentials;
+            this.blogCredentials = blogCredentials;
         }
 
         protected override object DetectBlogService(IProgressHost progressHost)
         {
-            using (BlogClientUIContextSilentMode uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
+            using (var uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
             {
                 try
                 {
                     // copy basic account info
-                    IBlogProvider provider = BlogProviderManager.FindProvider("4AA58E69-8C24-40b1-BACE-3BB14237E8F9");
-                    _providerId = provider.Id;
-                    _serviceName = provider.Name;
-                    _clientType = provider.ClientType;
+                    var provider = BlogProviderManager.FindProvider("4AA58E69-8C24-40b1-BACE-3BB14237E8F9");
+                    this.providerId = provider.Id;
+                    this.serviceName = provider.Name;
+                    this.clientType = provider.ClientType;
 
                     //calculate the API url based on the homepage Url.
                     //  API URL Format: <blogurl>/_layouts/metaweblog.aspx
-                    string homepagePath = UrlHelper.SafeToAbsoluteUri(new Uri(_homepageUrl)).Split('?')[0];
+                    var homepagePath = UrlHelper.SafeToAbsoluteUri(new Uri(this.homepageUrl)).Split('?')[0];
                     if (homepagePath == null)
+                    {
                         homepagePath = "/";
+                    }
 
                     //trim off any file information included in the URL (ex: /default.aspx)
-                    int lastPathPartIndex = homepagePath.LastIndexOf("/", StringComparison.OrdinalIgnoreCase);
+                    var lastPathPartIndex = homepagePath.LastIndexOf("/", StringComparison.OrdinalIgnoreCase);
                     if (lastPathPartIndex != -1)
                     {
-                        string lastPathPart = homepagePath.Substring(lastPathPartIndex);
+                        var lastPathPart = homepagePath.Substring(lastPathPartIndex);
                         if (lastPathPart.IndexOf('.') != -1)
                         {
                             homepagePath = homepagePath.Substring(0, lastPathPartIndex);
-                            if (homepagePath == String.Empty)
+                            if (homepagePath == string.Empty)
+                            {
                                 homepagePath = "/";
+                            }
                         }
                     }
                     if (homepagePath != "/" && homepagePath.EndsWith("/", StringComparison.OrdinalIgnoreCase)) //trim off trailing slash
+                    {
                         homepagePath = homepagePath.Substring(0, homepagePath.Length - 1);
+                    }
 
                     //Update the homepage url
-                    _homepageUrl = homepagePath;
+                    this.homepageUrl = homepagePath;
 
-                    _postApiUrl = String.Format(CultureInfo.InvariantCulture, "{0}/_layouts/metaweblog.aspx", homepagePath);
+                    this.postApiUrl = string.Format(CultureInfo.InvariantCulture, "{0}/_layouts/metaweblog.aspx", homepagePath);
 
-                    if (VerifyCredentialsAndDetectAuthScheme(_postApiUrl, _blogCredentials, _credentials))
+                    if (VerifyCredentialsAndDetectAuthScheme(this.postApiUrl, this.blogCredentials, this.credentials))
                     {
-                        AuthenticationErrorOccurred = false;
+                        this.AuthenticationErrorOccurred = false;
                         //detect the user's blog ID.
-                        if (!BlogProviderParameters.UrlContainsParameters(_postApiUrl))
+                        if (!BlogProviderParameters.UrlContainsParameters(this.postApiUrl))
                         {
                             // we detected the provider, now see if we can detect the weblog id
                             // (or at lease the list of the user's weblogs)
-                            UpdateProgress(progressHost, 80, Res.Get(StringId.ProgressAnalyzingWeblogList));
-                            AttemptUserBlogDetection();
+                            this.UpdateProgress(progressHost, 80, Res.Get(StringId.ProgressAnalyzingWeblogList));
+                            this.AttemptUserBlogDetection();
                         }
                     }
                     else
-                        AuthenticationErrorOccurred = true;
+                    {
+                        this.AuthenticationErrorOccurred = true;
+                    }
                 }
                 catch (OperationCancelledException)
                 {
@@ -545,7 +593,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
                 catch (BlogClientOperationCancelledException)
                 {
-                    Cancel();
+                    this.Cancel();
                     // WasCancelled == true
                 }
                 catch (BlogAccountDetectorException)
@@ -554,13 +602,13 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
                 catch (BlogClientAuthenticationException)
                 {
-                    AuthenticationErrorOccurred = true;
+                    this.AuthenticationErrorOccurred = true;
                     // ErrorOccurred == true
                 }
                 catch (Exception ex)
                 {
                     // ErrorOccurred == true
-                    ReportError(MessageId.WeblogDetectionUnexpectedError, ex.Message);
+                    this.ReportError(MessageId.WeblogDetectionUnexpectedError, ex.Message);
                 }
             }
             return this;
@@ -580,8 +628,8 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <returns></returns>
         private static bool VerifyCredentialsAndDetectAuthScheme(string postApiUrl, IBlogCredentials blogCredentials, IBlogCredentialsAccessor credentials)
         {
-            BlogClientAttribute blogClientAttr = (BlogClientAttribute)typeof(SharePointClient).GetCustomAttributes(typeof(BlogClientAttribute), false)[0];
-            SharePointClient client = (SharePointClient)BlogClientManager.CreateClient(blogClientAttr.TypeName, postApiUrl, credentials);
+            var blogClientAttr = (BlogClientAttribute)typeof(SharePointClient).GetCustomAttributes(typeof(BlogClientAttribute), false)[0];
+            var client = (SharePointClient)BlogClientManager.CreateClient(blogClientAttr.TypeName, postApiUrl, credentials);
 
             return SharePointClient.VerifyCredentialsAndDetectAuthScheme(blogCredentials, client);
         }
@@ -593,224 +641,146 @@ namespace OpenLiveWriter.BlogClient.Detection
             : base(uiContext)
         {
             // save references
-            _uiContext = uiContext;
-            _localBlogId = localBlogId;
-            _homepageUrl = homepageUrl;
-            _credentials = credentials;
+            this.uiContext = uiContext;
+            this.localBlogId = localBlogId;
+            this.homepageUrl = homepageUrl;
+            this.credentials = credentials;
 
             // add blog service detection
-            AddProgressOperation(
-                new ProgressOperation(DetectBlogService),
+            this.AddProgressOperation(
+                new ProgressOperation(this.DetectBlogService),
                 35);
 
             // add settings downloading (note: this operation will be a no-op
             // in the case where we don't successfully detect a weblog)
-            AddProgressOperation(
-                new ProgressOperation(DetectWeblogSettings),
-                new ProgressOperationCompleted(DetectWeblogSettingsCompleted),
+            this.AddProgressOperation(
+                new ProgressOperation(this.DetectWeblogSettings),
+                new ProgressOperationCompleted(this.DetectWeblogSettingsCompleted),
                 30);
 
             // add template downloading (note: this operation will be a no-op in the
             // case where we don't successfully detect a weblog)
-            _blogEditingTemplateDetector = new BlogEditingTemplateDetector(uiContext, hiddenBrowserParentControl);
-            AddProgressOperation(
-                new ProgressOperation(_blogEditingTemplateDetector.DetectTemplate),
+            this.blogEditingTemplateDetector = new BlogEditingTemplateDetector(uiContext, hiddenBrowserParentControl);
+            this.AddProgressOperation(
+                new ProgressOperation(this.blogEditingTemplateDetector.DetectTemplate),
                 35);
         }
 
-        public BlogInfo[] UsersBlogs
-        {
-            get { return _usersBlogs; }
-        }
+        public BlogInfo[] UsersBlogs => this.usersBlogs;
 
-        public string ProviderId
-        {
-            get { return _providerId; }
-        }
+        public string ProviderId => this.providerId;
 
-        public string ServiceName
-        {
-            get { return _serviceName; }
-        }
+        public string ServiceName => this.serviceName;
 
-        public string ClientType
-        {
-            get { return _clientType; }
-        }
+        public string ClientType => this.clientType;
 
-        public string PostApiUrl
-        {
-            get { return _postApiUrl; }
-        }
+        public string PostApiUrl => this.postApiUrl;
 
-        public string HostBlogId
-        {
-            get { return _hostBlogId; }
-        }
+        public string HostBlogId => this.hostBlogId;
 
-        public string BlogName
-        {
-            get { return _blogName; }
-        }
+        public string BlogName => this.blogName;
 
-        public IDictionary OptionOverrides
-        {
-            get { return _optionOverrides; }
-        }
+        public IDictionary<string, string> OptionOverrides => this.optionOverrides;
 
-        public IDictionary HomePageOverrides
-        {
-            get { return _homePageOverrides; }
-        }
+        public IDictionary<string, string> HomePageOverrides => this.homePageOverrides;
 
-        public IDictionary UserOptionOverrides
-        {
-            get { return null; }
-        }
+        public IDictionary<string, string> UserOptionOverrides => null;
 
-        public IBlogProviderButtonDescription[] ButtonDescriptions
-        {
-            get { return _buttonDescriptions; }
-        }
+        public IBlogProviderButtonDescription[] ButtonDescriptions { get; private set; } = null;
 
-        public BlogPostCategory[] Categories
-        {
-            get { return _categories; }
-        }
+        public BlogPostCategory[] Categories { get; private set; } = null;
 
-        public BlogPostKeyword[] Keywords
-        {
-            get { return _keywords; }
-        }
+        public BlogPostKeyword[] Keywords { get; private set; } = null;
 
-        public byte[] FavIcon
-        {
-            get { return _favIcon; }
-        }
+        public byte[] FavIcon { get; private set; } = null;
 
-        public byte[] Image
-        {
-            get { return _image; }
-        }
+        public byte[] Image { get; private set; } = null;
 
-        public byte[] WatermarkImage
-        {
-            get { return _watermarkImage; }
-        }
+        public byte[] WatermarkImage { get; private set; } = null;
 
-        public BlogEditingTemplateFile[] BlogTemplateFiles
-        {
-            get { return _blogEditingTemplateDetector.BlogTemplateFiles; }
-        }
+        public BlogEditingTemplateFile[] BlogTemplateFiles => this.blogEditingTemplateDetector.BlogTemplateFiles;
 
-        public Color? PostBodyBackgroundColor
-        {
-            get { return _blogEditingTemplateDetector.PostBodyBackgroundColor; }
-        }
+        public Color? PostBodyBackgroundColor => this.blogEditingTemplateDetector.PostBodyBackgroundColor;
 
-        public bool WasCancelled
-        {
-            get { return CancelRequested; }
-        }
+        public bool WasCancelled => this.CancelRequested;
 
-        public bool ErrorOccurred
-        {
-            get { return _errorMessageType != MessageId.None; }
-        }
+        public bool ErrorOccurred => this.errorMessageType != MessageId.None;
 
-        public bool AuthenticationErrorOccurred
-        {
-            get { return _authenticationErrorOccured; }
-            set { _authenticationErrorOccured = value; }
-        }
-        private bool _authenticationErrorOccured = false;
+        public bool AuthenticationErrorOccurred { get; set; } = false;
 
-        public bool TemplateDownloadFailed
-        {
-            get { return _blogEditingTemplateDetector.ExceptionOccurred; }
-        }
+        public bool TemplateDownloadFailed => this.blogEditingTemplateDetector.ExceptionOccurred;
 
-        IBlogCredentialsAccessor IBlogSettingsDetectionContext.Credentials
-        {
-            get { return _credentials; }
-        }
+        IBlogCredentialsAccessor IBlogSettingsDetectionContext.Credentials => this.credentials;
 
-        string IBlogSettingsDetectionContext.HomepageUrl
-        {
-            get { return _homepageUrl; }
-        }
+        string IBlogSettingsDetectionContext.HomepageUrl => this.homepageUrl;
 
         public WriterEditingManifestDownloadInfo ManifestDownloadInfo
         {
-            get { return _manifestDownloadInfo; }
-            set { _manifestDownloadInfo = value; }
+            get => this.manifestDownloadInfo;
+            set => this.manifestDownloadInfo = value;
         }
 
         string IBlogSettingsDetectionContext.ClientType
         {
-            get { return _clientType; }
-            set { _clientType = value; }
+            get => this.clientType;
+            set => this.clientType = value;
         }
 
         byte[] IBlogSettingsDetectionContext.FavIcon
         {
-            get { return _favIcon; }
-            set { _favIcon = value; }
+            get => this.FavIcon;
+            set => this.FavIcon = value;
         }
 
         byte[] IBlogSettingsDetectionContext.Image
         {
-            get { return _image; }
-            set { _image = value; }
+            get => this.Image;
+            set => this.Image = value;
         }
 
         byte[] IBlogSettingsDetectionContext.WatermarkImage
         {
-            get { return _watermarkImage; }
-            set { _watermarkImage = value; }
+            get => this.WatermarkImage;
+            set => this.WatermarkImage = value;
         }
 
         BlogPostCategory[] IBlogSettingsDetectionContext.Categories
         {
-            get { return _categories; }
-            set { _categories = value; }
+            get => this.Categories;
+            set => this.Categories = value;
         }
 
         BlogPostKeyword[] IBlogSettingsDetectionContext.Keywords
         {
-            get { return _keywords; }
-            set { _keywords = value; }
+            get => this.Keywords;
+            set => this.Keywords = value;
         }
 
-        IDictionary IBlogSettingsDetectionContext.OptionOverrides
+        IDictionary<string, string> IBlogSettingsDetectionContext.OptionOverrides
         {
-            get { return _optionOverrides; }
-            set { _optionOverrides = value; }
+            get => this.optionOverrides;
+            set => this.optionOverrides = value;
         }
 
-        IDictionary IBlogSettingsDetectionContext.HomePageOverrides
+        IDictionary<string, string> IBlogSettingsDetectionContext.HomePageOverrides
         {
-            get { return _homePageOverrides; }
-            set { _homePageOverrides = value; }
+            get => this.homePageOverrides;
+            set => this.homePageOverrides = value;
         }
 
         IBlogProviderButtonDescription[] IBlogSettingsDetectionContext.ButtonDescriptions
         {
-            get { return _buttonDescriptions; }
-            set { _buttonDescriptions = value; }
+            get => this.ButtonDescriptions;
+            set => this.ButtonDescriptions = value;
         }
 
-        public BlogInfo[] AvailableImageEndpoints
-        {
-            get { return availableImageEndpoints; }
-            set { availableImageEndpoints = value; }
-        }
+        public BlogInfo[] AvailableImageEndpoints { get; set; }
 
         public void ShowLastError(IWin32Window owner)
         {
-            if (ErrorOccurred)
+            if (this.ErrorOccurred)
             {
-                DisplayMessage.Show(_errorMessageType, owner, _errorMessageParams);
+                DisplayMessage.Show(this.errorMessageType, owner, this.errorMessageParams);
             }
             else
             {
@@ -822,15 +792,13 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                string favIconUrl = UrlHelper.UrlCombine(homepageUrl, "favicon.ico");
-                using (Stream favIconStream = HttpRequestHelper.SafeDownloadFile(favIconUrl))
+                var favIconUrl = UrlHelper.UrlCombine(homepageUrl, "favicon.ico");
+                using (var favIconStream = HttpRequestHelper.SafeDownloadFile(favIconUrl))
+                using (var memoryStream = new MemoryStream())
                 {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        StreamHelper.Transfer(favIconStream, memoryStream);
-                        memoryStream.Seek(0, SeekOrigin.Begin);
-                        return memoryStream.ToArray();
-                    }
+                    StreamHelper.Transfer(favIconStream, memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    return memoryStream.ToArray();
                 }
             }
             catch
@@ -843,56 +811,58 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         protected void AttemptUserBlogDetection()
         {
-            BlogAccountDetector blogAccountDetector = new BlogAccountDetector(
-                _clientType, _postApiUrl, _credentials);
+            var blogAccountDetector = new BlogAccountDetector(
+                this.clientType, this.postApiUrl, this.credentials);
 
             if (blogAccountDetector.ValidateService())
             {
-                BlogInfo blogInfo = blogAccountDetector.DetectAccount(_homepageUrl, _hostBlogId);
+                var blogInfo = blogAccountDetector.DetectAccount(this.homepageUrl, this.hostBlogId);
                 if (blogInfo != null)
                 {
                     // save the detected info
                     // TODO: Commenting out next line for Spaces demo tomorrow.
                     // need to decide whether to keep it commented out going forward.
                     // _homepageUrl = blogInfo.HomepageUrl;
-                    _hostBlogId = blogInfo.Id;
-                    _blogName = blogInfo.Name;
+                    this.hostBlogId = blogInfo.Id;
+                    this.blogName = blogInfo.Name;
                 }
 
                 // always save the list of user's blogs
-                _usersBlogs = blogAccountDetector.UsersBlogs;
+                this.usersBlogs = blogAccountDetector.UsersBlogs;
             }
             else
             {
-                AuthenticationErrorOccurred = blogAccountDetector.Exception is BlogClientAuthenticationException;
-                ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
+                this.AuthenticationErrorOccurred = blogAccountDetector.Exception is BlogClientAuthenticationException;
+                this.ReportErrorAndFail(blogAccountDetector.ErrorMessageType, blogAccountDetector.ErrorMessageParams);
             }
         }
 
         protected IHTMLDocument2 GetWeblogHomepageDOM(IProgressHost progressHost)
         {
             // try download the weblog home page
-            UpdateProgress(progressHost, 25, Res.Get(StringId.ProgressAnalyzingHomepage));
-            string responseUri;
-            IHTMLDocument2 weblogDOM = HTMLDocumentHelper.SafeGetHTMLDocumentFromUrl(_homepageUrl, out responseUri);
-            if (responseUri != null && responseUri != _homepageUrl)
+            this.UpdateProgress(progressHost, 25, Res.Get(StringId.ProgressAnalyzingHomepage));
+            var weblogDOM = HTMLDocumentHelper.SafeGetHTMLDocumentFromUrl(this.homepageUrl, out var responseUri);
+            if (responseUri != null && responseUri != this.homepageUrl)
             {
-                _homepageUrl = responseUri;
+                this.homepageUrl = responseUri;
             }
+
             if (weblogDOM != null)
             {
                 // default the blog name to the title of the document
                 if (weblogDOM.title != null)
                 {
-                    _blogName = weblogDOM.title;
+                    this.blogName = weblogDOM.title;
 
                     // drop anything to the right of a "|", as it usually is a site name
-                    int index = _blogName.IndexOf("|", StringComparison.OrdinalIgnoreCase);
+                    var index = this.blogName.IndexOf("|", StringComparison.OrdinalIgnoreCase);
                     if (index > 0)
                     {
-                        string newname = _blogName.Substring(0, index).Trim();
-                        if (newname != String.Empty)
-                            _blogName = newname;
+                        var newname = this.blogName.Substring(0, index).Trim();
+                        if (newname != string.Empty)
+                        {
+                            this.blogName = newname;
+                        }
                     }
                 }
             }
@@ -902,29 +872,28 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         protected void CopySettingsFromProvider(IBlogProvider blogAccountProvider)
         {
-            _providerId = blogAccountProvider.Id;
-            _serviceName = blogAccountProvider.Name;
-            _clientType = blogAccountProvider.ClientType;
-            _postApiUrl = ProcessPostUrlMacros(blogAccountProvider.PostApiUrl);
+            this.providerId = blogAccountProvider.Id;
+            this.serviceName = blogAccountProvider.Name;
+            this.clientType = blogAccountProvider.ClientType;
+            this.postApiUrl = this.ProcessPostUrlMacros(blogAccountProvider.PostApiUrl);
         }
 
-        private string ProcessPostUrlMacros(string postApiUrl)
-        {
-            return postApiUrl.Replace("<username>", _credentials.Username);
-        }
+        private string ProcessPostUrlMacros(string postApiUrl) => postApiUrl.Replace("<username>", this.credentials.Username);
 
         private object DetectWeblogSettings(IProgressHost progressHost)
         {
-            using (BlogClientUIContextSilentMode uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
+            using (var uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
             {
                 // no-op if we don't have a blog-id to work with
-                if (HostBlogId == String.Empty)
+                if (this.HostBlogId == string.Empty)
+                {
                     return this;
+                }
 
                 try
                 {
                     // detect settings
-                    BlogSettingsDetector blogSettingsDetector = new BlogSettingsDetector(this);
+                    var blogSettingsDetector = new BlogSettingsDetector(this);
                     blogSettingsDetector.DetectSettings(progressHost);
                 }
                 catch (OperationCancelledException)
@@ -933,7 +902,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
                 catch (BlogClientOperationCancelledException)
                 {
-                    Cancel();
+                    this.Cancel();
                     // WasCancelled == true
                 }
                 catch (Exception ex)
@@ -948,35 +917,48 @@ namespace OpenLiveWriter.BlogClient.Detection
         private void DetectWeblogSettingsCompleted(object result)
         {
             // no-op if we don't have a blog detected
-            if (HostBlogId == String.Empty)
+            if (this.HostBlogId == string.Empty)
+            {
                 return;
+            }
 
             // get the editing template directory
-            string blogTemplateDir = BlogEditingTemplate.GetBlogTemplateDir(_localBlogId);
+            var blogTemplateDir = BlogEditingTemplate.GetBlogTemplateDir(this.localBlogId);
 
             // set context for template detector
-            BlogAccount blogAccount = new BlogAccount(ServiceName, ClientType, PostApiUrl, HostBlogId);
-            _blogEditingTemplateDetector.SetContext(blogAccount, _credentials, _homepageUrl, blogTemplateDir, _manifestDownloadInfo, false, _providerId, _optionOverrides, null, _homePageOverrides);
-
+            var blogAccount = new BlogAccount(this.ServiceName, this.ClientType, this.PostApiUrl, this.HostBlogId);
+            this.blogEditingTemplateDetector.SetContext(
+                blogAccount,
+                this.credentials,
+                this.homepageUrl,
+                blogTemplateDir,
+                this.manifestDownloadInfo,
+                false,
+                this.providerId,
+                this.optionOverrides,
+                null,
+                this.homePageOverrides);
         }
 
         protected void UpdateProgress(IProgressHost progressHost, int percent, string message)
         {
-            if (CancelRequested)
+            if (this.CancelRequested)
+            {
                 throw new OperationCancelledException();
+            }
 
             progressHost.UpdateProgress(percent, 100, message);
         }
 
         protected void ReportError(MessageId errorMessageType, params object[] errorMessageParams)
         {
-            _errorMessageType = errorMessageType;
-            _errorMessageParams = errorMessageParams;
+            this.errorMessageType = errorMessageType;
+            this.errorMessageParams = errorMessageParams;
         }
 
         protected void ReportErrorAndFail(MessageId errorMessageType, params object[] errorMessageParams)
         {
-            ReportError(errorMessageType, errorMessageParams);
+            this.ReportError(errorMessageType, errorMessageParams);
             throw new BlogAccountDetectorException();
         }
 
@@ -990,43 +972,36 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <summary>
         /// Blog account we are scanning
         /// </summary>
-        protected string _localBlogId;
-        protected string _homepageUrl;
-        protected WriterEditingManifestDownloadInfo _manifestDownloadInfo = null;
-        protected IBlogCredentialsAccessor _credentials;
+        protected string localBlogId;
+        protected string homepageUrl;
+        protected WriterEditingManifestDownloadInfo manifestDownloadInfo = null;
+        protected IBlogCredentialsAccessor credentials;
 
         // BlogTemplateDetector
-        private BlogEditingTemplateDetector _blogEditingTemplateDetector;
+        private BlogEditingTemplateDetector blogEditingTemplateDetector;
 
         /// <summary>
         /// Results of scanning
         /// </summary>
-        protected string _providerId = String.Empty;
-        protected string _serviceName = String.Empty;
-        protected string _clientType = String.Empty;
-        protected string _postApiUrl = String.Empty;
-        protected string _hostBlogId = String.Empty;
-        protected string _blogName = String.Empty;
+        protected string providerId = string.Empty;
+        protected string serviceName = string.Empty;
+        protected string clientType = string.Empty;
+        protected string postApiUrl = string.Empty;
+        protected string hostBlogId = string.Empty;
+        protected string blogName = string.Empty;
 
-        protected BlogInfo[] _usersBlogs = new BlogInfo[] { };
+        protected BlogInfo[] usersBlogs = new BlogInfo[] { };
 
         // if we are unable to detect these values then leave them null
         // as an indicator that their values are "unknown" vs. "empty"
         // callers can then choose to not overwrite any existing settings
         // in this case
-        protected IDictionary _homePageOverrides = null;
-        protected IDictionary _optionOverrides = null;
-        private BlogPostCategory[] _categories = null;
-        private BlogPostKeyword[] _keywords = null;
-        private byte[] _favIcon = null;
-        private byte[] _image = null;
-        private byte[] _watermarkImage = null;
-        private IBlogProviderButtonDescription[] _buttonDescriptions = null;
+        protected IDictionary<string, string> homePageOverrides = null;
+        protected IDictionary<string, string> optionOverrides = null;
 
         // error info
-        private MessageId _errorMessageType;
-        private object[] _errorMessageParams;
-        protected IBlogClientUIContext _uiContext;
-        private BlogInfo[] availableImageEndpoints;
+        private MessageId errorMessageType;
+        private object[] errorMessageParams;
+        protected IBlogClientUIContext uiContext;
     }
 }

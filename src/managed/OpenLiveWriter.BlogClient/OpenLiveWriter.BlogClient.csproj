@@ -134,7 +134,9 @@
     <Compile Include="BlogClientBase.cs" />
     <Compile Include="BlogClientHelper.cs" />
     <Compile Include="BlogClientUIContext.cs" />
+    <Compile Include="BlogCredentials.cs" />
     <Compile Include="BlogDescriptor.cs" />
+    <Compile Include="BlogFileUploadSettings.cs" />
     <Compile Include="BlogProviderButtonDescription.cs" />
     <Compile Include="BlogSettings.cs" />
     <Compile Include="Clients\AtomClient.cs" />

@@ -1,34 +1,37 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using mshtml;
-using OpenLiveWriter.BlogClient.Clients;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Progress;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Mshtml;
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.BlogClient.Detection
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Net;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+
+    using mshtml;
+
+    using OpenLiveWriter.BlogClient.Clients;
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Progress;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Mshtml;
+
     public class BlogEditingTemplateFile
     {
         public BlogEditingTemplateFile(BlogEditingTemplateType type, string file)
         {
-            TemplateType = type;
-            TemplateFile = file;
+            this.TemplateType = type;
+            this.TemplateFile = file;
         }
         public readonly BlogEditingTemplateType TemplateType;
         public readonly string TemplateFile;
@@ -92,7 +95,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             BlogAccount blogAccount = new BlogAccount(blogSettings.ServiceName, blogSettings.ClientType, blogSettings.PostApiUrl, blogSettings.HostBlogId);
             string blogTemplateDir = BlogEditingTemplate.GetBlogTemplateDir(blogSettings.Id);
-            SetContext(blogAccount, blogSettings.Credentials, blogSettings.HomepageUrl, blogTemplateDir, blogSettings.ManifestDownloadInfo, probeForManifest, blogSettings.ProviderId, blogSettings.OptionOverrides, blogSettings.UserOptionOverrides, blogSettings.HomePageOverrides);
+            this.SetContext(blogAccount, blogSettings.Credentials, blogSettings.HomepageUrl, blogTemplateDir, blogSettings.ManifestDownloadInfo, probeForManifest, blogSettings.ProviderId, blogSettings.OptionOverrides, blogSettings.UserOptionOverrides, blogSettings.HomePageOverrides);
         }
 
         /// <summary>
@@ -103,35 +106,52 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <param name="parentControl"></param>
         public BlogEditingTemplateDetector(IBlogClientUIContext uiContext, Control parentControl)
         {
-            _uiContext = uiContext;
-            _parentControl = parentControl;
+            this._uiContext = uiContext;
+            this._parentControl = parentControl;
         }
 
         /// <summary>
         /// SetContext using a weblog account
         /// </summary>
-        public void SetContext(BlogAccount blogAccount, IBlogCredentialsAccessor credentials, string blogHomepageUrl, string blogTemplateDir, WriterEditingManifestDownloadInfo manifestDownloadInfo, bool probeForManifest, string providerId, IDictionary optionOverrides, IDictionary userOptionOverrides, IDictionary homepageOptionOverrides)
+        public void SetContext(
+            BlogAccount blogAccount,
+            IBlogCredentialsAccessor credentials,
+            string blogHomepageUrl,
+            string blogTemplateDir,
+            WriterEditingManifestDownloadInfo manifestDownloadInfo,
+            bool probeForManifest,
+            string providerId,
+            IDictionary<string, string> optionOverrides,
+            IDictionary<string, string> userOptionOverrides,
+            IDictionary<string, string> homepageOptionOverrides)
         {
             // note context set
-            _contextSet = true;
+            this.contextSet = true;
 
             // create a blog client
-            _blogAccount = blogAccount;
-            _credentials = credentials;
-            _blogClient = BlogClientManager.CreateClient(blogAccount.ClientType, blogAccount.PostApiUrl, credentials, providerId, optionOverrides, userOptionOverrides, homepageOptionOverrides);
+            this.blogAccount = blogAccount;
+            this.credentials = credentials;
+            this.blogClient = BlogClientManager.CreateClient(
+                blogAccount.ClientType,
+                blogAccount.PostApiUrl,
+                credentials,
+                providerId,
+                optionOverrides,
+                userOptionOverrides,
+                homepageOptionOverrides);
 
             // set other context that we've got
-            _blogHomepageUrl = blogHomepageUrl;
-            _blogTemplateDir = blogTemplateDir;
-            _manifestDownloadInfo = manifestDownloadInfo;
-            _probeForManifest = probeForManifest;
+            this._blogHomepageUrl = blogHomepageUrl;
+            this._blogTemplateDir = blogTemplateDir;
+            this._manifestDownloadInfo = manifestDownloadInfo;
+            this._probeForManifest = probeForManifest;
         }
 
         public BlogEditingTemplateFile[] BlogTemplateFiles
         {
             get
             {
-                return _blogTemplateFiles;
+                return this._blogTemplateFiles;
             }
         }
 
@@ -139,18 +159,18 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             get
             {
-                return _postBodyBackgroundColor;
+                return this._postBodyBackgroundColor;
             }
         }
 
         public bool ExceptionOccurred
         {
-            get { return Exception != null; }
+            get { return this.Exception != null; }
         }
 
         public Exception Exception
         {
-            get { return _exception; }
+            get { return this._exception; }
         }
         private Exception _exception;
 
@@ -161,10 +181,10 @@ namespace OpenLiveWriter.BlogClient.Detection
             // if our context has not been set then just return without doing anything
             // (supports this being an optional step at the end of a chain of
             // other progress operations)
-            if (_contextSet == false)
+            if (this.contextSet == false)
                 return this;
 
-            using (BlogClientUIContextScope uiContextScope = new BlogClientUIContextScope(_uiContext))
+            using (BlogClientUIContextScope uiContextScope = new BlogClientUIContextScope(this._uiContext))
             {
                 // initial progress
                 progress.UpdateProgress(Res.Get(StringId.ProgressDetectingWeblogEditingStyle));
@@ -177,7 +197,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 ArrayList detectionTargetStrategies = new ArrayList();
 
                 // try explicit detection of templates
-                BlogEditingTemplateFiles templateFiles = SafeGetTemplates(new ProgressTick(progress, 50, 100));
+                BlogEditingTemplateFiles templateFiles = this.SafeGetTemplates(new ProgressTick(progress, 50, 100));
 
                 // see if we got the FramedTemplate
                 if (templateFiles.FramedTemplate != null)
@@ -200,7 +220,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 // perform detection if we have detection targets
                 if (detectionTargetTypes.Count > 0)
                 {
-                    BlogEditingTemplateFile[] detectedBlogTemplateFiles = DetectTemplates(new ProgressTick(progress, 50, 100),
+                    BlogEditingTemplateFile[] detectedBlogTemplateFiles = this.DetectTemplates(new ProgressTick(progress, 50, 100),
                         detectionTargetTypes.ToArray(typeof(BlogEditingTemplateType)) as BlogEditingTemplateType[],
                         detectionTargetStrategies.ToArray(typeof(BlogEditingTemplateStrategy)) as BlogEditingTemplateStrategy[]);
                     if (detectedBlogTemplateFiles != null)
@@ -211,18 +231,18 @@ namespace OpenLiveWriter.BlogClient.Detection
                 if (blogTemplateFiles.Count > 0)
                 {
                     // capture template files
-                    _blogTemplateFiles = blogTemplateFiles.ToArray(typeof(BlogEditingTemplateFile)) as BlogEditingTemplateFile[];
+                    this._blogTemplateFiles = blogTemplateFiles.ToArray(typeof(BlogEditingTemplateFile)) as BlogEditingTemplateFile[];
 
                     // if we got at least one template by some method then clear any exception
                     // that occurs so we can at least update that template
-                    _exception = null;
+                    this._exception = null;
                 }
 
                 foreach (BlogEditingTemplateFile file in blogTemplateFiles)
                 {
                     if (file.TemplateType == BlogEditingTemplateType.Webpage)
                     {
-                        _postBodyBackgroundColor = BackgroundColorDetector.DetectColor(UrlHelper.SafeToAbsoluteUri(new Uri(file.TemplateFile)), _postBodyBackgroundColor);
+                        this._postBodyBackgroundColor = BackgroundColorDetector.DetectColor(UrlHelper.SafeToAbsoluteUri(new Uri(file.TemplateFile)), this._postBodyBackgroundColor);
                     }
                 }
 
@@ -244,33 +264,33 @@ namespace OpenLiveWriter.BlogClient.Detection
             try
             {
                 // if we have a manifest url then try to get our manifest
-                if (_manifestDownloadInfo != null)
+                if (this._manifestDownloadInfo != null)
                 {
                     // try to get the editing manifest
-                    string manifestUrl = _manifestDownloadInfo.SourceUrl;
+                    string manifestUrl = this._manifestDownloadInfo.SourceUrl;
                     editingManifest = WriterEditingManifest.FromUrl(
                         new Uri(manifestUrl),
-                        _blogClient,
-                        _credentials,
+                        this.blogClient,
+                        this.credentials,
                         true);
 
                     // progress
-                    CheckCancelRequested(progress);
+                    this.CheckCancelRequested(progress);
                     progress.UpdateProgress(20, 100);
                 }
 
                 // if we have no editing manifest then probe (if allowed)
-                if ((editingManifest == null) && _probeForManifest)
+                if ((editingManifest == null) && this._probeForManifest)
                 {
                     editingManifest = WriterEditingManifest.FromHomepage(
-                        new LazyHomepageDownloader(_blogHomepageUrl, new HttpRequestHandler(_blogClient.SendAuthenticatedHttpRequest)),
-                        new Uri(_blogHomepageUrl),
-                        _blogClient,
-                        _credentials);
+                        new LazyHomepageDownloader(this._blogHomepageUrl, new HttpRequestHandler(this.blogClient.SendAuthenticatedHttpRequest)),
+                        new Uri(this._blogHomepageUrl),
+                        this.blogClient,
+                        this.credentials);
                 }
 
                 // progress
-                CheckCancelRequested(progress);
+                this.CheckCancelRequested(progress);
                 progress.UpdateProgress(40, 100);
 
                 // if we got one then return templates from it as-appropriate
@@ -278,11 +298,11 @@ namespace OpenLiveWriter.BlogClient.Detection
                 {
                     if (editingManifest.WebLayoutUrl != null)
                     {
-                        string webLayoutTemplate = DownloadManifestTemplate(new ProgressTick(progress, 10, 100), editingManifest.WebLayoutUrl);
+                        string webLayoutTemplate = this.DownloadManifestTemplate(new ProgressTick(progress, 10, 100), editingManifest.WebLayoutUrl);
                         if (BlogEditingTemplate.ValidateTemplate(webLayoutTemplate))
                         {
                             // download supporting files
-                            string templateFile = DownloadTemplateFiles(webLayoutTemplate, _blogHomepageUrl, new ProgressTick(progress, 20, 100));
+                            string templateFile = this.DownloadTemplateFiles(webLayoutTemplate, this._blogHomepageUrl, new ProgressTick(progress, 20, 100));
 
                             // return the template
                             templateFiles.FramedTemplate = new BlogEditingTemplateFile(BlogEditingTemplateType.Framed, templateFile);
@@ -295,11 +315,11 @@ namespace OpenLiveWriter.BlogClient.Detection
 
                     if (editingManifest.WebPreviewUrl != null)
                     {
-                        string webPreviewTemplate = DownloadManifestTemplate(new ProgressTick(progress, 10, 100), editingManifest.WebPreviewUrl);
+                        string webPreviewTemplate = this.DownloadManifestTemplate(new ProgressTick(progress, 10, 100), editingManifest.WebPreviewUrl);
                         if (BlogEditingTemplate.ValidateTemplate(webPreviewTemplate))
                         {
                             // download supporting files
-                            string templateFile = DownloadTemplateFiles(webPreviewTemplate, _blogHomepageUrl, new ProgressTick(progress, 20, 100));
+                            string templateFile = this.DownloadTemplateFiles(webPreviewTemplate, this._blogHomepageUrl, new ProgressTick(progress, 20, 100));
 
                             // return the template
                             templateFiles.WebPageTemplate = new BlogEditingTemplateFile(BlogEditingTemplateType.Webpage, templateFile);
@@ -330,10 +350,10 @@ namespace OpenLiveWriter.BlogClient.Detection
                 progress.UpdateProgress(0, 100, Res.Get(StringId.ProgressDownloadingEditingTemplate));
 
                 // process any parameters within the url
-                string templateUrl = BlogClientHelper.FormatUrl(manifestTemplateUrl, _blogHomepageUrl, _blogAccount.PostApiUrl, _blogAccount.BlogId);
+                string templateUrl = BlogClientHelper.FormatUrl(manifestTemplateUrl, this._blogHomepageUrl, this.blogAccount.PostApiUrl, this.blogAccount.BlogId);
 
                 // download the url
-                using (StreamReader streamReader = new StreamReader(_blogClient.SendAuthenticatedHttpRequest(templateUrl, 20000, null).GetResponseStream()))
+                using (StreamReader streamReader = new StreamReader(this.blogClient.SendAuthenticatedHttpRequest(templateUrl, 20000, null).GetResponseStream()))
                     return streamReader.ReadToEnd();
             }
             catch (Exception ex)
@@ -357,12 +377,12 @@ namespace OpenLiveWriter.BlogClient.Detection
         private BlogEditingTemplateFile[] DetectTemplates(IProgressHost progress, BlogEditingTemplateType[] targetTemplateTypes, BlogEditingTemplateStrategy[] templateStrategies)
         {
             RecentPostRegionLocatorStrategy recentPostLocatorStrategy =
-                new RecentPostRegionLocatorStrategy(_blogClient, _blogAccount, _credentials, _blogHomepageUrl,
-                                                    new PageDownloader(RequestPageDownload));
+                new RecentPostRegionLocatorStrategy(this.blogClient, this.blogAccount, this.credentials, this._blogHomepageUrl,
+                                                    new PageDownloader(this.RequestPageDownload));
 
             TemporaryPostRegionLocatorStrategy tempPostLocatorStrategy =
-                new TemporaryPostRegionLocatorStrategy(_blogClient, _blogAccount, _credentials, _blogHomepageUrl,
-                                                       new PageDownloader(RequestPageDownload), new BlogPostRegionLocatorBooleanCallback(recentPostLocatorStrategy.HasBlogPosts));
+                new TemporaryPostRegionLocatorStrategy(this.blogClient, this.blogAccount, this.credentials, this._blogHomepageUrl,
+                                                       new PageDownloader(this.RequestPageDownload), new BlogPostRegionLocatorBooleanCallback(recentPostLocatorStrategy.HasBlogPosts));
 
             //setup the strategies for locating the title/body regions in the blog homepage.
             BlogPostRegionLocatorStrategy[] regionLocatorStrategies = new BlogPostRegionLocatorStrategy[]
@@ -377,50 +397,50 @@ namespace OpenLiveWriter.BlogClient.Detection
             // try each strategy as necessary
             for (int i = 0; i < regionLocatorStrategies.Length && blogTemplateFiles == null; i++)
             {
-                CheckCancelRequested(progress);
+                this.CheckCancelRequested(progress);
 
                 //reset the progress for each iteration
                 BlogPostRegionLocatorStrategy regionLocatorStrategy = regionLocatorStrategies[i];
                 try
                 {
-                    blogTemplateFiles = GetBlogTemplateFiles(progress, regionLocatorStrategy, templateStrategies, targetTemplateTypes, _blogHomepageUrl);
+                    blogTemplateFiles = this.GetBlogTemplateFiles(progress, regionLocatorStrategy, templateStrategies, targetTemplateTypes, this._blogHomepageUrl);
                     progress.UpdateProgress(100, 100);
 
                     //if any exception occurred along the way, clear them since one of the template strategies
                     //was successful.
-                    _exception = null;
+                    this._exception = null;
                 }
                 catch (OperationCancelledException)
                 {
                     // cancel just means our template will be String.Empty
-                    _exception = null;
+                    this._exception = null;
                 }
                 catch (BlogClientOperationCancelledException e)
                 {
                     // cancel just means our template will be String.Empty
                     // (setting this exception here means that at least the user
                     // will be notified that they won't be able to edit with style)
-                    _exception = e;
+                    this._exception = e;
                 }
                 catch (BlogClientAbortGettingTemplateException e)
                 {
-                    _exception = e;
+                    this._exception = e;
                     //Do not proceed with the other strategies if getting the template was aborted.
                     break;
                 }
                 catch (WebException e)
                 {
-                    _exception = e;
+                    this._exception = e;
                     Trace.WriteLine("Error occurred while downloading weblog style: " + e.ToString());
                     if (e.Response != null)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Blogpost homepage request failed: {0}", _blogHomepageUrl));
+                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Blogpost homepage request failed: {0}", this._blogHomepageUrl));
                         //Debug.WriteLine(HttpRequestHelper.DumpResponse((HttpWebResponse)e.Response));
                     }
                 }
                 catch (Exception e)
                 {
-                    _exception = e;
+                    this._exception = e;
                     Trace.WriteLine("Error occurred while downloading weblog style: " + e.ToString());
                 }
 
@@ -438,7 +458,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <param name="templateStrategies"></param>
         /// <param name="templateTypes"></param>
         /// <param name="targetUrl">
-        /// The URL to analyze. If a post can be located, but not the body, this is used 
+        /// The URL to analyze. If a post can be located, but not the body, this is used
         /// to reiterate into the post it fetch it's content directly.
         /// </param>
         /// <returns></returns>
@@ -456,42 +476,42 @@ namespace OpenLiveWriter.BlogClient.Detection
                     ProgressTick parseTick = new ProgressTick(tick, 1, templateTypes.Length);
                     try
                     {
-                        CheckCancelRequested(parseTick);
-                        templateStrategy = templateStrategies[i];
+                        this.CheckCancelRequested(parseTick);
+                        this.templateStrategy = templateStrategies[i];
 
                         // Clear _nextTryPostUrl flag
-                        _nextTryPostUrl = null;
+                        this._nextTryPostUrl = null;
 
                         // Parse the blog post HTML into an editing template.
                         // Note: we can't use MarkupServices to parse the document from a non-UI thread,
                         // so we have to execute the parsing portion of the template download operation on the UI thread.
-                        string editingTemplate = ParseWebpageIntoEditingTemplate_OnUIThread(_parentControl, regionLocatorStrategy, new ProgressTick(parseTick, 1, 5), targetUrl);
+                        string editingTemplate = this.ParseWebpageIntoEditingTemplate_OnUIThread(this._parentControl, regionLocatorStrategy, new ProgressTick(parseTick, 1, 5), targetUrl);
 
                         // If there's no editing template, there should be a URL to try next
-                        Debug.Assert(editingTemplate != null || (editingTemplate == null && _nextTryPostUrl != null));
+                        Debug.Assert(editingTemplate != null || (editingTemplate == null && this._nextTryPostUrl != null));
 
                         // If the homepage has just been analysed and the _nextTryPostUrl flag is set
-                        if (targetUrl == _blogHomepageUrl && _nextTryPostUrl != null && regionLocatorStrategy.CanRefetchPage)
+                        if (targetUrl == this._blogHomepageUrl && this._nextTryPostUrl != null && regionLocatorStrategy.CanRefetchPage)
                         {
                             // Try fetching the URL that has been specified, and reparse
                             progress.UpdateProgress(Res.Get(StringId.ProgressDownloadingWeblogEditingStyleDeep));
                             // Fetch the post page
-                            regionLocatorStrategy.FetchTemporaryPostPage(SilentProgressHost.Instance, _nextTryPostUrl);
+                            regionLocatorStrategy.FetchTemporaryPostPage(SilentProgressHost.Instance, this._nextTryPostUrl);
                             // Parse out the template
-                            editingTemplate = ParseWebpageIntoEditingTemplate_OnUIThread(_parentControl, regionLocatorStrategy, new ProgressTick(parseTick, 1, 5), _nextTryPostUrl);
+                            editingTemplate = this.ParseWebpageIntoEditingTemplate_OnUIThread(this._parentControl, regionLocatorStrategy, new ProgressTick(parseTick, 1, 5), this._nextTryPostUrl);
                         }
 
                         // check for cancel
-                        CheckCancelRequested(parseTick);
+                        this.CheckCancelRequested(parseTick);
 
-                        string baseUrl = HTMLDocumentHelper.GetBaseUrl(editingTemplate, _blogHomepageUrl);
+                        string baseUrl = HTMLDocumentHelper.GetBaseUrl(editingTemplate, this._blogHomepageUrl);
 
                         // Download the template stylesheets and embedded resources (this lets the editing template load faster..and works offline!)
-                        string templateFile = DownloadTemplateFiles(editingTemplate, baseUrl, new ProgressTick(parseTick, 4, 5));
+                        string templateFile = this.DownloadTemplateFiles(editingTemplate, baseUrl, new ProgressTick(parseTick, 4, 5));
                         templateFiles.Add(new BlogEditingTemplateFile(templateTypes[i], templateFile));
 
                     }
-                    catch(BlogClientAbortGettingTemplateException)
+                    catch (BlogClientAbortGettingTemplateException)
                     {
                         Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "Failed to download template {0}.  Aborting getting further templates", templateTypes[i].ToString()));
                         throw;
@@ -524,19 +544,19 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private HttpWebResponse RequestPageDownload(string url, int timeoutMs)
         {
-            return _blogClient.SendAuthenticatedHttpRequest(url, timeoutMs, new HttpRequestFilter(NoCacheFilter));
+            return this.blogClient.SendAuthenticatedHttpRequest(url, timeoutMs, new HttpRequestFilter(this.NoCacheFilter));
         }
 
         private void ApplyCredentials(PageAndReferenceDownloader downloader, string url)
         {
-            WinInetCredentialsContext credentialsContext = CreateCredentialsContext(url);
+            WinInetCredentialsContext credentialsContext = this.CreateCredentialsContext(url);
             if (credentialsContext != null)
                 downloader.CredentialsContext = credentialsContext;
         }
 
         private void ApplyCredentials(PageDownloadContext downloadContext, string url)
         {
-            WinInetCredentialsContext credentialsContext = CreateCredentialsContext(url);
+            WinInetCredentialsContext credentialsContext = this.CreateCredentialsContext(url);
             if (credentialsContext != null && credentialsContext.CookieString != null)
                 downloadContext.CookieString = credentialsContext.CookieString.Cookies;
         }
@@ -545,7 +565,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                return BlogClientHelper.GetCredentialsContext(_blogClient, _credentials, url);
+                return BlogClientHelper.GetCredentialsContext(this.blogClient, this.credentials, url);
             }
             catch (BlogClientOperationCancelledException)
             {
@@ -562,7 +582,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         private string ParseWebpageIntoEditingTemplate_OnUIThread(Control uiContext, BlogPostRegionLocatorStrategy regionLocator, IProgressHost progress, string postUrl)
         {
             BlogEditingTemplate blogEditingTemplate = (BlogEditingTemplate)uiContext.Invoke(
-                new TemplateParser(ParseBlogPostIntoTemplate), 
+                new TemplateParser(this.ParseBlogPostIntoTemplate),
                 new object[] {
                     regionLocator,
                     new ProgressTick(progress, 1, 100),
@@ -584,7 +604,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             //   - AND primaryTitleRegion is a link
             if (primaryTitleRegion != null && regions.BodyRegion == null && primaryTitleRegion.tagName.ToLower() == "a")
             {
-                // Title region was detected, but body region was not. 
+                // Title region was detected, but body region was not.
                 // It is possible that only titles are shown on the homepage
                 // Try requesting the post itself, and loading regions from the post itself
 
@@ -592,16 +612,16 @@ namespace OpenLiveWriter.BlogClient.Detection
                 var pathMatch = new Regex("^about:(.*)$").Match((primaryTitleRegion as IHTMLAnchorElement).href);
                 Debug.Assert(pathMatch.Success); // Assert that this URL is to the format we expect
                 var newPostPath = pathMatch.Groups[1].Value; // Grab the path from the URL
-                var homepageUri = new Uri(_blogHomepageUrl);
+                var homepageUri = new Uri(this._blogHomepageUrl);
                 var newPostUrl = $"{homepageUri.Scheme}://{homepageUri.Host}{newPostPath}"; // Recreate the full post URL
 
                 // Set the NextTryPostUrl flag in the region locater
                 // This will indicate to the other thread that another page should be parsed
-                _nextTryPostUrl = newPostUrl;
+                this._nextTryPostUrl = newPostUrl;
                 return null;
             }
 
-            BlogEditingTemplate template = GenerateBlogTemplate((IHTMLDocument3)regions.Document, primaryTitleRegion, regions.TitleRegions, regions.BodyRegion);
+            BlogEditingTemplate template = this.GenerateBlogTemplate((IHTMLDocument3)regions.Document, primaryTitleRegion, regions.TitleRegions, regions.BodyRegion);
 
             progress.UpdateProgress(100, 100);
             return template;
@@ -660,7 +680,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         private string DownloadTemplateFiles(string templateContents, string templateUrl, IProgressHost progress)
         {
             progress.UpdateProgress(Res.Get(StringId.ProgressDownloadingSupportingFiles));
-            FileBasedSiteStorage files = new FileBasedSiteStorage(_blogTemplateDir);
+            FileBasedSiteStorage files = new FileBasedSiteStorage(this._blogTemplateDir);
 
             // convert the string to a stream
             MemoryStream templateStream = new MemoryStream();
@@ -676,8 +696,8 @@ namespace OpenLiveWriter.BlogClient.Detection
             LightWeightHTMLDocument ldoc = LightWeightHTMLDocument.FromIHTMLDocument2(doc, templateUrl, true, false);
 
             PageDownloadContext downloadContext = new PageDownloadContext(0);
-            ApplyCredentials(downloadContext, templateUrl);
-            using (PageToDownloadFactory downloadFactory = new PageToDownloadFactory(ldoc, downloadContext, _parentControl))
+            this.ApplyCredentials(downloadContext, templateUrl);
+            using (PageToDownloadFactory downloadFactory = new PageToDownloadFactory(ldoc, downloadContext, this._parentControl))
             {
                 //calculate the dependent styles and resources
                 ProgressTick tick = new ProgressTick(progress, 50, 100);
@@ -694,15 +714,15 @@ namespace OpenLiveWriter.BlogClient.Detection
                 //Expand out the relative paths in the downloaded HTML file with absolute paths.
                 //Note: this is necessary so that template resources are not improperly resolved relative
                 //      to the location of the file the editor is editing.
-                string blogTemplateFile = Path.Combine(_blogTemplateDir, files.RootFile);
+                string blogTemplateFile = Path.Combine(this._blogTemplateDir, files.RootFile);
                 string origFile = blogTemplateFile + ".token";
                 File.Move(blogTemplateFile, origFile);
-                string absPath = String.Format(CultureInfo.InvariantCulture, "file:///{0}/{1}", _blogTemplateDir.Replace('\\', '/'), downloader.PathToken);
+                string absPath = String.Format(CultureInfo.InvariantCulture, "file:///{0}/{1}", this._blogTemplateDir.Replace('\\', '/'), downloader.PathToken);
                 TextHelper.ReplaceInFile(origFile, downloader.PathToken, blogTemplateFile, absPath);
                 File.Delete(origFile);
 
                 //fix up the files
-                FixupDownloadedFiles(blogTemplateFile, files, downloader.PathToken);
+                this.FixupDownloadedFiles(blogTemplateFile, files, downloader.PathToken);
 
                 //complete the progress.
                 progress.UpdateProgress(100, 100);
@@ -720,26 +740,26 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <param name="supportingFilesDir"></param>
         protected internal virtual void FixupDownloadedFiles(string blogTemplateFile, FileBasedSiteStorage storage, string supportingFilesDir)
         {
-            templateStrategy.FixupDownloadedFiles(blogTemplateFile, storage, supportingFilesDir);
+            this.templateStrategy.FixupDownloadedFiles(blogTemplateFile, storage, supportingFilesDir);
         }
 
         private BlogEditingTemplate GenerateBlogTemplate(IHTMLDocument3 doc, IHTMLElement titleElement, IHTMLElement[] allTitleElements, IHTMLElement bodyElement)
         {
-            return templateStrategy.GenerateBlogTemplate(doc, titleElement, allTitleElements, bodyElement);
+            return this.templateStrategy.GenerateBlogTemplate(doc, titleElement, allTitleElements, bodyElement);
         }
 
         BlogEditingTemplateStrategy templateStrategy = BlogEditingTemplateStrategies.GetTemplateStrategy(BlogEditingTemplateStrategies.StrategyType.FramedWysiwyg);
 
         // execution context
         private Control _parentControl;
-        private bool _contextSet = false;
-        private BlogAccount _blogAccount;
-        private IBlogClient _blogClient;
+        private bool contextSet = false;
+        private BlogAccount blogAccount;
+        private IBlogClient blogClient;
         private string _blogHomepageUrl;
         private string _blogTemplateDir;
         private WriterEditingManifestDownloadInfo _manifestDownloadInfo;
         private bool _probeForManifest = false;
-        private IBlogCredentialsAccessor _credentials;
+        private IBlogCredentialsAccessor credentials;
 
         // return value
         private BlogEditingTemplateFile[] _blogTemplateFiles = new BlogEditingTemplateFile[0];

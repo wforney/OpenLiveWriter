@@ -18,6 +18,9 @@ using OpenLiveWriter.Extensibility.BlogClient;
 using OpenLiveWriter.Interop.Windows;
 using OpenLiveWriter.PostEditor.Configuration;
 using System.Security.AccessControl;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections.Specialized;
 
 namespace OpenLiveWriter.PostEditor
 {
@@ -26,13 +29,13 @@ namespace OpenLiveWriter.PostEditor
     {
         public ServiceUpdateChecker(string blogId, WeblogSettingsChangedHandler settingsChangedHandler)
         {
-            _blogId = blogId;
-            _settingsChangedHandler = settingsChangedHandler;
+            this._blogId = blogId;
+            this._settingsChangedHandler = settingsChangedHandler;
         }
 
         public void Start()
         {
-            Thread checkerThread = ThreadHelper.NewThread(new ThreadStart(Main), "ServiceUpdateChecker", true, true, true);
+            var checkerThread = ThreadHelper.NewThread(new ThreadStart(this.Main), "ServiceUpdateChecker", true, true, true);
             checkerThread.Start();
         }
 
@@ -47,12 +50,12 @@ namespace OpenLiveWriter.PostEditor
                 lock (_serviceUpdateLock)
                 {
                     // establish settings detection context
-                    ServiceUpdateSettingsDetectionContext settingsDetectionContext = new ServiceUpdateSettingsDetectionContext(_blogId);
+                    var settingsDetectionContext = new ServiceUpdateSettingsDetectionContext(this._blogId);
 
                     // fire-up a blog settings detector to query for changes
-                    BlogSettingsDetector settingsDetector = new BlogSettingsDetector(settingsDetectionContext);
+                    var settingsDetector = new BlogSettingsDetector(settingsDetectionContext);
                     settingsDetector.SilentMode = true;
-                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(ApplicationEnvironment.SettingsRootKeyName + @"\Weblogs\" + _blogId + @"\HomepageOptions"))
+                    using (var key = Registry.CurrentUser.OpenSubKey(ApplicationEnvironment.SettingsRootKeyName + @"\Weblogs\" + this._blogId + @"\HomepageOptions"))
                     {
                         if (key != null)
                         {
@@ -70,14 +73,16 @@ namespace OpenLiveWriter.PostEditor
                     // write the settings
                     using (ProcessKeepalive.Open())
                     {
-                        using (BlogSettings settings = BlogSettings.ForBlogId(_blogId))
+                        using (var settings = BlogSettings.ForBlogId(this._blogId))
+                        {
                             settings.ApplyUpdates(settingsDetectionContext);
+                        }
                     }
 
                     // if changes were made then fire an event to notify the UI
                     if (settingsDetectionContext.HasUpdates)
                     {
-                        _settingsChangedHandler(_blogId, false);
+                        this._settingsChangedHandler(this._blogId, false);
                     }
                 }
 
@@ -100,29 +105,31 @@ namespace OpenLiveWriter.PostEditor
     {
         public ServiceUpdateSettingsDetectionContext(string blogId)
         {
-            using (BlogSettings settings = BlogSettings.ForBlogId(blogId))
+            using (var settings = BlogSettings.ForBlogId(blogId))
             {
-                _blogId = blogId;
-                _homepageUrl = settings.HomepageUrl;
-                _providerId = settings.ProviderId;
-                _manifestDownloadInfo = settings.ManifestDownloadInfo;
-                _hostBlogId = settings.HostBlogId;
-                _postApiUrl = settings.PostApiUrl;
-                _clientType = settings.ClientType;
-                _userOptionOverrides = settings.UserOptionOverrides;
-                _homepageOptionOverrides = settings.HomePageOverrides;
+                this._blogId = blogId;
+                this.HomepageUrl = settings.HomepageUrl;
+                this.ProviderId = settings.ProviderId;
+                this.ManifestDownloadInfo = settings.ManifestDownloadInfo;
+                this.HostBlogId = settings.HostBlogId;
+                this.PostApiUrl = settings.PostApiUrl;
+                this.ClientType = settings.ClientType;
+                this.UserOptionOverrides = settings.UserOptionOverrides;
+                this.HomePageOverrides = settings.HomePageOverrides;
 
-                _initialCategoryScheme = settings.OptionOverrides != null
+                this._initialCategoryScheme = settings.OptionOverrides != null
                     ? settings.OptionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string
                     : null;
 
-                BlogCredentialsHelper.Copy(settings.Credentials, _credentials);
+                BlogCredentialsHelper.Copy(settings.Credentials, this._credentials);
 
-                using (Blog blog = new Blog(settings))
-                    _blogSupportsCategories = blog.ClientOptions.SupportsCategories;
+                using (var blog = new Blog(settings))
+                {
+                    this.BlogSupportsCategories = blog.ClientOptions.SupportsCategories;
+                }
 
-                _initialBlogSettingsContents = GetBlogSettingsContents(settings);
-                _initialCategoriesContents = GetCategoriesContents(settings.Categories);
+                this._initialBlogSettingsContents = this.GetBlogSettingsContents(settings);
+                this._initialCategoriesContents = this.GetCategoriesContents(settings.Categories);
 
             }
         }
@@ -134,234 +141,73 @@ namespace OpenLiveWriter.PostEditor
                 // If all of our manifest fields are null that means we either
                 // don't support manifests or we are using a cached manifest.
                 // In this case just compare categories.
-                if (Image == null && WatermarkImage == null && ButtonDescriptions == null && OptionOverrides == null && HomePageOverrides == null)
+                if (this.Image == null && this.WatermarkImage == null && this.ButtonDescriptions == null && this.OptionOverrides == null && this.HomePageOverrides == null)
                 {
-                    string updatedCategories = GetCategoriesContents(Categories);
-                    return _initialCategoriesContents != updatedCategories;
+                    var updatedCategories = this.GetCategoriesContents(this.Categories);
+                    return this._initialCategoriesContents != updatedCategories;
                 }
                 else
                 {
-                    string updatedSettingsContents = GetSettingsContents();
-                    return _initialBlogSettingsContents != updatedSettingsContents;
+                    var updatedSettingsContents = this.GetSettingsContents();
+                    return this._initialBlogSettingsContents != updatedSettingsContents;
                 }
             }
         }
 
-        public bool BlogSupportsCategories
-        {
-            get { return _blogSupportsCategories; }
-        }
-        private bool _blogSupportsCategories;
+        public bool BlogSupportsCategories { get; }
 
-        public string PostApiUrl
-        {
-            get
-            {
-                return _postApiUrl;
-            }
-        }
-        private string _postApiUrl;
+        public string PostApiUrl { get; }
 
-        public IBlogCredentialsAccessor Credentials
-        {
-            get
-            {
-                return new BlogCredentialsAccessor(_blogId, _credentials);
-            }
-        }
+        public IBlogCredentialsAccessor Credentials => new BlogCredentialsAccessor(this._blogId, this._credentials);
         private IBlogCredentials _credentials = new TemporaryBlogCredentials();
 
-        public string HomepageUrl
-        {
-            get
-            {
-                return _homepageUrl;
-            }
-        }
-        private string _homepageUrl;
+        public string HomepageUrl { get; }
 
-        public string ProviderId
-        {
-            get
-            {
-                return _providerId;
-            }
-        }
-        private string _providerId;
+        public string ProviderId { get; }
 
-        public string HostBlogId
-        {
-            get
-            {
-                return _hostBlogId;
-            }
-        }
-        private string _hostBlogId;
+        public string HostBlogId { get; }
 
-        public WriterEditingManifestDownloadInfo ManifestDownloadInfo
-        {
-            get
-            {
-                return _manifestDownloadInfo;
-            }
-            set
-            {
-                _manifestDownloadInfo = value;
-            }
-        }
-        private WriterEditingManifestDownloadInfo _manifestDownloadInfo;
+        public WriterEditingManifestDownloadInfo ManifestDownloadInfo { get; set; }
 
-        public string ClientType
-        {
-            get
-            {
-                return _clientType;
-            }
-            set
-            {
-                _clientType = value;
-            }
-        }
-        private string _clientType;
+        public string ClientType { get; set; }
 
-        public byte[] FavIcon
-        {
-            get
-            {
-                return _favIcon;
-            }
-            set
-            {
-                _favIcon = value;
-            }
-        }
-        private byte[] _favIcon;
+        public byte[] FavIcon { get; set; }
 
-        public byte[] Image
-        {
-            get
-            {
-                return _image;
-            }
-            set
-            {
-                _image = value;
-            }
-        }
-        private byte[] _image;
+        public byte[] Image { get; set; }
 
-        public byte[] WatermarkImage
-        {
-            get
-            {
-                return _watermarkImage;
-            }
-            set
-            {
-                _watermarkImage = value;
-            }
-        }
-        private byte[] _watermarkImage;
+        public byte[] WatermarkImage { get; set; }
 
-        public BlogPostCategory[] Categories
-        {
-            get
-            {
-                return _categories;
-            }
-            set
-            {
-                _categories = value;
-            }
-        }
-        private BlogPostCategory[] _categories;
+        public BlogPostCategory[] Categories { get; set; }
 
-        public BlogPostKeyword[] Keywords
-        {
-            get
-            {
-                return _keywords;
-            }
-            set
-            {
-                _keywords = value;
-            }
-        }
-        private BlogPostKeyword[] _keywords;
+        public BlogPostKeyword[] Keywords { get; set; }
 
-        public IBlogProviderButtonDescription[] ButtonDescriptions
-        {
-            get
-            {
-                return _buttonDescriptions;
-            }
-            set
-            {
-                _buttonDescriptions = value;
-            }
-        }
-        private IBlogProviderButtonDescription[] _buttonDescriptions;
+        public IBlogProviderButtonDescription[] ButtonDescriptions { get; set; }
 
-        public IDictionary UserOptionOverrides
-        {
-            get
-            {
-                return _userOptionOverrides;
-            }
-        }
-        private IDictionary _userOptionOverrides;
+        public IDictionary<string, string> UserOptionOverrides { get; }
 
-        public IDictionary OptionOverrides
-        {
-            get
-            {
-                return _optionOverrides;
-            }
-            set
-            {
-                _optionOverrides = value;
-            }
-        }
+        public IDictionary<string, string> OptionOverrides { get; set; }
 
-        public IDictionary HomePageOverrides
-        {
-            get
-            {
-                return _homepageOptionOverrides;
-            }
-            set
-            {
-                _homepageOptionOverrides = value;
-            }
-        }
+        public IDictionary<string, string> HomePageOverrides { get; set; }
 
-        public string InitialCategoryScheme
-        {
-            get
-            {
-                if (_optionOverrides != null && _optionOverrides.Contains(BlogClientOptions.CATEGORY_SCHEME))
-                    return _optionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string;
-                return _initialCategoryScheme;
-            }
-        }
+        public string InitialCategoryScheme =>
+            this.OptionOverrides != null && this.OptionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME)
+                ? this.OptionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string
+                : this._initialCategoryScheme;
 
-        private IDictionary _homepageOptionOverrides;
-        private IDictionary _optionOverrides;
+        private readonly string _blogId;
 
-        private string _blogId;
-
-        private string _initialBlogSettingsContents;
-        private string _initialCategoriesContents;
+        private readonly string _initialBlogSettingsContents;
+        private readonly string _initialCategoriesContents;
         private readonly string _initialCategoryScheme;
 
         private string GetBlogSettingsContents(BlogSettings blogSettings)
         {
             // return normalized string of settings contents
-            StringBuilder settingsContents = new StringBuilder();
-            AppendClientType(blogSettings.ClientType, settingsContents);
-            AppendImages(blogSettings.Image, blogSettings.WatermarkImage, settingsContents);
-            AppendCategories(blogSettings.Categories, settingsContents);
-            AppendButtons(blogSettings.ButtonDescriptions, settingsContents);
+            var settingsContents = new StringBuilder();
+            this.AppendClientType(blogSettings.ClientType, settingsContents);
+            this.AppendImages(blogSettings.Image, blogSettings.WatermarkImage, settingsContents);
+            this.AppendCategories(blogSettings.Categories, settingsContents);
+            this.AppendButtons(blogSettings.ButtonDescriptions, settingsContents);
             AppendOptionOverrides(blogSettings.OptionOverrides, settingsContents);
             AppendOptionOverrides(blogSettings.HomePageOverrides, settingsContents);
             return settingsContents.ToString();
@@ -369,13 +215,13 @@ namespace OpenLiveWriter.PostEditor
 
         private string GetSettingsContents()
         {
-            StringBuilder settingsContents = new StringBuilder();
-            AppendClientType(ClientType, settingsContents);
-            AppendImages(Image, WatermarkImage, settingsContents);
-            AppendCategories(Categories, settingsContents);
-            AppendButtons(ButtonDescriptions, settingsContents);
-            AppendOptionOverrides(OptionOverrides, settingsContents);
-            AppendOptionOverrides(HomePageOverrides, settingsContents);
+            var settingsContents = new StringBuilder();
+            this.AppendClientType(this.ClientType, settingsContents);
+            this.AppendImages(this.Image, this.WatermarkImage, settingsContents);
+            this.AppendCategories(this.Categories, settingsContents);
+            this.AppendButtons(this.ButtonDescriptions, settingsContents);
+            AppendOptionOverrides(this.OptionOverrides, settingsContents);
+            AppendOptionOverrides(this.HomePageOverrides, settingsContents);
             return settingsContents.ToString();
         }
 
@@ -395,7 +241,9 @@ namespace OpenLiveWriter.PostEditor
         private void AppendClientType(string clientType, StringBuilder settingsContents)
         {
             if (clientType != null)
+            {
                 settingsContents.AppendFormat("ClientType:{0}", clientType);
+            }
         }
 
         private void AppendImages(byte[] image, byte[] watermarkImage, StringBuilder settingsContents)
@@ -403,41 +251,42 @@ namespace OpenLiveWriter.PostEditor
             if (image != null && image.Length > 0)
             {
                 settingsContents.Append("Image:");
-                foreach (byte imageByte in image)
+                foreach (var imageByte in image)
+                {
                     settingsContents.Append(imageByte);
+                }
             }
 
             if (watermarkImage != null && watermarkImage.Length > 0)
             {
                 settingsContents.Append("WatemarkImage:");
-                foreach (byte watermarkImageByte in watermarkImage)
+                foreach (var watermarkImageByte in watermarkImage)
+                {
                     settingsContents.Append(watermarkImageByte);
+                }
             }
         }
 
-        private void AppendCategories(BlogPostCategory[] categories, StringBuilder settingsContents)
-        {
-            settingsContents.Append(GetCategoriesContents(categories));
-        }
+        private void AppendCategories(BlogPostCategory[] categories, StringBuilder settingsContents) =>
+            settingsContents.Append(this.GetCategoriesContents(categories));
 
         private string GetCategoriesContents(BlogPostCategory[] categories)
         {
-            StringBuilder categoriesBuilder = new StringBuilder();
+            var categoriesBuilder = new StringBuilder();
             if (categories != null)
             {
                 Array.Sort(categories, new SortCategoriesComparer());
-                foreach (BlogPostCategory category in categories)
+                foreach (var category in categories)
+                {
                     categoriesBuilder.AppendFormat("Category:{0}/{1}/{2}", category.Id, category.Name, category.Parent);
+                }
             }
             return categoriesBuilder.ToString();
         }
 
         private class SortCategoriesComparer : IComparer
         {
-            public int Compare(object x, object y)
-            {
-                return (x as BlogPostCategory).Id.CompareTo((y as BlogPostCategory).Id);
-            }
+            public int Compare(object x, object y) => (x as BlogPostCategory).Id.CompareTo((y as BlogPostCategory).Id);
         }
 
         private void AppendButtons(IBlogProviderButtonDescription[] buttons, StringBuilder settingsContents)
@@ -445,31 +294,34 @@ namespace OpenLiveWriter.PostEditor
             if (buttons != null)
             {
                 Array.Sort(buttons, new SortButtonsComparer());
-                foreach (IBlogProviderButtonDescription button in buttons)
+                foreach (var button in buttons)
+                {
                     settingsContents.AppendFormat(CultureInfo.InvariantCulture, "Button:{0}/{1}/{2}/{3}/{4}/{5}/{6}", button.Id, button.Description, button.ImageUrl, button.ClickUrl, button.ContentUrl, button.ContentDisplaySize, button.NotificationUrl);
+                }
             }
         }
 
         private class SortButtonsComparer : IComparer
         {
-            public int Compare(object x, object y)
-            {
-                return (x as IBlogProviderButtonDescription).Id.CompareTo((y as IBlogProviderButtonDescription).Id);
-            }
+            public int Compare(object x, object y) => (x as IBlogProviderButtonDescription).Id.CompareTo((y as IBlogProviderButtonDescription).Id);
         }
 
-        private void AppendOptionOverrides(IDictionary optionOverrides, StringBuilder settingsContents)
+        private void AppendOptionOverrides(IDictionary<string, string> optionOverrides, StringBuilder settingsContents)
         {
             if (optionOverrides != null)
             {
-                ArrayList optionOverrideList = new ArrayList();
-                foreach (DictionaryEntry optionOverride in optionOverrides)
+                var optionOverrideList = new List<KeyValuePair<string, string>>();
+                foreach (var optionOverride in optionOverrides)
+                {
                     optionOverrideList.Add(optionOverride);
+                }
 
-                optionOverrideList.Sort(new SortOptionOverridesComparer());
+                optionOverrideList.Sort(new SortOptionOverridesComparer<string, string>());
 
-                foreach (DictionaryEntry optionOverride in optionOverrideList)
+                foreach (var optionOverride in optionOverrideList)
+                {
                     settingsContents.AppendFormat("OptionOverride:{0}/{1}", optionOverride.Key, optionOverride.Value);
+                }
             }
         }
 
@@ -477,12 +329,15 @@ namespace OpenLiveWriter.PostEditor
         {
             public int Compare(object x, object y)
             {
-                string xKey = ((DictionaryEntry)x).Key.ToString();
-                string yKey = ((DictionaryEntry)y).Key.ToString();
+                var xKey = ((DictionaryEntry)x).Key.ToString();
+                var yKey = ((DictionaryEntry)y).Key.ToString();
                 return xKey.CompareTo(yKey);
             }
         }
 
+        private class SortOptionOverridesComparer<TKey, TValue> : IComparer<KeyValuePair<TKey, TValue>>
+        {
+            public int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y) => x.Key.ToString().CompareTo(y.Key.ToString());
+        }
     }
-
 }

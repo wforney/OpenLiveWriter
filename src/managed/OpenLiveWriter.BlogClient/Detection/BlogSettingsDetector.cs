@@ -1,25 +1,24 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Net;
-using System.Globalization;
-using System.Text;
-using System.Xml;
-using System.IO;
-using System.Drawing;
-using System.Diagnostics;
-using System.Collections;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Progress;
-using OpenLiveWriter.BlogClient.Clients;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.HtmlParser.Parser;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.BlogClient.Detection
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Net;
+
+    using OpenLiveWriter.BlogClient.Clients;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Progress;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.HtmlParser.Parser;
+    using OpenLiveWriter.Localization;
+
     public interface ISelfConfiguringClient : IBlogClient
     {
         void DetectSettings(IBlogSettingsDetectionContext context, BlogSettingsDetector detector);
@@ -32,7 +31,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         string PostApiUrl { get; }
         IBlogCredentialsAccessor Credentials { get; }
         string ProviderId { get; }
-        IDictionary UserOptionOverrides { get; }
+        IDictionary<string, string> UserOptionOverrides { get; }
 
         WriterEditingManifestDownloadInfo ManifestDownloadInfo { get; set; }
         string ClientType { get; set; }
@@ -41,8 +40,8 @@ namespace OpenLiveWriter.BlogClient.Detection
         byte[] WatermarkImage { get; set; }
         BlogPostCategory[] Categories { get; set; }
         BlogPostKeyword[] Keywords { get; set; }
-        IDictionary OptionOverrides { get; set; }
-        IDictionary HomePageOverrides { get; set; }
+        IDictionary<string, string> OptionOverrides { get; set; }
+        IDictionary<string, string> HomePageOverrides { get; set; }
         IBlogProviderButtonDescription[] ButtonDescriptions { get; set; }
     }
 
@@ -67,146 +66,110 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// Create a blog client based on all of the context we currently have available
         /// </summary>
         /// <returns></returns>
-        private IBlogClient CreateBlogClient()
-        {
-            return BlogClientManager.CreateClient(_context.ClientType, _context.PostApiUrl, _context.Credentials, _context.ProviderId, _context.OptionOverrides, _context.UserOptionOverrides, _context.HomePageOverrides);
-        }
+        private IBlogClient CreateBlogClient() =>
+            BlogClientManager.CreateClient(
+                this.context.ClientType,
+                this.context.PostApiUrl,
+                this.context.Credentials,
+                this.context.ProviderId,
+                this.context.OptionOverrides,
+                this.context.UserOptionOverrides,
+                this.context.HomePageOverrides);
 
-        private HttpWebResponse ExecuteHttpRequest(string requestUri, int timeoutMs, HttpRequestFilter filter)
-        {
-            return CreateBlogClient().SendAuthenticatedHttpRequest(requestUri, timeoutMs, filter);
-        }
+        private HttpWebResponse ExecuteHttpRequest(string requestUri, int timeoutMs, HttpRequestFilter filter) => this.CreateBlogClient().SendAuthenticatedHttpRequest(requestUri, timeoutMs, filter);
 
         public BlogSettingsDetector(IBlogSettingsDetectionContext context)
         {
             // save the context
-            _context = context;
+            this.context = context;
 
-            _homepageAccessor = new LazyHomepageDownloader(_context.HomepageUrl, new HttpRequestHandler(ExecuteHttpRequest));
+            this.homepageAccessor = new LazyHomepageDownloader(this.context.HomepageUrl, new HttpRequestHandler(this.ExecuteHttpRequest));
         }
 
-        public bool SilentMode
-        {
-            get { return _silentMode; }
-            set { _silentMode = value; }
-        }
-        private bool _silentMode = false;
+        public bool SilentMode { get; set; } = false;
 
         public bool IncludeFavIcon
         {
-            get { return _includeFavIcon && _context.Image == null; }
-            set { _includeFavIcon = value; }
+            get => this._includeFavIcon && this.context.Image == null;
+            set => this._includeFavIcon = value;
         }
         private bool _includeFavIcon = true;
 
-        public bool IncludeImageEndpoints
-        {
-            get { return _includeImageEndpoints; }
-            set { _includeImageEndpoints = value; }
-        }
-        private bool _includeImageEndpoints = true;
+        public bool IncludeImageEndpoints { get; set; } = true;
 
-        public bool IncludeCategories
-        {
-            get { return _includeCategories; }
-            set { _includeCategories = value; }
-        }
-        private bool _includeCategories = true;
+        public bool IncludeCategories { get; set; } = true;
 
-        public bool IncludeCategoryScheme
-        {
-            get { return _includeCategoryScheme; }
-            set { _includeCategoryScheme = value; }
-        }
-        private bool _includeCategoryScheme = true;
+        public bool IncludeCategoryScheme { get; set; } = true;
 
-        public bool IncludeOptionOverrides
-        {
-            get { return _includeOptionOverrides; }
-            set { _includeOptionOverrides = value; }
-        }
-        private bool _includeOptionOverrides = true;
+        public bool IncludeOptionOverrides { get; set; } = true;
 
-        public bool IncludeInsecureOperations
-        {
-            get { return _includeInsecureOperations; }
-            set { _includeInsecureOperations = value; }
-        }
-        private bool _includeInsecureOperations = true;
+        public bool IncludeInsecureOperations { get; set; } = true;
 
-        public bool IncludeHomePageSettings
-        {
-            get { return _includeHomePageSettings; }
-            set { _includeHomePageSettings = value; }
-        }
-        private bool _includeHomePageSettings = true;
+        public bool IncludeHomePageSettings { get; set; } = true;
 
-        public bool IncludeImages
-        {
-            get { return _includeWatermark; }
-            set { _includeWatermark = value; }
-        }
-        private bool _includeWatermark = true;
+        public bool IncludeImages { get; set; } = true;
 
-        public bool IncludeButtons
-        {
-            get { return _includeButtons; }
-            set { _includeButtons = value; }
-        }
-        private bool _includeButtons = true;
+        public bool IncludeButtons { get; set; } = true;
 
-        public bool UseManifestCache
-        {
-            get { return _useManifestCache; }
-            set { _useManifestCache = value; }
-        }
-        private bool _useManifestCache = false;
+        public bool UseManifestCache { get; set; } = false;
 
-        private LazyHomepageDownloader _homepageAccessor;
+        private readonly LazyHomepageDownloader homepageAccessor;
 
         public object DetectSettings(IProgressHost progressHost)
         {
-            var canRemoteDetect = CreateBlogClient().RemoteDetectionPossible;
+            var canRemoteDetect = this.CreateBlogClient().RemoteDetectionPossible;
 
-            using (_silentMode ? new BlogClientUIContextSilentMode() : null)
+            using (this.SilentMode ? new BlogClientUIContextSilentMode() : null)
             {
-                if ((IncludeButtons || IncludeOptionOverrides || IncludeImages) && canRemoteDetect)
+                if ((this.IncludeButtons || this.IncludeOptionOverrides || this.IncludeImages) && canRemoteDetect)
                 {
                     using (new ProgressContext(progressHost, 40, Res.Get(StringId.ProgressDetectingWeblogSettings)))
                     {
                         // attempt to download editing manifest
-                        WriterEditingManifest editingManifest = SafeDownloadEditingManifest();
+                        var editingManifest = this.SafeDownloadEditingManifest();
 
                         if (editingManifest != null)
                         {
                             // always update the download info
                             if (editingManifest.DownloadInfo != null)
-                                _context.ManifestDownloadInfo = editingManifest.DownloadInfo;
+                            {
+                                this.context.ManifestDownloadInfo = editingManifest.DownloadInfo;
+                            }
 
                             // images
-                            if (IncludeImages)
+                            if (this.IncludeImages)
                             {
                                 // image if provided
                                 if (editingManifest.Image != null)
-                                    _context.Image = editingManifest.Image;
+                                {
+                                    this.context.Image = editingManifest.Image;
+                                }
 
                                 // watermark if provided
                                 if (editingManifest.Watermark != null)
-                                    _context.WatermarkImage = editingManifest.Watermark;
+                                {
+                                    this.context.WatermarkImage = editingManifest.Watermark;
+                                }
                             }
 
                             // buttons if provided
-                            if (IncludeButtons && (editingManifest.ButtonDescriptions != null))
-                                _context.ButtonDescriptions = editingManifest.ButtonDescriptions;
+                            if (this.IncludeButtons && (editingManifest.ButtonDescriptions != null))
+                            {
+                                this.context.ButtonDescriptions = editingManifest.ButtonDescriptions;
+                            }
 
                             // option overrides if provided
-                            if (IncludeOptionOverrides)
+                            if (this.IncludeOptionOverrides)
                             {
                                 if (editingManifest.ClientType != null)
-                                    _context.ClientType = editingManifest.ClientType;
+                                {
+                                    this.context.ClientType = editingManifest.ClientType;
+                                }
 
                                 if (editingManifest.OptionOverrides != null)
-                                    _context.OptionOverrides = editingManifest.OptionOverrides;
+                                {
+                                    this.context.OptionOverrides = editingManifest.OptionOverrides;
+                                }
                             }
                         }
                     }
@@ -214,63 +177,69 @@ namespace OpenLiveWriter.BlogClient.Detection
 
                 using (new ProgressContext(progressHost, 40, Res.Get(StringId.ProgressDetectingWeblogCharSet)))
                 {
-                    if (IncludeOptionOverrides && IncludeHomePageSettings && canRemoteDetect)
+                    if (this.IncludeOptionOverrides && this.IncludeHomePageSettings && canRemoteDetect)
                     {
-                        DetectHomePageSettings();
+                        this.DetectHomePageSettings();
                     }
                 }
 
-                IBlogClient blogClient = CreateBlogClient();
-                if (IncludeInsecureOperations || blogClient.IsSecure)
+                var blogClient = this.CreateBlogClient();
+                if (this.IncludeInsecureOperations || blogClient.IsSecure)
                 {
                     if (blogClient is ISelfConfiguringClient)
                     {
                         // This must happen before categories detection but after manifest!!
-                        ((ISelfConfiguringClient)blogClient).DetectSettings(_context, this);
+                        ((ISelfConfiguringClient)blogClient).DetectSettings(this.context, this);
                     }
 
                     // detect categories
-                    if (IncludeCategories)
+                    if (this.IncludeCategories)
                     {
                         using (
                             new ProgressContext(progressHost, 20, Res.Get(StringId.ProgressDetectingWeblogCategories)))
                         {
-                            BlogPostCategory[] categories = SafeDownloadCategories();
+                            var categories = this.SafeDownloadCategories();
                             if (categories != null)
-                                _context.Categories = categories;
+                            {
+                                this.context.Categories = categories;
+                            }
 
-                            BlogPostKeyword[] keywords = SafeDownloadKeywords();
+                            var keywords = this.SafeDownloadKeywords();
                             if (keywords != null)
-                                _context.Keywords = keywords;
+                            {
+                                this.context.Keywords = keywords;
+                            }
                         }
                     }
 
                     // detect favicon (only if requested AND we don't have a PNG already
                     // for the small image size)
-                    if (IncludeFavIcon && canRemoteDetect)
+                    if (this.IncludeFavIcon && canRemoteDetect)
                     {
                         using (new ProgressContext(progressHost, 10, Res.Get(StringId.ProgressDetectingWeblogIcon)))
                         {
-                            byte[] favIcon = SafeDownloadFavIcon();
+                            var favIcon = this.SafeDownloadFavIcon();
                             if (favIcon != null)
-                                _context.FavIcon = favIcon;
+                            {
+                                this.context.FavIcon = favIcon;
+                            }
                         }
                     }
 
-                    if (IncludeImageEndpoints)
+                    if (this.IncludeImageEndpoints)
                     {
                         Debug.WriteLine("Detecting image endpoints");
-                        ITemporaryBlogSettingsDetectionContext tempContext =
-                            _context as ITemporaryBlogSettingsDetectionContext;
+                        var tempContext =
+                            this.context as ITemporaryBlogSettingsDetectionContext;
                         Debug.Assert(tempContext != null,
                                      "IncludeImageEndpoints=true but non-temporary context (type " +
-                                     _context.GetType().Name + ") was used");
+                                     this.context.GetType().Name + ") was used");
                         if (tempContext != null)
                         {
                             tempContext.AvailableImageEndpoints = null;
                             try
                             {
-                                BlogInfo[] imageEndpoints = blogClient.GetImageEndpoints();
+                                var imageEndpoints = blogClient.GetImageEndpoints();
                                 tempContext.AvailableImageEndpoints = imageEndpoints;
                                 Debug.WriteLine(imageEndpoints.Length + " image endpoints detected");
                             }
@@ -300,13 +269,16 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// </summary>
         private void DetectHomePageSettings()
         {
-            if (_homepageAccessor.HtmlDocument == null) return;
+            if (this.homepageAccessor.HtmlDocument == null)
+            {
+                return;
+            }
 
-            IDictionary homepageSettings = new Hashtable();
+            var homepageSettings = new Dictionary<string, string>();
 
-            Debug.Assert(!UseManifestCache, "This code will not run correctly under the manifest cache, due to option overrides not being set");
+            Debug.Assert(!this.UseManifestCache, "This code will not run correctly under the manifest cache, due to option overrides not being set");
 
-            LightWeightHTMLMetaData metaData = new LightWeightHTMLMetaData(_homepageAccessor.HtmlDocument);
+            var metaData = new LightWeightHTMLMetaData(this.homepageAccessor.HtmlDocument);
             if (metaData.Charset != null)
             {
                 try
@@ -320,10 +292,10 @@ namespace OpenLiveWriter.BlogClient.Detection
 
             }
 
-            string docType = new LightWeightHTMLMetaData(_homepageAccessor.HtmlDocument).DocType;
+            var docType = new LightWeightHTMLMetaData(this.homepageAccessor.HtmlDocument).DocType;
             if (docType != null)
             {
-                bool xhtml = docType.IndexOf("xhtml", StringComparison.OrdinalIgnoreCase) >= 0;
+                var xhtml = docType.IndexOf("xhtml", StringComparison.OrdinalIgnoreCase) >= 0;
                 if (xhtml)
                 {
                     homepageSettings.Add(BlogClientOptions.REQUIRES_XHTML, true.ToString(CultureInfo.InvariantCulture));
@@ -331,58 +303,47 @@ namespace OpenLiveWriter.BlogClient.Detection
             }
 
             //checking whether blog is rtl
-            HtmlExtractor extractor = new HtmlExtractor(_homepageAccessor.HtmlDocument.RawHtml);
+            var extractor = new HtmlExtractor(this.homepageAccessor.HtmlDocument.RawHtml);
             if (extractor.Seek(new OrPredicate(
                 new SmartPredicate("<html dir>"),
                 new SmartPredicate("<body dir>"))).Success)
             {
-                BeginTag tag = (BeginTag)extractor.Element;
-                string dir = tag.GetAttributeValue("dir");
-                if (String.Compare(dir, "rtl", StringComparison.OrdinalIgnoreCase) == 0)
+                var tag = (BeginTag)extractor.Element;
+                var dir = tag.GetAttributeValue("dir");
+                if (string.Compare(dir, "rtl", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     homepageSettings.Add(BlogClientOptions.TEMPLATE_IS_RTL, true.ToString(CultureInfo.InvariantCulture));
                 }
             }
 
-            if (_homepageAccessor.HtmlDocument != null)
+            if (this.homepageAccessor.HtmlDocument != null)
             {
-                string html = _homepageAccessor.OriginalHtml;
-                ImageViewer viewer = DhtmlImageViewers.DetectImageViewer(html, _context.HomepageUrl);
+                var html = this.homepageAccessor.OriginalHtml;
+                var viewer = DhtmlImageViewers.DetectImageViewer(html, this.context.HomepageUrl);
                 if (viewer != null)
                 {
                     homepageSettings.Add(BlogClientOptions.DHTML_IMAGE_VIEWER, viewer.Name);
                 }
             }
 
-            _context.HomePageOverrides = homepageSettings;
+            this.context.HomePageOverrides = homepageSettings;
         }
 
-        private byte[] SafeDownloadFavIcon()
-        {
-
-            byte[] favIcon = SafeProbeForFavIconFromFile();
-            if (favIcon != null)
-                return favIcon;
-            else
-                return SafeProbeForFavIconFromLinkTag();
-        }
+        private byte[] SafeDownloadFavIcon() => this.SafeProbeForFavIconFromFile() ?? this.SafeProbeForFavIconFromLinkTag();
 
         private byte[] SafeProbeForFavIconFromFile()
         {
             try
             {
-                string favIconUrl = UrlHelper.UrlCombine(_context.HomepageUrl, "favicon.ico");
-                using (Stream favIconStream = SafeDownloadFavIcon(favIconUrl))
+                var favIconUrl = UrlHelper.UrlCombine(this.context.HomepageUrl, "favicon.ico");
+                using (var favIconStream = this.SafeDownloadFavIcon(favIconUrl))
                 {
-                    if (favIconStream != null)
-                        return FavIconArrayFromStream(favIconStream);
-                    else
-                        return null;
+                    return favIconStream == null ? null : this.FavIconArrayFromStream(favIconStream);
                 }
             }
             catch (Exception ex)
             {
-                ReportException("attempting to download favicon", ex);
+                this.ReportException("attempting to download favicon", ex);
                 return null;
             }
         }
@@ -391,21 +352,23 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                if (_homepageAccessor.HtmlDocument != null)
+                if (this.homepageAccessor.HtmlDocument != null)
                 {
-                    LightWeightTag[] linkTags = _homepageAccessor.HtmlDocument.GetTagsByName(HTMLTokens.Link);
-                    foreach (LightWeightTag linkTag in linkTags)
+                    var linkTags = this.homepageAccessor.HtmlDocument.GetTagsByName(HTMLTokens.Link);
+                    foreach (var linkTag in linkTags)
                     {
-                        string rel = linkTag.BeginTag.GetAttributeValue("rel");
-                        string href = linkTag.BeginTag.GetAttributeValue("href");
+                        var rel = linkTag.BeginTag.GetAttributeValue("rel");
+                        var href = linkTag.BeginTag.GetAttributeValue("href");
                         if (rel != null && rel.Trim().ToUpperInvariant() == "SHORTCUT ICON" && href != null)
                         {
                             // now we have the favicon url, try to download it
-                            string favIconUrl = UrlHelper.UrlCombineIfRelative(_context.HomepageUrl, href);
-                            using (Stream favIconStream = SafeDownloadFavIcon(favIconUrl))
+                            var favIconUrl = UrlHelper.UrlCombineIfRelative(this.context.HomepageUrl, href);
+                            using (var favIconStream = this.SafeDownloadFavIcon(favIconUrl))
                             {
                                 if (favIconStream != null)
-                                    return FavIconArrayFromStream(favIconStream);
+                                {
+                                    return this.FavIconArrayFromStream(favIconStream);
+                                }
                             }
                         }
                     }
@@ -416,14 +379,14 @@ namespace OpenLiveWriter.BlogClient.Detection
             }
             catch (Exception ex)
             {
-                ReportException("attempting to download favicon from link tag", ex);
+                this.ReportException("attempting to download favicon from link tag", ex);
                 return null;
             }
         }
 
         private byte[] FavIconArrayFromStream(Stream favIconStream)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
                 // copy it to a memory stream
                 StreamHelper.Transfer(favIconStream, memoryStream);
@@ -432,7 +395,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 // validate that it is indeed an icon
                 try
                 {
-                    Icon icon = new Icon(memoryStream);
+                    var icon = new Icon(memoryStream);
                     (icon as IDisposable).Dispose();
 
                     memoryStream.Seek(0, SeekOrigin.Begin);
@@ -449,7 +412,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                string favIconPath = UrlDownloadToFile.Download(favIconUrl, 3000);
+                var favIconPath = UrlDownloadToFile.Download(favIconUrl, 3000);
                 return new FileStream(favIconPath, FileMode.Open);
             }
             catch
@@ -462,19 +425,19 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                IBlogClient blogClient = CreateBlogClient();
+                var blogClient = this.CreateBlogClient();
 
-                if (blogClient is IBlogClientForCategorySchemeHack && _context is IBlogSettingsDetectionContextForCategorySchemeHack)
+                if (blogClient is IBlogClientForCategorySchemeHack && this.context is IBlogSettingsDetectionContextForCategorySchemeHack)
                 {
                     ((IBlogClientForCategorySchemeHack)blogClient).DefaultCategoryScheme =
-                        ((IBlogSettingsDetectionContextForCategorySchemeHack)_context).InitialCategoryScheme;
+                        ((IBlogSettingsDetectionContextForCategorySchemeHack)this.context).InitialCategoryScheme;
                 }
 
-                return blogClient.GetCategories(_context.HostBlogId);
+                return blogClient.GetCategories(this.context.HostBlogId);
             }
             catch (Exception ex)
             {
-                ReportException("attempting to download categories", ex);
+                this.ReportException("attempting to download categories", ex);
                 return null;
             }
         }
@@ -483,15 +446,19 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             try
             {
-                IBlogClient blogClient = CreateBlogClient();
+                var blogClient = this.CreateBlogClient();
                 if (blogClient.Options.SupportsGetKeywords)
-                    return blogClient.GetKeywords(_context.HostBlogId);
+                {
+                    return blogClient.GetKeywords(this.context.HostBlogId);
+                }
                 else
+                {
                     return null;
+                }
             }
             catch (Exception ex)
             {
-                ReportException("attempting to download keywords", ex);
+                this.ReportException("attempting to download keywords", ex);
                 return null;
             }
         }
@@ -502,28 +469,32 @@ namespace OpenLiveWriter.BlogClient.Detection
             try
             {
                 // create a blog client
-                IBlogClient blogClient = CreateBlogClient();
+                var blogClient = this.CreateBlogClient();
 
                 // can we get one based on cached download info
-                IBlogCredentialsAccessor credentialsToUse = (IncludeInsecureOperations || blogClient.IsSecure) ? _context.Credentials : null;
-                if (_context.ManifestDownloadInfo != null)
+                var credentialsToUse = (this.IncludeInsecureOperations || blogClient.IsSecure) ? this.context.Credentials : null;
+                if (this.context.ManifestDownloadInfo != null)
                 {
-                    string manifestUrl = _context.ManifestDownloadInfo.SourceUrl;
-                    if (UseManifestCache)
-                        editingManifest = WriterEditingManifest.FromDownloadInfo(_context.ManifestDownloadInfo, blogClient, credentialsToUse, true);
+                    var manifestUrl = this.context.ManifestDownloadInfo.SourceUrl;
+                    if (this.UseManifestCache)
+                    {
+                        editingManifest = WriterEditingManifest.FromDownloadInfo(this.context.ManifestDownloadInfo, blogClient, credentialsToUse, true);
+                    }
                     else
+                    {
                         editingManifest = WriterEditingManifest.FromUrl(new Uri(manifestUrl), blogClient, credentialsToUse, true);
+                    }
                 }
 
                 // if we don't have one yet then probe for one
                 if (editingManifest == null)
                 {
-                    editingManifest = WriterEditingManifest.FromHomepage(_homepageAccessor, new Uri(_context.HomepageUrl), blogClient, credentialsToUse);
+                    editingManifest = WriterEditingManifest.FromHomepage(this.homepageAccessor, new Uri(this.context.HomepageUrl), blogClient, credentialsToUse);
                 }
             }
             catch (Exception ex)
             {
-                ReportException("attempting to download editing manifest", ex);
+                this.ReportException("attempting to download editing manifest", ex);
             }
 
             // return whatever we found
@@ -532,38 +503,39 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private void ReportException(string context, Exception ex)
         {
-            string error = String.Format(CultureInfo.InvariantCulture, "Exception occurred {0} for weblog {1}: {2}", context, _context.HomepageUrl, ex.ToString());
+            var error = string.Format(CultureInfo.InvariantCulture, "Exception occurred {0} for weblog {1}: {2}", context, this.context.HomepageUrl, ex.ToString());
 
-            if (_silentMode)
+            if (this.SilentMode)
             {
                 Trace.WriteLine(error);
             }
             else
+            {
                 Trace.Fail(error);
-
+            }
         }
 
         // detection context
-        private IBlogSettingsDetectionContext _context;
+        private readonly IBlogSettingsDetectionContext context;
 
         // helper class for wrapping progress around steps
         private class ProgressContext : IDisposable
         {
             public ProgressContext(IProgressHost progressHost, int complete, string message)
             {
-                _progressHost = progressHost;
-                _progressHost.UpdateProgress(complete, 100, message);
+                this.progressHost = progressHost;
+                this.progressHost.UpdateProgress(complete, 100, message);
             }
 
             public void Dispose()
             {
-                if (_progressHost.CancelRequested)
+                if (this.progressHost.CancelRequested)
+                {
                     throw new OperationCancelledException();
+                }
             }
 
-            private IProgressHost _progressHost;
-
+            private readonly IProgressHost progressHost;
         }
     }
-
 }

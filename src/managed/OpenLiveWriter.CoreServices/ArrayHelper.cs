@@ -1,13 +1,12 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-
 namespace OpenLiveWriter.CoreServices
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
     public sealed class ArrayHelper
     {
         /// <summary>
@@ -20,40 +19,47 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Removes nulls from an array of objects.
         /// </summary>
-        public static object[] Compact(object[] arr)
+        public static T[] Compact<T>(T[] arr)
         {
-            int i = 0;
-            int j = 0;
+            var i = 0;
+            var j = 0;
             for (; i < arr.Length; i++)
             {
                 if (i != j)
+                {
                     arr[j] = arr[i];
+                }
 
                 if (arr[i] != null)
+                {
                     j++;
+                }
             }
 
             if (i == j)
+            {
                 return arr;
+            }
             else
             {
-                Array a = (Array)arr;
-                Truncate(ref a, j);
-                return (object[])a;
+                Truncate(ref arr, j);
+                return arr;
             }
-
         }
 
         /// <summary>
-        /// truncates the first dimension of any array
+        /// Truncates the first dimension of any array
         /// </summary>
-        public static void Truncate(ref Array arr, int len)
+        public static void Truncate<T>(ref T[] arr, int len)
         {
             if (arr.Length == len)
+            {
                 return;
-            Array arr1 = Array.CreateInstance(arr.GetType().GetElementType(), len);
+            }
+
+            var arr1 = Array.CreateInstance(typeof(T), len);
             Array.Copy(arr, arr1, len);
-            arr = arr1;
+            arr = arr1 as T[];
         }
 
         /// <summary>
@@ -71,24 +77,31 @@ namespace OpenLiveWriter.CoreServices
         /// </returns>
         public static Array Intersection(Array[] arrays)
         {
-            Type underlyingType = arrays.GetType().GetElementType().GetElementType();
+            var underlyingType = arrays.GetType().GetElementType().GetElementType();
             if (arrays.Length == 0)
+            {
                 return Array.CreateInstance(underlyingType, 0);
+            }
 
             if (arrays.Length == 1)
+            {
                 return arrays[0];
+            }
 
             // using Hashtable as a HashSet
-            Hashtable outerTable = new Hashtable(arrays[0].Length * 2 + 1);
-            bool isFirstTrip = true;
-            foreach (Array array in arrays)
+            var outerTable = new Hashtable(arrays[0].Length * 2 + 1);
+            var isFirstTrip = true;
+            foreach (var array in arrays)
             {
-                Hashtable innerTable = new Hashtable(array.Length);
-                foreach (object o in array)
+                var innerTable = new Hashtable(array.Length);
+                foreach (var o in array)
                 {
                     // prevent per-array duplicates from being counted more than once
                     if (innerTable.ContainsKey(o))
+                    {
                         continue;
+                    }
+
                     innerTable[o] = "";
 
                     if (!isFirstTrip && !outerTable.ContainsKey(o))
@@ -107,9 +120,9 @@ namespace OpenLiveWriter.CoreServices
                 isFirstTrip = false;
             }
 
-            Array intersection = new object[outerTable.Count];
+            var intersection = new object[outerTable.Count];
 
-            int pos = 0;
+            var pos = 0;
             foreach (DictionaryEntry entry in outerTable)
             {
                 if ((int)entry.Value == arrays.Length)
@@ -117,11 +130,17 @@ namespace OpenLiveWriter.CoreServices
                     intersection.SetValue(entry.Key, pos++);
                 }
             }
+
             Truncate(ref intersection, pos);
+
             if (intersection.Length > 0)
+            {
                 return Narrow(intersection, underlyingType);
+            }
             else
+            {
                 return intersection;
+            }
         }
 
         /// <summary>
@@ -140,25 +159,29 @@ namespace OpenLiveWriter.CoreServices
         public static T[] Union<T>(params T[][] arrays)
         {
             if (arrays.Length == 0)
+            {
                 return new T[0];
+            }
 
             if (arrays.Length == 1)
+            {
                 return arrays[0];
+            }
 
             // using Hashtable as a HashSet
-            Hashtable table = new Hashtable(arrays[0].Length * arrays.Length + 1);
+            var table = new Hashtable(arrays[0].Length * arrays.Length + 1);
             foreach (Array array in arrays)
             {
-                foreach (object o in array)
+                foreach (var o in array)
                 {
                     table[o] = true;
                 }
             }
 
-            T[] union = new T[table.Count];
+            var union = new T[table.Count];
 
-            int pos = 0;
-            foreach (object o in table.Keys)
+            var pos = 0;
+            foreach (var o in table.Keys)
             {
                 union.SetValue(o, pos++);
             }
@@ -167,7 +190,7 @@ namespace OpenLiveWriter.CoreServices
 
         public static Array Narrow(Array array, Type type)
         {
-            Array newArray = Array.CreateInstance(type, array.LongLength);
+            var newArray = Array.CreateInstance(type, array.LongLength);
             Array.Copy(array, newArray, array.LongLength);
             return newArray;
         }
@@ -178,7 +201,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         public static Array Map(Array array, Type newArrayType, ArrayMapperDelegate mapper)
         {
-            Array newArray = Array.CreateInstance(newArrayType, array.LongLength);
+            var newArray = Array.CreateInstance(newArrayType, array.LongLength);
             for (long i = 0; i < newArray.LongLength; i++)
             {
                 newArray.SetValue(mapper(array.GetValue(i)), i);
@@ -188,17 +211,20 @@ namespace OpenLiveWriter.CoreServices
 
         public static Array CollectionToArray(ICollection collection, Type elementType)
         {
-            Array newArray = Array.CreateInstance(elementType, collection.Count);
+            var newArray = Array.CreateInstance(elementType, collection.Count);
             collection.CopyTo(newArray, 0);
             return newArray;
         }
 
         public static Array EnumerableToArray(IEnumerable enumerable, int count, Type elementType)
         {
-            Array newArray = Array.CreateInstance(elementType, count);
-            int i = 0;
-            foreach (object o in enumerable)
+            var newArray = Array.CreateInstance(elementType, count);
+            var i = 0;
+            foreach (var o in enumerable)
+            {
                 newArray.SetValue(o, i++);
+            }
+
             return newArray;
         }
 
@@ -211,18 +237,31 @@ namespace OpenLiveWriter.CoreServices
         public static bool Compare(object[] a, object[] b)
         {
             if (a == b)
+            {
                 return true;
+            }
             else if (a == null || b == null)
+            {
                 return false;
+            }
             else if (a.Length != b.Length)
+            {
                 return false;
+            }
             else if (a.GetType() != b.GetType())
+            {
                 return false;
+            }
             else
             {
-                for (int i = 0; i < a.Length; i++)
+                for (var i = 0; i < a.Length; i++)
+                {
                     if (a[i] != b[i])
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
         }
@@ -230,27 +269,40 @@ namespace OpenLiveWriter.CoreServices
         public static bool CompareBytes(byte[] a, byte[] b)
         {
             if (a == b)
+            {
                 return true;
+            }
             else if (a == null || b == null)
+            {
                 return false;
+            }
             else if (a.Length != b.Length)
+            {
                 return false;
+            }
             else
             {
-                for (int i = 0; i < a.Length; i++)
+                for (var i = 0; i < a.Length; i++)
+                {
                     if (a[i] != b[i])
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
         }
 
         public static void Swap(Array array, int indexOne, int indexTwo)
         {
-            int length = array.Length;
+            var length = array.Length;
             if (length <= indexOne || length <= indexTwo || 0 > indexOne || 0 > indexTwo)
+            {
                 throw new IndexOutOfRangeException();
+            }
 
-            object tmp = array.GetValue(indexOne);
+            var tmp = array.GetValue(indexOne);
             array.SetValue(array.GetValue(indexTwo), indexOne);
             array.SetValue(tmp, indexTwo);
         }
@@ -264,10 +316,12 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static int SearchForIndexOf<T, K>(K[] array, T searchState, ArraySearchHitTester<T, K> hitTester)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
                 if (hitTester(searchState, array[i]))
+                {
                     return i;
+                }
             }
             return -1;
         }
@@ -279,14 +333,16 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         public static void InsertionSort<T>(List<T> list, Comparison<T> comparison)
         {
-            for (int i = 1; i < list.Count; i++)
+            for (var i = 1; i < list.Count; i++)
             {
-                T item = list[i];
-                int j = i - 1;
+                var item = list[i];
+                var j = i - 1;
 
                 // TODO: Use binary search instead of linear probe
                 while (j >= 0 && comparison(list[j], item) > 0)
+                {
                     --j;
+                }
 
                 if (j + 1 != i)
                 {
@@ -298,7 +354,7 @@ namespace OpenLiveWriter.CoreServices
 
         public static TElement[] Concat<TElement>(TElement[] a, TElement[] b)
         {
-            TElement[] result = new TElement[a.Length + b.Length];
+            var result = new TElement[a.Length + b.Length];
             Array.Copy(a, result, a.Length);
             Array.Copy(b, 0, result, a.Length, b.Length);
             return result;
@@ -312,7 +368,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns>true if any element of the array satisfies the condition, and false otherwise.</returns>
         public static bool Any<TElement>(TElement[] array, Predicate<TElement> predicate)
         {
-            foreach (TElement element in array)
+            foreach (var element in array)
             {
                 if (predicate(element))
                 {

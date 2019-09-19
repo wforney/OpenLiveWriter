@@ -1,47 +1,45 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Collections;
-using System.Globalization;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.BlogClient;
-using OpenLiveWriter.BlogClient.Detection;
-using OpenLiveWriter.CoreServices.Settings;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.FileDestinations;
-using OpenLiveWriter.PostEditor.Configuration.Wizard;
-using OpenLiveWriter.PostEditor.PostHtmlEditing;
-
 namespace OpenLiveWriter.PostEditor.Configuration
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+
+    using OpenLiveWriter.BlogClient;
+    using OpenLiveWriter.BlogClient.Detection;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Settings;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.PostEditor.PostHtmlEditing;
+
     public class TemporaryBlogSettings
         : IBlogSettingsAccessor, IBlogSettingsDetectionContext, ITemporaryBlogSettingsDetectionContext, ICloneable
     {
-        public static TemporaryBlogSettings CreateNew()
-        {
-            return new TemporaryBlogSettings();
-        }
+        public static TemporaryBlogSettings CreateNew() => new TemporaryBlogSettings();
 
         public static TemporaryBlogSettings ForBlogId(string blogId)
         {
-            using (BlogSettings blogSettings = BlogSettings.ForBlogId(blogId))
+            using (var blogSettings = BlogSettings.ForBlogId(blogId))
             {
-                TemporaryBlogSettings tempSettings = new TemporaryBlogSettings(blogId);
-                tempSettings.IsNewWeblog = false;
-                tempSettings.IsSpacesBlog = blogSettings.IsSpacesBlog;
-                tempSettings.IsSharePointBlog = blogSettings.IsSharePointBlog;
-                tempSettings.IsGoogleBloggerBlog = blogSettings.IsGoogleBloggerBlog;
-                tempSettings.IsStaticSiteBlog = blogSettings.IsStaticSiteBlog;
-                tempSettings.HostBlogId = blogSettings.HostBlogId;
-                tempSettings.BlogName = blogSettings.BlogName;
-                tempSettings.HomepageUrl = blogSettings.HomepageUrl;
-                tempSettings.ForceManualConfig = blogSettings.ForceManualConfig;
-                tempSettings.ManifestDownloadInfo = blogSettings.ManifestDownloadInfo;
+                var tempSettings = new TemporaryBlogSettings(blogId)
+                {
+                    IsNewWeblog = false,
+                    IsSpacesBlog = blogSettings.IsSpacesBlog,
+                    IsSharePointBlog = blogSettings.IsSharePointBlog,
+                    IsGoogleBloggerBlog = blogSettings.IsGoogleBloggerBlog,
+                    IsStaticSiteBlog = blogSettings.IsStaticSiteBlog,
+                    HostBlogId = blogSettings.HostBlogId,
+                    BlogName = blogSettings.BlogName,
+                    HomepageUrl = blogSettings.HomepageUrl,
+                    ForceManualConfig = blogSettings.ForceManualConfig,
+                    ManifestDownloadInfo = blogSettings.ManifestDownloadInfo
+                };
                 tempSettings.SetProvider(blogSettings.ProviderId, blogSettings.ServiceName, blogSettings.PostApiUrl, blogSettings.ClientType);
                 tempSettings.Credentials = blogSettings.Credentials;
                 tempSettings.LastPublishFailed = blogSettings.LastPublishFailed;
@@ -59,7 +57,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
                 //set the save password flag
                 tempSettings.SavePassword = blogSettings.Credentials.Password != null &&
-                    blogSettings.Credentials.Password != String.Empty;
+                    blogSettings.Credentials.Password != string.Empty;
 
                 // file upload support
                 tempSettings.FileUploadSupport = blogSettings.FileUploadSupport;
@@ -72,7 +70,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
                 blogSettings.PublishingPluginSettings.CopyTo(tempSettings.PublishingPluginSettings);
 
-                using (PostHtmlEditingSettings editSettings = new PostHtmlEditingSettings(blogId))
+                using (var editSettings = new PostHtmlEditingSettings(blogId))
                 {
                     tempSettings.TemplateFiles = editSettings.EditorTemplateHtmlFiles;
                 }
@@ -94,16 +92,22 @@ namespace OpenLiveWriter.PostEditor.Configuration
             settings.SetProvider(this.ProviderId, this.ServiceName);
             settings.ClientType = this.ClientType;
             settings.PostApiUrl = this.PostApiUrl;
-            if (IsSpacesBlog || !(SavePassword ?? false)) // clear out password so we don't save it
-                Credentials.Password = "";
+            if (this.IsSpacesBlog || !(this.SavePassword ?? false)) // clear out password so we don't save it
+            {
+                this.Credentials.Password = "";
+            }
 
             settings.Credentials = this.Credentials;
 
-            if (Categories != null)
+            if (this.Categories != null)
+            {
                 settings.Categories = this.Categories;
+            }
 
-            if (Keywords != null)
+            if (this.Keywords != null)
+            {
                 settings.Keywords = this.Keywords;
+            }
 
             settings.Authors = this.Authors;
             settings.Pages = this.Pages;
@@ -112,14 +116,20 @@ namespace OpenLiveWriter.PostEditor.Configuration
             settings.Image = this.Image;
             settings.WatermarkImage = this.WatermarkImage;
 
-            if (OptionOverrides != null)
+            if (this.OptionOverrides != null)
+            {
                 settings.OptionOverrides = this.OptionOverrides;
+            }
 
-            if (UserOptionOverrides != null)
+            if (this.UserOptionOverrides != null)
+            {
                 settings.UserOptionOverrides = this.UserOptionOverrides;
+            }
 
-            if (HomePageOverrides != null)
+            if (this.HomePageOverrides != null)
+            {
                 settings.HomePageOverrides = this.HomePageOverrides;
+            }
 
             settings.ButtonDescriptions = this.ButtonDescriptions;
 
@@ -127,704 +137,362 @@ namespace OpenLiveWriter.PostEditor.Configuration
             settings.FileUploadSupport = this.FileUploadSupport;
 
             // save ftp settings if necessary
-            if (FileUploadSupport == FileUploadSupport.FTP)
+            if (this.FileUploadSupport == FileUploadSupport.FTP)
             {
-                FtpUploaderSettings.Copy(FileUploadSettings, settings.FileUploadSettings);
+                FtpUploaderSettings.Copy(this.FileUploadSettings, settings.FileUploadSettings);
             }
 
-            PublishingPluginSettings.CopyTo(settings.PublishingPluginSettings);
+            this.PublishingPluginSettings.CopyTo(settings.PublishingPluginSettings);
 
-            using (PostHtmlEditingSettings editSettings = new PostHtmlEditingSettings(settings.Id))
+            using (var editSettings = new PostHtmlEditingSettings(settings.Id))
             {
-                editSettings.EditorTemplateHtmlFiles = TemplateFiles;
+                editSettings.EditorTemplateHtmlFiles = this.TemplateFiles;
             }
         }
 
         public void SetBlogInfo(BlogInfo blogInfo)
         {
-            if (blogInfo.Id != _hostBlogId)
+            if (blogInfo.Id != this.HostBlogId)
             {
-                _blogName = blogInfo.Name;
-                _hostBlogId = blogInfo.Id;
-                _homePageUrl = blogInfo.HomepageUrl;
-                if (!UrlHelper.IsUrl(_homePageUrl))
+                this.BlogName = blogInfo.Name;
+                this.HostBlogId = blogInfo.Id;
+                this.HomepageUrl = blogInfo.HomepageUrl;
+                if (!UrlHelper.IsUrl(this.HomepageUrl))
                 {
-                    Trace.Assert(!string.IsNullOrEmpty(_homePageUrl), "Homepage URL was null or empty");
-                    string baseUrl = UrlHelper.GetBaseUrl(_postApiUrl);
-                    _homePageUrl = UrlHelper.UrlCombineIfRelative(baseUrl, _homePageUrl);
+                    Trace.Assert(!string.IsNullOrEmpty(this.HomepageUrl), "Homepage URL was null or empty");
+                    var baseUrl = UrlHelper.GetBaseUrl(this.PostApiUrl);
+                    this.HomepageUrl = UrlHelper.UrlCombineIfRelative(baseUrl, this.HomepageUrl);
                 }
 
                 // reset categories, authors, and pages
-                Categories = new BlogPostCategory[] { };
-                Keywords = new BlogPostKeyword[] { };
-                Authors = new AuthorInfo[] { };
-                Pages = new PageInfo[] { };
+                this.Categories = new BlogPostCategory[] { };
+                this.Keywords = new BlogPostKeyword[] { };
+                this.Authors = new AuthorInfo[] { };
+                this.Pages = new PageInfo[] { };
 
                 // reset option overrides
-                if (OptionOverrides != null)
-                    OptionOverrides.Clear();
+                if (this.OptionOverrides != null)
+                {
+                    this.OptionOverrides.Clear();
+                }
 
-                if (UserOptionOverrides != null)
-                    UserOptionOverrides.Clear();
+                if (this.UserOptionOverrides != null)
+                {
+                    this.UserOptionOverrides.Clear();
+                }
 
-                if (HomePageOverrides != null)
-                    HomePageOverrides.Clear();
+                if (this.HomePageOverrides != null)
+                {
+                    this.HomePageOverrides.Clear();
+                }
 
                 // reset provider buttons
-                if (ButtonDescriptions != null)
-                    ButtonDescriptions = new IBlogProviderButtonDescription[0];
+                if (this.ButtonDescriptions != null)
+                {
+                    this.ButtonDescriptions = new IBlogProviderButtonDescription[0];
+                }
 
                 // reset template
-                TemplateFiles = new BlogEditingTemplateFile[0];
+                this.TemplateFiles = new BlogEditingTemplateFile[0];
             }
         }
 
         public void SetProvider(string providerId, string serviceName, string postApiUrl, string clientType)
         {
             // for dirty states only
-            if (ProviderId != providerId ||
-                    ServiceName != serviceName ||
-                    PostApiUrl != postApiUrl ||
-                    ClientType != clientType)
+            if (this.ProviderId != providerId ||
+                    this.ServiceName != serviceName ||
+                    this.PostApiUrl != postApiUrl ||
+                    this.ClientType != clientType)
             {
                 // reset the provider info
-                _providerId = providerId;
-                _serviceName = serviceName;
-                _postApiUrl = postApiUrl;
-                _clientType = clientType;
+                this.ProviderId = providerId;
+                this.ServiceName = serviceName;
+                this.PostApiUrl = postApiUrl;
+                this.ClientType = clientType;
             }
         }
 
         public void ClearProvider()
         {
-            _providerId = String.Empty;
-            _serviceName = String.Empty;
-            _postApiUrl = String.Empty;
-            _clientType = String.Empty;
-            _hostBlogId = String.Empty;
-            _manifestDownloadInfo = null;
-            _optionOverrides.Clear();
-            _templateFiles = new BlogEditingTemplateFile[0];
-            _homepageOptionOverrides.Clear();
-            _buttonDescriptions = new BlogProviderButtonDescription[0];
-            _categories = new BlogPostCategory[0];
+            this.ProviderId = string.Empty;
+            this.ServiceName = string.Empty;
+            this.PostApiUrl = string.Empty;
+            this.ClientType = string.Empty;
+            this.HostBlogId = string.Empty;
+            this.ManifestDownloadInfo = null;
+            this.OptionOverrides.Clear();
+            this.TemplateFiles = new BlogEditingTemplateFile[0];
+            this.HomePageOverrides.Clear();
+            this.buttonDescriptions = new BlogProviderButtonDescription[0];
+            this.Categories = new BlogPostCategory[0];
         }
 
-        public string Id
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-            }
-        }
+        public string Id { get; set; } = string.Empty;
 
-        public bool IsSpacesBlog
-        {
-            get
-            {
-                return _isSpacesBlog;
-            }
-            set
-            {
-                _isSpacesBlog = value;
-            }
-        }
+        public bool IsSpacesBlog { get; set; } = false;
 
-        public bool? SavePassword
-        {
-            get
-            {
-                return _savePassword;
-            }
-            set
-            {
-                _savePassword = value;
-            }
-        }
+        public bool? SavePassword { get; set; }
 
-        public bool IsSharePointBlog
-        {
-            get
-            {
-                return _isSharePointBlog;
-            }
-            set
-            {
-                _isSharePointBlog = value;
-            }
-        }
+        public bool IsSharePointBlog { get; set; } = false;
 
-        public bool IsGoogleBloggerBlog
-        {
-            get
-            {
-                return _isGoogleBloggerBlog;
-            }
-            set
-            {
-                _isGoogleBloggerBlog = value;
-            }
-        }
+        public bool IsGoogleBloggerBlog { get; set; } = false;
 
-        public bool IsStaticSiteBlog
-        {
-            get
-            {
-                return _isStaticSiteBlog;
-            }
-            set
-            {
-                _isStaticSiteBlog = value;
-            }
-        }
+        public bool IsStaticSiteBlog { get; set; } = false;
 
+        public string HostBlogId { get; set; } = string.Empty;
 
-        public string HostBlogId
-        {
-            get
-            {
-                return _hostBlogId;
-            }
-            set
-            {
-                _hostBlogId = value;
-            }
-        }
+        public string BlogName { get; set; } = string.Empty;
 
-        public string BlogName
-        {
-            get
-            {
-                return _blogName;
-            }
-            set
-            {
-                _blogName = value;
-            }
-        }
+        public string HomepageUrl { get; set; } = string.Empty;
 
-        public string HomepageUrl
-        {
-            get
-            {
-                return _homePageUrl;
-            }
-            set
-            {
-                _homePageUrl = value;
-            }
-        }
+        public bool ForceManualConfig { get; set; } = false;
 
-        public bool ForceManualConfig
-        {
-            get
-            {
-                return _forceManualConfig;
-            }
-            set
-            {
-                _forceManualConfig = value;
-            }
-        }
+        public WriterEditingManifestDownloadInfo ManifestDownloadInfo { get; set; } = null;
 
-        public WriterEditingManifestDownloadInfo ManifestDownloadInfo
-        {
-            get
-            {
-                return _manifestDownloadInfo;
-            }
-            set
-            {
-                _manifestDownloadInfo = value;
-            }
-        }
+        public IDictionary<string, string> OptionOverrides { get; set; } = new Dictionary<string, string>();
 
-        public IDictionary OptionOverrides
-        {
-            get
-            {
-                return _optionOverrides;
-            }
-            set
-            {
-                _optionOverrides = value;
-            }
-        }
+        public IDictionary<string, string> UserOptionOverrides { get; set; } = new Dictionary<string, string>();
 
-        public IDictionary UserOptionOverrides
-        {
-            get
-            {
-                return _userOptionOverrides;
-            }
-            set
-            {
-                _userOptionOverrides = value;
-            }
-        }
-
-        public IDictionary HomePageOverrides
-        {
-            get
-            {
-                return _homepageOptionOverrides;
-            }
-            set
-            {
-                _homepageOptionOverrides = value;
-            }
-        }
+        public IDictionary<string, string> HomePageOverrides { get; set; } = new Dictionary<string, string>();
 
         public void UpdatePostBodyBackgroundColor(Color color)
         {
-            IDictionary dictionary = HomePageOverrides ?? new Hashtable();
+            var dictionary = this.HomePageOverrides ?? new Dictionary<string, string>();
             dictionary[BlogClientOptions.POST_BODY_BACKGROUND_COLOR] = color.ToArgb().ToString(CultureInfo.InvariantCulture);
-            HomePageOverrides = dictionary;
+            this.HomePageOverrides = dictionary;
         }
 
         public IBlogProviderButtonDescription[] ButtonDescriptions
         {
-            get
-            {
-                return _buttonDescriptions;
-            }
+            get => this.buttonDescriptions;
             set
             {
-                _buttonDescriptions = new BlogProviderButtonDescription[value.Length];
-                for (int i = 0; i < value.Length; i++)
-                    _buttonDescriptions[i] = new BlogProviderButtonDescription(value[i]);
-
+                this.buttonDescriptions = new BlogProviderButtonDescription[value.Length];
+                for (var i = 0; i < value.Length; i++)
+                {
+                    this.buttonDescriptions[i] = new BlogProviderButtonDescription(value[i]);
+                }
             }
         }
 
-        public string ProviderId
-        {
-            get { return _providerId; }
-        }
+        public string ProviderId { get; private set; } = string.Empty;
 
-        public string ServiceName
-        {
-            get { return _serviceName; }
-        }
+        public string ServiceName { get; private set; } = string.Empty;
 
-        public string ClientType
-        {
-            get { return _clientType; }
-            set { _clientType = value; }
-        }
+        public string ClientType { get; set; } = string.Empty;
 
-        public string PostApiUrl
-        {
-            get { return _postApiUrl; }
-        }
+        public string PostApiUrl { get; private set; } = string.Empty;
 
-        IBlogCredentialsAccessor IBlogSettingsAccessor.Credentials
-        {
-            get
-            {
-                return new BlogCredentialsAccessor(Id, Credentials);
-            }
-        }
+        IBlogCredentialsAccessor IBlogSettingsAccessor.Credentials => new BlogCredentialsAccessor(this.Id, this.Credentials);
 
-        IBlogCredentialsAccessor IBlogSettingsDetectionContext.Credentials
-        {
-            get
-            {
-                return new BlogCredentialsAccessor(Id, Credentials);
-            }
-        }
+        IBlogCredentialsAccessor IBlogSettingsDetectionContext.Credentials => new BlogCredentialsAccessor(this.Id, this.Credentials);
 
         public IBlogCredentials Credentials
         {
-            get
-            {
-                return _credentials;
-            }
-            set
-            {
-                BlogCredentialsHelper.Copy(value, _credentials);
-            }
+            get => this.credentials;
+            set => BlogCredentialsHelper.Copy(value, this.credentials);
         }
 
-        public bool LastPublishFailed
-        {
-            get
-            {
-                return _lastPublishFailed;
-            }
-            set
-            {
-                _lastPublishFailed = value;
-            }
-        }
+        public bool LastPublishFailed { get; set; } = false;
 
-        public BlogPostCategory[] Categories
-        {
-            get
-            {
-                return _categories;
-            }
-            set
-            {
-                _categories = value;
-            }
-        }
+        public BlogPostCategory[] Categories { get; set; } = null;
 
-        public BlogPostKeyword[] Keywords
-        {
-            get
-            {
-                return _keywords;
-            }
-            set
-            {
-                _keywords = value;
-            }
-        }
+        public BlogPostKeyword[] Keywords { get; set; } = null;
 
-        public AuthorInfo[] Authors
-        {
-            get
-            {
-                return _authors;
-            }
-            set
-            {
-                _authors = value;
-            }
-        }
+        public AuthorInfo[] Authors { get; set; } = new AuthorInfo[0];
 
-        public PageInfo[] Pages
-        {
-            get
-            {
-                return _pages;
-            }
-            set
-            {
-                _pages = value;
-            }
-        }
+        public PageInfo[] Pages { get; set; } = new PageInfo[0];
 
-        public byte[] FavIcon
-        {
-            get
-            {
-                return _favIcon;
-            }
-            set
-            {
-                _favIcon = value;
-            }
-        }
+        public byte[] FavIcon { get; set; } = null;
 
-        public byte[] Image
-        {
-            get
-            {
-                return _image;
-            }
-            set
-            {
-                _image = value;
-            }
-        }
+        public byte[] Image { get; set; } = null;
 
-        public byte[] WatermarkImage
-        {
-            get
-            {
-                return _watermarkImage;
-            }
-            set
-            {
-                _watermarkImage = value;
-            }
-        }
+        public byte[] WatermarkImage { get; set; } = null;
 
-        public FileUploadSupport FileUploadSupport
-        {
-            get
-            {
-                return _fileUploadSupport;
-            }
-            set
-            {
-                _fileUploadSupport = value;
-            }
-        }
+        public FileUploadSupport FileUploadSupport { get; set; } = FileUploadSupport.Weblog;
 
-        public IBlogFileUploadSettings FileUploadSettings
-        {
-            get { return _fileUploadSettings; }
-        }
+        public IBlogFileUploadSettings FileUploadSettings => this.fileUploadSettings;
 
-        public IBlogFileUploadSettings AtomPublishingProtocolSettings
-        {
-            get { return _atomPublishingProtocolSettings; }
-        }
+        public IBlogFileUploadSettings AtomPublishingProtocolSettings => this.atomPublishingProtocolSettings;
 
-        public BlogPublishingPluginSettings PublishingPluginSettings
-        {
-            get { return new BlogPublishingPluginSettings(_pluginSettings); }
-        }
+        public BlogPublishingPluginSettings PublishingPluginSettings => new BlogPublishingPluginSettings(this.pluginSettings);
 
-        public BlogEditingTemplateFile[] TemplateFiles
-        {
-            get
-            {
-                return _templateFiles;
-            }
-            set
-            {
-                _templateFiles = value;
-            }
-        }
+        public BlogEditingTemplateFile[] TemplateFiles { get; set; } = new BlogEditingTemplateFile[0];
 
-        public bool IsNewWeblog
-        {
-            get { return _isNewWeblog; }
-            set { _isNewWeblog = value; }
-        }
+        public bool IsNewWeblog { get; set; } = true;
 
-        public bool SwitchToWeblog
-        {
-            get { return _switchToWeblog; }
-            set { _switchToWeblog = value; }
-        }
+        public bool SwitchToWeblog { get; set; } = false;
 
-        public BlogInfo[] HostBlogs
-        {
-            get
-            {
-                return _hostBlogs;
-            }
-            set
-            {
-                _hostBlogs = value;
-            }
-        }
+        public BlogInfo[] HostBlogs { get; set; } = new BlogInfo[] { };
 
-        public bool InstrumentationOptIn
-        {
-            get
-            {
-                return _instrumentationOptIn;
-            }
-            set
-            {
-                _instrumentationOptIn = value;
-            }
-        }
+        public bool InstrumentationOptIn { get; set; } = false;
 
-        public BlogInfo[] AvailableImageEndpoints
-        {
-            get { return _availableImageEndpoints; }
-            set { _availableImageEndpoints = value; }
-        }
+        public BlogInfo[] AvailableImageEndpoints { get; set; }
+
+        private readonly TemporaryBlogCredentials credentials = new TemporaryBlogCredentials();
+        private BlogProviderButtonDescription[] buttonDescriptions = new BlogProviderButtonDescription[0];
+        private TemporaryFileUploadSettings fileUploadSettings = new TemporaryFileUploadSettings();
+        private readonly TemporaryFileUploadSettings atomPublishingProtocolSettings = new TemporaryFileUploadSettings();
+        private SettingsPersisterHelper pluginSettings = new SettingsPersisterHelper(new MemorySettingsPersister());
 
         //
         // IMPORTANT NOTE: When adding member variables you MUST update the CopyFrom() implementation below!!!!
         //
-        private string _id = String.Empty;
-        private bool? _savePassword;
-        private bool _isSpacesBlog = false;
-        private bool _isSharePointBlog = false;
-        private bool _isGoogleBloggerBlog = false;
-        private bool _isStaticSiteBlog = false;
-        private string _hostBlogId = String.Empty;
-        private string _blogName = String.Empty;
-        private string _homePageUrl = String.Empty;
-        private bool _forceManualConfig = false;
-        private WriterEditingManifestDownloadInfo _manifestDownloadInfo = null;
-        private string _providerId = String.Empty;
-        private string _serviceName = String.Empty;
-        private string _clientType = String.Empty;
-        private string _postApiUrl = String.Empty;
-        private TemporaryBlogCredentials _credentials = new TemporaryBlogCredentials();
-        private bool _lastPublishFailed = false;
-        private BlogEditingTemplateFile[] _templateFiles = new BlogEditingTemplateFile[0];
-        private bool _isNewWeblog = true;
-        private bool _switchToWeblog = false;
-        private BlogPostCategory[] _categories = null;
-        private BlogPostKeyword[] _keywords = null;
-        private AuthorInfo[] _authors = new AuthorInfo[0];
-        private PageInfo[] _pages = new PageInfo[0];
-        private BlogProviderButtonDescription[] _buttonDescriptions = new BlogProviderButtonDescription[0];
-        private byte[] _favIcon = null;
-        private byte[] _image = null;
-        private byte[] _watermarkImage = null;
-        private IDictionary _homepageOptionOverrides = new Hashtable();
-        private IDictionary _optionOverrides = new Hashtable();
-        private IDictionary _userOptionOverrides = new Hashtable();
-        private BlogInfo[] _hostBlogs = new BlogInfo[] { };
-        private FileUploadSupport _fileUploadSupport = FileUploadSupport.Weblog;
-        private TemporaryFileUploadSettings _fileUploadSettings = new TemporaryFileUploadSettings();
-        private TemporaryFileUploadSettings _atomPublishingProtocolSettings = new TemporaryFileUploadSettings();
-        private SettingsPersisterHelper _pluginSettings = new SettingsPersisterHelper(new MemorySettingsPersister());
-        private BlogInfo[] _availableImageEndpoints;
-        private bool _instrumentationOptIn = false;
-        //
-        // IMPORTANT NOTE: When adding member variables you MUST update the CopyFrom() implementation below!!!!
-        //
+        private TemporaryBlogSettings() => this.Id = Guid.NewGuid().ToString();
 
-        private TemporaryBlogSettings()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
-        private TemporaryBlogSettings(string id)
-        {
-            Id = id;
-        }
+        private TemporaryBlogSettings(string id) => this.Id = id;
 
         public void Dispose()
         {
-
         }
 
         public void CopyFrom(TemporaryBlogSettings sourceSettings)
         {
             // simple members
-            _id = sourceSettings._id;
-            _switchToWeblog = sourceSettings._switchToWeblog;
-            _isNewWeblog = sourceSettings._isNewWeblog;
-            _savePassword = sourceSettings._savePassword;
-            _isSpacesBlog = sourceSettings._isSpacesBlog;
-            _isSharePointBlog = sourceSettings._isSharePointBlog;
-            _isGoogleBloggerBlog = sourceSettings._isGoogleBloggerBlog;
-            _isStaticSiteBlog = sourceSettings._isStaticSiteBlog;
-            _hostBlogId = sourceSettings._hostBlogId;
-            _blogName = sourceSettings._blogName;
-            _homePageUrl = sourceSettings._homePageUrl;
-            _manifestDownloadInfo = sourceSettings._manifestDownloadInfo;
-            _providerId = sourceSettings._providerId;
-            _serviceName = sourceSettings._serviceName;
-            _clientType = sourceSettings._clientType;
-            _postApiUrl = sourceSettings._postApiUrl;
-            _lastPublishFailed = sourceSettings._lastPublishFailed;
-            _fileUploadSupport = sourceSettings._fileUploadSupport;
-            _instrumentationOptIn = sourceSettings._instrumentationOptIn;
+            this.Id = sourceSettings.Id;
+            this.SwitchToWeblog = sourceSettings.SwitchToWeblog;
+            this.IsNewWeblog = sourceSettings.IsNewWeblog;
+            this.SavePassword = sourceSettings.SavePassword;
+            this.IsSpacesBlog = sourceSettings.IsSpacesBlog;
+            this.IsSharePointBlog = sourceSettings.IsSharePointBlog;
+            this.IsGoogleBloggerBlog = sourceSettings.IsGoogleBloggerBlog;
+            this.IsStaticSiteBlog = sourceSettings.IsStaticSiteBlog;
+            this.HostBlogId = sourceSettings.HostBlogId;
+            this.BlogName = sourceSettings.BlogName;
+            this.HomepageUrl = sourceSettings.HomepageUrl;
+            this.ManifestDownloadInfo = sourceSettings.ManifestDownloadInfo;
+            this.ProviderId = sourceSettings.ProviderId;
+            this.ServiceName = sourceSettings.ServiceName;
+            this.ClientType = sourceSettings.ClientType;
+            this.PostApiUrl = sourceSettings.PostApiUrl;
+            this.LastPublishFailed = sourceSettings.LastPublishFailed;
+            this.FileUploadSupport = sourceSettings.FileUploadSupport;
+            this.InstrumentationOptIn = sourceSettings.InstrumentationOptIn;
 
-            if (sourceSettings._availableImageEndpoints == null)
+            if (sourceSettings.AvailableImageEndpoints == null)
             {
-                _availableImageEndpoints = null;
+                this.AvailableImageEndpoints = null;
             }
             else
             {
                 // Good thing BlogInfo is immutable!
-                _availableImageEndpoints = (BlogInfo[])sourceSettings._availableImageEndpoints.Clone();
+                this.AvailableImageEndpoints = (BlogInfo[])sourceSettings.AvailableImageEndpoints.Clone();
             }
 
             // credentials
-            BlogCredentialsHelper.Copy(sourceSettings._credentials, _credentials);
+            BlogCredentialsHelper.Copy(sourceSettings.credentials, this.credentials);
 
             // template files
-            _templateFiles = new BlogEditingTemplateFile[sourceSettings._templateFiles.Length];
-            for (int i = 0; i < sourceSettings._templateFiles.Length; i++)
+            this.TemplateFiles = new BlogEditingTemplateFile[sourceSettings.TemplateFiles.Length];
+            for (var i = 0; i < sourceSettings.TemplateFiles.Length; i++)
             {
-                BlogEditingTemplateFile sourceFile = sourceSettings._templateFiles[i];
-                _templateFiles[i] = new BlogEditingTemplateFile(sourceFile.TemplateType, sourceFile.TemplateFile);
+                var sourceFile = sourceSettings.TemplateFiles[i];
+                this.TemplateFiles[i] = new BlogEditingTemplateFile(sourceFile.TemplateType, sourceFile.TemplateFile);
             }
 
             // option overrides
-            if (sourceSettings._optionOverrides != null)
+            if (sourceSettings.OptionOverrides != null)
             {
-                _optionOverrides.Clear();
-                foreach (DictionaryEntry entry in sourceSettings._optionOverrides)
-                    _optionOverrides.Add(entry.Key, entry.Value);
+                this.OptionOverrides.Clear();
+                foreach (var entry in sourceSettings.OptionOverrides)
+                {
+                    this.OptionOverrides.Add(entry.Key, entry.Value);
+                }
             }
 
             // user option overrides
-            if (sourceSettings._userOptionOverrides != null)
+            if (sourceSettings.UserOptionOverrides != null)
             {
-                _userOptionOverrides.Clear();
-                foreach (DictionaryEntry entry in sourceSettings._userOptionOverrides)
-                    _userOptionOverrides.Add(entry.Key, entry.Value);
+                this.UserOptionOverrides.Clear();
+                foreach (var entry in sourceSettings.UserOptionOverrides)
+                {
+                    this.UserOptionOverrides.Add(entry.Key, entry.Value);
+                }
             }
 
             // homepage overrides
-            if (sourceSettings._homepageOptionOverrides != null)
+            if (sourceSettings.HomePageOverrides != null)
             {
-                _homepageOptionOverrides.Clear();
-                foreach (DictionaryEntry entry in sourceSettings._homepageOptionOverrides)
-                    _homepageOptionOverrides.Add(entry.Key, entry.Value);
+                this.HomePageOverrides.Clear();
+                foreach (var entry in sourceSettings.HomePageOverrides)
+                {
+                    this.HomePageOverrides.Add(entry.Key, entry.Value);
+                }
             }
 
             // categories
-            if (sourceSettings._categories != null)
+            if (sourceSettings.Categories != null)
             {
-                _categories = new BlogPostCategory[sourceSettings._categories.Length];
-                for (int i = 0; i < sourceSettings._categories.Length; i++)
+                this.Categories = new BlogPostCategory[sourceSettings.Categories.Length];
+                for (var i = 0; i < sourceSettings.Categories.Length; i++)
                 {
-                    BlogPostCategory sourceCategory = sourceSettings._categories[i];
-                    _categories[i] = sourceCategory.Clone() as BlogPostCategory;
+                    var sourceCategory = sourceSettings.Categories[i];
+                    this.Categories[i] = sourceCategory.Clone() as BlogPostCategory;
                 }
             }
             else
             {
-                _categories = null;
+                this.Categories = null;
             }
 
-            if (sourceSettings._keywords != null)
+            if (sourceSettings.Keywords != null)
             {
-                _keywords = new BlogPostKeyword[sourceSettings._keywords.Length];
-                for (int i = 0; i < sourceSettings._keywords.Length; i++)
+                this.Keywords = new BlogPostKeyword[sourceSettings.Keywords.Length];
+                for (var i = 0; i < sourceSettings.Keywords.Length; i++)
                 {
-                    BlogPostKeyword sourceKeyword = sourceSettings._keywords[i];
-                    _keywords[i] = sourceKeyword.Clone() as BlogPostKeyword;
+                    var sourceKeyword = sourceSettings.Keywords[i];
+                    this.Keywords[i] = sourceKeyword.Clone() as BlogPostKeyword;
                 }
             }
             else
             {
-                _keywords = null;
+                this.Keywords = null;
             }
 
             // authors and pages
-            _authors = sourceSettings._authors.Clone() as AuthorInfo[];
-            _pages = sourceSettings._pages.Clone() as PageInfo[];
+            this.Authors = sourceSettings.Authors.Clone() as AuthorInfo[];
+            this.Pages = sourceSettings.Pages.Clone() as PageInfo[];
 
             // buttons
-            if (sourceSettings._buttonDescriptions != null)
+            if (sourceSettings.buttonDescriptions != null)
             {
-                _buttonDescriptions = new BlogProviderButtonDescription[sourceSettings._buttonDescriptions.Length];
-                for (int i = 0; i < sourceSettings._buttonDescriptions.Length; i++)
-                    _buttonDescriptions[i] = sourceSettings._buttonDescriptions[i].Clone() as BlogProviderButtonDescription;
+                this.buttonDescriptions = new BlogProviderButtonDescription[sourceSettings.buttonDescriptions.Length];
+                for (var i = 0; i < sourceSettings.buttonDescriptions.Length; i++)
+                {
+                    this.buttonDescriptions[i] = sourceSettings.buttonDescriptions[i].Clone() as BlogProviderButtonDescription;
+                }
             }
             else
             {
-                _buttonDescriptions = null;
+                this.buttonDescriptions = null;
             }
 
             // favicon
-            _favIcon = sourceSettings._favIcon;
+            this.FavIcon = sourceSettings.FavIcon;
 
             // images
-            _image = sourceSettings._image;
-            _watermarkImage = sourceSettings._watermarkImage;
+            this.Image = sourceSettings.Image;
+            this.WatermarkImage = sourceSettings.WatermarkImage;
 
             // host blogs
-            _hostBlogs = new BlogInfo[sourceSettings._hostBlogs.Length];
-            for (int i = 0; i < sourceSettings._hostBlogs.Length; i++)
+            this.HostBlogs = new BlogInfo[sourceSettings.HostBlogs.Length];
+            for (var i = 0; i < sourceSettings.HostBlogs.Length; i++)
             {
-                BlogInfo sourceBlog = sourceSettings._hostBlogs[i];
-                _hostBlogs[i] = new BlogInfo(sourceBlog.Id, sourceBlog.Name, sourceBlog.HomepageUrl);
+                var sourceBlog = sourceSettings.HostBlogs[i];
+                this.HostBlogs[i] = new BlogInfo(sourceBlog.Id, sourceBlog.Name, sourceBlog.HomepageUrl);
             }
 
             // file upload settings
-            _fileUploadSettings = sourceSettings._fileUploadSettings.Clone() as TemporaryFileUploadSettings;
+            this.fileUploadSettings = sourceSettings.fileUploadSettings.Clone() as TemporaryFileUploadSettings;
 
-            _pluginSettings = new SettingsPersisterHelper(new MemorySettingsPersister());
-            _pluginSettings.CopyFrom(sourceSettings._pluginSettings, true, true);
+            this.pluginSettings = new SettingsPersisterHelper(new MemorySettingsPersister());
+            this.pluginSettings.CopyFrom(sourceSettings.pluginSettings, true, true);
         }
 
         public object Clone()
         {
-            TemporaryBlogSettings newSettings = new TemporaryBlogSettings();
+            var newSettings = new TemporaryBlogSettings();
             newSettings.CopyFrom(this);
             return newSettings;
         }
@@ -833,63 +501,48 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
     public class TemporaryBlogCredentials : IBlogCredentials
     {
-        public string Username
-        {
-            get { return _username; }
-            set { _username = value; }
-        }
-        private string _username = String.Empty;
+        public string Username { get; set; } = string.Empty;
 
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; }
-        }
-        private string _password = String.Empty;
+        public string Password { get; set; } = string.Empty;
 
         public string[] CustomValues
         {
             get
             {
-                string[] customValues = new string[_values.Count];
-                if (_values.Count > 0)
-                    _values.Keys.CopyTo(customValues, 0);
+                var customValues = new string[this.values.Count];
+                if (this.values.Count > 0)
+                {
+                    this.values.Keys.CopyTo(customValues, 0);
+                }
+
                 return customValues;
             }
         }
 
         public string GetCustomValue(string name)
         {
-            if (_values.Contains(name))
+            if (this.values.Contains(name))
             {
-                return _values[name] as string;
+                return this.values[name] as string;
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
-        public void SetCustomValue(string name, string value)
-        {
-            _values[name] = value;
-        }
+        public void SetCustomValue(string name, string value) => this.values[name] = value;
 
-        public ICredentialsDomain Domain
-        {
-            get { return _domain; }
-            set { _domain = value; }
-        }
-        private ICredentialsDomain _domain;
+        public ICredentialsDomain Domain { get; set; }
 
         public void Clear()
         {
-            _username = String.Empty;
-            _password = String.Empty;
-            _values.Clear();
+            this.Username = string.Empty;
+            this.Password = string.Empty;
+            this.values.Clear();
         }
 
-        private Hashtable _values = new Hashtable();
+        private readonly Hashtable values = new Hashtable();
 
     }
 
@@ -901,44 +554,35 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
         public string GetValue(string name)
         {
-            if (_values.Contains(name))
+            if (this.values.Contains(name))
             {
-                return _values[name] as string;
+                return this.values[name] as string;
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
-        public void SetValue(string name, string value)
-        {
-            _values[name] = value;
-        }
+        public void SetValue(string name, string value) => this.values[name] = value;
 
-        public string[] Names
-        {
-            get { return (string[])new ArrayList(_values.Keys).ToArray(typeof(string)); }
-        }
+        public string[] Names => (string[])new ArrayList(this.values.Keys).ToArray(typeof(string));
 
-        public void Clear()
-        {
-            _values.Clear();
-        }
+        public void Clear() => this.values.Clear();
 
-        private Hashtable _values = new Hashtable();
+        private readonly Hashtable values = new Hashtable();
 
         public object Clone()
         {
-            TemporaryFileUploadSettings newSettings = new TemporaryFileUploadSettings();
+            var newSettings = new TemporaryFileUploadSettings();
 
-            foreach (DictionaryEntry entry in _values)
+            foreach (DictionaryEntry entry in this.values)
+            {
                 newSettings.SetValue(entry.Key as string, entry.Value as string);
+            }
 
             return newSettings;
         }
-
     }
-
 }
 

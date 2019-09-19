@@ -1,56 +1,56 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Globalization;
-using System.IO;
-using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Net;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Windows.Forms;
-using OpenLiveWriter.ApplicationFramework.Skinning;
-using OpenLiveWriter.BlogClient;
-using OpenLiveWriter.BlogClient.Clients;
-using OpenLiveWriter.BlogClient.Detection;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.HtmlEditor;
-using OpenLiveWriter.HtmlEditor.Controls;
-using OpenLiveWriter.HtmlParser.Parser;
-using OpenLiveWriter.HtmlParser.Parser.FormAgent;
-using OpenLiveWriter.CoreServices;
-using System.Runtime.InteropServices;
-
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Interop.Com.Ribbon;
-using OpenLiveWriter.Interop.Com.StructuredStorage;
-using OpenLiveWriter.Interop.Windows;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-using OpenLiveWriter.PostEditor.Commands;
-using OpenLiveWriter.PostEditor.Configuration.Wizard;
-using OpenLiveWriter.PostEditor.Configuration.Settings;
-using OpenLiveWriter.PostEditor.ContentSources;
-using OpenLiveWriter.PostEditor.JumpList;
-using OpenLiveWriter.PostEditor.OpenPost;
-using OpenLiveWriter.PostEditor.PostHtmlEditing;
-using OpenLiveWriter.ApplicationFramework;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.PostEditor.SupportingFiles;
-using OpenLiveWriter.PostEditor.Updates;
-using OpenLiveWriter.SpellChecker;
-using Timer = System.Windows.Forms.Timer;
-
 // @RIBBON TODO: Cleanly remove obsolete code
 
 namespace OpenLiveWriter.PostEditor
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Net;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Runtime.InteropServices.ComTypes;
+    using System.Text;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.ApplicationFramework;
+    using OpenLiveWriter.ApplicationFramework.Skinning;
+    using OpenLiveWriter.BlogClient;
+    using OpenLiveWriter.BlogClient.Clients;
+    using OpenLiveWriter.BlogClient.Detection;
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.HtmlEditor;
+    using OpenLiveWriter.HtmlEditor.Controls;
+    using OpenLiveWriter.HtmlParser.Parser;
+    using OpenLiveWriter.HtmlParser.Parser.FormAgent;
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Com.Ribbon;
+    using OpenLiveWriter.Interop.Com.StructuredStorage;
+    using OpenLiveWriter.Interop.Windows;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Localization.Bidi;
+    using OpenLiveWriter.PostEditor.Commands;
+    using OpenLiveWriter.PostEditor.Configuration.Settings;
+    using OpenLiveWriter.PostEditor.Configuration.Wizard;
+    using OpenLiveWriter.PostEditor.JumpList;
+    using OpenLiveWriter.PostEditor.OpenPost;
+    using OpenLiveWriter.PostEditor.PostHtmlEditing;
+    using OpenLiveWriter.PostEditor.SupportingFiles;
+    using OpenLiveWriter.SpellChecker;
+
+    using Timer = System.Windows.Forms.Timer;
+
     internal enum ApplicationMode
     {
         Normal = 0,
@@ -104,34 +104,34 @@ namespace OpenLiveWriter.PostEditor
 
         public PostEditorMainControl(IMainFrameWindow mainFrameWindow, IBlogPostEditingContext editingContext)
         {
-            Init(mainFrameWindow, editingContext);
+            this.Init(mainFrameWindow, editingContext);
         }
 
         private void Init(IMainFrameWindow mainFrameWindow, IBlogPostEditingContext editingContext)
         {
             // save reference to the frame window and workspace border manager
-            _mainFrameWindow = mainFrameWindow;
+            this._mainFrameWindow = mainFrameWindow;
 
             // This call is required by the Windows.Forms Form Designer.
-            Font = Res.DefaultFont;
-            InitializeComponent();
+            this.Font = Res.DefaultFont;
+            this.InitializeComponent();
 
             // initialize UI
-            InitializeUI();
+            this.InitializeUI();
 
             // Initialize the editing manager
-            InitializeEditingManager();
+            this.InitializeEditingManager();
 
             // initialize our commands
-            InitializeCommands();
+            this.InitializeCommands();
 
             //subscribe to global events
-            BlogSettings.BlogSettingsDeleted += new BlogSettings.BlogSettingsListener(HandleBlogDeleted);
+            BlogSettings.BlogSettingsDeleted += new BlogSettings.BlogSettingsListener(this.HandleBlogDeleted);
 
             // edit the post
-            _editingManager.EditPost(editingContext, false);
+            this._editingManager.EditPost(editingContext, false);
 
-            InitializeRibbon();
+            this.InitializeRibbon();
         }
 
         private void InitializeUI()
@@ -139,128 +139,129 @@ namespace OpenLiveWriter.PostEditor
             ColorizedResources.Instance.RegisterControlForBackColorUpdates(this);
 
             // initialize workspace
-            InitializeWorkspace();
+            this.InitializeWorkspace();
 
             // initialize the post property editors
-            InitializePostPropertyEditors();
+            this.InitializePostPropertyEditors();
 
             // initialize the core editor
-            InitializeHtmlEditor();
+            this.InitializeHtmlEditor();
 
             // initialize options editor
-            InitializeOptionsEditor();
+            this.InitializeOptionsEditor();
         }
 
         private GalleryCommand<string> commandPluginsGallery = null;
         private void InitializeEditingManager()
         {
-            _editingManager = new BlogPostEditingManager(
+            this._editingManager = new BlogPostEditingManager(
                 this,
-                new IBlogPostEditor[] { _htmlEditor, this },
-                _htmlEditor
+                new IBlogPostEditor[] { this._htmlEditor, this },
+                this._htmlEditor
                 );
 
-            commandPluginsGallery = (GalleryCommand<string>)CommandManager.Get(CommandId.PluginsGallery);
-            commandPluginsGallery.StateChanged += new EventHandler(commandPluginsGallery_StateChanged);
-            _editingManager.BlogChanged += new EventHandler(_editingManager_BlogChanged);
-            _editingManager.BlogSettingsChanged += new WeblogSettingsChangedHandler(_editingManager_BlogSettingsChanged);
-            _editingManager.EditingStatusChanged += new EventHandler(_editingManager_EditingStatusChanged);
-            _editingManager.UserSavedPost += new EventHandler(_editingManager_UserSavedPost);
-            _editingManager.UserPublishedPost += new EventHandler(_editingManager_UserPublishedPost);
-            _editingManager.UserDeletedPost += new EventHandler(_editingManager_UserDeletedPost);
+            this.commandPluginsGallery = (GalleryCommand<string>)this.CommandManager.Get(CommandId.PluginsGallery);
+            this.commandPluginsGallery.StateChanged += new EventHandler(this.commandPluginsGallery_StateChanged);
+            this._editingManager.BlogChanged += new EventHandler(this._editingManager_BlogChanged);
+            this._editingManager.BlogSettingsChanged += new WeblogSettingsChangedHandler(this._editingManager_BlogSettingsChanged);
+            this._editingManager.EditingStatusChanged += new EventHandler(this._editingManager_EditingStatusChanged);
+            this._editingManager.UserSavedPost += new EventHandler(this._editingManager_UserSavedPost);
+            this._editingManager.UserPublishedPost += new EventHandler(this._editingManager_UserPublishedPost);
+            this._editingManager.UserDeletedPost += new EventHandler(this._editingManager_UserDeletedPost);
 
             // initialize auto-save timer
-            _autoSaveTimer = new System.Windows.Forms.Timer(this.components);
-            _autoSaveTimer.Interval = 5000;
-            _autoSaveTimer.Tick += new EventHandler(_autoSaveTimer_Tick);
+            this._autoSaveTimer = new System.Windows.Forms.Timer(this.components);
+            this._autoSaveTimer.Interval = 5000;
+            this._autoSaveTimer.Tick += new EventHandler(this._autoSaveTimer_Tick);
 
-            _autoSaveMessageDismissTimer = new Timer(components);
-            _autoSaveMessageDismissTimer.Interval = 450;
-            _autoSaveMessageDismissTimer.Tick += _autoSaveMessageDismissTimer_Tick;
+            this._autoSaveMessageDismissTimer = new Timer(this.components);
+            this._autoSaveMessageDismissTimer.Interval = 450;
+            this._autoSaveMessageDismissTimer.Tick += this._autoSaveMessageDismissTimer_Tick;
         }
 
-        void commandPluginsGallery_StateChanged(object sender, EventArgs e)
-        {
-            UpdateRibbonMode();
-        }
+        void commandPluginsGallery_StateChanged(object sender, EventArgs e) => this.UpdateRibbonMode();
 
         private void InitializeCommands()
         {
-            _htmlEditor.CommandManager.BeginUpdate();
+            this._htmlEditor.CommandManager.BeginUpdate();
 
-            commandNewPost = _htmlEditor.CommandManager.Add(CommandId.NewPost, commandNewPost_Execute);
-            commandNewPage = _htmlEditor.CommandManager.Add(CommandId.NewPage, commandNewPage_Execute);
+            this.commandNewPost = this._htmlEditor.CommandManager.Add(CommandId.NewPost, this.commandNewPost_Execute);
+            this.commandNewPage = this._htmlEditor.CommandManager.Add(CommandId.NewPage, this.commandNewPage_Execute);
 
             // new context menu definition
-            _newPostContextMenuDefinition = new CommandContextMenuDefinition(this.components);
-            _newPostContextMenuDefinition.Entries.Add(CommandId.NewPost, false, false);
-            _newPostContextMenuDefinition.Entries.Add(CommandId.NewPage, false, false);
-            commandNewPost.CommandBarButtonContextMenuDropDown = true;
+            this._newPostContextMenuDefinition = new CommandContextMenuDefinition(this.components);
+            this._newPostContextMenuDefinition.Entries.Add(CommandId.NewPost, false, false);
+            this._newPostContextMenuDefinition.Entries.Add(CommandId.NewPage, false, false);
+            this.commandNewPost.CommandBarButtonContextMenuDropDown = true;
 
-            _htmlEditor.CommandManager.Add(CommandId.OpenDrafts, commandOpenDrafts_Execute);
-            _htmlEditor.CommandManager.Add(CommandId.OpenRecentPosts, commandOpenRecentPosts_Execute);
-            _htmlEditor.CommandManager.Add(CommandId.OpenPost, commandOpenPost_Execute);
-            commandSavePost = _htmlEditor.CommandManager.Add(CommandId.SavePost, commandSavePost_Execute);
-            commandDeleteDraft = _htmlEditor.CommandManager.Add(CommandId.DeleteDraft, commandDeleteDraft_Execute);
-            _htmlEditor.CommandManager.Add(CommandId.PostAndPublish, commandPostAndPublish_Execute);
-            commandPostAsDraft = _htmlEditor.CommandManager.Add(CommandId.PostAsDraft, commandPostAsDraft_Execute);
-            commandPostAsDraftAndEditOnline = _htmlEditor.CommandManager.Add(CommandId.PostAsDraftAndEditOnline, commandPostAsDraftAndEditOnline_Execute);
+            this._htmlEditor.CommandManager.Add(CommandId.OpenDrafts, this.commandOpenDrafts_Execute);
+            this._htmlEditor.CommandManager.Add(CommandId.OpenRecentPosts, this.commandOpenRecentPosts_Execute);
+            this._htmlEditor.CommandManager.Add(CommandId.OpenPost, this.commandOpenPost_Execute);
+            this.commandSavePost = this._htmlEditor.CommandManager.Add(CommandId.SavePost, this.commandSavePost_Execute);
+            this.commandDeleteDraft = this._htmlEditor.CommandManager.Add(CommandId.DeleteDraft, this.commandDeleteDraft_Execute);
+            this._htmlEditor.CommandManager.Add(CommandId.PostAndPublish, this.commandPostAndPublish_Execute);
+            this.commandPostAsDraft = this._htmlEditor.CommandManager.Add(CommandId.PostAsDraft, this.commandPostAsDraft_Execute);
+            this.commandPostAsDraftAndEditOnline = this._htmlEditor.CommandManager.Add(CommandId.PostAsDraftAndEditOnline, this.commandPostAsDraftAndEditOnline_Execute);
 
-            DraftPostItemsGalleryCommand draftGallery = new DraftPostItemsGalleryCommand(this as IBlogPostEditingSite,
-                                                                                         CommandManager, false);
-            draftGallery.Execute += commandOpenDrafts_Execute;
-            DraftPostItemsGalleryCommand postGallery = new DraftPostItemsGalleryCommand(this as IBlogPostEditingSite,
-                                                                                         CommandManager, true);
-            postGallery.Execute += commandOpenRecentPosts_Execute;
+            var draftGallery = new DraftPostItemsGalleryCommand(this as IBlogPostEditingSite,
+                                                                                         this.CommandManager, false);
+            draftGallery.Execute += this.commandOpenDrafts_Execute;
+            var postGallery = new DraftPostItemsGalleryCommand(this as IBlogPostEditingSite,
+                                                                                         this.CommandManager, true);
+            postGallery.Execute += this.commandOpenRecentPosts_Execute;
 
             // publish command bar context menu
-            _savePostContextMenuDefinition = new CommandContextMenuDefinition(this.components);
-            _savePostContextMenuDefinition.CommandBar = true;
-            _savePostContextMenuDefinition.Entries.Add(CommandId.SavePost, false, true);
-            _savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraft, false, false);
-            _savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraftAndEditOnline, false, false);
-            commandSavePost.CommandBarButtonContextMenuDropDown = true;
+            this._savePostContextMenuDefinition = new CommandContextMenuDefinition(this.components);
+            this._savePostContextMenuDefinition.CommandBar = true;
+            this._savePostContextMenuDefinition.Entries.Add(CommandId.SavePost, false, true);
+            this._savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraft, false, false);
+            this._savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraftAndEditOnline, false, false);
+            this.commandSavePost.CommandBarButtonContextMenuDropDown = true;
 
             if (ApplicationDiagnostics.TestMode)
             {
-                _htmlEditor.CommandManager.Add(CommandId.DiagnosticsConsole, new EventHandler(commandDiagnosticsConsole_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ShowBetaExpiredDialogs, new EventHandler(commandShowBetaExpiredDialogs_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ShowWebLayoutWarning, delegate { new WebLayoutViewWarningForm().ShowDialog(this); });
-                _htmlEditor.CommandManager.Add(CommandId.ShowErrorDialog, new EventHandler(commandErrorDialog_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.BlogClientOptions, new EventHandler(commandBlogClientOptions_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ShowDisplayMessageTestForm, new EventHandler(commandShowDisplayMessageTestForm_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ShowSupportingFilesForm, new EventHandler(commandShowSupportingFilesForm_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.InsertLoremIpsum, new EventHandler(commandInsertLoremIpsum_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ValidateHtml, new EventHandler(commandValidateHtml_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ValidateXhtml, new EventHandler(commandValidateXhtml_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ValidateLocalizedResources, new EventHandler(commandValidateLocalizedResources_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.ShowAtomImageEndpointSelector, new EventHandler(commandShowAtomImageEndpointSelector_Execute));
-                _htmlEditor.CommandManager.Add(CommandId.RaiseAssertion, delegate { Trace.Fail("You asked for it"); });
-                _htmlEditor.CommandManager.Add(CommandId.ShowGoogleCaptcha, delegate { new GDataCaptchaForm().ShowDialog(this); });
-                _htmlEditor.CommandManager.Add(CommandId.TerminateProcess, delegate { Process.GetCurrentProcess().Kill(); });
+                this._htmlEditor.CommandManager.Add(CommandId.DiagnosticsConsole, new EventHandler(this.commandDiagnosticsConsole_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ShowBetaExpiredDialogs, new EventHandler(this.commandShowBetaExpiredDialogs_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ShowWebLayoutWarning, delegate
+                { new WebLayoutViewWarningForm().ShowDialog(this); });
+                this._htmlEditor.CommandManager.Add(CommandId.ShowErrorDialog, new EventHandler(this.commandErrorDialog_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.BlogClientOptions, new EventHandler(this.commandBlogClientOptions_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ShowDisplayMessageTestForm, new EventHandler(this.commandShowDisplayMessageTestForm_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ShowSupportingFilesForm, new EventHandler(this.commandShowSupportingFilesForm_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.InsertLoremIpsum, new EventHandler(this.commandInsertLoremIpsum_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ValidateHtml, new EventHandler(this.commandValidateHtml_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ValidateXhtml, new EventHandler(this.commandValidateXhtml_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ValidateLocalizedResources, new EventHandler(this.commandValidateLocalizedResources_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.ShowAtomImageEndpointSelector, new EventHandler(this.commandShowAtomImageEndpointSelector_Execute));
+                this._htmlEditor.CommandManager.Add(CommandId.RaiseAssertion, delegate
+                { Trace.Fail("You asked for it"); });
+                this._htmlEditor.CommandManager.Add(CommandId.ShowGoogleCaptcha, delegate
+                { new GDataCaptchaForm().ShowDialog(this); });
+                this._htmlEditor.CommandManager.Add(CommandId.TerminateProcess, delegate
+                { Process.GetCurrentProcess().Kill(); });
             }
 
-            commandColorize = new Command(CommandId.Colorize);
-            commandColorize.CommandBarButtonContextMenuHandler = new CommandBarButtonContextMenuHandler(new ColorizationContextHelper().Handler);
-            _htmlEditor.CommandManager.Add(commandColorize);
+            this.commandColorize = new Command(CommandId.Colorize);
+            this.commandColorize.CommandBarButtonContextMenuHandler = new CommandBarButtonContextMenuHandler(new ColorizationContextHelper().Handler);
+            this._htmlEditor.CommandManager.Add(this.commandColorize);
 
-            _htmlEditor.CommandManager.EndUpdate();
+            this._htmlEditor.CommandManager.EndUpdate();
 
             // initialize the weblog menu commands
-            _weblogCommandManager = new WeblogCommandManager(_editingManager, this);
-            _weblogCommandManager.WeblogSelected += new WeblogHandler(_weblogMenuManager_WeblogSelected);
+            this._weblogCommandManager = new WeblogCommandManager(this._editingManager, this);
+            this._weblogCommandManager.WeblogSelected += new WeblogHandler(this._weblogMenuManager_WeblogSelected);
         }
 
         private void commandShowAtomImageEndpointSelector_Execute(object sender, EventArgs e)
         {
-            OpenLiveWriter.Controls.Wizard.WizardController controller = new OpenLiveWriter.Controls.Wizard.WizardController();
-            WeblogConfigurationWizardPanelSelectBlog selectBlogControl = new WeblogConfigurationWizardPanelSelectBlog();
+            var controller = new OpenLiveWriter.Controls.Wizard.WizardController();
+            var selectBlogControl = new WeblogConfigurationWizardPanelSelectBlog();
             selectBlogControl.HeaderText = Res.Get(StringId.ConfigWizardSelectImageEndpoint);
             selectBlogControl.LabelText = Res.Get(StringId.CWSelectImageEndpointText);
             selectBlogControl.PrepareForAdd();
             controller.addWizardStep(new OpenLiveWriter.Controls.Wizard.WizardStep(selectBlogControl, StringId.ConfigWizardSelectImageEndpoint, null, null, null, null, null));
 
-            using (OpenLiveWriter.Controls.Wizard.WizardForm form = new OpenLiveWriter.Controls.Wizard.WizardForm(controller))
+            using (var form = new OpenLiveWriter.Controls.Wizard.WizardForm(controller))
             {
                 form.Size = new Size((int)Math.Ceiling(DisplayHelper.ScaleX(460)), (int)Math.Ceiling(DisplayHelper.ScaleY(400)));
                 form.Text = Res.Get(StringId.CWTitle);
@@ -273,9 +274,9 @@ namespace OpenLiveWriter.PostEditor
             Command cmd;
             using (disposeWhenDone)
             {
-                ArrayList mainMenuItems = new ArrayList(_htmlEditor.CommandManager.BuildMenu(MenuType.Main));
+                var mainMenuItems = new ArrayList(this._htmlEditor.CommandManager.BuildMenu(MenuType.Main));
                 mainMenuItems.Add(new OwnerDrawMenuItem(MenuType.Context, "-"));
-                Command commandShowMenu = _htmlEditor.CommandManager.Get(CommandId.ShowMenu);
+                var commandShowMenu = this._htmlEditor.CommandManager.Get(CommandId.ShowMenu);
                 mainMenuItems.Add(new CommandOwnerDrawMenuItem(
                     MenuType.Context,
                     commandShowMenu,
@@ -284,7 +285,9 @@ namespace OpenLiveWriter.PostEditor
                 cmd = CommandContextMenu.ShowModal(this, menuLocation, alternativeLocation, (MenuItem[])mainMenuItems.ToArray(typeof(MenuItem)));
             }
             if (cmd != null)
+            {
                 cmd.PerformExecute();
+            }
         }
 
         private class ColorizationContextHelper
@@ -295,18 +298,21 @@ namespace OpenLiveWriter.PostEditor
             {
                 try
                 {
-                    ColorPickerForm form = new ColorPickerForm();
+                    var form = new ColorPickerForm();
                     form.Color = ColorizedResources.AppColor;
-                    form.ColorSelected += new ColorSelectedEventHandler(form_ColorSelected);
-                    form.Closed += new EventHandler(form_Closed);
+                    form.ColorSelected += new ColorSelectedEventHandler(this.form_ColorSelected);
+                    form.Closed += new EventHandler(this.form_Closed);
 
                     form.StartPosition = FormStartPosition.Manual;
-                    Point startLocation = CommandBarButtonLightweightControl.PositionMenu(menuLocation, alternativeLocation, form.Size);
+                    var startLocation = CommandBarButtonLightweightControl.PositionMenu(menuLocation, alternativeLocation, form.Size);
                     form.Location = startLocation;
-                    _disposeWhenDone = disposeWhenDone;
-                    IMiniFormOwner miniFormOwner = parent.FindForm() as IMiniFormOwner;
+                    this._disposeWhenDone = disposeWhenDone;
+                    var miniFormOwner = parent.FindForm() as IMiniFormOwner;
                     if (miniFormOwner != null)
+                    {
                         form.FloatAboveOwner(miniFormOwner);
+                    }
+
                     form.Show();
                 }
                 catch
@@ -316,41 +322,36 @@ namespace OpenLiveWriter.PostEditor
                 }
             }
 
-            private void form_Closed(object sender, EventArgs e)
-            {
-                _disposeWhenDone.Dispose();
-            }
+            private void form_Closed(object sender, EventArgs e) => this._disposeWhenDone.Dispose();
 
-            private void form_ColorSelected(object sender, ColorSelectedEventArgs args)
-            {
-                ColorizedResources.AppColor = args.SelectedColor;
-            }
+            private void form_ColorSelected(object sender, ColorSelectedEventArgs args) => ColorizedResources.AppColor = args.SelectedColor;
         }
 
         private void InitializeWorkspace()
         {
             if (!BidiHelper.IsRightToLeft)
-                DockPadding.Left = 0;
+            {
+                this.DockPadding.Left = 0;
+            }
             else
-                DockPadding.Right = 0;
+            {
+                this.DockPadding.Right = 0;
+            }
 
-            _mainEditorPanel = new Panel();
-            _mainEditorPanel.Dock = DockStyle.Fill;
+            this._mainEditorPanel = new Panel();
+            this._mainEditorPanel.Dock = DockStyle.Fill;
 
             //Controls.Add(_publishBar);
-            Controls.Add(_mainEditorPanel);
+            this.Controls.Add(this._mainEditorPanel);
         }
 
-        private static int ToAppMode(ApplicationMode m)
-        {
-            return Convert.ToInt32(1 << Convert.ToInt32(m, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        }
+        private static int ToAppMode(ApplicationMode m) => Convert.ToInt32(1 << Convert.ToInt32(m, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
         private ApplicationMode TextDirection
         {
             get
             {
-                return _htmlEditor.IsRTLTemplate || BidiHelper.IsRightToLeft ? ApplicationMode.RTL : ApplicationMode.LTR;
+                return this._htmlEditor.IsRTLTemplate || BidiHelper.IsRightToLeft ? ApplicationMode.RTL : ApplicationMode.LTR;
             }
         }
 
@@ -359,15 +360,15 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return Convert.ToBoolean(mode & ToAppMode(ApplicationMode.Test));
+                return Convert.ToBoolean(this.mode & ToAppMode(ApplicationMode.Test));
             }
 
             set
             {
-                if (TestMode != value)
+                if (this.TestMode != value)
                 {
-                    mode ^= ToAppMode(ApplicationMode.Test);
-                    UpdateRibbonMode();
+                    this.mode ^= ToAppMode(ApplicationMode.Test);
+                    this.UpdateRibbonMode();
                 }
             }
         }
@@ -376,64 +377,61 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return Convert.ToBoolean(mode & ToAppMode(ApplicationMode.Preview));
+                return Convert.ToBoolean(this.mode & ToAppMode(ApplicationMode.Preview));
             }
 
             set
             {
-                if (PreviewMode != value)
+                if (this.PreviewMode != value)
                 {
-                    mode ^= ToAppMode(ApplicationMode.Preview);
-                    mode ^= ToAppMode(ApplicationMode.Normal);
-                    Debug.Assert(!(PreviewMode && Convert.ToBoolean(mode & ToAppMode(ApplicationMode.Normal))));
-                    UpdateRibbonMode();
+                    this.mode ^= ToAppMode(ApplicationMode.Preview);
+                    this.mode ^= ToAppMode(ApplicationMode.Normal);
+                    Debug.Assert(!(this.PreviewMode && Convert.ToBoolean(this.mode & ToAppMode(ApplicationMode.Normal))));
+                    this.UpdateRibbonMode();
                 }
             }
         }
 
         private void UpdateRibbonMode()
         {
-            if (TextDirection == ApplicationMode.RTL)
+            if (this.TextDirection == ApplicationMode.RTL)
             {
-                mode |= ToAppMode(ApplicationMode.RTL);
-                mode &= ~ToAppMode(ApplicationMode.LTR);
+                this.mode |= ToAppMode(ApplicationMode.RTL);
+                this.mode &= ~ToAppMode(ApplicationMode.LTR);
             }
             else
             {
-                mode |= ToAppMode(ApplicationMode.LTR);
-                mode &= ~ToAppMode(ApplicationMode.RTL);
+                this.mode |= ToAppMode(ApplicationMode.LTR);
+                this.mode &= ~ToAppMode(ApplicationMode.RTL);
             }
 
-            if (commandPluginsGallery.Items.Count > 0)
+            if (this.commandPluginsGallery.Items.Count > 0)
             {
-                mode |= ToAppMode(ApplicationMode.HasPlugins);
-                mode &= ~ToAppMode(ApplicationMode.NoPlugins);
+                this.mode |= ToAppMode(ApplicationMode.HasPlugins);
+                this.mode &= ~ToAppMode(ApplicationMode.NoPlugins);
             }
             else
             {
-                mode |= ToAppMode(ApplicationMode.NoPlugins);
-                mode &= ~ToAppMode(ApplicationMode.HasPlugins);
+                this.mode |= ToAppMode(ApplicationMode.NoPlugins);
+                this.mode &= ~ToAppMode(ApplicationMode.HasPlugins);
             }
 
-            if (_framework != null)
+            if (this._framework != null)
             {
-                _framework.SetModes(mode);
+                this._framework.SetModes(this.mode);
             }
         }
 
         private void InvalidateCommand(CommandId commandId)
         {
-            Command command = CommandManager.Get(commandId);
+            var command = this.CommandManager.Get(commandId);
             if (command != null)
             {
                 command.Invalidate();
             }
         }
 
-        public void OnTestModeChanged(object sender, EventArgs e)
-        {
-            TestMode = ApplicationDiagnostics.TestMode;
-        }
+        public void OnTestModeChanged(object sender, EventArgs e) => this.TestMode = ApplicationDiagnostics.TestMode;
 
         [ComImport]
         [Guid("926749fa-2615-4987-8845-c33e65f2b957")]
@@ -445,7 +443,7 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return _framework;
+                return this._framework;
             }
         }
 
@@ -455,68 +453,65 @@ namespace OpenLiveWriter.PostEditor
         private void InitializeRibbon()
         {
 
-            IUIFramework framework = (IUIFramework)Activator.CreateInstance<Framework>();
+            var framework = (IUIFramework)Activator.CreateInstance<Framework>();
 
             Trace.Assert(framework != null, "Failed to create IUIFramework.");
 
-            ribbonControl = new RibbonControl(_htmlEditor.IHtmlEditorComponentContext, _htmlEditor);
+            this.ribbonControl = new RibbonControl(this._htmlEditor.IHtmlEditorComponentContext, this._htmlEditor);
 
-            int initializeResult = framework.Initialize(_mainFrameWindow.Handle, this);
+            var initializeResult = framework.Initialize(this._mainFrameWindow.Handle, this);
             Trace.Assert(initializeResult == HRESULT.S_OK, "Ribbon framework failed to initialize: " + initializeResult);
 
-            _framework = framework;
+            this._framework = framework;
 
-            string nativeResourceDLL = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\OpenLiveWriter.Ribbon.dll";
-            IntPtr hMod = Kernel32.LoadLibrary(nativeResourceDLL);
+            var nativeResourceDLL = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\OpenLiveWriter.Ribbon.dll";
+            var hMod = Kernel32.LoadLibrary(nativeResourceDLL);
 
             using (new QuickTimer("IUIRibbonFramework::LoadUI"))
             {
-                int loadResult = _framework.LoadUI(hMod, "RIBBON_RIBBON");
+                var loadResult = this._framework.LoadUI(hMod, "RIBBON_RIBBON");
                 Trace.Assert(loadResult == HRESULT.S_OK, "Ribbon failed to load: " + loadResult);
             }
 
-            _framework.SetModes(mode);
+            this._framework.SetModes(this.mode);
 
-            CommandManager.Invalidate(CommandId.MRUList);
-            CommandManager.Invalidate(CommandId.OpenDraftSplit);
-            CommandManager.Invalidate(CommandId.OpenPostSplit);
+            this.CommandManager.Invalidate(CommandId.MRUList);
+            this.CommandManager.Invalidate(CommandId.OpenDraftSplit);
+            this.CommandManager.Invalidate(CommandId.OpenPostSplit);
 
-            ApplicationDiagnostics.TestModeChanged += OnTestModeChanged;
-            TestMode = ApplicationDiagnostics.TestMode;
+            ApplicationDiagnostics.TestModeChanged += this.OnTestModeChanged;
+            this.TestMode = ApplicationDiagnostics.TestMode;
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
 
-            if (_mainEditorPanel != null && ribbon != null)
+            if (this._mainEditorPanel != null && this.ribbon != null)
             {
                 uint ribbonHeight = 0;
-                if (ribbon != null)
+                if (this.ribbon != null)
                 {
-                    ribbon.GetHeight(out ribbonHeight);
+                    this.ribbon.GetHeight(out ribbonHeight);
                 }
-                _mainEditorPanel.DockPadding.Top = (int)ribbonHeight;
+                this._mainEditorPanel.DockPadding.Top = (int)ribbonHeight;
             }
 
-            Invalidate(false);
-            Update();
+            this.Invalidate(false);
+            this.Update();
         }
 
         private void InitializeHtmlEditor()
         {
             // create the editor
-            _htmlEditor = BlogPostHtmlEditor.Create(_mainFrameWindow, _mainEditorPanel, this as IBlogPostEditingSite);
-            _htmlEditor.TitleFocusChanged += new EventHandler(htmlEditor_TitleFocusChanged);
-            _htmlEditor.Dirty += new EventHandler(htmlEditor_Dirty);
-            _htmlEditor.EditorLoaded += new EventHandler(_htmlEditor_EditingModeChanged);
-            _htmlEditor.DocumentComplete += new EventHandler(_htmlEditor_DocumentComplete);
+            this._htmlEditor = BlogPostHtmlEditor.Create(this._mainFrameWindow, this._mainEditorPanel, this as IBlogPostEditingSite);
+            this._htmlEditor.TitleFocusChanged += new EventHandler(this.htmlEditor_TitleFocusChanged);
+            this._htmlEditor.Dirty += new EventHandler(this.htmlEditor_Dirty);
+            this._htmlEditor.EditorLoaded += new EventHandler(this._htmlEditor_EditingModeChanged);
+            this._htmlEditor.DocumentComplete += new EventHandler(this._htmlEditor_DocumentComplete);
         }
 
-        void _htmlEditor_DocumentComplete(object sender, EventArgs e)
-        {
-            _htmlEditor.FocusBody();
-        }
+        void _htmlEditor_DocumentComplete(object sender, EventArgs e) => this._htmlEditor.FocusBody();
 
         public void OnKeyboardLanguageChanged()
         {
@@ -534,23 +529,18 @@ namespace OpenLiveWriter.PostEditor
             //}
         }
 
-        void _htmlEditor_EditingModeChanged(object sender, EventArgs e)
-        {
-            PreviewMode = _htmlEditor.CurrentEditingMode == EditingMode.Preview;
-        }
+        void _htmlEditor_EditingModeChanged(object sender, EventArgs e) => this.PreviewMode = this._htmlEditor.CurrentEditingMode == EditingMode.Preview;
 
         private void htmlEditor_Dirty(object sender, EventArgs e)
         {
-            _autoSaveTimer.Stop();
+            this._autoSaveTimer.Stop();
             if (PostEditorSettings.AutoSaveDrafts)
-                _autoSaveTimer.Start();
+            {
+                this._autoSaveTimer.Start();
+            }
         }
 
-        private void InitializeOptionsEditor()
-        {
-
-            _optionsEditor = new PostEditorPreferencesEditor(_mainFrameWindow, this);
-        }
+        private void InitializeOptionsEditor() => this._optionsEditor = new PostEditorPreferencesEditor(this._mainFrameWindow, this);
 
         public CommandManager CommandManager
         {
@@ -562,24 +552,24 @@ namespace OpenLiveWriter.PostEditor
 
         private class PostContentEditor : IBlogPostContentEditor
         {
-            public PostContentEditor(PostEditorMainControl parent) { _parent = parent; }
-            public bool FullyEditableRegionActive { get { return _parent._htmlEditor.FullyEditableRegionActive; } }
-            public string SelectedText { get { return _parent._htmlEditor.SelectedText; } }
-            public string SelectedHtml { get { return _parent._htmlEditor.SelectedHtml; } }
-            public void InsertHtml(string content, bool moveSelectionRight) { _parent._htmlEditor.InsertHtml(content, moveSelectionRight); }
-            public void InsertLink(string url, string linkText, string linkTitle, string rel, bool newWindow) { _parent._htmlEditor.InsertLink(url, linkText, linkTitle, rel, newWindow); }
+            public PostContentEditor(PostEditorMainControl parent) { this._parent = parent; }
+            public bool FullyEditableRegionActive { get { return this._parent._htmlEditor.FullyEditableRegionActive; } }
+            public string SelectedText { get { return this._parent._htmlEditor.SelectedText; } }
+            public string SelectedHtml { get { return this._parent._htmlEditor.SelectedHtml; } }
+            public void InsertHtml(string content, bool moveSelectionRight) => this._parent._htmlEditor.InsertHtml(content, moveSelectionRight);
+            public void InsertLink(string url, string linkText, string linkTitle, string rel, bool newWindow) => this._parent._htmlEditor.InsertLink(url, linkText, linkTitle, rel, newWindow);
             private PostEditorMainControl _parent;
         }
 
         private void InitializePostPropertyEditors()
         {
-            _styleComboControl = new HtmlStylePicker(this._htmlEditor);
-            _styleComboControl.Enabled = false;
+            this._styleComboControl = new HtmlStylePicker(this._htmlEditor);
+            this._styleComboControl.Enabled = false;
         }
 
         internal BlogPostEditingManager BlogPostEditingManager
         {
-            get { return _editingManager; }
+            get { return this._editingManager; }
         }
 
         /// <summary>
@@ -589,27 +579,35 @@ namespace OpenLiveWriter.PostEditor
         {
             if (disposing)
             {
-                if (_htmlEditor != null)
-                    _htmlEditor.Dispose();
-
-                if (_editingManager != null)
-                    _editingManager.Dispose();
-
-                if (_weblogCommandManager != null)
-                    _weblogCommandManager.Dispose();
-
-                if (_optionsEditor != null)
-                    _optionsEditor.Dispose();
-
-                if (components != null)
+                if (this._htmlEditor != null)
                 {
-                    components.Dispose();
+                    this._htmlEditor.Dispose();
                 }
 
-                _framework.Destroy();
+                if (this._editingManager != null)
+                {
+                    this._editingManager.Dispose();
+                }
 
-                BlogSettings.BlogSettingsDeleted -= new BlogSettings.BlogSettingsListener(HandleBlogDeleted);
-                commandPluginsGallery.StateChanged -= new EventHandler(commandPluginsGallery_StateChanged);
+                if (this._weblogCommandManager != null)
+                {
+                    this._weblogCommandManager.Dispose();
+                }
+
+                if (this._optionsEditor != null)
+                {
+                    this._optionsEditor.Dispose();
+                }
+
+                if (this.components != null)
+                {
+                    this.components.Dispose();
+                }
+
+                this._framework.Destroy();
+
+                BlogSettings.BlogSettingsDeleted -= new BlogSettings.BlogSettingsListener(this.HandleBlogDeleted);
+                this.commandPluginsGallery.StateChanged -= new EventHandler(this.commandPluginsGallery_StateChanged);
             }
             base.Dispose(disposing);
         }
@@ -621,31 +619,31 @@ namespace OpenLiveWriter.PostEditor
         private void commandNewPost_Execute(object sender, EventArgs e)
         {
             WindowCascadeHelper.SetNextOpenedLocation(this._mainFrameWindow.Location);
-            _editingManager.NewPost();
+            this._editingManager.NewPost();
         }
 
         private void commandNewPage_Execute(object sender, EventArgs e)
         {
             WindowCascadeHelper.SetNextOpenedLocation(this._mainFrameWindow.Location);
-            _editingManager.NewPage();
+            this._editingManager.NewPage();
         }
 
         private void commandOpenDrafts_Execute(object sender, EventArgs e)
         {
             WindowCascadeHelper.SetNextOpenedLocation(this._mainFrameWindow.Location);
-            _editingManager.OpenPost(OpenPostForm.OpenMode.Drafts);
+            this._editingManager.OpenPost(OpenPostForm.OpenMode.Drafts);
         }
 
         private void commandOpenRecentPosts_Execute(object sender, EventArgs e)
         {
             WindowCascadeHelper.SetNextOpenedLocation(this._mainFrameWindow.Location);
-            _editingManager.OpenPost(OpenPostForm.OpenMode.RecentPosts);
+            this._editingManager.OpenPost(OpenPostForm.OpenMode.RecentPosts);
         }
 
         private void commandOpenPost_Execute(object sender, EventArgs e)
         {
             WindowCascadeHelper.SetNextOpenedLocation(this._mainFrameWindow.Location);
-            _editingManager.OpenPost(OpenPostForm.OpenMode.Auto);
+            this._editingManager.OpenPost(OpenPostForm.OpenMode.Auto);
         }
 
         private void commandSavePost_Execute(object sender, EventArgs e)
@@ -653,65 +651,65 @@ namespace OpenLiveWriter.PostEditor
             // save the draft
             using (new PaddedWaitCursor(250))
             {
-                _editingManager.SaveDraft();
+                this._editingManager.SaveDraft();
             }
         }
 
-        private void commandDeleteDraft_Execute(object sender, EventArgs e)
-        {
-            _editingManager.DeleteCurrentDraft();
-        }
+        private void commandDeleteDraft_Execute(object sender, EventArgs e) => this._editingManager.DeleteCurrentDraft();
 
         private void commandPostAsDraft_Execute(object sender, EventArgs e)
         {
-            if (_editingManager.PublishAsDraft())
+            if (this._editingManager.PublishAsDraft())
             {
                 // respect close settings
-                if (CloseWindowOnPublish)
-                    CloseMainFrameWindow();
+                if (this.CloseWindowOnPublish)
+                {
+                    this.CloseMainFrameWindow();
+                }
             }
         }
 
         private void commandPostAsDraftAndEditOnline_Execute(object sender, EventArgs e)
         {
-            if (_editingManager.PublishAsDraft())
+            if (this._editingManager.PublishAsDraft())
             {
                 // edit post online
-                _editingManager.EditPostOnline(true);
+                this._editingManager.EditPostOnline(true);
 
                 // respect close settings
-                if (CloseWindowOnPublish)
-                    CloseMainFrameWindow();
+                if (this.CloseWindowOnPublish)
+                {
+                    this.CloseMainFrameWindow();
+                }
             }
         }
 
         private void commandPostAndPublish_Execute(object sender, EventArgs e)
         {
-            if (_editingManager.Publish())
+            if (this._editingManager.Publish())
             {
                 // respect post after publish
                 if (PostEditorSettings.ViewPostAfterPublish)
-                    _editingManager.ViewPost();
+                {
+                    this._editingManager.ViewPost();
+                }
 
                 // respect close settings
-                if (CloseWindowOnPublish)
-                    CloseMainFrameWindow();
+                if (this.CloseWindowOnPublish)
+                {
+                    this.CloseMainFrameWindow();
+                }
             }
         }
 
-        private void CloseMainFrameWindow()
-        {
+        private void CloseMainFrameWindow() =>
             // WinLive 164570: This function is called from inside a Ribbon execute handler, so we don't want to close
             // the current window (and thereby destroy the Ribbon) while we're still inside a call from the Ribbon.
             // Using BeginInvoke is basically just a wrapper around using User32.PostMessage, which puts the WM.CLOSE
             // message at the end of the message queue.
             this.BeginInvoke(new InvokeInUIThreadDelegate(() => this._mainFrameWindow.Close()), null);
-        }
 
-        private void commandDiagnosticsConsole_Execute(object sender, EventArgs e)
-        {
-            ApplicationEnvironment.ApplicationDiagnostics.ShowDiagnosticsConsole("test");
-        }
+        private void commandDiagnosticsConsole_Execute(object sender, EventArgs e) => ApplicationEnvironment.ApplicationDiagnostics.ShowDiagnosticsConsole("test");
 
         private void commandShowBetaExpiredDialogs_Execute(object sender, EventArgs e)
         {
@@ -720,32 +718,23 @@ namespace OpenLiveWriter.PostEditor
             ExpirationForm.ShowExpiredDialog(-1);
         }
 
-        private void commandErrorDialog_Execute(object sender, EventArgs e)
-        {
-            UnexpectedErrorMessage.Show(new ApplicationException("Force Error Dialog"));
-        }
+        private void commandErrorDialog_Execute(object sender, EventArgs e) => UnexpectedErrorMessage.Show(new ApplicationException("Force Error Dialog"));
 
-        private void commandBlogClientOptions_Execute(object sender, EventArgs e)
-        {
-            _editingManager.DisplayBlogClientOptions();
-        }
+        private void commandBlogClientOptions_Execute(object sender, EventArgs e) => this._editingManager.DisplayBlogClientOptions();
 
         private void commandShowDisplayMessageTestForm_Execute(object sender, EventArgs e)
         {
-            using (DisplayMessageTestForm form = new DisplayMessageTestForm())
+            using (var form = new DisplayMessageTestForm())
             {
-                form.ShowDialog(FindForm());
+                form.ShowDialog(this.FindForm());
             }
         }
 
-        private void commandShowSupportingFilesForm_Execute(object sender, EventArgs e)
-        {
-            SupportingFilesForm.ShowForm(_mainFrameWindow as Form, BlogPostEditingManager);
-        }
+        private void commandShowSupportingFilesForm_Execute(object sender, EventArgs e) => SupportingFilesForm.ShowForm(this._mainFrameWindow as Form, this.BlogPostEditingManager);
 
         private void commandValidateLocalizedResources_Execute(object sender, EventArgs e)
         {
-            string[] errors = Res.Validate();
+            var errors = Res.Validate();
             if (errors.Length > 0)
             {
                 Trace.WriteLine("Localized resource validation errors:\r\n" + StringHelper.Join(errors, "\r\n"));
@@ -759,18 +748,12 @@ namespace OpenLiveWriter.PostEditor
 
         private void commandInsertLoremIpsum_Execute(object sender, EventArgs e)
         {
-            string loremIpsum = "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>";
-            _htmlEditor.InsertHtml(loremIpsum, HtmlInsertionOptions.SuppressSpellCheck | HtmlInsertionOptions.MoveCursorAfter);
+            var loremIpsum = "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>";
+            this._htmlEditor.InsertHtml(loremIpsum, HtmlInsertionOptions.SuppressSpellCheck | HtmlInsertionOptions.MoveCursorAfter);
         }
 
-        private void commandValidateXhtml_Execute(object sender, EventArgs e)
-        {
-            ValidateHtml(true);
-        }
-        private void commandValidateHtml_Execute(object sender, EventArgs e)
-        {
-            ValidateHtml(false);
-        }
+        private void commandValidateXhtml_Execute(object sender, EventArgs e) => this.ValidateHtml(true);
+        private void commandValidateHtml_Execute(object sender, EventArgs e) => this.ValidateHtml(false);
 
         private void ValidateHtml(bool xhtml)
         {
@@ -785,24 +768,31 @@ namespace OpenLiveWriter.PostEditor
             HtmlForm form;
             FormData data;
 
-            string html = string.Format(CultureInfo.InvariantCulture, xhtml ? XHTML_TEMPLATE : HTML_TEMPLATE, _htmlEditor.Body);
+            var html = string.Format(CultureInfo.InvariantCulture, xhtml ? XHTML_TEMPLATE : HTML_TEMPLATE, this._htmlEditor.Body);
             if (xhtml)
+            {
                 html = XHTML_DOCTYPE + html;
+            }
             else
+            {
                 html = HTML_DOCTYPE + html;
+            }
 
-            HttpWebResponse response = HttpRequestHelper.SendRequest(VALIDATOR_URL);
+            var response = HttpRequestHelper.SendRequest(VALIDATOR_URL);
             try
             {
-                using (Stream s = response.GetResponseStream())
+                using (var s = response.GetResponseStream())
                 {
-                    FormFactory formFactory = new FormFactory(s);
+                    var formFactory = new FormFactory(s);
                     formFactory.NextForm();
                     formFactory.NextForm();
                     form = formFactory.NextForm();
-                    Textarea textarea = form.GetElementByIndex(0) as Textarea;
+                    var textarea = form.GetElementByIndex(0) as Textarea;
                     if (textarea == null)
+                    {
                         throw new ArgumentException("Unexpected HTML: textarea element not found");
+                    }
+
                     textarea.Value = html;
                     data = form.Submit(null);
                 }
@@ -812,28 +802,31 @@ namespace OpenLiveWriter.PostEditor
                 response.Close();
             }
 
-            using (Stream formData = data.ToStream())
+            using (var formData = data.ToStream())
             {
-                HttpWebRequest request = HttpRequestHelper.CreateHttpWebRequest(UrlHelper.EscapeRelativeURL(UrlHelper.SafeToAbsoluteUri(response.ResponseUri), form.Action), false);
+                var request = HttpRequestHelper.CreateHttpWebRequest(UrlHelper.EscapeRelativeURL(UrlHelper.SafeToAbsoluteUri(response.ResponseUri), form.Action), false);
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = formData.Length;
                 request.Method = form.Method.ToUpper(CultureInfo.InvariantCulture);
-                using (Stream requestStream = request.GetRequestStream())
+                using (var requestStream = request.GetRequestStream())
+                {
                     StreamHelper.Transfer(formData, requestStream);
-                HttpWebResponse response2 = (HttpWebResponse)request.GetResponse();
+                }
+
+                var response2 = (HttpWebResponse)request.GetResponse();
                 try
                 {
-                    using (Stream s2 = response2.GetResponseStream())
+                    using (var s2 = response2.GetResponseStream())
                     {
-                        string resultsHtml = StreamHelper.AsString(s2, Encoding.UTF8);
+                        var resultsHtml = StreamHelper.AsString(s2, Encoding.UTF8);
                         resultsHtml = resultsHtml.Replace("<head>",
                                                           string.Format(CultureInfo.InvariantCulture, "<head><base href=\"{0}\"/>",
                                                                         HtmlUtils.EscapeEntities(UrlHelper.SafeToAbsoluteUri(response2.ResponseUri))));
 
-                        string tempFile = TempFileManager.Instance.CreateTempFile("results.htm");
+                        var tempFile = TempFileManager.Instance.CreateTempFile("results.htm");
                         using (Stream fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write))
                         {
-                            byte[] bytes = Encoding.UTF8.GetBytes(resultsHtml);
+                            var bytes = Encoding.UTF8.GetBytes(resultsHtml);
                             fileStream.Write(bytes, 0, bytes.Length);
                         }
                         ShellHelper.LaunchUrl(tempFile);
@@ -857,24 +850,24 @@ namespace OpenLiveWriter.PostEditor
         private bool ValidateTitleSpecified()
         {
 
-            if (_htmlEditor.Title == String.Empty)
+            if (this._htmlEditor.Title == string.Empty)
             {
-                if (_editingManager.BlogRequiresTitles)
+                if (this._editingManager.BlogRequiresTitles)
                 {
                     // show error
-                    DisplayMessage.Show(MessageId.NoTitleSpecified, FindForm());
+                    DisplayMessage.Show(MessageId.NoTitleSpecified, this.FindForm());
 
                     // focus the title and return false
-                    _htmlEditor.FocusTitle();
+                    this._htmlEditor.FocusTitle();
                     return false;
                 }
                 else if (PostEditorSettings.TitleReminder)
                 {
-                    using (TitleReminderForm titleReminderForm = new TitleReminderForm(_editingManager.EditingPage))
+                    using (var titleReminderForm = new TitleReminderForm(this._editingManager.EditingPage))
                     {
-                        if (titleReminderForm.ShowDialog(FindForm()) != DialogResult.Yes)
+                        if (titleReminderForm.ShowDialog(this.FindForm()) != DialogResult.Yes)
                         {
-                            _htmlEditor.FocusTitle();
+                            this._htmlEditor.FocusTitle();
                             return false;
                         }
                     }
@@ -888,11 +881,11 @@ namespace OpenLiveWriter.PostEditor
         private bool CheckSpelling()
         {
             // do auto spell check
-            if (SpellingSettings.CheckSpellingBeforePublish && _htmlEditor.CanSpellCheck)
+            if (SpellingSettings.CheckSpellingBeforePublish && this._htmlEditor.CanSpellCheck)
             {
-                if (!_htmlEditor.CheckSpelling())
+                if (!this._htmlEditor.CheckSpelling())
                 {
-                    return (DialogResult.Yes == DisplayMessage.Show(MessageId.SpellCheckCancelledStillPost, _mainFrameWindow));
+                    return (DialogResult.Yes == DisplayMessage.Show(MessageId.SpellCheckCancelledStillPost, this._mainFrameWindow));
                 }
             }
             return true;
@@ -909,23 +902,23 @@ namespace OpenLiveWriter.PostEditor
         /// <param name="e"></param>
         private void _autoSaveTimer_Tick(object sender, EventArgs e)
         {
-            if (!_htmlEditor.SuspendAutoSave)
+            if (!this._htmlEditor.SuspendAutoSave)
             {
-                _autoSaveTimer.Stop();
-                bool forceSave = sender == null && _editingManager.PostIsDirty;
-                if (forceSave || _editingManager.ShouldAutoSave)
+                this._autoSaveTimer.Stop();
+                var forceSave = sender == null && this._editingManager.PostIsDirty;
+                if (forceSave || this._editingManager.ShouldAutoSave)
                 {
-                    _htmlEditor.StatusBar.PushStatusMessage(Res.Get(StringId.StatusAutoSaving));
+                    this._htmlEditor.StatusBar.PushStatusMessage(Res.Get(StringId.StatusAutoSaving));
                     try
                     {
-                        _editingManager.AutoSaveIfRequired(forceSave);
+                        this._editingManager.AutoSaveIfRequired(forceSave);
                     }
                     catch
                     {
-                        _htmlEditor.StatusBar.PopStatusMessage();
+                        this._htmlEditor.StatusBar.PopStatusMessage();
                         throw;
                     }
-                    _autoSaveMessageDismissTimer.Start();
+                    this._autoSaveMessageDismissTimer.Start();
                 }
             }
         }
@@ -934,8 +927,8 @@ namespace OpenLiveWriter.PostEditor
         {
             try
             {
-                _autoSaveMessageDismissTimer.Stop();
-                _htmlEditor.StatusBar.PopStatusMessage();
+                this._autoSaveMessageDismissTimer.Stop();
+                this._htmlEditor.StatusBar.PopStatusMessage();
             }
             catch (Exception ex)
             {
@@ -945,65 +938,70 @@ namespace OpenLiveWriter.PostEditor
 
         private void _weblogMenuManager_WeblogSelected(string blogId)
         {
-            string currentBlogId = CurrentBlogId;
+            var currentBlogId = this.CurrentBlogId;
 
-            _editingManager.SwitchBlog(blogId);
+            this._editingManager.SwitchBlog(blogId);
 
             // Only set the editor dirty if we actually switched blogs.
             if (blogId != currentBlogId)
-                _htmlEditor.SetCurrentEditorDirty();
+            {
+                this._htmlEditor.SetCurrentEditorDirty();
+            }
         }
 
         private void _editingManager_EditingStatusChanged(object sender, EventArgs e)
         {
-            ManageCommands();
-            UpdateFrameUI();
+            this.ManageCommands();
+            this.UpdateFrameUI();
         }
 
-        public void NotifyWeblogStylePreviewChanged()
-        {
-            _htmlEditor.CommandManager.Invalidate(CommandId.SemanticHtmlGallery);
-        }
+        public void NotifyWeblogStylePreviewChanged() => this._htmlEditor.CommandManager.Invalidate(CommandId.SemanticHtmlGallery);
 
         private void _editingManager_BlogChanged(object sender, EventArgs e)
         {
             if (WeblogChanged != null)
-                WeblogChanged(_editingManager.BlogId);
+            {
+                WeblogChanged(this._editingManager.BlogId);
+            }
 
-            UpdateRibbonMode();
+            this.UpdateRibbonMode();
 
-            UpdateFrameUI();
+            this.UpdateFrameUI();
         }
 
         private void _editingManager_BlogSettingsChanged(string blogId, bool templateChanged)
         {
             if (WeblogSettingsChanged != null)
+            {
                 WeblogSettingsChanged(blogId, templateChanged);
+            }
 
-            UpdateRibbonMode();
+            this.UpdateRibbonMode();
 
-            UpdateFrameUI();
+            this.UpdateFrameUI();
         }
 
         private void htmlEditor_TitleFocusChanged(object sender, EventArgs e)
         {
-            UpdateFrameUI();
-            ribbonControl.ManageCommands();
+            this.UpdateFrameUI();
+            this.ribbonControl.ManageCommands();
         }
 
         void IFormClosingHandler.OnClosing(CancelEventArgs e)
         {
-            _editingManager.Closing(e);
+            this._editingManager.Closing(e);
 
             // if the control IsDirty then see if the user wants to publish their edits
-            if (!e.Cancel && _editingManager.PostIsDirty)
+            if (!e.Cancel && this._editingManager.PostIsDirty)
             {
-                _mainFrameWindow.Activate();
-                DialogResult result = DisplayMessage.Show(MessageId.QueryForUnsavedChanges, _mainFrameWindow);
+                this._mainFrameWindow.Activate();
+                var result = DisplayMessage.Show(MessageId.QueryForUnsavedChanges, this._mainFrameWindow);
                 if (result == DialogResult.Yes)
                 {
                     using (new WaitCursor())
-                        _editingManager.SaveDraft();
+                    {
+                        this._editingManager.SaveDraft();
+                    }
                 }
                 else if (result == DialogResult.Cancel)
                 {
@@ -1012,10 +1010,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        void IFormClosingHandler.OnClosed()
-        {
-            _editingManager.OnClosed();
-        }
+        void IFormClosingHandler.OnClosed() => this._editingManager.OnClosed();
 
         // implement IBlogPostEditor so we can participating in showing/hiding
         // the property editor control
@@ -1023,55 +1018,70 @@ namespace OpenLiveWriter.PostEditor
         void IBlogPostEditor.SaveChanges(BlogPost post, BlogPostSaveOptions options) { }
         bool IBlogPostEditor.ValidatePublish()
         {
-            if (!ValidateTitleSpecified())
+            if (!this.ValidateTitleSpecified())
+            {
                 return false;
+            }
 
-            if (!CheckSpelling())
+            if (!this.CheckSpelling())
+            {
                 return false;
-
+            }
             else
+            {
                 return true;
+            }
         }
         void IBlogPostEditor.OnPublishSucceeded(BlogPost blogPost, PostResult postResult) { }
         bool IBlogPostEditor.IsDirty { get { return false; } }
         void IBlogPostEditor.OnBlogChanged(Blog newBlog)
         {
-            AdaptToBlog(newBlog);
-            CheckForServiceUpdates(newBlog);
+            this.AdaptToBlog(newBlog);
+            this.CheckForServiceUpdates(newBlog);
         }
 
         void IBlogPostEditor.OnBlogSettingsChanged(bool templateChanged)
         {
-            using (Blog blog = new Blog(_editingManager.BlogId))
-                AdaptToBlog(blog);
+            using (var blog = new Blog(this._editingManager.BlogId))
+            {
+                this.AdaptToBlog(blog);
+            }
         }
 
         private void AdaptToBlog(Blog newBlog)
         {
             // if the blog supports posting to draft or not
-            commandPostAsDraft.Enabled = newBlog.ClientOptions.SupportsPostAsDraft;
+            this.commandPostAsDraft.Enabled = newBlog.ClientOptions.SupportsPostAsDraft;
             if (newBlog.ClientOptions.SupportsPostAsDraft)
-                commandSavePost.CommandBarButtonContextMenuDefinition = _savePostContextMenuDefinition;
+            {
+                this.commandSavePost.CommandBarButtonContextMenuDefinition = this._savePostContextMenuDefinition;
+            }
             else
-                commandSavePost.CommandBarButtonContextMenuDefinition = null;
+            {
+                this.commandSavePost.CommandBarButtonContextMenuDefinition = null;
+            }
 
             // if the blog supports post draft and edit online
-            commandPostAsDraftAndEditOnline.Enabled = newBlog.ClientOptions.SupportsPostAsDraft && (newBlog.ClientOptions.PostEditingUrl != String.Empty);
+            this.commandPostAsDraftAndEditOnline.Enabled = newBlog.ClientOptions.SupportsPostAsDraft && (newBlog.ClientOptions.PostEditingUrl != string.Empty);
 
             // if the blog supports pages or not
-            bool enablePages = newBlog.ClientOptions.SupportsPages;
-            commandNewPage.Enabled = enablePages;
+            var enablePages = newBlog.ClientOptions.SupportsPages;
+            this.commandNewPage.Enabled = enablePages;
             if (enablePages)
-                commandNewPost.CommandBarButtonContextMenuDefinition = _newPostContextMenuDefinition;
+            {
+                this.commandNewPost.CommandBarButtonContextMenuDefinition = this._newPostContextMenuDefinition;
+            }
             else
-                commandNewPost.CommandBarButtonContextMenuDefinition = null;
+            {
+                this.commandNewPost.CommandBarButtonContextMenuDefinition = null;
+            }
         }
 
         private void CheckForServiceUpdates(Blog blog)
         {
-            if (_editingManager.BlogIsAutoUpdatable && !ApplicationDiagnostics.SuppressBackgroundRequests)
+            if (this._editingManager.BlogIsAutoUpdatable && !ApplicationDiagnostics.SuppressBackgroundRequests)
             {
-                ServiceUpdateChecker checker = new ServiceUpdateChecker(blog.Id, new WeblogSettingsChangedHandler(FireWeblogSettingsChangedEvent));
+                var checker = new ServiceUpdateChecker(blog.Id, new WeblogSettingsChangedHandler(FireWeblogSettingsChangedEvent));
                 checker.Start();
             }
         }
@@ -1082,10 +1092,14 @@ namespace OpenLiveWriter.PostEditor
         /// <param name="blogId"></param>
         private void HandleBlogDeleted(string blogId)
         {
-            if (InvokeRequired)
-                BeginInvoke(new InvokeInUIThreadDelegate(HandleMaybeBlogDeleted));
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new InvokeInUIThreadDelegate(this.HandleMaybeBlogDeleted));
+            }
             else
-                HandleMaybeBlogDeleted();
+            {
+                this.HandleMaybeBlogDeleted();
+            }
         }
 
         /// <summary>
@@ -1093,13 +1107,13 @@ namespace OpenLiveWriter.PostEditor
         /// </summary>
         private void HandleMaybeBlogDeleted()
         {
-            Debug.Assert(!InvokeRequired, "This method must be invoked on the UI thread!");
+            Debug.Assert(!this.InvokeRequired, "This method must be invoked on the UI thread!");
 
             // if the current weblog got deleted as part of this operation then reselect the
             // new default weblog
-            if (!BlogSettings.BlogIdIsValid(_editingManager.BlogId))
+            if (!BlogSettings.BlogIdIsValid(this._editingManager.BlogId))
             {
-                _editingManager.SwitchBlog(BlogSettings.DefaultBlogId);
+                this._editingManager.SwitchBlog(BlogSettings.DefaultBlogId);
             }
         }
 
@@ -1111,9 +1125,13 @@ namespace OpenLiveWriter.PostEditor
         {
             // Temporary work around for WinLive 51425.
             if (ApplicationDiagnostics.AutomationMode)
-                commandDeleteDraft.Enabled = true;
+            {
+                this.commandDeleteDraft.Enabled = true;
+            }
             else
-                commandDeleteDraft.Enabled = _editingManager.PostIsDraft && _editingManager.PostIsSaved;
+            {
+                this.commandDeleteDraft.Enabled = this._editingManager.PostIsDraft && this._editingManager.PostIsSaved;
+            }
         }
 
         /// <summary>
@@ -1122,37 +1140,37 @@ namespace OpenLiveWriter.PostEditor
         private void UpdateFrameUI()
         {
             // calculate the text that describes the post
-            string title = _htmlEditor.Title;
-            string postDescription = (title != String.Empty) ? title : Res.Get(StringId.Untitled);
+            var title = this._htmlEditor.Title;
+            var postDescription = (title != string.Empty) ? title : Res.Get(StringId.Untitled);
 
             // update frame window
-            _mainFrameWindow.Caption = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WindowTitleFormat), postDescription, ApplicationEnvironment.ProductNameQualified);
+            this._mainFrameWindow.Caption = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WindowTitleFormat), postDescription, ApplicationEnvironment.ProductNameQualified);
 
-            UpdatePostStatusUI();
+            this.UpdatePostStatusUI();
         }
 
         private void UpdatePostStatusUI()
         {
             string statusText;
-            if (_editingManager.PostIsDraft || string.IsNullOrEmpty(_editingManager.BlogPostId))
+            if (this._editingManager.PostIsDraft || string.IsNullOrEmpty(this._editingManager.BlogPostId))
             {
-                DateTime dateSaved = _editingManager.PostDateSaved ?? DateTime.MinValue;
+                var dateSaved = this._editingManager.PostDateSaved ?? DateTime.MinValue;
                 statusText = dateSaved != DateTime.MinValue
-                                 ? String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusDraftSaved),
-                                                   FormatUtcDate(dateSaved))
+                                 ? string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusDraftSaved),
+                                                   this.FormatUtcDate(dateSaved))
                                  : Res.Get(StringId.StatusDraftUnsaved);
             }
             else
             {
-                statusText = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusPublished), FormatUtcDate(_editingManager.PostDatePublished));
+                statusText = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusPublished), this.FormatUtcDate(this._editingManager.PostDatePublished));
             }
 
-            _htmlEditor.StatusBar.SetStatusMessage(statusText);
+            this._htmlEditor.StatusBar.SetStatusMessage(statusText);
         }
 
         private string FormatUtcDate(DateTime dateTime)
         {
-            DateTime localDateTime = DateTimeHelper.UtcToLocal(dateTime);
+            var localDateTime = DateTimeHelper.UtcToLocal(dateTime);
             return CultureHelper.GetDateTimeCombinedPattern(localDateTime.ToShortDateString(), localDateTime.ToShortTimeString());
         }
 
@@ -1180,7 +1198,7 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return _mainFrameWindow;
+                return this._mainFrameWindow;
             }
         }
 
@@ -1189,7 +1207,7 @@ namespace OpenLiveWriter.PostEditor
             using (new WaitCursor())
             {
                 // edit settings
-                if (WeblogSettingsManager.EditSettings(FindForm(), blogId, selectedPanel))
+                if (WeblogSettingsManager.EditSettings(this.FindForm(), blogId, selectedPanel))
                 {
                     // broadcast event
                     FireWeblogSettingsChangedEvent(blogId, true);
@@ -1199,7 +1217,7 @@ namespace OpenLiveWriter.PostEditor
 
         void IBlogPostEditingSite.ConfigureWeblogFtpUpload(string blogId)
         {
-            if (WeblogSettingsManager.EditFtpImageUpload(FindForm(), blogId))
+            if (WeblogSettingsManager.EditFtpImageUpload(this.FindForm(), blogId))
             {
                 // broadcast event
                 FireWeblogSettingsChangedEvent(blogId, false);
@@ -1208,18 +1226,18 @@ namespace OpenLiveWriter.PostEditor
 
         bool IBlogPostEditingSite.UpdateWeblogTemplate(string blogID)
         {
-            if (_editingManager.VerifyBlogCredentials())
+            if (this._editingManager.VerifyBlogCredentials())
             {
-                using (PostHtmlEditingSettings editSettings = new PostHtmlEditingSettings(blogID))
+                using (var editSettings = new PostHtmlEditingSettings(blogID))
                 {
-                    using (BlogSettings settings = BlogSettings.ForBlogId(blogID))
+                    using (var settings = BlogSettings.ForBlogId(blogID))
                     {
                         Color? backgroundColor;
-                        BlogEditingTemplateFile[] templates = BlogEditingTemplateDetector.DetectTemplate(
-                            new BlogClientUIContextImpl(_mainFrameWindow, _mainFrameWindow),
+                        var templates = BlogEditingTemplateDetector.DetectTemplate(
+                            new BlogClientUIContextImpl(this._mainFrameWindow, this._mainFrameWindow),
                             this,
                             settings,
-                            !_editingManager.BlogIsAutoUpdatable,
+                            !this._editingManager.BlogIsAutoUpdatable,
                             out backgroundColor); // only probe if we do not support auto-update
 
                         if (templates.Length != 0)
@@ -1227,7 +1245,7 @@ namespace OpenLiveWriter.PostEditor
                             editSettings.EditorTemplateHtmlFiles = templates;
                             if (backgroundColor != null)
                             {
-                                IDictionary hpo = settings.HomePageOverrides ?? new Hashtable();
+                                var hpo = settings.HomePageOverrides ?? new Dictionary<string, string>();
                                 hpo[BlogClientOptions.POST_BODY_BACKGROUND_COLOR] =
                                     backgroundColor.Value.ToArgb().ToString(CultureInfo.InvariantCulture);
 
@@ -1249,52 +1267,37 @@ namespace OpenLiveWriter.PostEditor
             using (new WaitCursor())
             {
                 bool switchToWeblog;
-                string newBlogId = WeblogConfigurationWizardController.Add(this, true, out switchToWeblog);
+                var newBlogId = WeblogConfigurationWizardController.Add(this, true, out switchToWeblog);
                 if (newBlogId != null)
                 {
                     (this as IBlogPostEditingSite).NotifyWeblogAccountListEdited();
                     if (switchToWeblog)
                     {
-                        _editingManager.SwitchBlog(newBlogId);
+                        this._editingManager.SwitchBlog(newBlogId);
                     }
                 }
             }
         }
 
-        void IBlogPostEditingSite.NotifyWeblogSettingsChanged(bool templateChanged)
-        {
-            (this as IBlogPostEditingSite).NotifyWeblogSettingsChanged(_editingManager.BlogId, templateChanged);
-        }
+        void IBlogPostEditingSite.NotifyWeblogSettingsChanged(bool templateChanged) => (this as IBlogPostEditingSite).NotifyWeblogSettingsChanged(this._editingManager.BlogId, templateChanged);
 
-        void IBlogPostEditingSite.NotifyWeblogSettingsChanged(string blogId, bool templateChanged)
-        {
-            FireWeblogSettingsChangedEvent(blogId, templateChanged);
-        }
+        void IBlogPostEditingSite.NotifyWeblogSettingsChanged(string blogId, bool templateChanged) => FireWeblogSettingsChangedEvent(blogId, templateChanged);
 
-        void IBlogPostEditingSite.NotifyWeblogAccountListEdited()
-        {
-            FireWeblogListChangedEvent();
-        }
+        void IBlogPostEditingSite.NotifyWeblogAccountListEdited() => FireWeblogListChangedEvent();
 
-        private void weblogAccountManagementForm_WeblogSettingsEdited(string blogId, bool templateChanged)
-        {
-            FireWeblogSettingsChangedEvent(blogId, templateChanged);
-        }
+        private void weblogAccountManagementForm_WeblogSettingsEdited(string blogId, bool templateChanged) => FireWeblogSettingsChangedEvent(blogId, templateChanged);
 
-        void IBlogPostEditingSite.OpenLocalPost(PostInfo postInfo)
-        {
-            _editingManager.OpenLocalPost(postInfo);
-        }
+        void IBlogPostEditingSite.OpenLocalPost(PostInfo postInfo) => this._editingManager.OpenLocalPost(postInfo);
 
         void IBlogPostEditingSite.DeleteLocalPost(PostInfo postInfo)
         {
             try
             {
-                _editingManager.DeleteLocalPost(postInfo);
+                this._editingManager.DeleteLocalPost(postInfo);
             }
             catch (Exception ex)
             {
-                DisplayableExceptionDisplayForm.Show(_mainFrameWindow, ex);
+                DisplayableExceptionDisplayForm.Show(this._mainFrameWindow, ex);
             }
         }
 
@@ -1302,10 +1305,14 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                if (_editingManager != null)
-                    return _editingManager.BlogId;
+                if (this._editingManager != null)
+                {
+                    return this._editingManager.BlogId;
+                }
                 else
+                {
                     return null;
+                }
             }
         }
 
@@ -1353,20 +1360,11 @@ namespace OpenLiveWriter.PostEditor
 
         #region Implementation of post list changed event
 
-        private void _editingManager_UserSavedPost(object sender, EventArgs e)
-        {
-            FirePostListChangedEvent();
-        }
+        private void _editingManager_UserSavedPost(object sender, EventArgs e) => this.FirePostListChangedEvent();
 
-        private void _editingManager_UserPublishedPost(object sender, EventArgs e)
-        {
-            FirePostListChangedEvent();
-        }
+        private void _editingManager_UserPublishedPost(object sender, EventArgs e) => this.FirePostListChangedEvent();
 
-        private void _editingManager_UserDeletedPost(object sender, EventArgs e)
-        {
-            FirePostListChangedEvent();
-        }
+        private void _editingManager_UserDeletedPost(object sender, EventArgs e) => this.FirePostListChangedEvent();
 
         private static void RegisterPostListChangedListener(Control controlContext, EventHandler listener)
         {
@@ -1392,16 +1390,16 @@ namespace OpenLiveWriter.PostEditor
                 {
                     // first refresh the post-list cache for high-performance refresh
                     PostListCache.Update();
-                    WriterJumpList.Invalidate(Handle);
+                    WriterJumpList.Invalidate(this.Handle);
 
-                    CommandManager.Invalidate(CommandId.MRUList);
-                    CommandManager.Invalidate(CommandId.OpenDraftSplit);
-                    CommandManager.Invalidate(CommandId.OpenPostSplit);
+                    this.CommandManager.Invalidate(CommandId.MRUList);
+                    this.CommandManager.Invalidate(CommandId.OpenDraftSplit);
+                    this.CommandManager.Invalidate(CommandId.OpenPostSplit);
 
                     // now notify all of the listeners asynchronously
                     foreach (DictionaryEntry listener in _postListChangedListeners)
                     {
-                        Control control = listener.Value as Control;
+                        var control = listener.Value as Control;
                         if (ControlHelper.ControlCanHandleInvoke(control))
                         {
                             control.BeginInvoke(listener.Key as EventHandler, new object[] { control, EventArgs.Empty });
@@ -1462,7 +1460,7 @@ namespace OpenLiveWriter.PostEditor
                     // now notify all of the listeners asynchronously
                     foreach (DictionaryEntry listener in _weblogSettingsChangedListeners)
                     {
-                        Control control = listener.Value as Control;
+                        var control = listener.Value as Control;
 
                         if (ControlHelper.ControlCanHandleInvoke(control))
                         {
@@ -1498,7 +1496,7 @@ namespace OpenLiveWriter.PostEditor
                     // now notify all of the listeners asynchronously
                     foreach (DictionaryEntry listener in _weblogListChangedListeners)
                     {
-                        Control control = listener.Value as Control;
+                        var control = listener.Value as Control;
 
                         if (ControlHelper.ControlCanHandleInvoke(control))
                         {
@@ -1536,10 +1534,7 @@ namespace OpenLiveWriter.PostEditor
         #endregion
 
         #region Focus Methods
-        internal IFocusableControl[] GetFocusPanes()
-        {
-            return _htmlEditor.GetFocusablePanes();
-        }
+        internal IFocusableControl[] GetFocusPanes() => this._htmlEditor.GetFocusablePanes();
 
         #endregion
 
@@ -1560,24 +1555,24 @@ namespace OpenLiveWriter.PostEditor
 
         public IHtmlStylePicker StyleControl
         {
-            get { return _styleComboControl; }
+            get { return this._styleComboControl; }
         }
 
         #endregion
 
         public int OnViewChanged(uint viewId, CommandTypeID typeID, object view, ViewVerb verb, int uReasonCode)
         {
-            if (ribbon == null)
+            if (this.ribbon == null)
             {
-                ribbon = view as IUIRibbon;
+                this.ribbon = view as IUIRibbon;
             }
 
-            if (ribbon != null)
+            if (this.ribbon != null)
             {
                 switch (verb)
                 {
                     case ViewVerb.Create:
-                        LoadRibbonSettings();
+                        this.LoadRibbonSettings();
                         break;
                     case ViewVerb.Destroy:
                         break;
@@ -1586,10 +1581,10 @@ namespace OpenLiveWriter.PostEditor
                         break;
                     case ViewVerb.Size:
                         uint ribbonHeight;
-                        if (ComHelper.SUCCEEDED(ribbon.GetHeight(out ribbonHeight)))
+                        if (ComHelper.SUCCEEDED(this.ribbon.GetHeight(out ribbonHeight)))
                         {
                             Debug.Assert(ribbonHeight >= 0);
-                            OnSizeChanged(EventArgs.Empty);
+                            this.OnSizeChanged(EventArgs.Empty);
                         }
                         break;
                     default:
@@ -1612,7 +1607,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 try
                 {
-                    WithRibbonSettingsIStream(false, false, true, ribbon.LoadSettingsFromStream);
+                    this.WithRibbonSettingsIStream(false, false, true, this.ribbon.LoadSettingsFromStream);
                 }
                 catch (Exception e)
                 {
@@ -1627,7 +1622,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 try
                 {
-                    WithRibbonSettingsIStream(true, true, false, ribbon.SaveSettingsToStream);
+                    this.WithRibbonSettingsIStream(true, true, false, this.ribbon.SaveSettingsToStream);
                 }
                 catch (Exception e)
                 {
@@ -1664,22 +1659,27 @@ namespace OpenLiveWriter.PostEditor
                 // Flag this to prevent us from shooting ourselves on the foot in case of reentrancy
                 _ribbonSettingsLoadSaveActive = true;
 
-                string ribbonFile = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "Ribbon.dat");
-                FileInfo fileInfo = new FileInfo(ribbonFile);
-                if (onlyIfChanged && ribbonSettingsTimestamp != null && fileInfo.LastWriteTimeUtc == ribbonSettingsTimestamp)
+                var ribbonFile = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "Ribbon.dat");
+                var fileInfo = new FileInfo(ribbonFile);
+                if (onlyIfChanged && this.ribbonSettingsTimestamp != null && fileInfo.LastWriteTimeUtc == this.ribbonSettingsTimestamp)
                 {
                     // We're up-to-date, skip the action
                     return;
                 }
 
-                IStream stream = CreateRibbonIStream(ribbonFile, writable, create);
+                var stream = CreateRibbonIStream(ribbonFile, writable, create);
                 if (stream == null)
+                {
                     return;
+                }
+
                 try
                 {
-                    int hr = action(stream);
+                    var hr = action(stream);
                     if (hr != HRESULT.S_OK)
+                    {
                         Trace.Fail("Ribbon state load/save operation failed: 0x" + hr.ToString("X8", CultureInfo.InvariantCulture));
+                    }
                 }
                 catch (Exception)
                 {
@@ -1693,7 +1693,7 @@ namespace OpenLiveWriter.PostEditor
 
                 // on successful completion, save the time
                 fileInfo.Refresh();
-                ribbonSettingsTimestamp = fileInfo.LastWriteTimeUtc;
+                this.ribbonSettingsTimestamp = fileInfo.LastWriteTimeUtc;
             }
             catch (Exception)
             {
@@ -1710,13 +1710,15 @@ namespace OpenLiveWriter.PostEditor
         {
             try
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Creating a {0} ribbon istream for {1}", writable ? "writable" : "readable", filename));
-                STGM mode = writable ? STGM.WRITE : STGM.READ;
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Creating a {0} ribbon istream for {1}", writable ? "writable" : "readable", filename));
+                var mode = writable ? STGM.WRITE : STGM.READ;
                 if (create)
+                {
                     mode |= STGM.CREATE;
+                }
+
                 const int FILE_ATTRIBUTE_NORMAL = 0x00000080;
-                IStream stream;
-                int hr = Shlwapi.SHCreateStreamOnFileEx(filename, (int)mode, FILE_ATTRIBUTE_NORMAL, create, IntPtr.Zero, out stream);
+                var hr = Shlwapi.SHCreateStreamOnFileEx(filename, (int)mode, FILE_ATTRIBUTE_NORMAL, create, IntPtr.Zero, out var stream);
                 if (hr != HRESULT.S_OK)
                 {
                     Trace.WriteLine("Failed to create ribbon stream for " + filename + ": hr = " + hr.ToString("X8", CultureInfo.InvariantCulture));
@@ -1734,21 +1736,15 @@ namespace OpenLiveWriter.PostEditor
 
         public int OnCreateUICommand(uint commandId, CommandTypeID typeID, out IUICommandHandler commandHandler)
         {
-            commandHandler = _htmlEditor.CommandManager;
+            commandHandler = this._htmlEditor.CommandManager;
             return HRESULT.S_OK;
         }
 
-        public int OnDestroyUICommand(uint commandId, CommandTypeID typeID, IUICommandHandler commandHandler)
-        {
-            return HRESULT.E_NOTIMPL;
-        }
+        public int OnDestroyUICommand(uint commandId, CommandTypeID typeID, IUICommandHandler commandHandler) => HRESULT.E_NOTIMPL;
 
         #region Implementation of ISessionHandler
 
-        public void OnEndSession()
-        {
-            _autoSaveTimer_Tick(null, EventArgs.Empty);
-        }
+        public void OnEndSession() => this._autoSaveTimer_Tick(null, EventArgs.Empty);
 
         #endregion
     }

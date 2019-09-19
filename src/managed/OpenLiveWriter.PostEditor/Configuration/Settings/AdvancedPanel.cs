@@ -20,6 +20,7 @@ using OpenLiveWriter.CoreServices.Diagnostics;
 using OpenLiveWriter.CoreServices.Layout;
 using OpenLiveWriter.Interop.Windows;
 using OpenLiveWriter.Localization;
+using System.Linq;
 
 namespace OpenLiveWriter.PostEditor.Configuration.Settings
 {
@@ -52,8 +53,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         public AdvancedPanel()
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-            UpdateStrings();
+            this.InitializeComponent();
+            this.UpdateStrings();
             // TODO: Add any initialization after the InitializeComponent call
 
         }
@@ -61,60 +62,60 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         public AdvancedPanel(TemporaryBlogSettings targetBlogSettings, TemporaryBlogSettings editableBlogSettings)
             : base(targetBlogSettings, editableBlogSettings)
         {
-            InitializeComponent();
-            UpdateStrings();
-            PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Settings.Images.AdvancedPanelBitmap.png");
+            this.InitializeComponent();
+            this.UpdateStrings();
+            this.PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Settings.Images.AdvancedPanelBitmap.png");
 
             //gets all the system encodings
-            m_codePageDelegate = new Kernel32.CodePageDelegate(this.CodePageProc);
-            if (!Kernel32.EnumSystemCodePages(m_codePageDelegate, Kernel32.CP_SUPPORTED))
+            this.m_codePageDelegate = new Kernel32.CodePageDelegate(this.CodePageProc);
+            if (!Kernel32.EnumSystemCodePages(this.m_codePageDelegate, Kernel32.CP_SUPPORTED))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
-            SetValues();
+            this.SetValues();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            if (!DesignMode)
+            if (!this.DesignMode)
             {
-                LayoutHelper.FixupGroupBox(groupBoxTransportEncoding);
-                LayoutHelper.FixupGroupBox(groupBoxXHTML);
-                LayoutHelper.DistributeVertically((int)DisplayHelper.ScaleY(8), groupBoxTransportEncoding, groupBoxXHTML, groupBoxOptions);
-                int delta = LayoutHelper.AutoFitLabels(lblEmbeds, lblScripts);
-                comboEmbeds.Left += delta;
-                comboEmbeds.Width -= delta;
-                comboScripts.Left += delta;
-                comboScripts.Width -= delta;
+                LayoutHelper.FixupGroupBox(this.groupBoxTransportEncoding);
+                LayoutHelper.FixupGroupBox(this.groupBoxXHTML);
+                LayoutHelper.DistributeVertically((int)DisplayHelper.ScaleY(8), this.groupBoxTransportEncoding, this.groupBoxXHTML, this.groupBoxOptions);
+                var delta = LayoutHelper.AutoFitLabels(this.lblEmbeds, this.lblScripts);
+                this.comboEmbeds.Left += delta;
+                this.comboEmbeds.Width -= delta;
+                this.comboScripts.Left += delta;
+                this.comboScripts.Width -= delta;
             }
         }
 
         private void UpdateStrings()
         {
-            groupBoxTransportEncoding.Text = Res.Get(StringId.AdvancedTransport);
-            label1.Text = Res.Get(StringId.AdvancedText);
-            PanelName = Res.Get(StringId.AdvancedName);
-            groupBoxXHTML.Text = Res.Get(StringId.AdvancedXHTMLGroupName);
-            labelXHTML.Text = Res.Get(StringId.AdvancedXHTMLLabel);
-            groupBoxOptions.Text = Res.Get(StringId.AdvancedBlogOverride);
-            lblEmbeds.Text = Res.Get(StringId.AdvancedEmbedTags);
-            lblScripts.Text = Res.Get(StringId.AdvancedScripts);
+            this.groupBoxTransportEncoding.Text = Res.Get(StringId.AdvancedTransport);
+            this.label1.Text = Res.Get(StringId.AdvancedText);
+            this.PanelName = Res.Get(StringId.AdvancedName);
+            this.groupBoxXHTML.Text = Res.Get(StringId.AdvancedXHTMLGroupName);
+            this.labelXHTML.Text = Res.Get(StringId.AdvancedXHTMLLabel);
+            this.groupBoxOptions.Text = Res.Get(StringId.AdvancedBlogOverride);
+            this.lblEmbeds.Text = Res.Get(StringId.AdvancedEmbedTags);
+            this.lblScripts.Text = Res.Get(StringId.AdvancedScripts);
         }
 
         private void SetValues()
         {
-            SetEncodingValues();
-            SetXHTMLValues();
-            SetSupportValues();
+            this.SetEncodingValues();
+            this.SetXHTMLValues();
+            this.SetSupportValues();
         }
 
         private void SetEncodingValues()
         {
-            string defaultEncoding = Res.Get(StringId.AdvancedDefault); //"Default ({0})"
-            string blogOverride = (string)TemporaryBlogSettings.OptionOverrides[BlogClientOptions.CHARACTER_SET];
-            string userOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.CHARACTER_SET];
-            string homepageOverride = (string)TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.CHARACTER_SET];
+            var defaultEncoding = Res.Get(StringId.AdvancedDefault); //"Default ({0})"
+            var blogOverride = (string)this.TemporaryBlogSettings.OptionOverrides[BlogClientOptions.CHARACTER_SET];
+            var userOverride = (string)this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.CHARACTER_SET];
+            var homepageOverride = (string)this.TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.CHARACTER_SET];
 
             if (!String.IsNullOrEmpty(blogOverride))
                 defaultEncoding = String.Format(CultureInfo.CurrentCulture, defaultEncoding, blogOverride);
@@ -123,90 +124,90 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             else
                 defaultEncoding = String.Format(CultureInfo.CurrentCulture, defaultEncoding, "UTF-8");
 
-            comboEncoding.Items.Add(new OptionItem(defaultEncoding, null));
-            codepages.Sort(new EncodingComparer());
-            foreach (Encoding codeName in codepages)
+            this.comboEncoding.Items.Add(new OptionItem(defaultEncoding, null));
+            this.codepages.Sort(new EncodingComparer());
+            foreach (Encoding codeName in this.codepages)
             {
                 if (codeName.IsBrowserDisplay)
-                    comboEncoding.Items.Add(new OptionItem(codeName.EncodingName + ": " + codeName.WebName, codeName));
+                    this.comboEncoding.Items.Add(new OptionItem(codeName.EncodingName + ": " + codeName.WebName, codeName));
             }
 
             if (userOverride != null && userOverride != String.Empty)
             {
-                Encoding setEncoding = Encoding.GetEncoding(userOverride);
-                comboEncoding.SelectedItem = new OptionItem(setEncoding.EncodingName + ": " + setEncoding.WebName, setEncoding);
+                var setEncoding = Encoding.GetEncoding(userOverride);
+                this.comboEncoding.SelectedItem = new OptionItem(setEncoding.EncodingName + ": " + setEncoding.WebName, setEncoding);
             }
             else
-                comboEncoding.SelectedIndex = 0;
+                this.comboEncoding.SelectedIndex = 0;
         }
 
         private void SetSupportValues()
         {
-            using (Blog blog = new Blog(TemporaryBlogSettings))
+            using (var blog = new Blog(this.TemporaryBlogSettings))
             {
-                clientSupportsScripts = blog.ClientOptions.SupportsScripts;
-                clientSupportsEmbeds = blog.ClientOptions.SupportsEmbeds;
+                this.clientSupportsScripts = blog.ClientOptions.SupportsScripts;
+                this.clientSupportsEmbeds = blog.ClientOptions.SupportsEmbeds;
             }
             //scripts
-            comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.Yes));
-            comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
-            comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.No));
-            string userScriptOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_SCRIPTS];
+            this.comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.Yes));
+            this.comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
+            this.comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.No));
+            var userScriptOverride = (string)this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_SCRIPTS];
             if (userScriptOverride != null && userScriptOverride != String.Empty)
             {
                 switch (userScriptOverride)
                 {
                     case "yes":
                         {
-                            comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.Yes);
+                            this.comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.Yes);
                             break;
                         }
                     case "no":
                         {
-                            comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.No);
+                            this.comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.No);
                             break;
                         }
                     default:
                         {
-                            comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.Unknown);
+                            this.comboScripts.SelectedItem = new SupportsOptionItem(SupportsFeature.Unknown);
                             break;
                         }
                 }
             }
             else
             {
-                comboScripts.SelectedItem = new SupportsOptionItem(clientSupportsScripts);
+                this.comboScripts.SelectedItem = new SupportsOptionItem(this.clientSupportsScripts);
             }
 
             //embeds
-            comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.Yes));
-            comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
-            comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.No));
-            string userEmbedOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_EMBEDS];
+            this.comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.Yes));
+            this.comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
+            this.comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.No));
+            var userEmbedOverride = (string)this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_EMBEDS];
             if (userEmbedOverride != null && userEmbedOverride != String.Empty)
             {
                 switch (userEmbedOverride)
                 {
                     case "yes":
                         {
-                            comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.Yes);
+                            this.comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.Yes);
                             break;
                         }
                     case "no":
                         {
-                            comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.No);
+                            this.comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.No);
                             break;
                         }
                     default:
                         {
-                            comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.Unknown);
+                            this.comboEmbeds.SelectedItem = new SupportsOptionItem(SupportsFeature.Unknown);
                             break;
                         }
                 }
             }
             else
             {
-                comboEmbeds.SelectedItem = new SupportsOptionItem(clientSupportsEmbeds);
+                this.comboEmbeds.SelectedItem = new SupportsOptionItem(this.clientSupportsEmbeds);
             }
         }
 
@@ -215,39 +216,43 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             // Note that the values for REQUIRES_XHTML can be EITHER bool or string depending
             // on how the pref dialog is invoked!! ToString() and then Parse() takes care of both cases.
 
-            string defaultXHTML = Res.Get(StringId.AdvancedXHTMLDefault);
-            bool optionOverride = TemporaryBlogSettings.HomePageOverrides.Contains(BlogClientOptions.REQUIRES_XHTML)
-                                ? StringHelper.ToBool(TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), false)
+            var defaultXHTML = Res.Get(StringId.AdvancedXHTMLDefault);
+            var optionOverride = this.TemporaryBlogSettings.HomePageOverrides.Keys.Contains(BlogClientOptions.REQUIRES_XHTML)
+                                ? StringHelper.ToBool(this.TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), false)
                                 : false;
 
-            optionOverride = TemporaryBlogSettings.OptionOverrides.Contains(BlogClientOptions.REQUIRES_XHTML)
-                                ? StringHelper.ToBool(TemporaryBlogSettings.OptionOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), optionOverride)
+            optionOverride = this.TemporaryBlogSettings.OptionOverrides.Keys.Contains(BlogClientOptions.REQUIRES_XHTML)
+                                ? StringHelper.ToBool(this.TemporaryBlogSettings.OptionOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), optionOverride)
                                 : optionOverride;
 
-            int currentOption = 0; // default: unspecified, use OptionOverride
-            if (TemporaryBlogSettings.UserOptionOverrides.Contains(BlogClientOptions.REQUIRES_XHTML))
+            var currentOption = 0; // default: unspecified, use OptionOverride
+            if (this.TemporaryBlogSettings.UserOptionOverrides.Keys.Contains(BlogClientOptions.REQUIRES_XHTML))
             {
-                if (StringHelper.ToBool(TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), false))
+                if (StringHelper.ToBool(this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.REQUIRES_XHTML].ToString(), false))
+                {
                     currentOption = 2; // XHTML desired
+                }
                 else
+                {
                     currentOption = 1; // HTML desired
+                }
             }
 
             defaultXHTML =
                 string.Format(CultureInfo.CurrentCulture, defaultXHTML, Res.Get(optionOverride ? StringId.MarkupTypeXHTML : StringId.MarkupTypeHTML));
 
-            comboXHTML.Items.Add(defaultXHTML);
-            comboXHTML.Items.Add(Res.Get(StringId.MarkupTypeHTML));
-            comboXHTML.Items.Add(Res.Get(StringId.MarkupTypeXHTML));
+            this.comboXHTML.Items.Add(defaultXHTML);
+            this.comboXHTML.Items.Add(Res.Get(StringId.MarkupTypeHTML));
+            this.comboXHTML.Items.Add(Res.Get(StringId.MarkupTypeXHTML));
 
-            comboXHTML.SelectedIndex = currentOption;
+            this.comboXHTML.SelectedIndex = currentOption;
         }
 
         private bool CodePageProc(string codePageName)
         {
             try
             {
-                codepages.Add(Encoding.GetEncoding(Int32.Parse(codePageName, CultureInfo.InvariantCulture)));
+                this.codepages.Add(Encoding.GetEncoding(Int32.Parse(codePageName, CultureInfo.InvariantCulture)));
             }
             catch (NotSupportedException) { }
             catch (ArgumentException) { }
@@ -265,9 +270,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -429,51 +434,53 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
 
         private void comboEncoding_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.CHARACTER_SET);
-            if (comboEncoding.SelectedIndex != 0)
+            this.TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.CHARACTER_SET);
+            if (this.comboEncoding.SelectedIndex != 0)
             {
-                OptionItem selected = (OptionItem)comboEncoding.SelectedItem;
+                var selected = (OptionItem)this.comboEncoding.SelectedItem;
                 if (selected != null)
                 {
-                    TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.CHARACTER_SET, selected.ItemValue.WebName);
+                    this.TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.CHARACTER_SET, selected.ItemValue.WebName);
                 }
             }
-            TemporaryBlogSettingsModified = true;
+            this.TemporaryBlogSettingsModified = true;
         }
 
         private void comboScripts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.SUPPORTS_SCRIPTS);
+            this.TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.SUPPORTS_SCRIPTS);
 
-            SupportsOptionItem selected = (SupportsOptionItem)comboScripts.SelectedItem;
+            var selected = (SupportsOptionItem)this.comboScripts.SelectedItem;
             if (selected != null)
             {
-                TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_SCRIPTS, selected.OptionVal);
+                this.TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_SCRIPTS, selected.OptionVal);
             }
-            TemporaryBlogSettingsModified = true;
+            this.TemporaryBlogSettingsModified = true;
         }
 
         private void comboEmbeds_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.SUPPORTS_EMBEDS);
-            SupportsOptionItem selected = (SupportsOptionItem)comboEmbeds.SelectedItem;
+            this.TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.SUPPORTS_EMBEDS);
+            var selected = (SupportsOptionItem)this.comboEmbeds.SelectedItem;
             if (selected != null)
             {
-                TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_EMBEDS, selected.OptionVal);
+                this.TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_EMBEDS, selected.OptionVal);
             }
-            TemporaryBlogSettingsModified = true;
+            this.TemporaryBlogSettingsModified = true;
         }
 
         private void comboXHTML_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            if (comboXHTML.SelectedIndex == 0)
-                TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.REQUIRES_XHTML);
+            if (this.comboXHTML.SelectedIndex == 0)
+            {
+                this.TemporaryBlogSettings.UserOptionOverrides.Remove(BlogClientOptions.REQUIRES_XHTML);
+            }
             else
             {
-                bool requireXHTML = comboXHTML.SelectedIndex == 2;
-                TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.REQUIRES_XHTML] = requireXHTML;
+                var requireXHTML = this.comboXHTML.SelectedIndex == 2;
+                this.TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.REQUIRES_XHTML] = requireXHTML.ToString();
             }
-            TemporaryBlogSettingsModified = true;
+            this.TemporaryBlogSettingsModified = true;
         }
 
         internal class EncodingComparer : IComparer
@@ -507,34 +514,34 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             internal Encoding ItemValue;
             public OptionItem(string text, Encoding val)
             {
-                Text = text;
-                ItemValue = val;
+                this.Text = text;
+                this.ItemValue = val;
             }
 
             public override bool Equals(object obj)
             {
                 if (obj is OptionItem)
                 {
-                    OptionItem newOne = (OptionItem)obj;
-                    if (newOne.ItemValue == null ^ ItemValue == null)
+                    var newOne = (OptionItem)obj;
+                    if (newOne.ItemValue == null ^ this.ItemValue == null)
                         return false;
                     if (newOne.ItemValue == null)
                         return true;
-                    return newOne.ItemValue.Equals(ItemValue);
+                    return newOne.ItemValue.Equals(this.ItemValue);
                 }
                 return false;
             }
 
             public override int GetHashCode()
             {
-                if (ItemValue == null)
+                if (this.ItemValue == null)
                     return 0;
-                return ItemValue.GetHashCode();
+                return this.ItemValue.GetHashCode();
             }
 
             public override string ToString()
             {
-                return Text;
+                return this.Text;
             }
         }
 
@@ -548,21 +555,21 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 {
                     case SupportsFeature.No:
                         {
-                            Text = Res.Get(StringId.Blog_Option_Not_Supported);
-                            OptionVal = "no";
+                            this.Text = Res.Get(StringId.Blog_Option_Not_Supported);
+                            this.OptionVal = "no";
                             break;
                         }
                     case SupportsFeature.Yes:
                         {
-                            Text = Res.Get(StringId.Blog_Option_Supported);
-                            OptionVal = "yes";
+                            this.Text = Res.Get(StringId.Blog_Option_Supported);
+                            this.OptionVal = "yes";
                             break;
                         }
                     case SupportsFeature.Unknown:
                     default:
                         {
-                            Text = Res.Get(StringId.Blog_Option_Unknown);
-                            OptionVal = "unknown";
+                            this.Text = Res.Get(StringId.Blog_Option_Unknown);
+                            this.OptionVal = "unknown";
                             break;
                         }
                 }
@@ -573,28 +580,28 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             internal SupportsFeature ItemValue;
             public SupportsOptionItem(SupportsFeature val)
             {
-                SetVals(val);
-                ItemValue = val;
+                this.SetVals(val);
+                this.ItemValue = val;
             }
 
             public override bool Equals(object obj)
             {
                 if (obj is SupportsOptionItem)
                 {
-                    SupportsOptionItem newOne = (SupportsOptionItem)obj;
-                    return newOne.ItemValue.Equals(ItemValue);
+                    var newOne = (SupportsOptionItem)obj;
+                    return newOne.ItemValue.Equals(this.ItemValue);
                 }
                 return false;
             }
 
             public override int GetHashCode()
             {
-                return ItemValue.GetHashCode();
+                return this.ItemValue.GetHashCode();
             }
 
             public override string ToString()
             {
-                return Text;
+                return this.Text;
             }
         }
     }
