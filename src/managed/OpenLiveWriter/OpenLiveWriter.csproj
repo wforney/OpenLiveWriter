@@ -141,6 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs" />
+    <Compile Include="ApplicationLauncher.AutoRecoverPromptResult.cs">
+      <DependentUpon>ApplicationLauncher.cs</DependentUpon>
+    </Compile>
     <Compile Include="ApplicationLauncher.cs">
       <SubType>Code</SubType>
     </Compile>

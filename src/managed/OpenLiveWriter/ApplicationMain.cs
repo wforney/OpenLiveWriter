@@ -22,30 +22,36 @@ using Squirrel;
 
 namespace OpenLiveWriter
 {
+    /// <summary>
+    /// Class ApplicationMain.
+    /// </summary>
     public class
         ApplicationMain
     {
+        /// <summary>
+        /// The current UI culture
+        /// </summary>
         private static CultureInfo currentUICulture;
 
         /// <summary>
         /// Sample args:
-        ///		/culture:fofo
+        /// /culture:fofo
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">The arguments.</param>
         [STAThread]
         public static void Main(string[] args)
         {
             // WinLive 281407: Remove the current working directory from the dll search path
             // This prevents a rogue dll (wlidcli.dll) from being loaded while doing
             // something like opening a .wpost from a network location.
-            Kernel32.SetDllDirectory("");
+            Kernel32.SetDllDirectory(string.Empty);
 
             // Enable custom visual styles for Writer.
             Application.EnableVisualStyles();
 
             // OLW doesn't work well at all from the guest account, so just block that
             // There is no protection from asserts here, so DON'T ASSERT
-            WindowsIdentity currentUser = WindowsIdentity.GetCurrent();
+            var currentUser = WindowsIdentity.GetCurrent();
             if (currentUser.User.IsWellKnown(WellKnownSidType.AccountGuestSid))
             {
                 DisplayMessage.Show(MessageId.GuestNotSupported);
@@ -53,25 +59,28 @@ namespace OpenLiveWriter
             }
 
             // add Plugins directory to probing path
-            AppDomain currentDomain = AppDomain.CurrentDomain;
+            var currentDomain = AppDomain.CurrentDomain;
 
             ProcessKeepalive.SetFactory(ManualKeepalive.Factory);
 
-            WriterCommandLineOptions opts = WriterCommandLineOptions.Create(args);
+            var opts = WriterCommandLineOptions.Create(args);
             if (opts == null)
+            {
                 return;
+            }
+
             opts.ApplyOptions();
 
             // Make the appId unique by base directory and locale.
             // This might allow for easier testing of English vs. loc builds.
-            string appId = "OpenLiveWriterApplication";
+            var appId = "OpenLiveWriterApplication";
             try
             {
                 appId = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}{3}",
                     "OpenLiveWriterApplication",
                     currentDomain.BaseDirectory.GetHashCode(),
                     CultureInfo.CurrentUICulture,
-                    Res.DebugMode ? ".locspy" : "");
+                    Res.DebugMode ? ".locspy" : string.Empty);
             }
             catch (Exception e)
             {
@@ -84,8 +93,7 @@ namespace OpenLiveWriter
             SingleInstanceApplicationManager.Run(
                 appId,
                 LaunchAction,
-                args
-                );
+                args);
         }
 
         /// <summary>
@@ -112,6 +120,10 @@ namespace OpenLiveWriter
             UrlMon.CoInternetSetFeatureEnabled(FEATURE.DISABLE_NAVIGATION_SOUNDS, INTERNETSETFEATURE.ON_PROCESS, true);
         }
 
+        /// <summary>
+        /// Loads the culture.
+        /// </summary>
+        /// <param name="cultureName">Name of the culture.</param>
         private static void LoadCulture(string cultureName)
         {
             try
@@ -131,6 +143,12 @@ namespace OpenLiveWriter
         /// </summary>
         private static volatile bool initComplete = false;
 
+        /// <summary>
+        /// Launches the action.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="isFirstInstance">if set to <c>true</c> [is first instance].</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private static bool LaunchAction(string[] args, bool isFirstInstance)
         {
             if (isFirstInstance)
@@ -140,9 +158,9 @@ namespace OpenLiveWriter
 
                 InitializeApplicationEnvironment();
 
-                string downloadUrl = UpdateSettings.CheckForBetaUpdates ? UpdateSettings.BetaUpdateDownloadUrl : UpdateSettings.UpdateDownloadUrl;
+                var downloadUrl = UpdateSettings.CheckForBetaUpdates ? UpdateSettings.BetaUpdateDownloadUrl : UpdateSettings.UpdateDownloadUrl;
                 RegisterSquirrelEventHandlers(downloadUrl);
-                
+
                 try
                 {
                     // TODO:OLW
@@ -155,8 +173,8 @@ namespace OpenLiveWriter
                         LoadCulture("en");
 
                         // Apply any culture overrides.
-                        WriterCommandLineOptions opts = WriterCommandLineOptions.Create(args);
-                        if (!String.IsNullOrEmpty(opts.CultureOverride))
+                        var opts = WriterCommandLineOptions.Create(args);
+                        if (!string.IsNullOrEmpty(opts.CultureOverride))
                         {
                             LoadCulture(opts.CultureOverride);
                         }
@@ -167,7 +185,7 @@ namespace OpenLiveWriter
                         // show splash screen
                         IDisposable splashScreen = null;
                         //	Show the splash screen.
-                        SplashScreen splashScreenForm = new SplashScreen();
+                        var splashScreenForm = new SplashScreen();
                         splashScreenForm.ShowSplashScreen();
                         splashScreen = new FormSplashScreen(splashScreenForm);
 
@@ -225,7 +243,7 @@ namespace OpenLiveWriter
         private static async void OnAppUninstall(IUpdateManager mgr)
         {
             await mgr.FullUninstall();
-            string OLWRegKey = @"SOFTWARE\OpenLiveWriter";
+            var OLWRegKey = @"SOFTWARE\OpenLiveWriter";
             Registry.CurrentUser.DeleteSubKeyTree(OLWRegKey);
             mgr.RemoveShortcutForThisExe();
             mgr.RemoveUninstallerRegistryEntry();
@@ -233,16 +251,22 @@ namespace OpenLiveWriter
             Directory.Delete(ApplicationEnvironment.ApplicationDataDirectory, true);
         }
 
-        private static async void OnAppUpdate(IUpdateManager mgr)
-        {
-            await mgr.UpdateApp();
-        }
+        /// <summary>
+        /// Called when [application update].
+        /// </summary>
+        /// <param name="mgr">The MGR.</param>
+        private static async void OnAppUpdate(IUpdateManager mgr) => await mgr.UpdateApp();
 
-        private static void FirstRun(IUpdateManager mgr)
-        {
-            mgr.CreateShortcutForThisExe();
-        }
+        /// <summary>
+        /// Firsts the run.
+        /// </summary>
+        /// <param name="mgr">The MGR.</param>
+        private static void FirstRun(IUpdateManager mgr) => mgr.CreateShortcutForThisExe();
 
+        /// <summary>
+        /// Initials the install.
+        /// </summary>
+        /// <param name="mgr">The MGR.</param>
         private static async void InitialInstall(Squirrel.UpdateManager mgr)
         {
             mgr.CreateShortcutForThisExe();
@@ -252,6 +276,13 @@ namespace OpenLiveWriter
             SetAssociation(".wpost", "OPEN_LIVE_WRITER", Application.ExecutablePath, "Open Live Writer post");
         }
 
+        /// <summary>
+        /// Sets the association.
+        /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <param name="keyName">Name of the key.</param>
+        /// <param name="openWith">The open with.</param>
+        /// <param name="fileDescription">The file description.</param>
         public static void SetAssociation(string extension, string keyName, string openWith, string fileDescription)
         {
             var baseKey = Registry.ClassesRoot.CreateSubKey(extension);
@@ -276,27 +307,41 @@ namespace OpenLiveWriter
             SHChangeNotify(0x08000000, 0x0000, IntPtr.Zero, IntPtr.Zero);
         }
 
+        /// <summary>
+        /// Shes the change notify.
+        /// </summary>
+        /// <param name="wEventId">The w event identifier.</param>
+        /// <param name="uFlags">The u flags.</param>
+        /// <param name="dwItem1">The dw item1.</param>
+        /// <param name="dwItem2">The dw item2.</param>
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
+        /// <summary>
+        /// Initializes the application environment.
+        /// </summary>
         private static void InitializeApplicationEnvironment()
         {
             // initialize application environment
             ApplicationEnvironment.Initialize();
             ApplicationEnvironment.ProductName_Short = "Writer";
-            ApplicationEnvironment.ProductDisplayVersion = String.Format(
+            ApplicationEnvironment.ProductDisplayVersion = string.Format(
                 CultureInfo.InvariantCulture,
                 Res.Get(StringId.ProductDisplayVersion),
                 ApplicationEnvironment.ProductVersion
                 );
 
             if (PlatformHelper.RunningOnWin7OrHigher())
+            {
                 TaskbarManager.Instance.ApplicationId = ApplicationEnvironment.TaskbarApplicationId;
+            }
         }
 
         /// <summary>
         /// Launches a window as part of the starting of a process.
         /// </summary>
+        /// <param name="splashScreen">The splash screen.</param>
+        /// <param name="args">The arguments.</param>
         private static void LaunchFirstInstance(IDisposable splashScreen, string[] args)
         {
             try
@@ -311,8 +356,13 @@ namespace OpenLiveWriter
                 // register file associations
                 // Removing this call, as it causes exceptions in Vista
                 // RegisterFileAssociations() ;
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Starting {0} {1}", ApplicationEnvironment.ProductNameQualified, ApplicationEnvironment.ProductVersion));
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, ".NET version: {0}", Environment.Version));
+                Trace.WriteLine(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Starting {0} {1}",
+                        ApplicationEnvironment.ProductNameQualified,
+                        ApplicationEnvironment.ProductVersion));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, ".NET version: {0}", Environment.Version));
                 // force initialization which may fail with error dialogs
                 // and/or cause the whole application to not load
                 if (PostEditorLifetimeManager.Initialize())
@@ -336,7 +386,9 @@ namespace OpenLiveWriter
                     DisplayMessage.Show(MessageId.DirectoryFail, ex.Path);
                 }
                 else
+                {
                     UnexpectedErrorMessage.Show(ex);
+                }
             }
             catch (Exception ex)
             {
@@ -354,10 +406,11 @@ namespace OpenLiveWriter
                     // been orphaned by a previous version of Writer. We
                     // now keep these in the temp directory like everything
                     // else
-                    string legacyPostSupportingFiles = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "PostSupportingFiles");
+                    var legacyPostSupportingFiles = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "PostSupportingFiles");
                     if (Directory.Exists(legacyPostSupportingFiles))
+                    {
                         Directory.Delete(legacyPostSupportingFiles, true);
-
+                    }
                 }
                 catch (Exception ex2)
                 {
@@ -369,13 +422,17 @@ namespace OpenLiveWriter
         /// <summary>
         /// Launches a window requested by another instance of OpenLiveWriter.exe.
         /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private static bool LaunchAdditionalInstance(string[] args)
         {
             // This process received a request from another process before
             // initialization was complete; this request should be considered
             // a failure, and the other process should try again
             if (!initComplete)
+            {
                 return false;
+            }
 
             // Do this only after initComplete is true, otherwise currentUICulture could be null.
             CultureHelper.ApplyUICulture(currentUICulture.Name);
@@ -420,20 +477,23 @@ namespace OpenLiveWriter
             return true;
         }
 
+        /// <summary>
+        /// Maybes the migrate settings.
+        /// </summary>
         private static void MaybeMigrateSettings()
         {
             try
             {
-                int applicationSettingsVer = 1;
-                SettingsPersisterHelper userSettings = ApplicationEnvironment.UserSettingsRoot;
-                int currentSettingsVer = userSettings.GetInt32(SETTINGS_VERSION, 0);
+                var applicationSettingsVer = 1;
+                var userSettings = ApplicationEnvironment.UserSettingsRoot;
+                var currentSettingsVer = userSettings.GetInt32(SETTINGS_VERSION, 0);
                 if (currentSettingsVer == 0)
                 {
                     userSettings.SetInt32(SETTINGS_VERSION, applicationSettingsVer);
                     Trace.WriteLine("Migrating user settings...");
 
-                    string legacyKeyName = @"Software\Open Live Writer";
-                    SettingsPersisterHelper legacySettings = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.CurrentUser, legacyKeyName));
+                    var legacyKeyName = @"Software\Open Live Writer";
+                    var legacySettings = new SettingsPersisterHelper(new RegistrySettingsPersister(Registry.CurrentUser, legacyKeyName));
                     ApplicationEnvironment.UserSettingsRoot.CopyFrom(legacySettings, true, false); // Don't overwrite existing settings
 
                     Registry.CurrentUser.DeleteSubKeyTree(legacyKeyName);
@@ -444,7 +504,9 @@ namespace OpenLiveWriter
                 Trace.Fail("Error while attempting to migrate settings.", ex.ToString());
             }
         }
+        /// <summary>
+        /// The settings version
+        /// </summary>
         private const string SETTINGS_VERSION = "SettingsVer";
-
     }
 }

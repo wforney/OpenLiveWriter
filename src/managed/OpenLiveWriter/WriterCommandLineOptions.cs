@@ -1,25 +1,24 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.Interop.Windows;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-using OpenLiveWriter.PostEditor;
-
 namespace OpenLiveWriter
 {
+    using System;
+    using System.Diagnostics;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Diagnostics;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Localization.Bidi;
+    using OpenLiveWriter.PostEditor;
+
+    /// <summary>
+    /// The writer command line options class.
+    /// </summary>
     public class WriterCommandLineOptions
     {
-        private readonly CommandLineOptions _options;
+        private readonly CommandLineOptions options;
         private const string CULTURE = "culture";
         private const string OPTIONS = "options";
         private const string OPENPOST = "openpost";
@@ -38,73 +37,100 @@ namespace OpenLiveWriter
         private const string INTAPIHOST = "intapihost";
         private const string ADDBLOG = "addblog";
 
-        private WriterCommandLineOptions(CommandLineOptions options)
-        {
-            _options = options;
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WriterCommandLineOptions"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        private WriterCommandLineOptions(CommandLineOptions options) => this.options = options;
 
+        /// <summary>
+        /// Applies the options.
+        /// </summary>
         public void ApplyOptions()
         {
             try
             {
-                if (_options.IsArgPresent(ATTACHDEBUGGER))
-                    Debugger.Launch();
-
-                if (_options.IsArgPresent(CULTURE))
+                if (this.options.IsArgPresent(ATTACHDEBUGGER))
                 {
-                    string culture = _options.GetValue(CULTURE, null) as string;
-                    if (culture != null)
+                    Debugger.Launch();
+                }
+
+                if (this.options.IsArgPresent(CULTURE))
+                {
+                    if (this.options.GetValue(CULTURE, null) is string culture)
                     {
                         CultureHelper.ApplyUICulture(culture);
                     }
                 }
 
 #if DEBUG
-                if (_options.IsArgPresent(TESTMODE))
-                    ApplicationDiagnostics.TestMode = _options.GetFlagValue(TESTMODE, ApplicationDiagnostics.TestMode);
+                if (this.options.IsArgPresent(TESTMODE))
+                {
+                    ApplicationDiagnostics.TestMode = this.options.GetFlagValue(TESTMODE, ApplicationDiagnostics.TestMode);
+                }
 
-                if (_options.IsArgPresent(VERBOSELOGGING))
-                    ApplicationDiagnostics.VerboseLogging = _options.GetFlagValue(VERBOSELOGGING, ApplicationDiagnostics.VerboseLogging);
+                if (this.options.IsArgPresent(VERBOSELOGGING))
+                {
+                    ApplicationDiagnostics.VerboseLogging = this.options.GetFlagValue(VERBOSELOGGING, ApplicationDiagnostics.VerboseLogging);
+                }
 
-                if (_options.IsArgPresent(ALLOWUNSAFECERTIFICATES))
-                    ApplicationDiagnostics.AllowUnsafeCertificates = _options.GetFlagValue(ALLOWUNSAFECERTIFICATES, ApplicationDiagnostics.AllowUnsafeCertificates);
+                if (this.options.IsArgPresent(ALLOWUNSAFECERTIFICATES))
+                {
+                    ApplicationDiagnostics.AllowUnsafeCertificates = this.options.GetFlagValue(ALLOWUNSAFECERTIFICATES, ApplicationDiagnostics.AllowUnsafeCertificates);
+                }
 
-                if (_options.IsArgPresent(PREFERATOM))
-                    ApplicationDiagnostics.PreferAtom = _options.GetFlagValue(PREFERATOM, ApplicationDiagnostics.PreferAtom);
+                if (this.options.IsArgPresent(PREFERATOM))
+                {
+                    ApplicationDiagnostics.PreferAtom = this.options.GetFlagValue(PREFERATOM, ApplicationDiagnostics.PreferAtom);
+                }
 
-                if (_options.IsArgPresent(SUPPRESSBACKGROUNDREQUESTS))
-                    ApplicationDiagnostics.SuppressBackgroundRequests = _options.GetFlagValue(SUPPRESSBACKGROUNDREQUESTS, ApplicationDiagnostics.SuppressBackgroundRequests);
+                if (this.options.IsArgPresent(SUPPRESSBACKGROUNDREQUESTS))
+                {
+                    ApplicationDiagnostics.SuppressBackgroundRequests = this.options.GetFlagValue(SUPPRESSBACKGROUNDREQUESTS, ApplicationDiagnostics.SuppressBackgroundRequests);
+                }
 
-                if (_options.IsArgPresent(PROXY))
-                    ApplicationDiagnostics.ProxySettingsOverride = (string)_options.GetValue(PROXY, ApplicationDiagnostics.ProxySettingsOverride);
+                if (this.options.IsArgPresent(PROXY))
+                {
+                    ApplicationDiagnostics.ProxySettingsOverride = (string)this.options.GetValue(PROXY, ApplicationDiagnostics.ProxySettingsOverride);
+                }
 
-                if (_options.IsArgPresent(PERFLOG))
-                    ApplicationPerformance.SetLogFilePath((string)_options.GetValue(PERFLOG, null));
+                if (this.options.IsArgPresent(PERFLOG))
+                {
+                    ApplicationPerformance.SetLogFilePath((string)this.options.GetValue(PERFLOG, null));
+                }
 
-                if (_options.IsArgPresent(AUTOMATIONMODE))
+                if (this.options.IsArgPresent(AUTOMATIONMODE))
+                {
                     ApplicationDiagnostics.AutomationMode = true;
+                }
 
-                if (_options.IsArgPresent(FIRSTRUN))
+                if (this.options.IsArgPresent(FIRSTRUN))
+                {
                     ApplicationDiagnostics.SimulateFirstRun = true;
+                }
 
-                if (_options.IsArgPresent(INTAPIHOST))
-                    ApplicationDiagnostics.IntServerOverride = (string)_options.GetValue(INTAPIHOST, null);
+                if (this.options.IsArgPresent(INTAPIHOST))
+                {
+                    ApplicationDiagnostics.IntServerOverride = (string)this.options.GetValue(INTAPIHOST, null);
+                }
 #endif
 
 #if !SIGNED
-                if (_options.IsArgPresent(LOCSPY))
+                if (this.options.IsArgPresent(LOCSPY))
+                {
                     Res.DebugMode = true;
+                }
 #endif
             }
             catch (Exception e)
             {
-                Debug.Fail("Unable to apply culture:\r\n\r\n" + e.ToString());
+                Debug.Fail($"Unable to apply culture:\r\n\r\n{e.ToString()}");
             }
         }
 
         public static WriterCommandLineOptions Create(string[] args)
         {
-            CommandLineOptions options = new CommandLineOptions(false, 0, int.MaxValue,
+            var options = new CommandLineOptions(false, 0, int.MaxValue,
                 new ArgSpec(CULTURE, ArgSpec.Options.Default, "The culture to use (e.g. \"en-us\")"),
                 new ArgSpec(OPTIONS, ArgSpec.Options.ValueOptional, "Show options"),
                 new ArgSpec(OPENPOST, ArgSpec.Options.Flag, "Open post"),
@@ -124,58 +150,33 @@ namespace OpenLiveWriter
                 new ArgSpec(ADDBLOG, ArgSpec.Options.Default, "Adds a blog.")
                 );
 
-            bool success = options.Parse(args, false);
+            var success = options.Parse(args, false);
             if (!success)
             {
                 MessageBox.Show(options.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, (BidiHelper.IsRightToLeft ? (MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading) : 0));
                 return null;
             }
             else
-                return new WriterCommandLineOptions(options);
-        }
-
-        public bool IsShowPreferences
-        {
-            get { return _options.IsArgPresent(OPTIONS); }
-        }
-
-        public string PreferencesPage
-        {
-            get { return (string)_options.GetValue(OPTIONS, null); }
-        }
-
-        public bool IsOpenPost
-        {
-            get { return _options.IsArgPresent(OPENPOST); }
-        }
-
-        public bool IsPostEditorFile
-        {
-            get
             {
-                return _options.UnnamedArgCount > 0
-                       && PostEditorFile.IsValid(_options.GetUnnamedArg(0, null));
+                return new WriterCommandLineOptions(options);
             }
         }
 
-        public string PostEditorFileName
-        {
-            get { return _options.GetUnnamedArg(0, null); }
-        }
+        public bool IsShowPreferences => this.options.IsArgPresent(OPTIONS);
 
-        public string CultureOverride
-        {
-            get { return _options.GetValue(CULTURE, null) as string; }
-        }
+        public string PreferencesPage => (string)this.options.GetValue(OPTIONS, null);
 
-        public bool AddBlogFlagPresent
-        {
-            get { return _options.IsArgPresent(ADDBLOG); }
-        }
+        public bool IsOpenPost => this.options.IsArgPresent(OPENPOST);
 
-        public string AddBlog
-        {
-            get { return _options.GetValue(ADDBLOG, null) as string; }
-        }
+        public bool IsPostEditorFile => this.options.UnnamedArgCount > 0
+                       && PostEditorFile.IsValid(this.options.GetUnnamedArg(0, null));
+
+        public string PostEditorFileName => this.options.GetUnnamedArg(0, null);
+
+        public string CultureOverride => this.options.GetValue(CULTURE, null) as string;
+
+        public bool AddBlogFlagPresent => this.options.IsArgPresent(ADDBLOG);
+
+        public string AddBlog => this.options.GetValue(ADDBLOG, null) as string;
     }
 }
