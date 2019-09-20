@@ -1,252 +1,326 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using LocUtil;
-
-namespace LocEdit
+﻿namespace LocEdit
 {
+    using System;
+    using System.IO;
+    using System.Text;
+    using System.Windows.Forms;
+
+    using LocUtil;
+
+    /// <summary>
+    /// Class MainForm.
+    /// Implements the <see cref="System.Windows.Forms.Form" />
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Form" />
     public partial class MainForm : Form
     {
-        private string _loadedFile;
+        private string loadedFile;
+        private bool modified = false;
 
-        public MainForm()
-        {
-            InitializeComponent();
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// </summary>
+        public MainForm() => this.InitializeComponent();
 
-        private bool _modified = false;
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="MainForm"/> is modified.
+        /// </summary>
+        /// <value><c>true</c> if modified; otherwise, <c>false</c>.</value>
         public bool Modified
         {
-            get => _modified;
+            get => this.modified;
             set
             {
-                _modified = value;
-                Text = $"LocEdit: {_loadedFile}{(_modified ? "*" : "")}";
+                this.modified = value;
+                this.Text = $"LocEdit: {this.loadedFile}{(this.modified ? "*" : "")}";
             }
         }
 
+        /// <summary>
+        /// Loads the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
         public void LoadFile(string filePath)
         {
-            _loadedFile = filePath;
-            Modified = false;
+            this.loadedFile = filePath;
+            this.Modified = false;
 
-            dataGridView.Rows.Clear();
-            using (CsvParser csvParser = new CsvParser(new StreamReader(new FileStream(Path.GetFullPath(filePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default), true))
+            this.dataGridView.Rows.Clear();
+            using (var csvParser = new CsvParser(
+                new StreamReader(
+                    new FileStream(
+                        Path.GetFullPath(filePath),
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.ReadWrite),
+                    Encoding.Default),
+                true))
             {
                 foreach (string[] line in csvParser)
                 {
-                    string value = line[1];
-                    value = value.Replace(((char)8230) + "", "..."); // undo ellipses
-                    string comment = (line.Length > 2) ? line[2] : "";
+                    var value = line[1];
+                    value = value.Replace($"{(char)8230}", "..."); // undo ellipses
+                    var comment = (line.Length > 2) ? line[2] : string.Empty;
 
-                    dataGridView.Rows.Add(new LocDataGridViewRow(line[0], value, comment));
+                    this.dataGridView.Rows.Add(new LocDataGridViewRow(line[0], value, comment));
                 }
             }
-            dataGridView.AutoResizeRows();
 
+            this.dataGridView.AutoResizeRows();
         }
 
+        /// <summary>
+        /// Saves the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
         public void SaveFile(string filePath)
         {
-            _loadedFile = filePath;
-            Modified = false;
+            this.loadedFile = filePath;
+            this.Modified = false;
 
             var sb = new StringBuilder();
             sb.AppendLine("Name,Value,Comment");
 
-            foreach(DataGridViewRow row in dataGridView.Rows)
+            foreach (DataGridViewRow row in this.dataGridView.Rows)
             {
-                if (row.Cells.Count < 3) continue;
+                if (row.Cells.Count < 3)
+                {
+                    continue;
+                }
 
                 var key = (string)row.Cells[0].Value;
                 var value = (string)row.Cells[1].Value;
                 var comment = (string)row.Cells[2].Value;
 
-                if (key == null || value == null) continue;
+                if (key == null || value == null)
+                {
+                    continue;
+                }
 
                 sb.Append($"{Helpers.CsvizeString(key)},");
                 sb.Append($"{Helpers.CsvizeString(value)},");
-                sb.Append($"{Helpers.CsvizeString(comment == null ? "" : comment)}");
+                sb.Append($"{Helpers.CsvizeString(comment ?? string.Empty)}");
                 sb.AppendLine();
             }
 
             File.WriteAllText(filePath, sb.ToString(), Encoding.Default);
         }
 
+        /// <summary>
+        /// Finds the next.
+        /// </summary>
+        /// <param name="query">The query.</param>
         public void FindNext(string query)
         {
-            int y = dataGridView.CurrentCell != null ? dataGridView.CurrentCell.RowIndex + 1 : 0;
-            dataGridView.ClearSelection();
+            var y = this.dataGridView.CurrentCell != null ? this.dataGridView.CurrentCell.RowIndex + 1 : 0;
+            this.dataGridView.ClearSelection();
 
-            while(y < dataGridView.Rows.Count - 1)
+            while (y < this.dataGridView.Rows.Count - 1)
             {
-                if (((string)dataGridView.Rows[y].Cells[0].Value).ToLower().Contains(query.ToLower()))
+                if (((string)this.dataGridView.Rows[y].Cells[0].Value).ToLower().Contains(query.ToLower()))
                 {
-                    dataGridView.CurrentCell = dataGridView.Rows[y].Cells[0];
+                    this.dataGridView.CurrentCell = this.dataGridView.Rows[y].Cells[0];
                     return;
                 }
+
                 y++;
             }
 
             MessageBox.Show("No results found, returning to start.");
-            if (dataGridView.Rows.Count == 0 || dataGridView.Rows[0].Cells.Count == 0) return;
+            if (this.dataGridView.Rows.Count == 0 || this.dataGridView.Rows[0].Cells.Count == 0)
+            {
+                return;
+            }
 
-            dataGridView.CurrentCell = dataGridView.Rows[0].Cells[0];
+            this.dataGridView.CurrentCell = this.dataGridView.Rows[0].Cells[0];
         }
 
+        /// <summary>
+        /// Processes a command key.
+        /// </summary>
+        /// <param name="msg">A <see cref="T:System.Windows.Forms.Message" />, passed by reference, that represents the Win32 message to process.</param>
+        /// <param name="keyData">One of the <see cref="T:System.Windows.Forms.Keys" /> values that represents the key to process.</param>
+        /// <returns><see langword="true" /> if the keystroke was processed and consumed by the control; otherwise, <see langword="false" /> to allow further processing.</returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.O))
             {
-                ShowOpenDialog();
+                this.ShowOpenDialog();
                 return true;
             }
 
             if (keyData == (Keys.Control | Keys.S))
             {
-                ShowSaveDialog();
+                this.ShowSaveDialog();
                 return true;
             }
 
             if (keyData == (Keys.Control | Keys.F))
             {
-                textBoxFind.Focus();
+                this.textBoxFind.Focus();
                 return true;
             }
 
             if (keyData == (Keys.Control | Keys.A))
             {
-                if(dataGridView.CurrentRow != null) dataGridView.CurrentRow.Selected = true;
+                if (this.dataGridView.CurrentRow != null)
+                {
+                    this.dataGridView.CurrentRow.Selected = true;
+                }
+
                 return true;
             }
 
             if (keyData == Keys.F3)
             {
-                FindNext(textBoxFind.Text);
+                this.FindNext(this.textBoxFind.Text);
                 return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        /// <summary>
+        /// Shows the open dialog.
+        /// </summary>
         private void ShowOpenDialog()
         {
-            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            using (var openFileDialog1 = new OpenFileDialog())
             {
                 openFileDialog1.Filter = "Localization CSV File (*.csv)|*.csv";
 
-                if (openFileDialog1.ShowDialog() == DialogResult.OK) LoadFile(openFileDialog1.FileName);
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    this.LoadFile(openFileDialog1.FileName);
+                }
             }
         }
 
+        /// <summary>
+        /// Shows the save dialog.
+        /// </summary>
         private void ShowSaveDialog()
         {
-            using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
+            using (var saveFileDialog1 = new SaveFileDialog())
             {
-                saveFileDialog1.FileName = _loadedFile;
+                saveFileDialog1.FileName = this.loadedFile;
                 saveFileDialog1.Filter = "Localization CSV File (*.csv)|*.csv";
 
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK) SaveFile(saveFileDialog1.FileName);
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    this.SaveFile(saveFileDialog1.FileName);
+                }
             }
         }
 
+        /// <summary>
+        /// Handles the Paint event of the TableLayoutPanel1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="PaintEventArgs"/> instance containing the event data.</param>
         private void TableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
+        /// <summary>
+        /// Handles the Click event of the ToolStripButtonLoad control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ToolStripButtonLoad_Click(object sender, EventArgs e)
-            => ShowOpenDialog();
+            => this.ShowOpenDialog();
 
+        /// <summary>
+        /// Handles the Click event of the ButtonFind control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ButtonFind_Click(object sender, EventArgs e)
-            => FindNext(textBoxFind.Text);
+            => this.FindNext(this.textBoxFind.Text);
 
+        /// <summary>
+        /// Handles the KeyUp event of the TextBoxFind control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         private void TextBoxFind_KeyUp(object sender, KeyEventArgs e)
         {
-            if (textBoxFind.Focused && e.KeyCode == Keys.Enter)
+            if (this.textBoxFind.Focused && e.KeyCode == Keys.Enter)
             {
-                FindNext(textBoxFind.Text);
+                this.FindNext(this.textBoxFind.Text);
                 e.Handled = true;
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ToolStripButtonSave control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ToolStripButtonSave_Click(object sender, EventArgs e)
-            => ShowSaveDialog();
+            => this.ShowSaveDialog();
 
+        /// <summary>
+        /// Handles the CellValueChanged event of the DataGridView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DataGridViewCellEventArgs"/> instance containing the event data.</param>
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-            => Modified = true;
+            => this.Modified = true;
 
+        /// <summary>
+        /// Handles the FormClosing event of the MainForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!Modified) return;
+            if (!this.Modified)
+            {
+                return;
+            }
 
             var result = MessageBox.Show(this, "There are unsaved changes. Are you sure you want to exit?", "LocEdit", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (result == DialogResult.No) e.Cancel = true;
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ToolStripLabel1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ToolStripLabel1_Click(object sender, EventArgs e)
         {
 
         }
 
+        /// <summary>
+        /// Handles the Click event of the ToolStripButtonInsertAbove control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ToolStripButtonInsertAbove_Click(object sender, EventArgs e)
         {
-            if (dataGridView.CurrentCell != null) dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex);
+            if (this.dataGridView.CurrentCell != null)
+            {
+                this.dataGridView.Rows.Insert(this.dataGridView.CurrentCell.RowIndex);
+            }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ToolStripButtonInsertBelow control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ToolStripButtonInsertBelow_Click(object sender, EventArgs e)
         {
-            if (dataGridView.CurrentCell != null && dataGridView.CurrentCell.RowIndex < dataGridView.Rows.Count - 1)
-                dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex + 1);
-        }
-    }
-
-    internal static class Helpers
-    {
-        public static string CsvizeString(string input)
-        {
-            var sb = new StringBuilder();
-            bool shouldQuote = input.Contains(",") || input.Contains("\n") || (input != string.Empty && input[0] == '"');
-
-            if (shouldQuote)
+            if (this.dataGridView.CurrentCell != null && this.dataGridView.CurrentCell.RowIndex < this.dataGridView.Rows.Count - 1)
             {
-                sb.Append('"');
-                sb.Append(input.Replace("\"", "\"\"")); // Replace double-quotes with double-double-quotes 
-                sb.Append('"');
+                this.dataGridView.Rows.Insert(this.dataGridView.CurrentCell.RowIndex + 1);
             }
-            else
-            {
-                sb.Append(input);
-            }
-
-
-            return sb.ToString();
-        }
-    }
-
-    internal class LocDataGridViewRow : DataGridViewRow
-    {
-        private DataGridViewCell keyCell;
-        private DataGridViewCell valueCell;
-        private DataGridViewCell commentCell;
-
-        public LocDataGridViewRow(string key, string value, string comment) : base()
-        {
-            keyCell = new DataGridViewTextBoxCell() { Value = key };
-            valueCell = new DataGridViewTextBoxCell() { Value = value };
-            commentCell = new DataGridViewTextBoxCell() { Value = comment };
-
-            Cells.Add(keyCell);
-            Cells.Add(valueCell);
-            Cells.Add(commentCell);
         }
     }
 }

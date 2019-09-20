@@ -47,11 +47,11 @@ namespace BlogRunnerReporter
                 {
                     var diffCommand = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-                        @"Beyond Compare 2\bc2.exe");
+                        @"Beyond Compare 4\BCompare.exe");
 
                     if (!File.Exists(diffCommand))
                     {
-                        Console.Error.WriteLine("Warning: Beyond Compare 2 is not installed; diff report generation will be skipped");
+                        Console.Error.WriteLine("Warning: Beyond Compare 4 is not installed; diff report generation will be skipped");
                     }
                     else
                     {
