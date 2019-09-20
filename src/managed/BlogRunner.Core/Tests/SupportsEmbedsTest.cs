@@ -29,11 +29,11 @@ namespace BlogRunner.Core.Tests
         /// <exception cref="System.InvalidOperationException">Embed test markers were not found.</exception>
         public override void HandleContentResult(string result, ITestResults results)
         {
-            if (result == null)
+            if (result == null || results == null)
             {
-                throw new InvalidOperationException("Embed test markers were not found!");
+                throw new InvalidOperationException(Properties.Resources.EmbedTestMarkersWereNotFound);
             }
-            else if (result.ToLowerInvariant().Contains("<embed"))
+            else if (result.ToUpperInvariant().Contains("<EMBED"))
             {
                 results.AddResult("supportsEmbeds", YES);
             }

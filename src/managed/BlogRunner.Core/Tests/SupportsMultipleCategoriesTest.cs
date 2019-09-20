@@ -26,6 +26,21 @@ namespace BlogRunner.Core.Tests
         /// <exception cref="InvalidOperationException">Blog " + blog.HomepageUrl + " does not have enough categories for the SupportsMultipleCategories test to be performed.</exception>
         protected internal override void PreparePost(Blog blog, IBlogClient blogClient, BlogPost blogPost, ref bool? publish)
         {
+            if (blog == null)
+            {
+                throw new ArgumentNullException(nameof(blog));
+            }
+
+            if (blogClient == null)
+            {
+                throw new ArgumentNullException(nameof(blogClient));
+            }
+
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
             var categories = blogClient.GetCategories(blog.BlogId);
             if (categories.Length < 2)
             {
@@ -45,6 +60,16 @@ namespace BlogRunner.Core.Tests
         /// <param name="results">The results.</param>
         protected internal override void HandleResult(BlogPost blogPost, ITestResults results)
         {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+
             if (blogPost.Categories.Length == 2)
             {
                 results.AddResult("supportsMultipleCategories", YES);

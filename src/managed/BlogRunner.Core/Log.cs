@@ -10,7 +10,7 @@ namespace BlogRunner.Core
     /// <summary>
     /// The log class.
     /// </summary>
-    public class Log
+    public static class Log
     {
         /// <summary>
         /// The indent level.
@@ -37,7 +37,7 @@ namespace BlogRunner.Core
         {
             if (indentLevel > 0)
             {
-                message = Indent + message.Replace("\n", Indent);
+                message = Indent + message?.Replace("\n", Indent);
             }
 
             Console.WriteLine(message);
@@ -54,7 +54,7 @@ namespace BlogRunner.Core
             indentLevel++;
             try
             {
-                action();
+                action?.Invoke();
             }
             finally
             {

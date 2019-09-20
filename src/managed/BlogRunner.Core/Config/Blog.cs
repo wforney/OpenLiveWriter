@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core.Config
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Xml.Serialization;
 
     /// <summary>
@@ -17,6 +18,7 @@ namespace BlogRunner.Core.Config
         /// </summary>
         /// <value>The homepage URL.</value>
         [XmlElement(ElementName = "homepageUrl")]
+        [SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "<Pending>")]
         public string HomepageUrl { get; set; }
 
         /// <summary>
@@ -38,6 +40,7 @@ namespace BlogRunner.Core.Config
         /// </summary>
         /// <value>The API URL.</value>
         [XmlElement(ElementName = "apiUrl")]
+        [SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "<Pending>")]
         public string ApiUrl { get; set; }
 
         /// <summary>

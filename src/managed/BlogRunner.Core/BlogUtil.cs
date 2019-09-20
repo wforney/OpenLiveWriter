@@ -10,7 +10,7 @@ namespace BlogRunner.Core
     /// <summary>
     /// The blog utility class.
     /// </summary>
-    public class BlogUtil
+    public static class BlogUtil
     {
         /// <summary>
         /// Gets the short unique identifier.

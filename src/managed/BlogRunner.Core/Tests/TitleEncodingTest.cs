@@ -28,6 +28,11 @@ namespace BlogRunner.Core.Tests
         /// <param name="publish">if set to <c>true</c> [publish].</param>
         protected internal override void PreparePost(BlogPost blogPost, ref bool? publish)
         {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
             this.guid1 = BlogUtil.ShortGuid;
             this.guid2 = BlogUtil.ShortGuid;
 
@@ -56,14 +61,29 @@ namespace BlogRunner.Core.Tests
                         var str = m.Groups[1].Value;
                         if (str == HtmlUtils.EscapeEntities(TestString))
                         {
+                            if (results == null)
+                            {
+                                throw new ArgumentNullException(nameof(results));
+                            }
+
                             results.AddResult("requiresHtmlTitles", YES);
                         }
                         else if (str == HtmlUtils.EscapeEntities(HtmlUtils.EscapeEntities(TestString)))
                         {
+                            if (results == null)
+                            {
+                                throw new ArgumentNullException(nameof(results));
+                            }
+
                             results.AddResult("requiresHtmlTitles", NO);
                         }
                         else
                         {
+                            if (results == null)
+                            {
+                                throw new ArgumentNullException(nameof(results));
+                            }
+
                             results.AddResult("requiresHtmlTitles", $"[ERROR] (value was: {str})");
                         }
 
@@ -72,7 +92,7 @@ namespace BlogRunner.Core.Tests
                 }
             }
 
-            throw new InvalidOperationException("Title encoding test failed--title was not detected");
+            throw new InvalidOperationException(Properties.Resources.TitleEncodingTestFailed);
         }
     }
 }

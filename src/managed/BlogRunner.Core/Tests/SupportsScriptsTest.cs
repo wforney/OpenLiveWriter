@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core.Tests
 {
+    using System;
     using System.Diagnostics;
 
     /// <summary>
@@ -28,12 +29,17 @@ namespace BlogRunner.Core.Tests
         /// <param name="results">The results.</param>
         public override void HandleContentResult(string result, ITestResults results)
         {
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+
             if (result == null)
             {
                 Debug.Fail("Scripts gone");
                 results.AddResult("supportsScripts", "Unknown");
             }
-            else if (result.ToLowerInvariant().Contains("script"))
+            else if (result.ToUpperInvariant().Contains("SCRIPT"))
             {
                 results.AddResult("supportsScripts", YES);
             }

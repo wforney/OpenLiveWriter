@@ -76,7 +76,7 @@ namespace BlogRunner
                             @"\Windows Live\Writer\"));
                     ApplicationDiagnostics.VerboseLogging = true;
 
-                    var config = Config.Load(configPath, providersPath);
+                    var config = BlogRunnerConfig.Load(configPath, providersPath);
                     var providers = new XmlDocument
                     {
                         XmlResolver = null

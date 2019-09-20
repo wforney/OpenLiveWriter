@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core
 {
+    using System;
     using BlogRunner.Core.Config;
     using OpenLiveWriter.Extensibility.BlogClient;
 
@@ -23,14 +24,24 @@ namespace BlogRunner.Core
         /// <param name="results">The results.</param>
         public sealed override void DoTest(Blog blog, IBlogClient blogClient, ITestResults results)
         {
+            if (blog == null)
+            {
+                throw new ArgumentNullException(nameof(blog));
+            }
+
+            if (blogClient == null)
+            {
+                throw new ArgumentNullException(nameof(blogClient));
+            }
+
             var blogPost = new BlogPost();
             bool? publish = null;
             this.PreparePost(blog, blogClient, blogPost, ref publish);
 
             var token = BlogUtil.ShortGuid;
-            blogPost.Title = token + ":" + blogPost.Title;
+            blogPost.Title = $"{token}:{blogPost.Title}";
 
-            var postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out var etag, out var remotePost);
+            var postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out _, out _);
             var newPost = blogClient.GetPost(blog.BlogId, postId);
             this.HandleResult(newPost, results);
             if (postId != null && CleanUpPosts)

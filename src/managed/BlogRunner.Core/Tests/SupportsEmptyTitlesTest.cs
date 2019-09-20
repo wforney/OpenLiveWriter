@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core.Tests
 {
+    using System;
     using OpenLiveWriter.Extensibility.BlogClient;
 
     /// <summary>
@@ -22,6 +23,11 @@ namespace BlogRunner.Core.Tests
         /// <param name="results">The results.</param>
         public override void DoTest(Config.Blog blog, IBlogClient blogClient, ITestResults results)
         {
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+
             var post = new BlogPost
             {
                 Contents = "foo",
@@ -30,6 +36,16 @@ namespace BlogRunner.Core.Tests
 
             try
             {
+                if (blog == null)
+                {
+                    throw new ArgumentNullException(nameof(blog));
+                }
+
+                if (blogClient == null)
+                {
+                    throw new ArgumentNullException(nameof(blogClient));
+                }
+
                 var newPostId = blogClient.NewPost(blog.BlogId, post, null, true, out var etag, out var remotePost);
                 results.AddResult("supportsEmptyTitles", YES);
 
@@ -38,7 +54,9 @@ namespace BlogRunner.Core.Tests
                     blogClient.DeletePost(blog.BlogId, newPostId, true);
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 results.AddResult("supportsEmptyTitles", NO);
             }

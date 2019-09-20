@@ -14,7 +14,7 @@ namespace BlogRunner.Core.Config
     /// The configuration class.
     /// </summary>
     [XmlRoot(ElementName = "config")]
-    public class Config
+    public class BlogRunnerConfig
     {
         /// <summary>
         /// Gets or sets the providers.
@@ -22,7 +22,9 @@ namespace BlogRunner.Core.Config
         /// <value>The providers.</value>
         [XmlArray(ElementName = "providers")]
         [XmlArrayItem(ElementName = "provider")]
+#pragma warning disable CA1819 // Properties should not return arrays
         public Provider[] Providers { get; set; }
+#pragma warning restore CA1819 // Properties should not return arrays
 
         /// <summary>
         /// Loads the specified path.
@@ -31,26 +33,31 @@ namespace BlogRunner.Core.Config
         /// <param name="providersPath">The providers path.</param>
         /// <returns>Config.</returns>
         /// <exception cref="System.ArgumentException">Unknown provider ID: " + providerId.</exception>
-        public static Config Load(string path, string providersPath)
+        public static BlogRunnerConfig Load(string path, string providersPath)
         {
-            var ser = new XmlSerializer(typeof(Config));
-            Config config;
-            using (Stream s = File.OpenRead(path))
+            var ser = new XmlSerializer(typeof(BlogRunnerConfig));
+            BlogRunnerConfig config;
+            using (var s = File.OpenRead(path))
+            using (var reader = XmlReader.Create(s, new XmlReaderSettings { XmlResolver = null }))
             {
-                config = (Config)ser.Deserialize(s);
+                config = (BlogRunnerConfig)ser.Deserialize(reader);
             }
 
-            var providersXml = new XmlDocument();
-            providersXml.Load(providersPath);
+            var providersXml = new XmlDocument { XmlResolver = null };
+            using (var s = File.OpenRead(providersPath))
+            using (var reader = XmlReader.Create(s, new XmlReaderSettings { XmlResolver = null }))
+            {
+                providersXml.Load(reader);
+            }
 
             foreach (var p in config.Providers)
             {
                 var providerId = p.Id;
-                var el = (XmlText)providersXml.SelectSingleNode("/providers/provider/id[text()='" + providerId + "']/../clientType/text()");
+                var el = (XmlText)providersXml.SelectSingleNode($"/providers/provider/id[text()='{providerId}']/../clientType/text()");
                 if (el == null)
                 {
-                    Console.Error.WriteLine("Unknown provider ID: " + providerId);
-                    throw new ArgumentException("Unknown provider ID: " + providerId);
+                    Console.Error.WriteLine($"Unknown provider ID: {providerId}");
+                    throw new ArgumentException($"Unknown provider ID: {providerId}");
                 }
 
                 p.ClientType = el.Value;

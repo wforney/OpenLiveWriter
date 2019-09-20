@@ -104,7 +104,7 @@ namespace BlogRunner.Core
                 }
             }
             while (DateTime.UtcNow < due);
-            throw new TimeoutException("The operation has timed out");
+            throw new TimeoutException(Properties.Resources.TheOperationHasTimedOut);
         }
     }
 }

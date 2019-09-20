@@ -35,6 +35,16 @@ namespace BlogRunner.Core
         /// <param name="providerEl">The provider element.</param>
         public void RunTests(Provider provider, Blog blog, XmlElement providerEl)
         {
+            if (provider == null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            if (blog == null)
+            {
+                throw new ArgumentNullException(nameof(blog));
+            }
+
             using (new BlogClientUIContextSilentMode()) // suppress prompting for credentials
             {
                 var credentials = new TemporaryBlogCredentials
@@ -63,7 +73,9 @@ namespace BlogRunner.Core
                         Console.WriteLine($"Running test {test.ToString()}");
                         test.DoTest(blog, client, providerEl);
                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
                     {
                         Console.Error.WriteLine($"Error: Test {test.GetType().Name} failed for provider {provider.Name}:");
                         Console.Error.WriteLine(e.ToString());

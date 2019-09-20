@@ -22,6 +22,11 @@ namespace BlogRunner.Core.Tests
         /// <param name="publish">if set to <c>true</c> [publish].</param>
         protected internal override void PreparePost(BlogPost blogPost, ref bool? publish)
         {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
             blogPost.Title = "Post as draft test";
             blogPost.Contents = "foo bar";
             publish = false;
@@ -33,7 +38,7 @@ namespace BlogRunner.Core.Tests
         /// <param name="homepageHtml">The homepage HTML.</param>
         /// <param name="results">The results.</param>
         protected internal override void HandleResult(string homepageHtml, ITestResults results) =>
-            results.AddResult("supportsPostAsDraft", NO);
+            (results ?? throw new ArgumentNullException(nameof(results))).AddResult("supportsPostAsDraft", NO);
 
         /// <summary>
         /// Return true if the timeout condition was handled. False means
@@ -44,7 +49,7 @@ namespace BlogRunner.Core.Tests
         /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
         protected internal override bool HandleTimeout(TimeoutException te, ITestResults results)
         {
-            results.AddResult("supportsPostAsDraft", YES);
+            (results ?? throw new ArgumentNullException(nameof(results))).AddResult("supportsPostAsDraft", YES);
             return true;
         }
     }

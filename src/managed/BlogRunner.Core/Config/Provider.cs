@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core.Config
 {
+    using System;
     using System.Xml;
     using System.Xml.Serialization;
 
@@ -56,6 +57,8 @@ namespace BlogRunner.Core.Config
         /// </summary>
         /// <value>The exclude.</value>
         [XmlElement(ElementName = "exclude")]
-        public string[] Exclude { get; set; } = new string[] { };
+#pragma warning disable CA1819 // Properties should not return arrays
+        public string[] Exclude { get; set; } = Array.Empty<string>();
+#pragma warning restore CA1819 // Properties should not return arrays
     }
 }

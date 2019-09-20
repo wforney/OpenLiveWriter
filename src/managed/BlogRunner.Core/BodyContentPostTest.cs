@@ -5,6 +5,7 @@
 
 namespace BlogRunner.Core
 {
+    using System;
     using System.Text.RegularExpressions;
     using OpenLiveWriter.Extensibility.BlogClient;
 
@@ -38,6 +39,11 @@ namespace BlogRunner.Core
         /// <param name="publish">if set to <c>true</c> [publish].</param>
         protected internal sealed override void PreparePost(BlogPost blogPost, ref bool? publish)
         {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
             this.guid1 = BlogUtil.ShortGuid;
             this.guid2 = BlogUtil.ShortGuid;
 
