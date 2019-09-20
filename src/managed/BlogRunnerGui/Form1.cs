@@ -70,13 +70,19 @@ namespace BlogRunnerGui
                     return;
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 return;
             }
 
-            var xmlDoc = new XmlDocument();
-            xmlDoc.Load(configPath);
+            var xmlDoc = new XmlDocument { XmlResolver = null };
+            using (var fileStream = XmlReader.Create(configPath, new XmlReaderSettings { XmlResolver = null }))
+            {
+                xmlDoc.Load(fileStream);
+            }
+
             foreach (XmlElement providerEl in xmlDoc.SelectNodes("/config/providers/provider/blog/.."))
             {
                 var id = providerEl.SelectSingleNode("id/text()").Value;
@@ -202,7 +208,7 @@ namespace BlogRunnerGui
             args.Add($"/{BlogRunnerCommandLineOptions.OptionPause}");
 
             args.AddRange(ids);
-            args = args.ConvertAll((string str) => this.MaybeQuote(str));
+            args = args.ConvertAll((string str) => MaybeQuote(str));
             this.textBox1.Text = string.Join(" ", args.ToArray());
         }
 
@@ -211,15 +217,7 @@ namespace BlogRunnerGui
         /// </summary>
         /// <param name="str">The string.</param>
         /// <returns>System.String.</returns>
-        private string MaybeQuote(string str)
-        {
-            if (str.Contains(" "))
-            {
-                return $"\"{str}\"";
-            }
-
-            return str;
-        }
+        private static string MaybeQuote(string str) => str.Contains(" ") ? $"\"{str}\"" : str;
 
         /// <summary>
         /// Handles the Load event of the Form1 control.
@@ -242,7 +240,7 @@ namespace BlogRunnerGui
             var cmdLine = this.textBox1.Text;
             if (cmdLine.Length == 0)
             {
-                MessageBox.Show("Nothing to do!");
+                MessageBox.Show(Properties.Resources.NothingToDo);
                 return;
             }
 
@@ -269,60 +267,6 @@ namespace BlogRunnerGui
             this.fileOutput.Path = (string)options.GetValue(BlogRunnerCommandLineOptions.OptionOutput, string.Empty);
             this.chkVerbose.Checked = options.GetFlagValue(BlogRunnerCommandLineOptions.OptionVerbose, false);
             this.SetSelectedProviderIds(options.UnnamedArgs);
-        }
-
-        private const string SETTING_PROVIDERS = "providers";
-        private const string SETTING_CONFIG = "config";
-        private const string SETTING_OUTPUT = "output";
-        private const string SETTING_PROVIDER = "provider";
-
-        /// <summary>
-        /// The blog provider item class.
-        /// </summary>
-        public class BlogProviderItem
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="BlogProviderItem"/> class.
-            /// </summary>
-            /// <param name="id">The identifier.</param>
-            /// <param name="name">The name.</param>
-            public BlogProviderItem(string id, string name)
-            {
-                this.Id = id;
-                this.Name = name;
-            }
-
-            /// <summary>
-            /// Gets the identifier.
-            /// </summary>
-            /// <value>The identifier.</value>
-            public string Id { get; private set; }
-
-            /// <summary>
-            /// Gets the name.
-            /// </summary>
-            /// <value>The name.</value>
-            public string Name { get; private set; }
-
-            /// <summary>
-            /// Returns a <see cref="string" /> that represents this instance.
-            /// </summary>
-            /// <returns>A <see cref="string" /> that represents this instance.</returns>
-            public override string ToString() => this.Name;
-
-            /// <summary>
-            /// Returns a hash code for this instance.
-            /// </summary>
-            /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
-            public override int GetHashCode() => this.Id.GetHashCode();
-
-            /// <summary>
-            /// Determines whether the specified <see cref="object" /> is equal to this instance.
-            /// </summary>
-            /// <param name="obj">The object to compare with the current object.</param>
-            /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-            public override bool Equals(object obj) =>
-                obj is BlogProviderItem other ? string.Equals(this.Id, other.Id, StringComparison.Ordinal) : false;
         }
 
         /// <summary>

@@ -10,22 +10,6 @@ namespace BlogRunnerGui
     using System.Windows.Forms;
 
     /// <summary>
-    /// The dialog style enumeration.
-    /// </summary>
-    public enum DialogStyle
-    {
-        /// <summary>
-        /// An open dialog.
-        /// </summary>
-        Open,
-
-        /// <summary>
-        /// A save dialog.
-        /// </summary>
-        Save,
-    }
-
-    /// <summary>
     /// Class FileInput.
     /// Implements the <see cref="System.Windows.Forms.UserControl" />
     /// </summary>
@@ -73,9 +57,9 @@ namespace BlogRunnerGui
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Windows.Forms.Control.GotFocus" /> event.
+        /// Raises the <see cref="Control.GotFocus" /> event.
         /// </summary>
-        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+        /// <param name="e">An <see cref="EventArgs" /> that contains the event data.</param>
         protected override void OnGotFocus(EventArgs e) => this.textBox1.Focus();
 
         /// <summary>
