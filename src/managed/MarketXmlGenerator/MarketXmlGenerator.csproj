@@ -20,14 +20,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="App.ico" />
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="MarketXmlGenerator.cs" />
     <Compile Include="..\GlobalAssemblyInfo.cs" />
     <Compile Include="..\GlobalAssemblyVersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <AdditionalFiles Include="stylecop.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

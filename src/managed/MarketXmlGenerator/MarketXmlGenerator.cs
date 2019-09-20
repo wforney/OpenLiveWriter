@@ -70,7 +70,7 @@ namespace MarketXmlGenerator
                 //    5c. features have name and enabled attributes. parameters have name and value attributes.
                 if (!ValidateXml(inputFilePath, xmlFile.FullName))
                 {
-                    Console.WriteLine("Validation Failed for file " + xmlFile.FullName);
+                    Console.WriteLine($"Validation Failed for file {xmlFile.FullName}");
                     Environment.Exit(1);
                 }
 

@@ -43,6 +43,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utf8StringWriter.cs" />
+    <Compile Include="Values.cs" />
     <Content Include="App.ico" />
     <Compile Include="AppMain.cs">
       <SubType>Code</SubType>
@@ -50,10 +52,21 @@
     <Compile Include="CsvParser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CsvParser.LineEnumerator.cs">
+      <DependentUpon>CsvParser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RibbonMarkup.Command.cs">
+      <DependentUpon>RibbonMarkup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RibbonMarkup.Command.Image.cs">
+      <DependentUpon>RibbonMarkup.Command.cs</DependentUpon>
+    </Compile>
     <Compile Include="RibbonMarkup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <AdditionalFiles Include="stylecop.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(RepoRoot)\writer.build.targets" />

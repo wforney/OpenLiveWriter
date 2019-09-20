@@ -1,94 +1,134 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-
 namespace LocUtil
 {
-    public class CsvParser : IEnumerable, IDisposable
-    {
-        private readonly TextReader _input;
-        private bool _atLineEnd = false;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Text;
 
+    /// <summary>
+    /// The CSV parser class.
+    /// Implements the <see cref="System.Collections.IEnumerable{Array{string}}" />
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="System.Collections.IEnumerable{Array{string}}" />
+    /// <seealso cref="System.IDisposable" />
+    public partial class CsvParser : IEnumerable<string[]>, IDisposable
+    {
+        /// <summary>
+        /// The input
+        /// </summary>
+        private readonly TextReader input;
+        /// <summary>
+        /// At line end
+        /// </summary>
+        private bool atLineEnd = false;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvParser"/> class.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="skipFirstLine">if set to <c>true</c> [skip first line].</param>
         public CsvParser(TextReader input, bool skipFirstLine)
         {
-            _input = input;
+            this.input = input;
             if (skipFirstLine)
             {
-                while (NextWord() != null) { }
-                NextLine();
+                while (this.NextWord() != null)
+                {
+                }
+
+                this.NextLine();
             }
         }
 
+        /// <summary>
+        /// Nexts the word.
+        /// </summary>
+        /// <returns>System.String.</returns>
         private string NextWord()
         {
-            if (_atLineEnd)
+            if (this.atLineEnd)
+            {
                 return null;
+            }
 
-            EatSpaces();
-            switch (_input.Peek())
+            this.EatSpaces();
+            switch (this.input.Peek())
             {
                 case -1:
                     return null;
                 case '"':
-                    return MatchQuoted();
+                    return this.MatchQuoted();
                 case '\r':
                 case '\n':
-                    EatLineEndings();
+                    this.EatLineEndings();
                     return null;
                 default:
-                    return MatchUnquoted();
+                    return this.MatchUnquoted();
             }
         }
 
+        /// <summary>
+        /// Matches the quoted.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        /// <exception cref="System.ArgumentException">Malformed CSV: unexpected character after string \"" + sb.ToString() + "\"</exception>
         private string MatchQuoted()
         {
-            Debug.Assert(_input.Read() == '"');
-            StringBuilder sb = new StringBuilder();
-            for (int c = _input.Read(); c != -1; c = _input.Read())
+            Debug.Assert(this.input.Read() == '"');
+            var sb = new StringBuilder();
+            for (var c = this.input.Read(); c != -1; c = this.input.Read())
             {
                 if (c == '"')
                 {
-                    if (_input.Peek() == '"')
+                    if (this.input.Peek() == '"')
                     {
-                        _input.Read();
+                        this.input.Read();
                         sb.Append('"');
                     }
                     else
                     {
-                        EatSpaces();
-                        switch (_input.Peek())
+                        this.EatSpaces();
+                        switch (this.input.Peek())
                         {
                             case ',':
-                                _input.Read();
+                                this.input.Read();
                                 return sb.ToString();
                             case '\r':
                             case '\n':
                             case -1:
-                                _atLineEnd = true;
-                                EatLineEndings();
+                                this.atLineEnd = true;
+                                this.EatLineEndings();
                                 return sb.ToString();
                             default:
-                                throw new ArgumentException("Malformed CSV: unexpected character after string \"" + sb.ToString() + "\"");
+                                throw new ArgumentException($"Malformed CSV: unexpected character after string \"{sb.ToString()}\"");
                         }
                     }
 
                 }
                 else
+                {
                     sb.Append((char)c);
+                }
             }
-            Debug.Fail("Unterminated quoted string: " + sb.ToString());
+
+            Debug.Fail($"Unterminated quoted string: {sb.ToString()}");
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Matches the unquoted.
+        /// </summary>
+        /// <returns>System.String.</returns>
         private string MatchUnquoted()
         {
-            StringBuilder sb = new StringBuilder();
-            for (int c = _input.Read(); c != -1; c = _input.Read())
+            var sb = new StringBuilder();
+            for (var c = this.input.Read(); c != -1; c = this.input.Read())
             {
                 switch (c)
                 {
@@ -96,34 +136,43 @@ namespace LocUtil
                         return sb.ToString();
                     case '\r':
                     case '\n':
-                        _atLineEnd = true;
-                        EatLineEndings();
+                        this.atLineEnd = true;
+                        this.EatLineEndings();
                         return sb.ToString();
                     default:
                         sb.Append((char)c);
                         break;
                 }
             }
+
             // EOF
-            _atLineEnd = true;
+            this.atLineEnd = true;
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Eats the spaces.
+        /// </summary>
         private void EatSpaces()
         {
-            while (_input.Peek() == ' ')
-                _input.Read();
+            while (this.input.Peek() == ' ')
+            {
+                this.input.Read();
+            }
         }
 
+        /// <summary>
+        /// Eats the line endings.
+        /// </summary>
         private void EatLineEndings()
         {
             while (true)
             {
-                switch (_input.Peek())
+                switch (this.input.Peek())
                 {
                     case '\r':
                     case '\n':
-                        _input.Read();
+                        this.input.Read();
                         break;
                     default:
                         return;
@@ -131,65 +180,38 @@ namespace LocUtil
             }
         }
 
+        /// <summary>
+        /// Nexts the line.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool NextLine()
         {
-            if (_input.Peek() != -1)
+            if (this.input.Peek() != -1)
             {
-                _atLineEnd = false;
+                this.atLineEnd = false;
                 return true;
             }
             else
+            {
                 return false;
-        }
-
-        public void Dispose()
-        {
-            _input.Close();
-        }
-
-        private class LineEnumerator : IEnumerator
-        {
-            CsvParser parent;
-            string[] line;
-
-            public LineEnumerator(CsvParser parent)
-            {
-                this.parent = parent;
-            }
-
-            public bool MoveNext()
-            {
-            start:
-                if (line != null)
-                {
-                    if (!parent.NextLine())
-                        return false;
-                }
-
-                ArrayList words = new ArrayList();
-                string word;
-                while (null != (word = parent.NextWord()))
-                    words.Add(word);
-                line = (string[])words.ToArray(typeof(string));
-                if (line.Length == 0)
-                    goto start;
-                return true;
-            }
-
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
-
-            public object Current
-            {
-                get { return line; }
             }
         }
 
-        public IEnumerator GetEnumerator()
-        {
-            return new LineEnumerator(this);
-        }
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose() => this.input.Close();
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>An <see cref="T:System.Collections.IEnumerator{Array{string}}" /> object that can be used to iterate through the collection.</returns>
+        public IEnumerator<string[]> GetEnumerator() => new LineEnumerator(this);
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
