@@ -58,6 +58,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1B7A217A-FC20-4B0B-9C07-97209453DDB1}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\build.cmd = ..\..\build.cmd
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 		..\..\version.txt = ..\..\version.txt
 		..\..\writer.build.targets = ..\..\writer.build.targets
 	EndProjectSection

@@ -5,7 +5,7 @@
     <GlobalAssemblyVersionInfoPath>$(SrcManagedRoot)\GlobalAssemblyVersionInfo.cs</GlobalAssemblyVersionInfoPath>
     <UnmanagedVersionPath>$(RepoRoot)\src\unmanaged\version.h</UnmanagedVersionPath>
   </PropertyGroup>
-  
+
   <Target Name="GenerateVersionFiles" BeforeTargets="CoreCompile" Inputs="$(VersionTxt)" Outputs="$(GlobalAssemblyVersionInfoPath);$(UnmanagedVersionPath)">
     <ReadLinesFromFile File="$(VersionTxt)">
       <Output TaskParameter="Lines" ItemName="VersionTextLines"/>

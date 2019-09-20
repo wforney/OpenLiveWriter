@@ -23,7 +23,7 @@ namespace BlogRunner
     /// <summary>
     /// Class Program.
     /// </summary>
-    public class Program
+    public static partial class Program
     {
         /// <summary>
         /// The test filter delegate.
@@ -61,10 +61,12 @@ namespace BlogRunner
                     if (errorLogPath != null)
                     {
                         errorLogPath = Path.GetFullPath(errorLogPath);
+#pragma warning disable CA2000 // Dispose objects before losing scope
                         Console.SetError(
                             new CompositeTextWriter(
                                 Console.Error,
                                 File.CreateText(errorLogPath)));
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     }
 
                     ApplicationEnvironment.Initialize(
@@ -75,73 +77,84 @@ namespace BlogRunner
                     ApplicationDiagnostics.VerboseLogging = true;
 
                     var config = Config.Load(configPath, providersPath);
-                    var providers = new XmlDocument();
-                    providers.Load(providersPath);
-
-                    foreach (XmlElement provider in providers.SelectNodes("/providers/provider"))
+                    var providers = new XmlDocument
                     {
-                        var providerId = provider.SelectSingleNode("id/text()").Value;
-                        var clientType = provider.SelectSingleNode("clientType/text()").Value;
+                        XmlResolver = null
+                    };
+                    var xmlContent = File.ReadAllText(providersPath);
+                    var sreader = new StringReader(xmlContent);
+                    using (var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null }))
+                    {
+                        providers.Load(reader);
 
-                        if (providerIds.Count > 0 && !providerIds.Contains(providerId))
+                        foreach (XmlElement provider in providers.SelectNodes("/providers/provider"))
                         {
-                            continue;
-                        }
+                            var providerId = provider.SelectSingleNode("id/text()").Value;
+                            var clientType = provider.SelectSingleNode("clientType/text()").Value;
 
-                        var p = config.GetProviderById(providerId);
-                        if (p == null)
-                        {
-                            continue;
-                        }
+                            if (providerIds.Count > 0 && !providerIds.Contains(providerId))
+                            {
+                                continue;
+                            }
 
-                        p.ClientType = clientType;
+                            var p = config.GetProviderById(providerId);
+                            if (p == null)
+                            {
+                                continue;
+                            }
 
-                        var results = new TestResultImpl();
+                            p.ClientType = clientType;
 
-                        var b = p.Blog;
-                        if (b != null)
-                        {
-                            Console.Write(provider.SelectSingleNode("name/text()").Value);
-                            Console.Write(" (");
-                            Console.Write(b.HomepageUrl);
-                            Console.WriteLine(")");
+                            var results = new TestResultImpl();
 
-                            var tests = new List<Test>();
-                            AddTests(tests, delegate(Test[] testArr)
-                                                {
-                                                    for (var i = 0; i < testArr.Length; i++)
+                            var b = p.Blog;
+                            if (b != null)
+                            {
+                                Console.Write(provider.SelectSingleNode("name/text()").Value);
+                                Console.Write($" {Properties.Resources.LeftParenthesis}");
+                                Console.Write(b.HomepageUrl);
+                                Console.WriteLine(Properties.Resources.RightParenthesis);
+
+                                var tests = new List<Test>();
+                                AddTests(tests, delegate (Test[] testArr)
                                                     {
-                                                        var t = testArr[i];
-                                                        var testName = t.GetType().Name;
-                                                        if (testName.EndsWith("Test"))
+                                                        const string TestString = "Test";
+                                                        for (var i = 0; i < testArr.Length; i++)
                                                         {
-                                                            testName = testName.Substring(0, testName.Length - 4);
+                                                            var t = testArr[i];
+                                                            var testName = t.GetType().Name;
+                                                            if (testName.EndsWith(TestString, StringComparison.OrdinalIgnoreCase))
+                                                            {
+                                                                testName = testName.Substring(0, testName.Length - 4);
+                                                            }
+
+                                                            if (p.Exclude != null && Array.IndexOf(p.Exclude, testName) >= 0)
+                                                            {
+                                                                testArr[i] = null;
+                                                            }
                                                         }
 
-                                                        if (p.Exclude != null && Array.IndexOf(p.Exclude, testName) >= 0)
-                                                        {
-                                                            testArr[i] = null;
-                                                        }
-                                                    }
-
-                                                    return (Test[])ArrayHelper.Compact(testArr);
-                                                });
-                            var tr = new TestRunner(tests);
-                            tr.RunTests(p, b, provider);
+                                                        return ArrayHelper.Compact(testArr);
+                                                    });
+                                var tr = new TestRunner(tests);
+                                tr.RunTests(p, b, provider);
+                            }
                         }
-                    }
 
-                    using (var xw = new XmlTextWriter(outputPath, Encoding.UTF8))
-                    {
-                        xw.Formatting = Formatting.Indented;
-                        xw.Indentation = 1;
-                        xw.IndentChar = '\t';
-                        providers.WriteTo(xw);
+                        using (var xw = new XmlTextWriter(outputPath, Encoding.UTF8))
+                        {
+                            xw.Formatting = Formatting.Indented;
+                            xw.Indentation = 1;
+                            xw.IndentChar = '\t';
+                            providers.WriteTo(xw);
+                        }
                     }
 
                     return 0;
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
                 {
                     Console.Error.WriteLine(e.ToString());
                     return 1;
@@ -152,12 +165,14 @@ namespace BlogRunner
                     {
                         Console.WriteLine();
                         Console.WriteLine();
-                        Console.Write("Press any key to continue...");
+                        Console.Write(Properties.Resources.PressAnyKeyToContinue);
                         Console.ReadKey(true);
                     }
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 Console.Error.WriteLine(e.ToString());
                 return 1;
@@ -202,125 +217,8 @@ namespace BlogRunner
         /// Changes the error colors.
         /// </summary>
         /// <param name="color">The color.</param>
+#pragma warning disable CA2000 // Dispose objects before losing scope
         private static void ChangeErrorColors(ConsoleColor color) => Console.SetError(new ColorChangeTextWriter(Console.Error, color));
-
-        /// <summary>
-        /// Class ColorChangeTextWriter.
-        /// Implements the <see cref="TextWriter" />.
-        /// </summary>
-        /// <seealso cref="System.IO.TextWriter" />
-        private class ColorChangeTextWriter : TextWriter
-        {
-            private readonly TextWriter tw;
-            private readonly ConsoleColor color;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ColorChangeTextWriter"/> class.
-            /// </summary>
-            /// <param name="tw">The text writer.</param>
-            /// <param name="color">The color.</param>
-            public ColorChangeTextWriter(TextWriter tw, ConsoleColor color)
-            {
-                this.tw = tw;
-                this.color = color;
-            }
-
-            /// <summary>
-            /// Gets the character encoding in which the output is written when overridden in a derived class.
-            /// </summary>
-            /// <value>The encoding.</value>
-            public override System.Text.Encoding Encoding => this.tw.Encoding;
-
-            /// <summary>
-            /// Writes a character to the text string or stream.
-            /// </summary>
-            /// <param name="value">The character to write to the text stream.</param>
-            public override void Write(char value)
-            {
-                var oldColor = Console.ForegroundColor;
-                Console.ForegroundColor = this.color;
-                try
-                {
-                    this.tw.Write(value);
-                }
-                finally
-                {
-                    Console.ForegroundColor = oldColor;
-                }
-            }
-
-            /// <summary>
-            /// Writes a subarray of characters to the text string or stream.
-            /// </summary>
-            /// <param name="buffer">The character array to write data from.</param>
-            /// <param name="index">The character position in the buffer at which to start retrieving data.</param>
-            /// <param name="count">The number of characters to write.</param>
-            public override void Write(char[] buffer, int index, int count)
-            {
-                var oldColor = Console.ForegroundColor;
-                Console.ForegroundColor = this.color;
-                try
-                {
-                    this.tw.Write(buffer, index, count);
-                }
-                finally
-                {
-                    Console.ForegroundColor = oldColor;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Class CompositeTextWriter.
-        /// Implements the <see cref="TextWriter" />.
-        /// </summary>
-        /// <seealso cref="System.IO.TextWriter" />
-        private class CompositeTextWriter : TextWriter
-        {
-            /// <summary>
-            /// The text writer array.
-            /// </summary>
-            private readonly TextWriter[] writers;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="CompositeTextWriter"/> class.
-            /// </summary>
-            /// <param name="writers">The writers.</param>
-            public CompositeTextWriter(params TextWriter[] writers) => this.writers = writers;
-
-            /// <summary>
-            /// Gets the character encoding in which the output is written when overridden in a derived class.
-            /// </summary>
-            /// <value>The encoding.</value>
-            public override Encoding Encoding => Encoding.Unicode;
-
-            /// <summary>
-            /// Writes a character to the text string or stream.
-            /// </summary>
-            /// <param name="value">The character to write to the text stream.</param>
-            public override void Write(char value)
-            {
-                foreach (var writer in this.writers)
-                {
-                    writer.Write(value);
-                    writer.Flush();
-                }
-            }
-
-            /// <summary>
-            /// Writes a subarray of characters to the text string or stream.
-            /// </summary>
-            /// <param name="buffer">The character array to write data from.</param>
-            /// <param name="index">The character position in the buffer at which to start retrieving data.</param>
-            /// <param name="count">The number of characters to write.</param>
-            public override void Write(char[] buffer, int index, int count)
-            {
-                foreach (var writer in this.writers)
-                {
-                    writer.Write(buffer, index, count);
-                    writer.Flush();
-                }
-            }
-        }
+#pragma warning restore CA2000 // Dispose objects before losing scope
     }
 }
