@@ -1,136 +1,93 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
     /// <summary>
-    /// Represents a tab entry.
+    ///     Represents a tab entry.
     /// </summary>
     internal class TabEntry
     {
-        /// <summary>
-        /// The tab lightweight control.
-        /// </summary>
-        private TabLightweightControl tabLightweightControl;
+        private bool hidden;
 
-        /// <summary>
-        /// Gets the tab lightweight control.
-        /// </summary>
-        public TabLightweightControl TabLightweightControl
+        /// <summary>Initializes a new instance of the TabEntry class.</summary>
+        /// <param name="tabLightweightControl">The tab lightweight control.</param>
+        /// <param name="tabPageControl">The tab page control.</param>
+        public TabEntry(TabLightweightControl tabLightweightControl, TabPageControl tabPageControl)
         {
-            get
-            {
-                return tabLightweightControl;
-            }
+            //	Set the the tab control and the tab lightweight control.
+            this.TabPageControl = tabPageControl;
+            this.TabPageControl.TabStop = false;
+            this.TabLightweightControl = tabLightweightControl;
+
+            //	Instantiate the tab selector lightweight control.
+            this.TabSelectorLightweightControl = new TabSelectorLightweightControl(this);
         }
 
         /// <summary>
-        /// The tab page control.
+        ///     Gets the tab lightweight control.
         /// </summary>
-        private TabPageControl tabPageControl;
+        public TabLightweightControl TabLightweightControl { get; }
 
         /// <summary>
-        /// Gets the tab page control.
+        ///     Gets the tab page control.
         /// </summary>
-        public TabPageControl TabPageControl
-        {
-            get
-            {
-                return tabPageControl;
-            }
-        }
+        public TabPageControl TabPageControl { get; }
 
         /// <summary>
-        /// The tab selector lightweight control.
+        ///     Gets the tab control.
         /// </summary>
-        private TabSelectorLightweightControl tabSelectorLightweightControl;
+        public TabSelectorLightweightControl TabSelectorLightweightControl { get; }
 
         /// <summary>
-        /// Gets the tab control.
+        ///     Gets a value indicating whether the tab entry is the first tab entry or not.
         /// </summary>
-        public TabSelectorLightweightControl TabSelectorLightweightControl
-        {
-            get
-            {
-                return tabSelectorLightweightControl;
-            }
-        }
+        public bool IsFirstTabEntry => this.TabLightweightControl.FirstTabEntry == this;
 
         /// <summary>
-        /// Gets a value indicating whether the tab entry is the first tab entry or not.
+        ///     Gets a value indicating whether the tab entry is selected or not.
         /// </summary>
-        public bool IsFirstTabEntry
-        {
-            get
-            {
-                return tabLightweightControl.FirstTabEntry == this;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the tab entry is selected or not.
-        /// </summary>
-        public bool IsSelected
-        {
-            get
-            {
-                return tabLightweightControl.SelectedTabEntry == this;
-            }
-        }
+        public bool IsSelected => this.TabLightweightControl.SelectedTabEntry == this;
 
         public bool Hidden
         {
-            get
-            {
-                return _hidden;
-            }
+            get => this.hidden;
             set
             {
-                _hidden = value;
-                tabSelectorLightweightControl.Visible = value;
-                tabPageControl.Visible = value;
+                this.hidden = value;
+                this.TabSelectorLightweightControl.Visible = value;
+                this.TabPageControl.Visible = value;
             }
         }
-        private bool _hidden;
 
         public void Selected()
         {
-            if (tabPageControl != null)
+            if (this.TabPageControl == null)
             {
-                if (_hidden)
-                    Hidden = false;
-                tabPageControl.Visible = true;
-                tabPageControl.TabStop = true;
-                tabPageControl.RaiseSelected();
-                tabPageControl.SelectNextControl(null, true, true, true, false);
+                return;
             }
+
+            if (this.hidden)
+            {
+                this.Hidden = false;
+            }
+
+            this.TabPageControl.Visible = true;
+            this.TabPageControl.TabStop = true;
+            this.TabPageControl.RaiseSelected();
+            this.TabPageControl.SelectNextControl(null, true, true, true, false);
         }
 
         public void Unselected()
         {
-            if (tabPageControl != null)
+            if (this.TabPageControl == null)
             {
-                tabPageControl.Visible = false;
-                tabPageControl.TabStop = false;
-                tabPageControl.RaiseUnselected();
+                return;
             }
-        }
 
-        /// <summary>
-        /// Initializes a new instance of the TabEntry class.
-        /// </summary>
-        /// <param name="tabControl">The tab page control.</param>
-        public TabEntry(TabLightweightControl tabLightweightControl, TabPageControl tabPageControl)
-        {
-            //	Set the the tab control and the tab lightweight control.
-            this.tabPageControl = tabPageControl;
-            this.tabPageControl.TabStop = false;
-            this.tabLightweightControl = tabLightweightControl;
-
-            //	Instantiate the tab selector lightweight control.
-            tabSelectorLightweightControl = new TabSelectorLightweightControl(this);
+            this.TabPageControl.Visible = false;
+            this.TabPageControl.TabStop = false;
+            this.TabPageControl.RaiseUnselected();
         }
     }
 }

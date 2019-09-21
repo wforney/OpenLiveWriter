@@ -1,15 +1,15 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// CommandBar control lightweight control.  Allows any control to be placed on a CommandBar.
     /// </summary>
@@ -21,24 +21,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private Container components = null;
 
         /// <summary>
-        /// The control for the command bar control lightweight control.
-        /// </summary>
-        private Control control;
-
-        /// <summary>
         /// Gets or sets the control for the command bar control lightweight control.
         /// </summary>
-        public Control Control
-        {
-            get
-            {
-                return control;
-            }
-            set
-            {
-                control = value;
-            }
-        }
+        public Control Control { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the CommandBarControlLightweightControl class.
@@ -50,7 +35,7 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -61,8 +46,8 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -73,9 +58,9 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            InitializeObject();
-            this.control = control;
+            this.InitializeComponent();
+            this.InitializeObject();
+            this.Control = control;
             control.TabStop = false;
         }
 
@@ -84,20 +69,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-
-        }
+        private void InitializeComponent() => this.components = new Container();
         #endregion
 
         /// <summary>
         /// Common object initialization.
         /// </summary>
-        private void InitializeObject()
-        {
-            TabStop = true;
-        }
+        private void InitializeObject() => this.TabStop = true;
 
         /// <summary>
         /// Raises the Layout event.
@@ -107,15 +85,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	Call the base class's method so that registered delegates receive the event.
             base.OnLayout(e);
-            VirtualSize = new Size(control.Width + 4, control.Height);
+            this.VirtualSize = new Size(this.Control.Width + 4, this.Control.Height);
         }
 
         private void SyncControlLocation()
         {
-            Rectangle bounds = new Rectangle(
-                VirtualClientPointToParent(new Point(2, 0)),
-                control.Size);
-            control.Location = bounds.Location;
+            var bounds = new Rectangle(
+                this.VirtualClientPointToParent(new Point(2, 0)),
+                this.Control.Size);
+            this.Control.Location = bounds.Location;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -130,7 +108,7 @@ namespace OpenLiveWriter.ApplicationFramework
             //
             // By moving the call to OnPaint we can be confident that the heavyweight control
             // will be moved after all layout has completed.
-            SyncControlLocation();
+            this.SyncControlLocation();
 
             base.OnPaint(e);
         }
@@ -144,26 +122,32 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Call the base class's method so that registered delegates receive the event.
             base.OnLightweightControlContainerControlChanged(e);
 
-            //
-            if (control.Parent != Parent)
-                control.Parent = Parent;
-
-            if (Parent != null)
+            if (this.Control.Parent != this.Parent)
             {
-                PerformLayout();
-                Invalidate();
+                this.Control.Parent = this.Parent;
+            }
+
+            if (this.Parent != null)
+            {
+                this.PerformLayout();
+                this.Invalidate();
             }
         }
 
+        /// <summary>
+        /// Focuses this instance.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public override bool Focus()
         {
-            control.Focus();
+            this.Control.Focus();
             return base.Focus();
         }
 
-        protected override AccessibleObject CreateAccessibilityInstance()
-        {
-            return control.AccessibilityObject;
-        }
+        /// <summary>
+        /// Creates the accessibility instance.
+        /// </summary>
+        /// <returns>AccessibleObject.</returns>
+        protected override AccessibleObject CreateAccessibilityInstance() => this.Control.AccessibilityObject;
     }
 }

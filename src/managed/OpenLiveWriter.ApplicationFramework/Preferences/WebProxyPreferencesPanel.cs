@@ -1,170 +1,265 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework.Preferences
 {
+    using System;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Layout;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// Summary description for WebProxyPreferencesPanel.
+    /// Implements the <see cref="PreferencesPanel" />
     /// </summary>
+    /// <seealso cref="PreferencesPanel" />
     public class WebProxyPreferencesPanel : PreferencesPanel
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
+
+        /// <summary>
+        /// The group box proxy
+        /// </summary>
         private GroupBox groupBoxProxy;
+
+        /// <summary>
+        /// The panel proxy settings
+        /// </summary>
         private Panel panelProxySettings;
+
+        /// <summary>
+        /// The proxy password
+        /// </summary>
         private TextBox proxyPassword;
+
+        /// <summary>
+        /// The proxy password label
+        /// </summary>
         private Label proxyPasswordLabel;
+
+        /// <summary>
+        /// The proxy username
+        /// </summary>
         private TextBox proxyUsername;
+
+        /// <summary>
+        /// The proxy username label
+        /// </summary>
         private Label proxyUsernameLabel;
+
+        /// <summary>
+        /// The proxy port
+        /// </summary>
         private TextBox proxyPort;
+
+        /// <summary>
+        /// The proxy port label
+        /// </summary>
         private Label proxyPortLabel;
+
+        /// <summary>
+        /// The proxy server
+        /// </summary>
         private TextBox proxyServer;
+
+        /// <summary>
+        /// The proxy server label
+        /// </summary>
         private Label proxyServerLabel;
+
+        /// <summary>
+        /// The proxy enabled
+        /// </summary>
         private CheckBox proxyEnabled;
 
-        private WebProxyPreferences _webProxyPreferences;
+        /// <summary>
+        /// The web proxy preferences
+        /// </summary>
+        private WebProxyPreferences webProxyPreferences;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebProxyPreferencesPanel"/> class.
+        /// </summary>
         public WebProxyPreferencesPanel()
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
+            this.InitializeComponent();
 
-            groupBoxProxy.Text = Res.Get(StringId.ProxyPrefCustom);
-            proxyPasswordLabel.Text = Res.Get(StringId.ProxyPrefPassword);
-            proxyPassword.AccessibleName = ControlHelper.ToAccessibleName(proxyPasswordLabel.Text);
-            proxyUsernameLabel.Text = Res.Get(StringId.ProxyPrefUsername);
-            proxyUsername.AccessibleName = ControlHelper.ToAccessibleName(proxyUsernameLabel.Text);
-            proxyPortLabel.Text = Res.Get(StringId.ProxyPrefPort);
-            proxyPort.AccessibleName = ControlHelper.ToAccessibleName(proxyPortLabel.Text);
-            proxyServerLabel.Text = Res.Get(StringId.ProxyPrefServer);
-            proxyServer.AccessibleName = ControlHelper.ToAccessibleName(proxyServerLabel.Text);
-            proxyEnabled.Text = Res.Get(StringId.ProxyPrefEnabled);
-            PanelName = Res.Get(StringId.ProxyPrefName);
+            this.groupBoxProxy.Text = Res.Get(StringId.ProxyPrefCustom);
+            this.proxyPasswordLabel.Text = Res.Get(StringId.ProxyPrefPassword);
+            this.proxyPassword.AccessibleName = ControlHelper.ToAccessibleName(this.proxyPasswordLabel.Text);
+            this.proxyUsernameLabel.Text = Res.Get(StringId.ProxyPrefUsername);
+            this.proxyUsername.AccessibleName = ControlHelper.ToAccessibleName(this.proxyUsernameLabel.Text);
+            this.proxyPortLabel.Text = Res.Get(StringId.ProxyPrefPort);
+            this.proxyPort.AccessibleName = ControlHelper.ToAccessibleName(this.proxyPortLabel.Text);
+            this.proxyServerLabel.Text = Res.Get(StringId.ProxyPrefServer);
+            this.proxyServer.AccessibleName = ControlHelper.ToAccessibleName(this.proxyServerLabel.Text);
+            this.proxyEnabled.Text = Res.Get(StringId.ProxyPrefEnabled);
+            this.PanelName = Res.Get(StringId.ProxyPrefName);
 
-            PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Preferences.Images.WebProxyPanelBitmap.png");
+            this.PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Preferences.Images.WebProxyPanelBitmap.png");
 
-            _webProxyPreferences = new WebProxyPreferences();
-            _webProxyPreferences.PreferencesModified += new EventHandler(_connectionsPreferences_PreferencesModified);
+            this.webProxyPreferences = new WebProxyPreferences();
+            this.webProxyPreferences.PreferencesModified += new EventHandler(this._connectionsPreferences_PreferencesModified);
 
-            proxyEnabled.Checked = _webProxyPreferences.ProxyEnabled;
-            proxyServer.Text = _webProxyPreferences.Hostname;
-            proxyPort.Text = _webProxyPreferences.Port.ToString(CultureInfo.CurrentCulture);
-            proxyUsername.Text = _webProxyPreferences.Username;
-            proxyPassword.Text = _webProxyPreferences.Password;
+            this.proxyEnabled.Checked = this.webProxyPreferences.ProxyEnabled;
+            this.proxyServer.Text = this.webProxyPreferences.Hostname;
+            this.proxyPort.Text = this.webProxyPreferences.Port.ToString(CultureInfo.CurrentCulture);
+            this.proxyUsername.Text = this.webProxyPreferences.Username;
+            this.proxyPassword.Text = this.webProxyPreferences.Password;
 
             // give password field nice round circle
-            proxyPassword.PasswordChar = Res.PasswordChar;
+            this.proxyPassword.PasswordChar = Res.PasswordChar;
 
         }
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.UserControl.Load" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            using (new AutoGrow(groupBoxProxy, AnchorStyles.Bottom, false))
+            using (new AutoGrow(this.groupBoxProxy, AnchorStyles.Bottom, false))
             {
-                LayoutHelper.NaturalizeHeight(proxyEnabled);
-                LayoutHelper.FitControlsBelow(8, proxyEnabled);
-                LayoutHelper.NaturalizeHeight(proxyServerLabel, proxyPortLabel);
-                AlignHelper.AlignBottom(proxyServerLabel, proxyPortLabel);
-                LayoutHelper.FitControlsBelow(3, proxyServerLabel);
+                LayoutHelper.NaturalizeHeight(this.proxyEnabled);
+                LayoutHelper.FitControlsBelow(8, this.proxyEnabled);
+                LayoutHelper.NaturalizeHeight(this.proxyServerLabel, this.proxyPortLabel);
+                AlignHelper.AlignBottom(this.proxyServerLabel, this.proxyPortLabel);
+                LayoutHelper.FitControlsBelow(3, this.proxyServerLabel);
             }
         }
 
+        /// <summary>
+        /// Saves the PreferencesPanel.
+        /// </summary>
         public override void Save()
         {
-            ApplyProxyPortToPreferences();
+            this.ApplyProxyPortToPreferences();
 
             //the no proxy address is set, then disable the proxy settings.
-            if (proxyEnabled.Checked)
+            if (this.proxyEnabled.Checked)
             {
-                if (proxyServer.Text == String.Empty)
-                    proxyEnabled.Checked = false;
+                if (this.proxyServer.Text == string.Empty)
+                {
+                    this.proxyEnabled.Checked = false;
+                }
             }
-            if (proxyServer.Text == String.Empty)
-                proxyEnabled.Checked = false;
 
-            if (_webProxyPreferences.IsModified())
-                _webProxyPreferences.Save();
+            if (this.proxyServer.Text == string.Empty)
+            {
+                this.proxyEnabled.Checked = false;
+            }
+
+            if (this.webProxyPreferences.IsModified())
+            {
+                this.webProxyPreferences.Save();
+            }
         }
 
-        private void _connectionsPreferences_PreferencesModified(object sender, EventArgs e)
-        {
-            OnModified(EventArgs.Empty);
-        }
+        /// <summary>
+        /// Handles the PreferencesModified event of the _connectionsPreferences control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void _connectionsPreferences_PreferencesModified(object sender, EventArgs e) => this.OnModified(EventArgs.Empty);
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the proxyEnabled control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void proxyEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            panelProxySettings.Enabled = proxyEnabled.Checked;
-            _webProxyPreferences.ProxyEnabled = proxyEnabled.Checked;
+            this.panelProxySettings.Enabled = this.proxyEnabled.Checked;
+            this.webProxyPreferences.ProxyEnabled = this.proxyEnabled.Checked;
         }
 
-        private void proxyServer_TextChanged(object sender, EventArgs e)
-        {
-            _webProxyPreferences.Hostname = proxyServer.Text;
-        }
+        /// <summary>
+        /// Handles the TextChanged event of the proxyServer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void proxyServer_TextChanged(object sender, EventArgs e) =>
+            this.webProxyPreferences.Hostname = this.proxyServer.Text;
 
-        private void proxyPort_TextChanged(object sender, EventArgs e)
-        {
+        /// <summary>
+        /// Handles the TextChanged event of the proxyPort control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void proxyPort_TextChanged(object sender, EventArgs e) =>
             //don't use the value in the control yet since it may not yet be a number.
             //set the modified flag so that the apply button gets enabled.
-            OnModified(EventArgs.Empty);
-        }
+            this.OnModified(EventArgs.Empty);
 
-        private void proxyPort_Leave(object sender, EventArgs e)
-        {
-            ApplyProxyPortToPreferences();
-        }
+        /// <summary>
+        /// Handles the Leave event of the proxyPort control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void proxyPort_Leave(object sender, EventArgs e) => this.ApplyProxyPortToPreferences();
 
+        /// <summary>
+        /// Applies the proxy port to preferences.
+        /// </summary>
         private void ApplyProxyPortToPreferences()
         {
             try
             {
-                int portValue = Int32.Parse(proxyPort.Text, CultureInfo.CurrentCulture);
-                if (_webProxyPreferences.Port != portValue)
-                    _webProxyPreferences.Port = portValue;
+                var portValue = int.Parse(this.proxyPort.Text, CultureInfo.CurrentCulture);
+                if (this.webProxyPreferences.Port != portValue)
+                {
+                    this.webProxyPreferences.Port = portValue;
+                }
             }
             catch (Exception)
             {
                 //the number is malformed, so revert the value
-                proxyPort.Text = _webProxyPreferences.Port.ToString(CultureInfo.CurrentCulture);
+                this.proxyPort.Text = this.webProxyPreferences.Port.ToString(CultureInfo.CurrentCulture);
             }
         }
 
-        private void proxyUsername_TextChanged(object sender, EventArgs e)
-        {
-            _webProxyPreferences.Username = proxyUsername.Text;
-        }
+        /// <summary>
+        /// Handles the TextChanged event of the proxyUsername control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void proxyUsername_TextChanged(object sender, EventArgs e) =>
+            this.webProxyPreferences.Username = this.proxyUsername.Text;
 
-        private void proxyPassword_TextChanged(object sender, EventArgs e)
-        {
-            _webProxyPreferences.Password = proxyPassword.Text;
-        }
+        /// <summary>
+        /// Handles the TextChanged event of the proxyPassword control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void proxyPassword_TextChanged(object sender, EventArgs e) =>
+            this.webProxyPreferences.Password = this.proxyPassword.Text;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _webProxyPreferences.PreferencesModified -= new EventHandler(_connectionsPreferences_PreferencesModified);
+                this.webProxyPreferences.PreferencesModified -= new EventHandler(this._connectionsPreferences_PreferencesModified);
 
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -175,17 +270,17 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxProxy = new System.Windows.Forms.GroupBox();
-            this.panelProxySettings = new System.Windows.Forms.Panel();
-            this.proxyPassword = new System.Windows.Forms.TextBox();
-            this.proxyPasswordLabel = new System.Windows.Forms.Label();
-            this.proxyUsername = new System.Windows.Forms.TextBox();
-            this.proxyUsernameLabel = new System.Windows.Forms.Label();
-            this.proxyPort = new System.Windows.Forms.TextBox();
-            this.proxyPortLabel = new System.Windows.Forms.Label();
-            this.proxyServer = new System.Windows.Forms.TextBox();
-            this.proxyServerLabel = new System.Windows.Forms.Label();
-            this.proxyEnabled = new System.Windows.Forms.CheckBox();
+            this.groupBoxProxy = new GroupBox();
+            this.panelProxySettings = new Panel();
+            this.proxyPassword = new TextBox();
+            this.proxyPasswordLabel = new Label();
+            this.proxyUsername = new TextBox();
+            this.proxyUsernameLabel = new Label();
+            this.proxyPort = new TextBox();
+            this.proxyPortLabel = new Label();
+            this.proxyServer = new TextBox();
+            this.proxyServerLabel = new Label();
+            this.proxyEnabled = new CheckBox();
             this.groupBoxProxy.SuspendLayout();
             this.panelProxySettings.SuspendLayout();
             this.SuspendLayout();
@@ -194,7 +289,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //
             this.groupBoxProxy.Controls.Add(this.panelProxySettings);
             this.groupBoxProxy.Controls.Add(this.proxyEnabled);
-            this.groupBoxProxy.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.groupBoxProxy.FlatStyle = FlatStyle.System;
             this.groupBoxProxy.Location = new System.Drawing.Point(8, 32);
             this.groupBoxProxy.Name = "groupBoxProxy";
             this.groupBoxProxy.Size = new System.Drawing.Size(345, 155);
@@ -220,19 +315,19 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //
             // proxyPassword
             //
-            this.proxyPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyPassword.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.proxyPassword.Location = new System.Drawing.Point(152, 64);
             this.proxyPassword.Name = "proxyPassword";
             this.proxyPassword.PasswordChar = '*';
             this.proxyPassword.Size = new System.Drawing.Size(142, 20);
             this.proxyPassword.TabIndex = 7;
             this.proxyPassword.Text = "";
-            this.proxyPassword.Leave += new System.EventHandler(this.proxyPassword_TextChanged);
+            this.proxyPassword.Leave += new EventHandler(this.proxyPassword_TextChanged);
             //
             // label12
             //
-            this.proxyPasswordLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.proxyPasswordLabel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.proxyPasswordLabel.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
+            this.proxyPasswordLabel.FlatStyle = FlatStyle.System;
             this.proxyPasswordLabel.Location = new System.Drawing.Point(152, 49);
             this.proxyPasswordLabel.Name = "proxyPasswordLabel";
             this.proxyPasswordLabel.Size = new System.Drawing.Size(135, 18);
@@ -242,18 +337,18 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //
             // proxyUsername
             //
-            this.proxyUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyUsername.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Left)
+                | AnchorStyles.Right)));
             this.proxyUsername.Location = new System.Drawing.Point(0, 64);
             this.proxyUsername.Name = "proxyUsername";
             this.proxyUsername.Size = new System.Drawing.Size(144, 20);
             this.proxyUsername.TabIndex = 5;
             this.proxyUsername.Text = "";
-            this.proxyUsername.Leave += new System.EventHandler(this.proxyUsername_TextChanged);
+            this.proxyUsername.Leave += new EventHandler(this.proxyUsername_TextChanged);
             //
             // label10
             //
-            this.proxyUsernameLabel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.proxyUsernameLabel.FlatStyle = FlatStyle.System;
             this.proxyUsernameLabel.Location = new System.Drawing.Point(0, 49);
             this.proxyUsernameLabel.Name = "proxyUsernameLabel";
             this.proxyUsernameLabel.Size = new System.Drawing.Size(137, 18);
@@ -268,12 +363,12 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             this.proxyPort.Size = new System.Drawing.Size(76, 20);
             this.proxyPort.TabIndex = 3;
             this.proxyPort.Text = "8080";
-            this.proxyPort.TextChanged += new System.EventHandler(this.proxyPort_TextChanged);
-            this.proxyPort.Leave += new System.EventHandler(this.proxyPort_Leave);
+            this.proxyPort.TextChanged += new EventHandler(this.proxyPort_TextChanged);
+            this.proxyPort.Leave += new EventHandler(this.proxyPort_Leave);
             //
             // label9
             //
-            this.proxyPortLabel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.proxyPortLabel.FlatStyle = FlatStyle.System;
             this.proxyPortLabel.Location = new System.Drawing.Point(218, 3);
             this.proxyPortLabel.Name = "proxyPortLabel";
             this.proxyPortLabel.Size = new System.Drawing.Size(76, 18);
@@ -288,11 +383,11 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             this.proxyServer.Size = new System.Drawing.Size(210, 20);
             this.proxyServer.TabIndex = 1;
             this.proxyServer.Text = "";
-            this.proxyServer.TextChanged += new System.EventHandler(this.proxyServer_TextChanged);
+            this.proxyServer.TextChanged += new EventHandler(this.proxyServer_TextChanged);
             //
             // label8
             //
-            this.proxyServerLabel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.proxyServerLabel.FlatStyle = FlatStyle.System;
             this.proxyServerLabel.Location = new System.Drawing.Point(0, 3);
             this.proxyServerLabel.Name = "proxyServerLabel";
             this.proxyServerLabel.Size = new System.Drawing.Size(208, 18);
@@ -302,13 +397,13 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //
             // proxyEnabled
             //
-            this.proxyEnabled.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.proxyEnabled.FlatStyle = FlatStyle.System;
             this.proxyEnabled.Location = new System.Drawing.Point(10, 20);
             this.proxyEnabled.Name = "proxyEnabled";
             this.proxyEnabled.Size = new System.Drawing.Size(324, 18);
             this.proxyEnabled.TabIndex = 0;
             this.proxyEnabled.Text = "&Specify custom proxy server settings";
-            this.proxyEnabled.CheckedChanged += new System.EventHandler(this.proxyEnabled_CheckedChanged);
+            this.proxyEnabled.CheckedChanged += new EventHandler(this.proxyEnabled_CheckedChanged);
             //
             // WebProxyPreferencesPanel
             //
@@ -323,6 +418,5 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
 
         }
         #endregion
-
     }
 }

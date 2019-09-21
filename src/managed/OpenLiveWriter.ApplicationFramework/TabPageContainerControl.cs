@@ -1,12 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using System.Windows.Forms;
+
     /// <summary>
     /// Helper control for TabLightweightControl.  The TabPageContainer provides the
     /// container control below the tabs and is the parent of the TabPage controls of the TabLightweightControl
@@ -22,11 +21,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Initializes a new instance of the TabPageContainer class.
         /// </summary>
-        public TabPageContainerControl()
-        {
+        public TabPageContainerControl() =>
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -35,11 +32,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -48,10 +46,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-        }
+        private void InitializeComponent() => this.components = new Container();
         #endregion
 
         /// <summary>
@@ -73,14 +68,20 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLayout(e);
 
             //	No layout required.
-            if (Parent == null)
+            if (this.Parent == null)
+            {
                 return;
+            }
 
             //	Layout each child control.
-            Rectangle clientRectangle = ClientRectangle;
-            foreach (Control control in Controls)
+            var clientRectangle = this.ClientRectangle;
+            foreach (Control control in this.Controls)
+            {
                 if (control.Bounds != clientRectangle)
+                {
                     control.Bounds = clientRectangle;
+                }
+            }
         }
     }
 }

@@ -1,17 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
-    class CommandBarSpacerLightweightControl : LightweightControl
+    using System.ComponentModel;
+    using System.Drawing;
+
+    using OpenLiveWriter.Controls;
+
+    public class CommandBarSpacerLightweightControl : LightweightControl
     {
         /// <summary>
         /// The default width.
@@ -33,8 +30,8 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -45,15 +42,15 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         private void InitializeObject()
         {
-            VirtualSize = DefaultVirtualSize;
-            AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
-            AccessibleName = "Spacer";
+            this.VirtualSize = this.DefaultVirtualSize;
+            this.AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
+            this.AccessibleName = "Spacer";
         }
 
         #region Component Designer generated code
@@ -63,8 +60,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-
+            this.components = new Container();
         }
         #endregion
 
@@ -75,13 +71,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size DefaultVirtualSize
-        {
-            get
-            {
-                return new Size(DEFAULT_WIDTH, 0);
-            }
-        }
+        public override Size DefaultVirtualSize => new Size(DEFAULT_WIDTH, 0);
 
         /// <summary>
         /// Gets the minimum virtual size of the lightweight control.
@@ -90,13 +80,6 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size MinimumVirtualSize
-        {
-            get
-            {
-                return DefaultVirtualSize;
-            }
-        }
-
+        public override Size MinimumVirtualSize => this.DefaultVirtualSize;
     }
 }

@@ -33,7 +33,7 @@ namespace OpenLiveWriter.Api
         /// <param name="previewLink">Link to navigate to when users click the preview image.</param>
         public AdaptiveHtmlObject(string objectHtml, string previewLink)
         {
-            this._objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
+            this.objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
             this.PreviewLink = previewLink;
         }
 
@@ -45,7 +45,7 @@ namespace OpenLiveWriter.Api
         /// <param name="previewLink">Link to navigate to when users click the preview image.</param>
         public AdaptiveHtmlObject(string objectHtml, string previewImageSrc, string previewLink)
         {
-            this._objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
+            this.objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
             this.PreviewLink = previewLink;
             this.PreviewImageSrc = previewImageSrc;
         }
@@ -53,11 +53,13 @@ namespace OpenLiveWriter.Api
         /// <summary>
         /// HREF for image file to use as a preview for the object tag.
         /// </summary>
+        /// <value>The preview image source.</value>
         public string PreviewImageSrc { get; set; }
 
         /// <summary>
         /// Link to navigate to when users click the preview image.
         /// </summary>
+        /// <value>The preview link.</value>
         public string PreviewLink { get; set; }
 
         /// <summary>
@@ -66,16 +68,21 @@ namespace OpenLiveWriter.Api
         /// size different from its actual size (the image will be scaled by the browser to
         /// the specified size.</para>
         /// </summary>
+        /// <value>The size of the preview image.</value>
         public Size PreviewImageSize
         {
-            get => this._previewImageSize;
-            set => this._previewImageSize = value;
+            get => this.previewImageSize;
+            set => this.previewImageSize = value;
         }
-        private Size _previewImageSize = Size.Empty;
+        /// <summary>
+        /// The preview image size
+        /// </summary>
+        private Size previewImageSize = Size.Empty;
 
         /// <summary>
         /// Open the preview link in a new browser window (defaults to false).
         /// </summary>
+        /// <value><c>true</c> if [open preview in new window]; otherwise, <c>false</c>.</value>
         public bool OpenPreviewInNewWindow { get; set; } = false;
 
         /// <summary>
@@ -90,7 +97,7 @@ namespace OpenLiveWriter.Api
                 case HtmlType.PreviewHtml:
                     return this.GeneratePreviewHtml();
                 case HtmlType.ObjectHtml:
-                    return this._objectHtml;
+                    return this.objectHtml;
                 case HtmlType.AdaptiveHtml:
                     return this.GenerateAdaptiveHtml();
                 default:
@@ -99,15 +106,23 @@ namespace OpenLiveWriter.Api
             }
         }
 
+        /// <summary>
+        /// Generates the preview HTML.
+        /// </summary>
+        /// <returns>System.String.</returns>
         private string GeneratePreviewHtml() => this.GenerateHtml(string.Empty);
 
+        /// <summary>
+        /// Generates the adaptive HTML.
+        /// </summary>
+        /// <returns>System.String.</returns>
         private string GenerateAdaptiveHtml()
         {
             // unique id for the div to contain the downlevel and uplevel HTML
             var containerId = Guid.NewGuid().ToString();
 
             // surround the upgraded content with a DIV (required for dynamic substitution) and javascript-escape it
-            var jsEscapedHtmlContent = LiteralElementMethods.JsEscape(this._objectHtml, '"');
+            var jsEscapedHtmlContent = LiteralElementMethods.JsEscape(this.objectHtml, '"');
 
             // generate and html escape the onLoad attribute
             var onLoadScript = string.Format(CultureInfo.InvariantCulture, "var downlevelDiv = document.getElementById('{0}'); downlevelDiv.innerHTML = \"{1}\";", containerId, jsEscapedHtmlContent);
@@ -122,6 +137,11 @@ namespace OpenLiveWriter.Api
             return downgradableHtml.ToString();
         }
 
+        /// <summary>
+        /// Generates the HTML.
+        /// </summary>
+        /// <param name="onLoadAttribute">The on load attribute.</param>
+        /// <returns>System.String.</returns>
         private string GenerateHtml(string onLoadAttribute)
         {
             // see if the caller wants a new window
@@ -140,6 +160,9 @@ namespace OpenLiveWriter.Api
 
         }
 
-        private readonly string _objectHtml;
+        /// <summary>
+        /// The object HTML
+        /// </summary>
+        private readonly string objectHtml;
     }
 }

@@ -3,8 +3,14 @@
 
 namespace OpenLiveWriter.ApplicationFramework
 {
+    /// <summary>
+    /// Interface ISessionHandler
+    /// </summary>
     public interface ISessionHandler
     {
+        /// <summary>
+        /// Called when [end session].
+        /// </summary>
         void OnEndSession();
     }
 }

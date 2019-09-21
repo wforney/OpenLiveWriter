@@ -1,31 +1,24 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+
     /// <summary>
     /// Provides a container control for CommandBarLightweightControl.
     /// </summary>
-    public class CommandBarContainerLightweightControl : LightweightControl
+    public partial class CommandBarContainerLightweightControl : LightweightControl
     {
-        #region Private Member Variables
-
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-
-        #endregion Private Member Variables
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Initializes a new instance of the CommandBarContainerLightweightControl class.
@@ -36,8 +29,8 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -46,8 +39,8 @@ namespace OpenLiveWriter.ApplicationFramework
         public CommandBarContainerLightweightControl()
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -57,36 +50,27 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-        }
+        private void InitializeComponent() => this.components = new Container();
         #endregion
 
         /// <summary>
         /// Common object initialization.
         /// </summary>
-        private void InitializeObject()
-        {
-            AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
-        }
-
-        #region Public Properties
+        private void InitializeObject() => this.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
 
         /// <summary>
         /// Gets the default virtual size of the lightweight control.
@@ -95,14 +79,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                CommandBarLightweightControl commandBarLightweightControl = LightweightControlContainerControl as CommandBarLightweightControl;
-                if (commandBarLightweightControl == null)
+                if (!(this.LightweightControlContainerControl is CommandBarLightweightControl commandBarLightweightControl))
+                {
                     return Size.Empty;
+                }
 
                 //	Calculate the maximum width and height.
-                int maximumWidth = 0;
-                int maximumHeight = 0;
-                foreach (LightweightControl lightweightControl in LightweightControls)
+                var maximumWidth = 0;
+                var maximumHeight = 0;
+                foreach (var lightweightControl in this.LightweightControls)
                 {
                     //	Have the lightweight control perform its layout logic.
                     lightweightControl.PerformLayout();
@@ -117,11 +102,15 @@ namespace OpenLiveWriter.ApplicationFramework
 
                     //	Handle separators.
                     if (lightweightControl is CommandBarSeparatorLightweightControl)
+                    {
                         maximumWidth += commandBarLightweightControl.SeparatorLayoutMargin * 2;
+                    }
 
                     //	Note the tallest virtual control.
                     if (lightweightControl.VirtualHeight > maximumHeight)
+                    {
                         maximumHeight = lightweightControl.VirtualHeight;
+                    }
                 }
 
                 //	Return the default virtual size.
@@ -129,35 +118,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public int OffsetSpacing
-        {
-            get
-            {
-                return _offSetSpacing;
-            }
-            set
-            {
-                _offSetSpacing = value;
-            }
-        }
-
-        private int _offSetSpacing = 0;
-
-        #endregion Public Properties
-
-        #region Public Methods
-
-        #endregion Public Methods
-
-        #region Protected Event Overrides
-
-        private enum Previous
-        {
-            None,
-            Button,
-            Separator,
-            Other
-        }
+        public int OffsetSpacing { get; set; } = 0;
 
         /// <summary>
         /// Raises the Layout event.
@@ -169,41 +130,50 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLayout(e);
 
             //	Obtain our CommandBarLightweightControl.  Must have one.
-            CommandBarLightweightControl commandBarLightweightControl = LightweightControlContainerControl as CommandBarLightweightControl;
-            if (commandBarLightweightControl == null)
+            if (!(this.LightweightControlContainerControl is CommandBarLightweightControl commandBarLightweightControl))
+            {
                 return;
+            }
 
             //	Layout the lightweight controls on the command bar lightweight control.
-            int xOffset = 0;
-            Previous previous = Previous.None;
+            var xOffset = 0;
+            var previous = Previous.None;
 
-            foreach (LightweightControl lightweightControl in LightweightControls)
+            foreach (var lightweightControl in this.LightweightControls)
             {
                 //	Have the lightweight control perform its layout logic.
                 lightweightControl.PerformLayout();
 
                 //	Skip the lightweight control if it's not visible.
                 if (!lightweightControl.Visible)
+                {
                     continue;
+                }
 
                 //	Handle separators.
                 if (lightweightControl is CommandBarSeparatorLightweightControl)
                 {
-                    lightweightControl.VirtualHeight = VirtualHeight;
+                    lightweightControl.VirtualHeight = this.VirtualHeight;
                     xOffset += commandBarLightweightControl.SeparatorLayoutMargin;
                 }
 
                 if (previous == Previous.None)
+                {
                     xOffset += 5;
+                }
 
                 if ((previous == Previous.Button || previous == Previous.Separator) && lightweightControl is CommandBarButtonLightweightControl)
-                    xOffset += OffsetSpacing;
+                {
+                    xOffset += this.OffsetSpacing;
+                }
 
                 if (lightweightControl is CommandBarButtonLightweightControl)
+                {
                     xOffset += ((CommandBarButtonLightweightControl)lightweightControl).MarginLeft;
+                }
 
                 //	Set the location of this control.
-                lightweightControl.VirtualLocation = new Point(xOffset, Utility.CenterMinZero(lightweightControl.VirtualHeight, VirtualHeight));
+                lightweightControl.VirtualLocation = new Point(xOffset, Utility.CenterMinZero(lightweightControl.VirtualHeight, this.VirtualHeight));
 
                 //	Have the lightweight control perform its layout logic.
                 //lightweightControl.PerformLayout();
@@ -212,7 +182,9 @@ namespace OpenLiveWriter.ApplicationFramework
                 xOffset += lightweightControl.VirtualWidth;
 
                 if (lightweightControl is CommandBarButtonLightweightControl)
+                {
                     xOffset += ((CommandBarButtonLightweightControl)lightweightControl).MarginRight;
+                }
 
                 previous = Previous.Other;
 
@@ -232,11 +204,9 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
             }
 
-            VirtualWidth = xOffset;
+            this.VirtualWidth = xOffset;
 
-            RtlLayoutFixup(false);
+            this.RtlLayoutFixup(false);
         }
-
-        #endregion Protected Event Overrides
     }
 }

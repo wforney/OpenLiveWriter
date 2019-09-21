@@ -1,111 +1,150 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-using OpenLiveWriter.ApplicationFramework.Skinning;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-using System.Security.Permissions;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Layout;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// Summary description for ColorPickerForm.
+    /// Implements the <see cref="OpenLiveWriter.Controls.MiniForm" />
     /// </summary>
+    /// <seealso cref="OpenLiveWriter.Controls.MiniForm" />
     public class ColorPickerForm : MiniForm
     {
-        private OpenLiveWriter.ApplicationFramework.ColorPresetControl colorPresets;
-        private OpenLiveWriter.ApplicationFramework.ColorDefaultColorControl colorDefaultColorControl;
-        private OpenLiveWriter.ApplicationFramework.ColorDialogLauncherControl colorDialogLauncherControl;
+        /// <summary>
+        /// The color presets
+        /// </summary>
+        private ColorPresetControl colorPresets;
+
+        /// <summary>
+        /// The color default color control
+        /// </summary>
+        private ColorDefaultColorControl colorDefaultColorControl;
+
+        /// <summary>
+        /// The color dialog launcher control
+        /// </summary>
+        private ColorDialogLauncherControl colorDialogLauncherControl;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.Container components = null;
 
+        /// <summary>
+        /// The current sub control
+        /// </summary>
         private int currentSubControl;
+
+        /// <summary>
+        /// The subctrls
+        /// </summary>
         private IColorPickerSubControl[] subctrls;
+
+        /// <summary>
+        /// The m color
+        /// </summary>
         private Color m_color;
+
+        /// <summary>
+        /// Occurs when [color selected].
+        /// </summary>
         public event ColorSelectedEventHandler ColorSelected;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorPickerForm" /> class.
+        /// </summary>
         public ColorPickerForm()
         {
             //
             // Required for Windows Form Designer support
             //
-            RightToLeftLayout = false; // prevents the single-pixel border from drawing in a funky way (right side drops out, even when using BidiGraphics)
-            InitializeComponent();
-            DismissOnDeactivate = true;
-            subctrls = new IColorPickerSubControl[] { colorDefaultColorControl, colorPresets, colorDialogLauncherControl };
+            this.RightToLeftLayout = false; // prevents the single-pixel border from drawing in a funky way (right side drops out, even when using BidiGraphics)
+            this.InitializeComponent();
+            this.DismissOnDeactivate = true;
+            this.subctrls = new IColorPickerSubControl[] { this.colorDefaultColorControl, this.colorPresets, this.colorDialogLauncherControl };
 
             // The ColorDialogLauncherControl needs to Close the ColorPickerForm before the ColorDialog can be shown.
             // If not, the Color Dialog will return DialogResult.Cancel immediately.
-            colorDialogLauncherControl.Close += new EventHandler(colorDialogLauncherControl_Close);
+            this.colorDialogLauncherControl.Close += new EventHandler(this.colorDialogLauncherControl_Close);
 
-            colorDefaultColorControl.AccessibleName = ControlHelper.ToAccessibleName(Res.Get(StringId.ColorPickerDefaultColor));
+            this.colorDefaultColorControl.AccessibleName = ControlHelper.ToAccessibleName(Res.Get(StringId.ColorPickerDefaultColor));
         }
 
-        void colorDialogLauncherControl_Close(object sender, EventArgs e)
-        {
-            Close();
-        }
+        /// <summary>
+        /// Handles the Close event of the colorDialogLauncherControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        void colorDialogLauncherControl_Close(object sender, EventArgs e) => this.Close();
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.Form.Load" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             using (new AutoGrow(this, AnchorStyles.Right | AnchorStyles.Bottom, true))
             {
-                int origHeight = colorDefaultColorControl.Height;
-                int origWidth = colorDefaultColorControl.Width;
-                colorDefaultColorControl.NaturalizeHeight();
-                int deltaY = colorDefaultColorControl.Height - origHeight;
+                var origHeight = this.colorDefaultColorControl.Height;
+                var origWidth = this.colorDefaultColorControl.Width;
+                this.colorDefaultColorControl.NaturalizeHeight();
+                var deltaY = this.colorDefaultColorControl.Height - origHeight;
 
-                new ControlGroup(colorPresets, colorDialogLauncherControl).Top += deltaY;
+                new ControlGroup(this.colorPresets, this.colorDialogLauncherControl).Top += deltaY;
 
-                colorDialogLauncherControl.NaturalizeHeight();
+                this.colorDialogLauncherControl.NaturalizeHeight();
 
-                colorDialogLauncherControl.Width = colorDefaultColorControl.Width =
-                    Math.Max(origWidth, Math.Max(colorDialogLauncherControl.Width, colorDefaultColorControl.Width));
+                this.colorDialogLauncherControl.Width = this.colorDefaultColorControl.Width =
+                    Math.Max(origWidth, Math.Max(this.colorDialogLauncherControl.Width, this.colorDefaultColorControl.Width));
             }
-            colorPresets.Left = (ClientSize.Width - colorPresets.Width) / 2;
 
-            Focus();
+            this.colorPresets.Left = (this.ClientSize.Width - this.colorPresets.Width) / 2;
+
+            this.Focus();
         }
 
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>The color.</value>
         public Color Color
         {
-            get { return m_color; }
+            get => this.m_color;
             set
             {
-                m_color = value;
+                this.m_color = value;
 
-                foreach (IColorPickerSubControl sc in subctrls)
+                foreach (var sc in this.subctrls)
                 {
                     sc.Color = value;
                 }
 
-                if (ColorSelected != null)
-                    ColorSelected(this, new ColorSelectedEventArgs(value));
+                ColorSelected?.Invoke(this, new ColorSelectedEventArgs(value));
             }
         }
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -118,32 +157,32 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            this.colorPresets = new OpenLiveWriter.ApplicationFramework.ColorPresetControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
-            this.colorDefaultColorControl = new OpenLiveWriter.ApplicationFramework.ColorDefaultColorControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
-            this.colorDialogLauncherControl = new OpenLiveWriter.ApplicationFramework.ColorDialogLauncherControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
+            this.colorPresets = new ColorPresetControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
+            this.colorDefaultColorControl = new ColorDefaultColorControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
+            this.colorDialogLauncherControl = new ColorDialogLauncherControl(this.colorPickerForm_ColorSelected, this.sc_Navigate);
             this.SuspendLayout();
             //
             // colorPresets
             //
-            this.colorPresets.Location = new System.Drawing.Point(11, 39);
+            this.colorPresets.Location = new Point(11, 39);
             this.colorPresets.Name = "colorPresets";
-            this.colorPresets.Size = new System.Drawing.Size(96, 72);
+            this.colorPresets.Size = new Size(96, 72);
             this.colorPresets.TabIndex = 1;
             this.colorPresets.TabStop = true;
             //
             // colorDefaultColorControl
             //
-            this.colorDefaultColorControl.Location = new System.Drawing.Point(5, 5);
+            this.colorDefaultColorControl.Location = new Point(5, 5);
             this.colorDefaultColorControl.Name = "colorDefaultColorControl";
-            this.colorDefaultColorControl.Size = new System.Drawing.Size(108, 32);
+            this.colorDefaultColorControl.Size = new Size(108, 32);
             this.colorDefaultColorControl.TabIndex = 0;
             this.colorDefaultColorControl.TabStop = true;
             //
             // colorDialogLauncherControl
             //
-            this.colorDialogLauncherControl.Location = new System.Drawing.Point(5, 112);
+            this.colorDialogLauncherControl.Location = new Point(5, 112);
             this.colorDialogLauncherControl.Name = "colorDialogLauncherControl";
-            this.colorDialogLauncherControl.Size = new System.Drawing.Size(108, 24);
+            this.colorDialogLauncherControl.Size = new Size(108, 24);
             this.colorDialogLauncherControl.TabIndex = 2;
             this.colorDialogLauncherControl.TabStop = true;
 
@@ -151,28 +190,31 @@ namespace OpenLiveWriter.ApplicationFramework
             // ColorPickerForm
             //
             this.AutoScaleMode = AutoScaleMode.None;
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 14);
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(118, 141);
+            this.AutoScaleBaseSize = new Size(5, 14);
+            this.BackColor = SystemColors.Window;
+            this.ClientSize = new Size(118, 141);
             this.ControlBox = false;
             this.Controls.Add(this.colorDialogLauncherControl);
             this.Controls.Add(this.colorDefaultColorControl);
             this.Controls.Add(this.colorPresets);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ColorPickerForm";
             this.Text = "ColorPickerForm";
             this.ResumeLayout(false);
-
         }
         #endregion
 
+        /// <summary>
+        /// Gets the create parameters.
+        /// </summary>
+        /// <value>The create parameters.</value>
         protected override CreateParams CreateParams
         {
             get
             {
-                CreateParams createParams = base.CreateParams;
+                var createParams = base.CreateParams;
 
                 // Borderless windows show in the alt+tab window, so this fakes
                 // out windows into thinking its a tool window (which doesn't
@@ -183,292 +225,115 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Selects the next sub control.
+        /// </summary>
+        /// <param name="current">The current.</param>
+        /// <param name="forward">if set to <c>true</c> [forward].</param>
         private void SelectNextSubControl(int current, bool forward)
         {
-            int nextSubControl = forward ? current + 1 : current - 1;
-            nextSubControl = (nextSubControl + subctrls.Length) % subctrls.Length;
+            var nextSubControl = forward ? current + 1 : current - 1;
+            nextSubControl = (nextSubControl + this.subctrls.Length) % this.subctrls.Length;
 
-            currentSubControl = nextSubControl;
-            subctrls[currentSubControl].SelectControl(forward);
+            this.currentSubControl = nextSubControl;
+            this.subctrls[this.currentSubControl].SelectControl(forward);
         }
 
+        /// <summary>
+        /// Processes a command key.
+        /// </summary>
+        /// <param name="msg">A <see cref="T:System.Windows.Forms.Message" />, passed by reference, that represents the Win32 message to process.</param>
+        /// <param name="keyData">One of the <see cref="T:System.Windows.Forms.Keys" /> values that represents the key to process.</param>
+        /// <returns><see langword="true" /> if the keystroke was processed and consumed by the control; otherwise, <see langword="false" /> to allow further processing.</returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Escape)
             {
-                Close();
+                this.Close();
                 return true;
             }
             else if (keyData == Keys.Tab)
             {
-                Close();
+                this.Close();
                 return true;
             }
             else if (keyData == (Keys.Tab | Keys.Shift))
             {
-                Close();
+                this.Close();
                 return true;
             }
             else if (keyData == Keys.Up | keyData == Keys.Left)
             {
-                SelectNextSubControl(currentSubControl, false);
+                this.SelectNextSubControl(this.currentSubControl, false);
                 return true;
             }
             else if (keyData == Keys.Down | keyData == Keys.Right)
             {
-                SelectNextSubControl(currentSubControl, true);
+                this.SelectNextSubControl(this.currentSubControl, true);
                 return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.Control.Paint" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data.</param>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            using (Brush b = new SolidBrush(BackColor))
-                g.FillRectangle(b, ClientRectangle);
-            using (Pen p = new Pen(SystemColors.Highlight, 1))
-                g.DrawRectangle(p, new Rectangle(0, 0, ClientSize.Width - 1, ClientSize.Height - 1));
+            using (Brush b = new SolidBrush(this.BackColor))
+                g.FillRectangle(b, this.ClientRectangle);
+            using (var p = new Pen(SystemColors.Highlight, 1))
+                g.DrawRectangle(p, new Rectangle(0, 0, this.ClientSize.Width - 1, this.ClientSize.Height - 1));
         }
 
+        /// <summary>
+        /// Handles the ColorSelected event of the colorPickerForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ColorSelectedEventArgs"/> instance containing the event data.</param>
         private void colorPickerForm_ColorSelected(object sender, ColorSelectedEventArgs e)
         {
-            Color = e.SelectedColor;
-            Close();
+            this.Color = e.SelectedColor;
+            this.Close();
         }
 
+        /// <summary>
+        /// Handles the Navigate event of the sc control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="NavigateEventArgs"/> instance containing the event data.</param>
         private void sc_Navigate(object sender, NavigateEventArgs e)
         {
-            int navFrom = -1;
-            for (int i = 0; i < subctrls.Length; i++)
+            var navFrom = -1;
+            for (var i = 0; i < this.subctrls.Length; i++)
             {
-                if (ReferenceEquals(sender, subctrls[i]))
+                if (ReferenceEquals(sender, this.subctrls[i]))
                 {
                     navFrom = i;
                     break;
                 }
             }
 
-            SelectNextSubControl(navFrom, e.Forward);
+            this.SelectNextSubControl(navFrom, e.Forward);
         }
     }
 
+    /// <summary>
+    /// Delegate NavigateEventHandler
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="args">The <see cref="NavigateEventArgs"/> instance containing the event data.</param>
     public delegate void NavigateEventHandler(object sender, NavigateEventArgs args);
+    /// <summary>
+    /// Delegate ColorSelectedEventHandler
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="args">The <see cref="ColorSelectedEventArgs"/> instance containing the event data.</param>
     public delegate void ColorSelectedEventHandler(object sender, ColorSelectedEventArgs args);
-    public class ColorSelectedEventArgs : EventArgs
-    {
-        private readonly Color selectedColor;
-
-        public ColorSelectedEventArgs(Color selectedColor)
-        {
-            this.selectedColor = selectedColor;
-        }
-
-        public Color SelectedColor
-        {
-            get { return selectedColor; }
-        }
-    }
-
-    public abstract class IColorPickerSubControl : System.Windows.Forms.UserControl
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        protected System.ComponentModel.Container components = null;
-
-        public IColorPickerSubControl(ColorSelectedEventHandler colorSelected, NavigateEventHandler navigate)
-        {
-            _ColorSelected += colorSelected;
-            _Navigate = navigate;
-        }
-
-        /// <summary>
-        /// Raised by a subcontrol to inform ColorPickerForm that it should navigate
-        /// (either for forward or backward) to the next control.
-        /// </summary>
-        public event NavigateEventHandler _Navigate;
-
-        /// <summary>
-        /// Called by a subcontrol (derived class of IColorPickerSubControl) to raise the _Navigate event
-        /// </summary>
-        /// <param name="e"></param>
-        protected virtual void Navigate(NavigateEventArgs e)
-        {
-            _Navigate(this, e);
-        }
-
-        /// <summary>
-        ///  Raised by a subcontrol to inform ColorPickerForm that the user has selected a color
-        /// </summary>
-        private event ColorSelectedEventHandler _ColorSelected;
-
-        /// <summary>
-        /// Called by a subcontrol (derived class of IColorPickerSubControl) to raise the _ColorSelected event
-        /// </summary>
-        /// <param name="e">ColorSelectedEventArgs</param>
-        protected virtual void ColorSelected(ColorSelectedEventArgs e)
-        {
-            _ColorSelected(this, e);
-        }
-
-        /// <summary>
-        /// Used by ColorPickerForm to facilitate navigation (up/down arrow keys) across the color picker menu.
-        /// </summary>
-        public virtual void SelectControl(bool forward)
-        {
-            this.Select();
-        }
-
-        /// Used by ColorPickerForm to inform a subcontrol of the currently selected color.
-        public virtual Color Color
-        {
-            get { return _color; }
-            set { _color = value; }
-        }
-        protected Color _color;
-
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            base.OnKeyPress(e);
-            if (e.KeyChar == '\r' || e.KeyChar == ' ')
-            {
-                ColorSelected(new ColorSelectedEventArgs(Color));
-                e.Handled = true;
-                return;
-            }
-        }
-
-        protected override void OnPaint(PaintEventArgs args)
-        {
-            base.OnPaint(args);
-
-            BidiGraphics g = new BidiGraphics(args.Graphics, ClientRectangle);
-            g.DrawText(Text, Font, ClientRectangle, SystemColors.ControlText, TextFormatFlags);
-        }
-
-        protected TextFormatFlags TextFormatFlags
-        {
-            get
-            {
-                TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak;
-                if (!ShowKeyboardCues)
-                    flags |= TextFormatFlags.HidePrefix;
-                return flags;
-            }
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
-
-        public void NaturalizeHeight()
-        {
-            Size size = TextRenderer.MeasureText(
-                Text,
-                Font,
-                new Size(int.MaxValue, int.MaxValue),
-                TextFormatFlags);
-            Height = Math.Max(Height, size.Height);
-            Width = size.Width;
-        }
-
-        [UIPermission(SecurityAction.LinkDemand, Window = UIPermissionWindow.AllWindows)]
-        protected override bool ProcessMnemonic(char charCode)
-        {
-            if (IsMnemonic(charCode, this.Text))
-            {
-                ColorSelected(new ColorSelectedEventArgs(Color));
-                return true;
-            }
-            return base.ProcessMnemonic(charCode);
-        }
-
-        protected override void OnClick(EventArgs e)
-        {
-            base.OnClick(e);
-            ColorSelected(new ColorSelectedEventArgs(Color));
-        }
-
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            Highlight = true;
-        }
-
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            Highlight = false;
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            Highlight = true;
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            Highlight = false;
-        }
-
-        protected bool _highlight;
-
-        protected virtual bool Highlight
-        {
-            get { return _highlight; }
-            set
-            {
-                if (_highlight != value)
-                {
-                    _highlight = value;
-                    if (_highlight)
-                    {
-                        BackColor = SystemColors.Highlight;
-                        ForeColor = SystemColors.HighlightText;
-                    }
-                    else
-                    {
-                        BackColor = Parent.BackColor;
-                        ForeColor = SystemColors.ControlText;
-                    }
-                    Invalidate();
-                }
-            }
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Up)
-            {
-                Navigate(new NavigateEventArgs(false));
-                return true;
-            }
-            else if (keyData == Keys.Down)
-            {
-                Navigate(new NavigateEventArgs(true));
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-    }
 }

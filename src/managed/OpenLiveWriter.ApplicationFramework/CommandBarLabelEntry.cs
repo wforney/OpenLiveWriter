@@ -1,11 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// Command bar label entry.
     /// </summary>
@@ -16,24 +16,9 @@ namespace OpenLiveWriter.ApplicationFramework
     public class CommandBarLabelEntry : CommandBarEntry
     {
         /// <summary>
-        ///	The text for this CommandBarLabelEntry.
-        /// </summary>
-        private string text;
-
-        /// <summary>
         ///	Gets or sets the text for this CommandBarLabelEntry.
         /// </summary>
-        public string Text
-        {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                text = value;
-            }
-        }
+        public string Text { get; set; }
 
         /// <summary>
         /// The CommandBarLabelLightweightControl for this entry.
@@ -61,9 +46,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>Lightweight control.</returns>
         public override LightweightControl GetLightweightControl(CommandBarLightweightControl commandBarLightweightControl, bool rightAligned)
         {
-            if (commandBarLabelLightweightControl == null)
-                commandBarLabelLightweightControl = new CommandBarLabelLightweightControl(text);
-            return commandBarLabelLightweightControl;
+            if (this.commandBarLabelLightweightControl == null)
+            {
+                this.commandBarLabelLightweightControl = new CommandBarLabelLightweightControl(this.Text);
+            }
+
+            return this.commandBarLabelLightweightControl;
         }
     }
 }

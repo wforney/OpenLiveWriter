@@ -1,10 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel.Design;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel.Design;
+
     /// <summary>
     /// Provides a user interface for editing a CommandCollection.
     /// </summary>
@@ -24,10 +24,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>An array containing the collection objects.</returns>
         protected override object[] GetItems(object editValue)
         {
-            CommandCollection commandCollection = (CommandCollection)editValue;
-            Command[] commands = new Command[commandCollection.Count];
+            var commandCollection = (CommandCollection)editValue;
+            var commands = new Command[commandCollection.Count];
             if (commandCollection.Count > 0)
+            {
                 commandCollection.CopyTo(commands, 0);
+            }
+
             return commands;
         }
 
@@ -39,10 +42,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>The newly created collection object or, otherwise, the collection indicated by the editValue parameter.</returns>
         protected override object SetItems(object editValue, object[] value)
         {
-            CommandCollection commandCollection = (CommandCollection)editValue;
+            var commandCollection = (CommandCollection)editValue;
             commandCollection.Clear();
             foreach (Command command in value)
+            {
                 commandCollection.Add(command);
+            }
+
             return commandCollection;
         }
     }

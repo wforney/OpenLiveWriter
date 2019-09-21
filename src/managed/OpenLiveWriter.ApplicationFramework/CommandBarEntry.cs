@@ -4,6 +4,7 @@
 namespace OpenLiveWriter.ApplicationFramework
 {
     using System.ComponentModel;
+
     using OpenLiveWriter.Controls;
 
     /// <summary>

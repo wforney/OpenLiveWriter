@@ -1,93 +1,108 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using OpenLiveWriter.ApplicationFramework.Skinning;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.UI;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
-    public class SectionHeaderControl : Control
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.ApplicationFramework.Skinning;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Localization.Bidi;
+
+    /// <summary>
+    ///     Class SectionHeaderControl.
+    ///     Implements the <see cref="System.Windows.Forms.Control" />
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Control" />
+    public partial class SectionHeaderControl : Control
     {
-        private UITheme _uiTheme;
-        private readonly Font _font;
+        /// <summary>
+        ///     The font
+        /// </summary>
+        private readonly Font font;
+
+        /// <summary>
+        ///     The header text
+        /// </summary>
+        private string headerText;
+
+        /// <summary>
+        ///     The UI theme
+        /// </summary>
+        private UITheme uiTheme;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SectionHeaderControl" /> class.
+        /// </summary>
         public SectionHeaderControl()
         {
-            TabStop = false;
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            AccessibleRole = AccessibleRole.Grouping;
+            this.TabStop = false;
+            this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            this.AccessibleRole = AccessibleRole.Grouping;
 
-            _uiTheme = new UITheme(this);
-            _font = Res.GetFont(FontSize.Large, FontStyle.Regular);
+            this.uiTheme = new UITheme(this);
+            this.font = Res.GetFont(FontSize.Large, FontStyle.Regular);
         }
 
+        /// <summary>
+        ///     Gets or sets the header text.
+        /// </summary>
+        /// <value>The header text.</value>
         public string HeaderText
         {
-            get { return _headerText; }
+            get => this.headerText;
             set
             {
-                _headerText = value;
-                AccessibleName = ControlHelper.ToAccessibleName(value);
-                Invalidate();
+                this.headerText = value;
+                this.AccessibleName = ControlHelper.ToAccessibleName(value);
+                this.Invalidate();
             }
         }
-        private string _headerText;
 
+        /// <summary>
+        ///     Raises the <see cref="E:System.Windows.Forms.Control.Layout" /> event.
+        /// </summary>
+        /// <param name="levent">A <see cref="T:System.Windows.Forms.LayoutEventArgs" /> that contains the event data.</param>
         protected override void OnLayout(LayoutEventArgs levent)
         {
             base.OnLayout(levent);
-            using (Graphics g = CreateGraphics())
-                Height = Convert.ToInt32(g.MeasureString(HeaderText, _font).Height);
+            using (var g = this.CreateGraphics())
+            {
+                this.Height = Convert.ToInt32(g.MeasureString(this.HeaderText, this.font).Height);
+            }
         }
 
+        /// <summary>
+        ///     Raises the <see cref="E:System.Windows.Forms.Control.Paint" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data.</param>
         protected override void OnPaint(PaintEventArgs e)
         {
-            BidiGraphics g = new BidiGraphics(e.Graphics, ClientRectangle);
+            var g = new BidiGraphics(e.Graphics, this.ClientRectangle);
 
-            StringFormat format = new StringFormat();
-            format.LineAlignment = StringAlignment.Center;
-            Rectangle rectangle = ClientRectangle;
+            var format = new StringFormat { LineAlignment = StringAlignment.Center };
+            var rectangle = this.ClientRectangle;
 
             // draw text
-            g.DrawText(HeaderText, _font, rectangle, ColorizedResources.Instance.SidebarHeaderTextColor, TextFormatFlags.VerticalCenter);
+            g.DrawText(
+                this.HeaderText,
+                this.font,
+                rectangle,
+                ColorizedResources.Instance.SidebarHeaderTextColor,
+                TextFormatFlags.VerticalCenter);
         }
 
+        /// <summary>
+        ///     Raises the <see cref="E:System.Windows.Forms.Control.SizeChanged" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            Invalidate();
-        }
-
-        private class UITheme : ControlUITheme
-        {
-            public Color TextColor;
-            public bool DrawGradient;
-            public UITheme(Control c) : base(c, true)
-            {
-
-            }
-
-            protected override void ApplyTheme(bool highContrast)
-            {
-                DrawGradient = !highContrast;
-                if (highContrast)
-                {
-                    TextColor = SystemColors.ControlText;
-                    Control.Font = Res.GetFont(FontSize.XLarge, FontStyle.Bold);
-                }
-                else
-                {
-                    TextColor = Color.White;
-                }
-                base.ApplyTheme(highContrast);
-            }
+            this.Invalidate();
         }
     }
 }

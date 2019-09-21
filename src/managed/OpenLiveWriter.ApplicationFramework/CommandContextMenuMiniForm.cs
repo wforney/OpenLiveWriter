@@ -1,18 +1,17 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Windows;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Windows;
 
     /// <summary>
-    /// ContextMenuMiniForm
+    /// The command context menu mini form class.
     /// </summary>
     internal class CommandContextMenuMiniForm : BaseForm
     {
@@ -45,63 +44,68 @@ namespace OpenLiveWriter.ApplicationFramework
          *
          */
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandContextMenuMiniForm"/> class.
+        /// </summary>
+        /// <param name="parentFrame">The parent frame.</param>
+        /// <param name="command">The command.</param>
         public CommandContextMenuMiniForm(IWin32Window parentFrame, Command command)
         {
             // save a reference to the parent frame
-            _parentFrame = parentFrame;
+            this.parentFrame = parentFrame;
 
             // save a reference to the command and context menu control handler
-            _command = command;
-            _contextMenuControlHandler = command.CommandBarButtonContextMenuControlHandler;
+            this.command = command;
+            this.contextMenuControlHandler = command.CommandBarButtonContextMenuControlHandler;
 
             // set to top most form (allows us to appear on top of our
             // owner if the owner is also top-most)
-            TopMost = true;
+            this.TopMost = true;
 
             // other window options/configuration
-            ShowInTaskbar = false;
-            FormBorderStyle = FormBorderStyle.None;
-            StartPosition = FormStartPosition.Manual;
+            this.ShowInTaskbar = false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.StartPosition = FormStartPosition.Manual;
 
             // Paint performance optimizations
-            User32.SetWindowLong(Handle, GWL.STYLE, User32.GetWindowLong(Handle, GWL.STYLE) & ~WS.CLIPCHILDREN);
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.DoubleBuffer, true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            User32.SetWindowLong(this.Handle, GWL.STYLE, User32.GetWindowLong(this.Handle, GWL.STYLE) & ~WS.CLIPCHILDREN);
+            this.SetStyle(ControlStyles.UserPaint, true);
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
             // create and initialize the context menu control
-            Control commandContextMenuControl = _contextMenuControlHandler.CreateControl();
+            var commandContextMenuControl = this.contextMenuControlHandler.CreateControl();
             commandContextMenuControl.TabIndex = 0;
             commandContextMenuControl.BackColor = BACKGROUND_COLOR;
             commandContextMenuControl.Font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
             commandContextMenuControl.Left = HORIZONTAL_INSET;
             commandContextMenuControl.Top = HEADER_INSET + HEADER_HEIGHT + HEADER_INSET + HEADER_INSET;
-            Controls.Add(commandContextMenuControl);
+            this.Controls.Add(commandContextMenuControl);
 
             // create action button (don't add it yet)
-            _actionButton = new BitmapButton();
-            _actionButton.TabIndex = 1;
-            _actionButton.Click += new EventHandler(_actionButton_Click);
-            _actionButton.BackColor = BACKGROUND_COLOR;
-            _actionButton.Font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
-            _actionButton.BitmapDisabled = _command.CommandBarButtonBitmapDisabled;
-            _actionButton.BitmapEnabled = _command.CommandBarButtonBitmapEnabled;
-            _actionButton.BitmapPushed = _command.CommandBarButtonBitmapPushed;
-            _actionButton.BitmapSelected = _command.CommandBarButtonBitmapSelected;
-            _actionButton.ButtonText = _contextMenuControlHandler.ButtonText;
-            _actionButton.ToolTip = _contextMenuControlHandler.ButtonText;
-            _actionButton.AutoSizeWidth = true;
-            _actionButton.AutoSizeHeight = true;
-            _actionButton.Size = new Size(0, 0); // dummy call to force auto-size
+            this.actionButton = new BitmapButton();
+            this.actionButton.TabIndex = 1;
+            this.actionButton.Click += new EventHandler(this._actionButton_Click);
+            this.actionButton.BackColor = BACKGROUND_COLOR;
+            this.actionButton.Font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
+            this.actionButton.BitmapDisabled = this.command.CommandBarButtonBitmapDisabled;
+            this.actionButton.BitmapEnabled = this.command.CommandBarButtonBitmapEnabled;
+            this.actionButton.BitmapPushed = this.command.CommandBarButtonBitmapPushed;
+            this.actionButton.BitmapSelected = this.command.CommandBarButtonBitmapSelected;
+            this.actionButton.ButtonText = this.contextMenuControlHandler.ButtonText;
+            this.actionButton.ToolTip = this.contextMenuControlHandler.ButtonText;
+            this.actionButton.AutoSizeWidth = true;
+            this.actionButton.AutoSizeHeight = true;
+            this.actionButton.Size = new Size(0, 0); // dummy call to force auto-size
 
             // size the form based on the size of the context menu control and button
-            Width = HORIZONTAL_INSET + commandContextMenuControl.Width + HORIZONTAL_INSET;
-            Height = commandContextMenuControl.Bottom + (BUTTON_VERTICAL_PAD * 3) + miniFormBevelBitmap.Height + _actionButton.Height;
+            this.Width = HORIZONTAL_INSET + commandContextMenuControl.Width + HORIZONTAL_INSET;
+            this.Height = commandContextMenuControl.Bottom + (BUTTON_VERTICAL_PAD * 3) + this.miniFormBevelBitmap.Height + this.actionButton.Height;
 
             // position the action button and add it to the form
-            _actionButton.Top = Height - BUTTON_VERTICAL_PAD - _actionButton.Height;
-            _actionButton.Left = HORIZONTAL_INSET - 4;
-            Controls.Add(_actionButton);
+            this.actionButton.Top = this.Height - BUTTON_VERTICAL_PAD - this.actionButton.Height;
+            this.actionButton.Left = HORIZONTAL_INSET - 4;
+            this.Controls.Add(this.actionButton);
         }
 
         /// <summary>
@@ -116,7 +120,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
             // send the parent form a WM_NCACTIVATE message to cause it to to retain it's
             // activated title bar appearance
-            User32.SendMessage(_parentFrame.Handle, WM.NCACTIVATE, new UIntPtr(1), IntPtr.Zero);
+            User32.SendMessage(this.parentFrame.Handle, WM.NCACTIVATE, new UIntPtr(1), IntPtr.Zero);
         }
 
         /// <summary>
@@ -133,8 +137,8 @@ namespace OpenLiveWriter.ApplicationFramework
             // of the form from actually triggering in the new target
             // window -- this allows the mouse event to trigger and the
             // form to go away almost instantly
-            Timer closeDelayTimer = new Timer();
-            closeDelayTimer.Tick += new EventHandler(closeDelayTimer_Tick);
+            var closeDelayTimer = new Timer();
+            closeDelayTimer.Tick += new EventHandler(this.closeDelayTimer_Tick);
             closeDelayTimer.Interval = 10;
             closeDelayTimer.Start();
         }
@@ -147,49 +151,57 @@ namespace OpenLiveWriter.ApplicationFramework
         private void closeDelayTimer_Tick(object sender, EventArgs e)
         {
             // stop and dispose the timer
-            Timer closeDelayTimer = (Timer)sender;
+            var closeDelayTimer = (Timer)sender;
             closeDelayTimer.Stop();
             closeDelayTimer.Dispose();
 
             // cancel the form
-            Cancel();
+            this.Cancel();
         }
 
         // handle painting
         protected override void OnPaint(PaintEventArgs e)
         {
             // get reference to graphics context
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // fill background
-            using (SolidBrush backgroundBrush = new SolidBrush(BACKGROUND_COLOR))
-                g.FillRectangle(backgroundBrush, ClientRectangle);
+            using (var backgroundBrush = new SolidBrush(BACKGROUND_COLOR))
+            {
+                g.FillRectangle(backgroundBrush, this.ClientRectangle);
+            }
 
             // draw outer border
-            Rectangle borderRectangle = ClientRectangle;
+            var borderRectangle = this.ClientRectangle;
             borderRectangle.Width -= 1;
             borderRectangle.Height -= 1;
-            using (Pen borderPen = new Pen(ApplicationManager.ApplicationStyle.BorderColor))
+            using (var borderPen = new Pen(ApplicationManager.ApplicationStyle.BorderColor))
+            {
                 g.DrawRectangle(borderPen, borderRectangle);
+            }
 
             // draw header region background
-            using (SolidBrush headerBrush = new SolidBrush(ApplicationManager.ApplicationStyle.PrimaryWorkspaceTopColor))
-                g.FillRectangle(headerBrush, HEADER_INSET, HEADER_INSET, Width - (HEADER_INSET * 2), HEADER_HEIGHT);
+            using (var headerBrush = new SolidBrush(ApplicationManager.ApplicationStyle.PrimaryWorkspaceTopColor))
+            {
+                g.FillRectangle(headerBrush, HEADER_INSET, HEADER_INSET, this.Width - (HEADER_INSET * 2), HEADER_HEIGHT);
+            }
 
             // draw header region text
-            using (SolidBrush textBrush = new SolidBrush(ApplicationManager.ApplicationStyle.ToolWindowTitleBarTextColor))
+            using (var textBrush = new SolidBrush(ApplicationManager.ApplicationStyle.ToolWindowTitleBarTextColor))
+            {
                 g.DrawString(
-                    _contextMenuControlHandler.CaptionText,
+                    this.contextMenuControlHandler.CaptionText,
                     ApplicationManager.ApplicationStyle.NormalApplicationFont,
                     textBrush,
                     new PointF(HEADER_INSET + 1, HEADER_INSET + 1));
+            }
 
             // draw bottom bevel line
-            g.DrawImage(miniFormBevelBitmap, new Rectangle(
+            g.DrawImage(this.miniFormBevelBitmap, new Rectangle(
                 HORIZONTAL_INSET - 1,
-                Height - (2 * BUTTON_VERTICAL_PAD) - _actionButton.Height,
-                Width - (HORIZONTAL_INSET * 2),
-                miniFormBevelBitmap.Height));
+                this.Height - (2 * BUTTON_VERTICAL_PAD) - this.actionButton.Height,
+                this.Width - (HORIZONTAL_INSET * 2),
+                this.miniFormBevelBitmap.Height));
         }
 
         /// <summary>
@@ -199,7 +211,6 @@ namespace OpenLiveWriter.ApplicationFramework
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
         }
-
 
         /*
         protected override bool ProcessKeyPreview(ref Message m)
@@ -220,18 +231,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">event args</param>
-        private void _actionButton_Click(object sender, EventArgs e)
-        {
-            Execute();
-        }
+        private void _actionButton_Click(object sender, EventArgs e) => this.Execute();
 
         /// <summary>
         /// Cancel the mini-form
         /// </summary>
-        private void Cancel()
-        {
-            Close();
-        }
+        private void Cancel() => this.Close();
 
         /// <summary>
         /// Execute the command
@@ -239,34 +244,34 @@ namespace OpenLiveWriter.ApplicationFramework
         private void Execute()
         {
             // get the data entered by the user
-            object userInput = _contextMenuControlHandler.GetUserInput();
+            var userInput = this.contextMenuControlHandler.GetUserInput();
 
             // close the form
-            Close();
+            this.Close();
 
             // tell the context menu control to execute using the specified user input
-            _contextMenuControlHandler.Execute(userInput);
+            this.contextMenuControlHandler.Execute(userInput);
         }
 
         /// <summary>
         /// Handle to parent frame window
         /// </summary>
-        private IWin32Window _parentFrame;
+        private readonly IWin32Window parentFrame;
 
         /// <summary>
         /// Command we are associated with
         /// </summary>
-        private Command _command;
+        private readonly Command command;
 
         /// <summary>
         /// Context menu control handler
         /// </summary>
-        private ICommandContextMenuControlHandler _contextMenuControlHandler;
+        private ICommandContextMenuControlHandler contextMenuControlHandler;
 
         /// <summary>
         /// Button user clicks to take action
         /// </summary>
-        private BitmapButton _actionButton;
+        private BitmapButton actionButton;
 
         /// <summary>
         /// Button face bitmap
@@ -279,6 +284,5 @@ namespace OpenLiveWriter.ApplicationFramework
         private const int HORIZONTAL_INSET = 10;
         private const int BUTTON_VERTICAL_PAD = 3;
         private static readonly Color BACKGROUND_COLOR = Color.FromArgb(244, 243, 238);
-
     }
 }

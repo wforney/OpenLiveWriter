@@ -1,4 +1,3 @@
-using System.Linq;
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
@@ -6,6 +5,7 @@ namespace OpenLiveWriter.ApplicationFramework
 {
     using System;
     using System.ComponentModel.Design;
+    using System.Linq;
 
     /// <summary>
     /// Provides a user interface for editing a CommandBarEntryCollection.

@@ -1,18 +1,18 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// Provides a tab selector lightweight control (i.e. the tab itself).
     /// </summary>
@@ -37,83 +37,27 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components;
-
-        /// <summary>
-        /// The tab entry.
-        /// </summary>
-        private TabEntry tabEntry;
+        private readonly IContainer components;
 
         /// <summary>
         /// Gets the tab entry.
         /// </summary>
-        public TabEntry TabEntry
-        {
-            get
-            {
-                return tabEntry;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether tabs should be small.
-        /// </summary>
-        private bool smallTabs = false;
+        public TabEntry TabEntry { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether tabs should be small.
         /// </summary>
-        public bool SmallTabs
-        {
-            get
-            {
-                return smallTabs;
-            }
-            set
-            {
-                smallTabs = value;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether the tab text is shown.
-        /// </summary>
-        private bool showTabText = true;
+        public bool SmallTabs { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab text is shown.
         /// </summary>
-        public bool ShowTabText
-        {
-            get
-            {
-                return showTabText;
-            }
-            set
-            {
-                showTabText = value;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether the tab bitmap is shown.
-        /// </summary>
-        private bool showTabBitmap = true;
+        public bool ShowTabText { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab bitmap is shown.
         /// </summary>
-        public bool ShowTabBitmap
-        {
-            get
-            {
-                return showTabBitmap;
-            }
-            set
-            {
-                showTabBitmap = value;
-            }
-        }
+        public bool ShowTabBitmap { get; set; } = true;
 
         /// <summary>
         /// The unselected virtual size.
@@ -125,14 +69,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public Size UnselectedVirtualSize
         {
-            get
-            {
-                return unselectedVirtualSize;
-            }
-            set
-            {
-                unselectedVirtualSize = value;
-            }
+            get => this.unselectedVirtualSize;
+            set => this.unselectedVirtualSize = value;
         }
 
         private TextFormatFlags textFormatFlags;
@@ -159,17 +97,19 @@ namespace OpenLiveWriter.ApplicationFramework
         public TabSelectorLightweightControl(IContainer container)
         {
             //	Shut up!
-            if (components == null)
-                components = null;
+            if (this.components == null)
+            {
+                this.components = null;
+            }
 
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Initialize the object.
-            InitializeObject();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -180,10 +120,10 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Initialize the object.
-            InitializeObject();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -194,13 +134,13 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Set the tab entry.
-            this.tabEntry = tabEntry;
+            this.TabEntry = tabEntry;
 
             //	Initialize the object.
-            InitializeObject();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -209,26 +149,26 @@ namespace OpenLiveWriter.ApplicationFramework
         private void InitializeObject()
         {
             //	Initialize the string format.
-            textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.PreserveGraphicsTranslateTransform;
+            this.textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.PreserveGraphicsTranslateTransform;
 
             //set the custom accessibility values for this control
-            AccessibleName = TabEntry.TabPageControl.TabText;
-            AccessibleRole = AccessibleRole.PageTab;
+            this.AccessibleName = this.TabEntry.TabPageControl.TabText;
+            this.AccessibleRole = AccessibleRole.PageTab;
 
-            TabStop = true;
+            this.TabStop = true;
         }
 
-        private LightweightControlAccessibleObject _accessibleObject;
+        private LightweightControlAccessibleObject accessibleObject;
         protected override AccessibleObject CreateAccessibilityInstance()
         {
-            if (_accessibleObject == null)
+            if (this.accessibleObject == null)
             {
-                _accessibleObject = (LightweightControlAccessibleObject)base.CreateAccessibilityInstance();
+                this.accessibleObject = (LightweightControlAccessibleObject)base.CreateAccessibilityInstance();
                 // tabs are selectable role
-                _accessibleObject.SetAccessibleStateOverride(TabEntry.IsSelected ? AccessibleStates.Selectable | AccessibleStates.Selected : AccessibleStates.Selectable);
+                this.accessibleObject.SetAccessibleStateOverride(this.TabEntry.IsSelected ? AccessibleStates.Selectable | AccessibleStates.Selected : AccessibleStates.Selectable);
             }
 
-            return _accessibleObject;
+            return this.accessibleObject;
         }
 
         /// <summary>
@@ -238,11 +178,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -253,13 +194,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            ((ISupportInitialize)(this)).BeginInit();
             //
             // TabSelectorLightweightControl
             //
             this.AllowDrop = true;
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
-
+            ((ISupportInitialize)(this)).EndInit();
         }
         #endregion
 
@@ -274,7 +214,9 @@ namespace OpenLiveWriter.ApplicationFramework
 
             //	Raise the Selected event.
             if (e.Button == MouseButtons.Left)
-                OnSelected(EventArgs.Empty);
+            {
+                this.OnSelected(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -287,88 +229,96 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLayout(e);
 
             //	No layout required if this control is not visible.
-            if (Parent == null)// || Parent.Parent == null)
+            if (this.Parent == null)// || Parent.Parent == null)
+            {
                 return;
+            }
 
             //	Obtain the font we'll use to draw the tab selector lightweight control.
-            Font font = TabEntry.TabPageControl.ApplicationStyle.NormalApplicationFont;
+            var font = this.TabEntry.TabPageControl.ApplicationStyle.NormalApplicationFont;
 
             //	Obtain the tab bitmap and tab text.
-            Bitmap tabBitmap = TabEntry.TabPageControl.TabBitmap;
-            string tabText = TabEntry.TabPageControl.TabText;
+            var tabBitmap = this.TabEntry.TabPageControl.TabBitmap;
+            var tabText = this.TabEntry.TabPageControl.TabText;
 
             //	The tab height.
-            int tabHeight = 0;
+            var tabHeight = 0;
 
             //	Adjust the tab height for the bitmap.
             if (tabBitmap != null && tabBitmap.Height > tabHeight)
+            {
                 tabHeight = tabBitmap.Height;
+            }
 
             //	Adjust the tab height for the font.
             if (font.Height > tabHeight)
+            {
                 tabHeight = font.Height;
+            }
 
             //	Pad the tab height.
-            tabHeight += smallTabs ? PAD * 2 : PAD * 4;
+            tabHeight += this.SmallTabs ? PAD * 2 : PAD * 4;
 
             //	Set the initial tab width (padded).
-            int tabWidth = PAD * 2;
+            var tabWidth = PAD * 2;
 
             //	Reset the bitmap and text layout rectangles for the layout code below.
-            bitmapRectangle = textLayoutRectangle = Rectangle.Empty;
+            this.bitmapRectangle = this.textLayoutRectangle = Rectangle.Empty;
 
             //	Layout the tab bitmap.
-            if (showTabBitmap && tabBitmap != null)
+            if (this.ShowTabBitmap && tabBitmap != null)
             {
                 tabWidth += PAD;
                 //	Set the bitmap rectangle.
-                bitmapRectangle = new Rectangle(tabWidth,
+                this.bitmapRectangle = new Rectangle(tabWidth,
                                                 Utility.CenterMinZero(tabBitmap.Height, tabHeight),
                                                 tabBitmap.Width,
                                                 tabBitmap.Height);
 
                 //	Update the tab width.
-                tabWidth += bitmapRectangle.Width;
+                tabWidth += this.bitmapRectangle.Width;
                 tabWidth += PAD;
             }
 
             //	Layout the tab text.
-            if (showTabText && tabText != null && tabText.Length != 0)
+            if (this.ShowTabText && tabText != null && tabText.Length != 0)
             {
                 //	Initialize the text layout rectangle.
-                textLayoutRectangle = new Rectangle(tabWidth,
+                this.textLayoutRectangle = new Rectangle(tabWidth,
                                                     Utility.CenterMinZero(font.Height, tabHeight + 2),
                                                     MAXIMUM_TAB_TEXT_WIDTH,
                                                     font.Height);
 
-                Size textSize = TextRenderer.MeasureText(
+                var textSize = TextRenderer.MeasureText(
                     tabText,
                     font,
-                    textLayoutRectangle.Size,
-                    textFormatFlags);
+                    this.textLayoutRectangle.Size,
+                    this.textFormatFlags);
 
-                textLayoutRectangle.Size = textSize;
+                this.textLayoutRectangle.Size = textSize;
 
                 //	Update the tab width.
-                tabWidth = textLayoutRectangle.Right + PAD;
+                tabWidth = this.textLayoutRectangle.Right + PAD;
             }
 
             //	If the tab is black (neither the bitmap or name will fit, or neither is present),
             //	assure that it is laid out with a minimum interior width.
-            if (bitmapRectangle.IsEmpty && textLayoutRectangle.IsEmpty)
+            if (this.bitmapRectangle.IsEmpty && this.textLayoutRectangle.IsEmpty)
+            {
                 tabWidth += MINIMUM_TAB_INTERIOR_WIDTH;
+            }
 
             //	Pad the tab width.
             tabWidth += PAD * 2;
 
             //	Note the unselected virtual size (used by layout logic by TabLightweightControl).
-            unselectedVirtualSize = new Size(tabWidth, tabHeight);
+            this.unselectedVirtualSize = new Size(tabWidth, tabHeight);
 
             //	If the tab entry is selected, make necessary adjustments to have it occlude
             //	surrounding tabs and miter itself into the tab page border.
-            if (tabEntry.IsSelected)
+            if (this.TabEntry.IsSelected)
             {
-                tabHeight += smallTabs ? 1 : PAD * 2;
+                tabHeight += this.SmallTabs ? 1 : PAD * 2;
 
                 // With localized tab text, we can't afford to waste any space
                 /*
@@ -381,7 +331,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Set the virtual size.
-            VirtualSize = new Size(tabWidth, tabHeight);
+            this.VirtualSize = new Size(tabWidth, tabHeight);
         }
 
         #region Protected Event Overrides
@@ -396,10 +346,14 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseEnter(e);
 
             //	Set the ToolTip.
-            if (tabEntry.TabPageControl.TabToolTipText != null && tabEntry.TabPageControl.TabToolTipText.Length != 0)
-                LightweightControlContainerControl.SetToolTip(tabEntry.TabPageControl.TabToolTipText);
-            else if (!ShowTabText)
-                LightweightControlContainerControl.SetToolTip(tabEntry.TabPageControl.TabText);
+            if (this.TabEntry.TabPageControl.TabToolTipText != null && this.TabEntry.TabPageControl.TabToolTipText.Length != 0)
+            {
+                this.LightweightControlContainerControl.SetToolTip(this.TabEntry.TabPageControl.TabToolTipText);
+            }
+            else if (!this.ShowTabText)
+            {
+                this.LightweightControlContainerControl.SetToolTip(this.TabEntry.TabPageControl.TabText);
+            }
         }
 
         /// <summary>
@@ -412,9 +366,11 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseLeave(e);
 
             //	Clear the ToolTip.
-            if ((tabEntry.TabPageControl.TabToolTipText != null && tabEntry.TabPageControl.TabToolTipText.Length != 0)
-                || !ShowTabText)
-                LightweightControlContainerControl.SetToolTip(null);
+            if ((this.TabEntry.TabPageControl.TabToolTipText != null && this.TabEntry.TabPageControl.TabToolTipText.Length != 0)
+                || !this.ShowTabText)
+            {
+                this.LightweightControlContainerControl.SetToolTip(null);
+            }
         }
 
         #endregion
@@ -425,53 +381,51 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">A PaintEventArgs that contains the event data.</param>
         protected override void OnPaint(PaintEventArgs args)
         {
-            if (!TabEntry.Hidden)
+            if (!this.TabEntry.Hidden)
             {
                 //	Call the base class's method so that registered delegates receive the event.
                 base.OnPaint(args);
 
-                BidiGraphics g = new BidiGraphics(args.Graphics, VirtualClientRectangle);
+                var g = new BidiGraphics(args.Graphics, this.VirtualClientRectangle);
 
                 //	Draw the tab.
-                DrawTab(g);
+                this.DrawTab(g);
 
                 //	Draw the tab bitmap.
-                if (!bitmapRectangle.IsEmpty)
-                    g.DrawImage(false, TabEntry.TabPageControl.TabBitmap, bitmapRectangle);
+                if (!this.bitmapRectangle.IsEmpty)
+                {
+                    g.DrawImage(false, this.TabEntry.TabPageControl.TabBitmap, this.bitmapRectangle);
+                }
 
                 //	Draw tab text.
-                if (!textLayoutRectangle.IsEmpty)
+                if (!this.textLayoutRectangle.IsEmpty)
                 {
                     //	Select the text color to use.
-                    Color textColor;
-                    if (tabEntry.IsSelected)
-                        textColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabTextColor;
-                    else
-                        textColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabTextColor;
+                    var textColor = this.TabEntry.IsSelected
+                        ? this.TabEntry.TabPageControl.ApplicationStyle.ActiveTabTextColor
+                        : this.TabEntry.TabPageControl.ApplicationStyle.InactiveTabTextColor;
 
-                    Rectangle tempRect = textLayoutRectangle;
+                    var tempRect = this.textLayoutRectangle;
                     //	Draw the tab text.
-                    g.DrawText(TabEntry.TabPageControl.TabText,
-                        TabEntry.TabPageControl.ApplicationStyle.NormalApplicationFont,
+                    g.DrawText(this.TabEntry.TabPageControl.TabText,
+                        this.TabEntry.TabPageControl.ApplicationStyle.NormalApplicationFont,
                         tempRect,
                         textColor,
-                        textFormatFlags);
+                        this.textFormatFlags);
                 }
             }
 
-            if (Focused)
-                ControlPaint.DrawFocusRectangle(args.Graphics, VirtualClientRectangle, Parent.ForeColor, Parent.BackColor);
+            if (this.Focused)
+            {
+                ControlPaint.DrawFocusRectangle(args.Graphics, this.VirtualClientRectangle, this.Parent.ForeColor, this.Parent.BackColor);
+            }
         }
 
         /// <summary>
         /// Raises the Selected event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnSelected(EventArgs e)
-        {
-            if (Selected != null)
-                Selected(this, e);
-        }
+        protected virtual void OnSelected(EventArgs e) => Selected?.Invoke(this, e);
 
         /// <summary>
         /// Draws the tab.
@@ -480,32 +434,41 @@ namespace OpenLiveWriter.ApplicationFramework
         private void DrawTab(BidiGraphics graphics)
         {
             //	Obtain the rectangle.
-            Rectangle virtualClientRectangle = VirtualClientRectangle;
+            var virtualClientRectangle = this.VirtualClientRectangle;
 
             //	Compute the face rectangle.
-            Rectangle faceRectangle = new Rectangle(virtualClientRectangle.X + 1,
+            var faceRectangle = new Rectangle(virtualClientRectangle.X + 1,
                                                     virtualClientRectangle.Y + 1,
                                                     virtualClientRectangle.Width - 2,
-                                                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                                                    virtualClientRectangle.Height - (this.TabEntry.IsSelected ? 1 : 2));
 
             //	Fill face of the tab.
             Color topColor, bottomColor;
-            if (tabEntry.IsSelected)
+            if (this.TabEntry.IsSelected)
             {
-                topColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabTopColor;
-                bottomColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabBottomColor;
+                topColor = this.TabEntry.TabPageControl.ApplicationStyle.ActiveTabTopColor;
+                bottomColor = this.TabEntry.TabPageControl.ApplicationStyle.ActiveTabBottomColor;
             }
             else
             {
-                topColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabTopColor;
-                bottomColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabBottomColor;
+                topColor = this.TabEntry.TabPageControl.ApplicationStyle.InactiveTabTopColor;
+                bottomColor = this.TabEntry.TabPageControl.ApplicationStyle.InactiveTabBottomColor;
             }
+
             if (topColor == bottomColor)
-                using (SolidBrush solidBrush = new SolidBrush(topColor))
+            {
+                using (var solidBrush = new SolidBrush(topColor))
+                {
                     graphics.FillRectangle(solidBrush, faceRectangle);
+                }
+            }
             else
-                using (LinearGradientBrush linearGradientBrush = new LinearGradientBrush(VirtualClientRectangle, topColor, bottomColor, LinearGradientMode.Vertical))
+            {
+                using (var linearGradientBrush = new LinearGradientBrush(this.VirtualClientRectangle, topColor, bottomColor, LinearGradientMode.Vertical))
+                {
                     graphics.FillRectangle(linearGradientBrush, faceRectangle);
+                }
+            }
 
 #if THREEDEE
             //	Draw the highlight inside the tab selector.
@@ -549,7 +512,7 @@ namespace OpenLiveWriter.ApplicationFramework
 #endif
 
             //	Draw the edges of the tab selector.
-            using (SolidBrush solidBrush = new SolidBrush(TabEntry.TabPageControl.ApplicationStyle.BorderColor))
+            using (var solidBrush = new SolidBrush(this.TabEntry.TabPageControl.ApplicationStyle.BorderColor))
             {
                 //	Draw the top edge.
                 graphics.FillRectangle(solidBrush,
@@ -563,14 +526,14 @@ namespace OpenLiveWriter.ApplicationFramework
                     virtualClientRectangle.X,
                     virtualClientRectangle.Y + 2,
                     1,
-                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                    virtualClientRectangle.Height - (this.TabEntry.IsSelected ? 1 : 2));
 
                 //	Draw the right edge.
                 graphics.FillRectangle(solidBrush,
                     virtualClientRectangle.Right - 1,
                     virtualClientRectangle.Y + 2,
                     1,
-                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                    virtualClientRectangle.Height - (this.TabEntry.IsSelected ? 1 : 2));
 
                 //  Draw the corners.
                 graphics.FillRectangle(solidBrush,
@@ -587,7 +550,7 @@ namespace OpenLiveWriter.ApplicationFramework
         #region Accessibility
         public override bool DoDefaultAction()
         {
-            OnSelected(EventArgs.Empty);
+            this.OnSelected(EventArgs.Empty);
             return true;
         }
         #endregion

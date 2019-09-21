@@ -53,8 +53,14 @@
     <Compile Include="ApplicationStyles\ApplicationStyleSkyBlue.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BevelStyle.cs" />
     <Compile Include="BorderControl.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ButtonFeatures.cs" />
+    <Compile Include="ButtonMargins.cs" />
+    <Compile Include="ColorButton.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ColorDefaultColorControl.cs">
       <SubType>UserControl</SubType>
@@ -62,22 +68,49 @@
     <Compile Include="ColorDialogLauncherControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ColorPickerColor.cs" />
     <Compile Include="ColorPickerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ColorPopup.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ColorPresetControl.cs" />
+    <Compile Include="ColorPresetControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorSelectedEventArgs.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="Command.InvalidationState.cs">
+      <DependentUpon>Command.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommandBarButtonEntry.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CommandBarButtonLightweightControl.CommandState.cs">
+      <DependentUpon>CommandBarButtonLightweightControl.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CommandBarButtonLightweightControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CommandBarButtonLightweightControl.DrawState.cs">
+      <DependentUpon>CommandBarButtonLightweightControl.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CommandBarButtonLightweightControl.EndShowContextMenuDisposable.cs">
+      <DependentUpon>CommandBarButtonLightweightControl.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CommandBarButtonLightweightControl.ICustomButtonBitmapPaint.cs">
+      <DependentUpon>CommandBarButtonLightweightControl.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CommandBarButtonStyle.cs" />
     <Compile Include="CommandBarContainerLightweightControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CommandBarContainerLightweightControl.Previous.cs">
+      <DependentUpon>CommandBarContainerLightweightControl.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CommandBarControl.cs">
@@ -123,6 +156,7 @@
     </Compile>
     <Compile Include="CommandCollection.cs" />
     <Compile Include="CommandCollectionEditor.cs" />
+    <Compile Include="CommandContext.cs" />
     <Compile Include="CommandContextManager.cs" />
     <Compile Include="CommandContextMenu.cs">
       <SubType>Component</SubType>
@@ -134,30 +168,61 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CommandLoader.cs" />
+    <Compile Include="CommandManager.CommandInstanceManager.cs">
+      <DependentUpon>CommandManager.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CommandManager.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CommandManagerExecuteEventArgs.cs" />
     <Compile Include="CommandMenuBuilder.cs" />
     <Compile Include="CommandMenuBuilderEntry.cs" />
+    <Compile Include="CommandMenuBuilderEntry.Key.cs">
+      <DependentUpon>CommandMenuBuilderEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommandOwnerDrawMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CommandResourceLoader.cs" />
+    <Compile Include="CommandResourceLoader.MainMenuParser.cs">
+      <DependentUpon>CommandResourceLoader.cs</DependentUpon>
+    </Compile>
     <Compile Include="ContainedTextBoxCommandSource.cs" />
+    <Compile Include="DesignModeMainFrameWindow.cs" />
     <Compile Include="DispatchingCommand.cs" />
     <Compile Include="DynamicCommandMenu.cs" />
+    <Compile Include="DynamicCommandMenuOptions.cs" />
     <Compile Include="DynamicCommandMenuOverflowForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DynamicCommandMenuOverflowForm.MenuCommandObjectListBoxAdapter.cs">
+      <DependentUpon>DynamicCommandMenuOverflowForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ExecuteEventHandlerArgs.cs" />
     <Compile Include="GenericCommandHandler.cs" />
+    <Compile Include="GridNavigateEventArgs.cs" />
+    <Compile Include="GridNavigateEventArgs.Direction.cs" />
     <Compile Include="IColorPickerCommand.cs" />
+    <Compile Include="IColorPickerSubControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ICommandContextMenuControlHandler.cs" />
+    <Compile Include="ICommandManagerHost.cs" />
     <Compile Include="ICommandTextDisplayProperties.cs" />
+    <Compile Include="IDynamicCommandMenuContext.cs" />
     <Compile Include="IFontControlCommand.cs" />
+    <Compile Include="IFormClosingHandler.cs" />
+    <Compile Include="IFrameManager.cs" />
     <Compile Include="IMainFrameWindow.cs" />
+    <Compile Include="IMainMenuBackgroundPainter.cs" />
+    <Compile Include="IMenuCommandObject.cs" />
+    <Compile Include="IOverridableCommand.cs" />
     <Compile Include="ISessionHandler.cs" />
     <Compile Include="ISimpleTextEditorCommandSource.cs" />
+    <Compile Include="IStatusBar.cs" />
+    <Compile Include="IWorkspaceBorderManager.cs" />
     <Compile Include="LightweightSplitterEventArgs.cs" />
     <Compile Include="MenuBuilder.cs" />
     <Compile Include="MenuDefinitionEntry.cs">
@@ -171,6 +236,7 @@
     <Compile Include="MenuDefinitionEntryPlaceholder.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MenuType.cs" />
     <Compile Include="MiniTab.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -180,12 +246,17 @@
     <Compile Include="MinMaxClose.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NullStatusBar.cs" />
     <Compile Include="OverridableCommand.cs" />
     <Compile Include="OwnerDrawMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Preferences\Preferences.cs" />
     <Compile Include="Preferences\PreferencesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Preferences\PreferencesForm.TabSwitcher.cs">
+      <DependentUpon>PreferencesForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Preferences\PreferencesPanel.cs">
@@ -201,14 +272,27 @@
     <Compile Include="PrimaryWorkspaceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RibbonHelper.cs" />
     <Compile Include="SatelliteApplicationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SatelliteApplicationForm.Launcher.cs">
+      <DependentUpon>SatelliteApplicationForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SatelliteApplicationFormWorkspace.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SectionHeaderControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SectionHeaderControl.UITheme.cs">
+      <DependentUpon>SectionHeaderControl.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SeparatorControl.cs">
@@ -226,10 +310,21 @@
     <Compile Include="SidebarHeaderControl.Designer.cs">
       <DependentUpon>SidebarHeaderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="SimpleTextEditorCommandHelper.cs" />
+    <Compile Include="SimpleTextEditorCommandHelper.NativeBehaviors.cs" />
     <Compile Include="Skinning\ColorizedResources.cs" />
+    <Compile Include="Skinning\Colorizer.cs" />
     <Compile Include="SpinnerCommand.cs" />
     <Compile Include="SplitterLightweightControl.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SplitterLightweightControl.SplitterOrientation.cs">
+      <DependentUpon>SplitterLightweightControl.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StatusMessage.cs" />
+    <Compile Include="SystemButtonHelper.ButtonSettings.cs">
+      <DependentUpon>SystemButtonHelper.cs</DependentUpon>
     </Compile>
     <Compile Include="SystemButtonHelper.cs" />
     <Compile Include="TabEntry.cs" />
@@ -242,6 +337,10 @@
     <Compile Include="TabPageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="TabPageControl.TabPageAccessibility.cs">
+      <DependentUpon>TabPageControl.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="TabScrollerButtonLightweightControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -251,6 +350,8 @@
     <Compile Include="TransparentCommandBarControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="VerticalSplitterStyle.cs" />
+    <Compile Include="WorkspaceBorder.cs" />
     <Compile Include="WorkspaceColumnLightweightControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -517,6 +618,10 @@
     <EmbeddedResource Include="PrimaryWorkspaceControl.resx">
       <DependentUpon>PrimaryWorkspaceControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SatelliteApplicationForm.resx">
       <DependentUpon>SatelliteApplicationForm.cs</DependentUpon>

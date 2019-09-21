@@ -1,50 +1,32 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Windows.Forms;
-
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// CommandBar button lightweight control.
+    /// Implements the <see cref="LightweightControl" />
     /// </summary>
-    public class CommandBarButtonLightweightControl : LightweightControl
+    /// <seealso cref="LightweightControl" />
+    public partial class CommandBarButtonLightweightControl : LightweightControl
     {
-        #region Private Enumerations
-
-        /// <summary>
-        /// The button draw state.
-        /// </summary>
-        public enum DrawState
-        {
-            Disabled,
-            Enabled,
-            Selected,
-            Pushed
-        }
-
-        #endregion Private Enumerations
-
-        #region Static & Constant Declaration
-
         /// <summary>
         /// The string format used to format text.
         /// </summary>
-        private static StringFormat stringFormat;
+        private static readonly StringFormat stringFormat;
 
         /// <summary>
-        ///	The maximum text with of text on a button.
+        /// The maximum text with of text on a button.
         /// </summary>
         private const int MAX_TEXT_WIDTH = 300;
 
@@ -81,16 +63,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The context menu arrow bitmap.
         /// </summary>
-        private Bitmap contextMenuArrowBitmap;
+        private readonly Bitmap contextMenuArrowBitmap;
 
         /// <summary>
         /// The disabled context menu arrow bitmap.
         /// </summary>
-        private Bitmap contextMenuArrowBitmapDisabled;
-
-        #endregion Static & Constant Declaration
-
-        #region Private Member Variables & Declarations
+        private readonly Bitmap contextMenuArrowBitmapDisabled;
 
         /// <summary>
         /// The command bar lightweight control that this CommandBarButtonLightweightControl is
@@ -104,6 +82,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private readonly string commandIdentifier;
 
+        /// <summary>
+        /// The right aligned
+        /// </summary>
         private readonly bool rightAligned;
 
         /// <summary>
@@ -121,6 +102,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private bool mouseInside = false;
 
+        /// <summary>
+        /// The mouse inside context menu
+        /// </summary>
         private bool mouseInsideContextMenu = false;
 
         /// <summary>
@@ -134,38 +118,49 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private bool contextMenuShowing;
 
+        /// <summary>
+        /// The r image
+        /// </summary>
         private Rectangle rImage = Rectangle.Empty;
+
+        /// <summary>
+        /// The r text
+        /// </summary>
         private Rectangle rText = Rectangle.Empty;
+
+        /// <summary>
+        /// The r arrow
+        /// </summary>
         private Rectangle rArrow = Rectangle.Empty;
-
-        private int marginLeft, marginRight;
-
-        #endregion Private Member Variables & Declarations
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Static initialization of the CommandBarButtonLightweightControl class.
         /// </summary>
-        static CommandBarButtonLightweightControl()
-        {
+        static CommandBarButtonLightweightControl() =>
             //	Initialize the string format.
-            stringFormat = new StringFormat();
-            stringFormat.LineAlignment = StringAlignment.Center;
-            stringFormat.Trimming = StringTrimming.EllipsisCharacter;
-        }
+            stringFormat = new StringFormat
+            {
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandBarButtonLightweightControl"/> class.
+        /// </summary>
+        /// <param name="commandBarLightweightControl">The command bar lightweight control.</param>
+        /// <param name="commandIdentifier">The command identifier.</param>
+        /// <param name="rightAligned">if set to <c>true</c> [right aligned].</param>
         public CommandBarButtonLightweightControl(CommandBarLightweightControl commandBarLightweightControl, string commandIdentifier, bool rightAligned)
         {
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
 
             //	Set the command bar lightweight control.
             this.commandBarLightweightControl = commandBarLightweightControl;
-            commandBarLightweightControl.CommandManagerChanged += new EventHandler(commandBarLightweightControl_CommandManagerChanged);
+            commandBarLightweightControl.CommandManagerChanged += new EventHandler(this.commandBarLightweightControl_CommandManagerChanged);
 
             //	Set the command identifier.
             this.commandIdentifier = commandIdentifier;
@@ -176,24 +171,26 @@ namespace OpenLiveWriter.ApplicationFramework
             this.contextMenuArrowBitmapDisabled = commandBarLightweightControl.ContextMenuArrowBitmapDisabled;
 
             //	Update the command.
-            UpdateCommand();
+            this.UpdateCommand();
         }
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                Command = null;
-                if (commandBarLightweightControl != null)
-                    commandBarLightweightControl.CommandManagerChanged -= new EventHandler(commandBarLightweightControl_CommandManagerChanged);
+                this.Command = null;
+                if (this.commandBarLightweightControl != null)
+                {
+                    this.commandBarLightweightControl.CommandManagerChanged -= new EventHandler(this.commandBarLightweightControl_CommandManagerChanged);
+                }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
@@ -217,53 +214,22 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeObject()
         {
-            AccessibleRole = AccessibleRole.PushButton;
-            AccessibleDefaultAction = "Press";
-            TabStop = true;
+            this.AccessibleRole = AccessibleRole.PushButton;
+            this.AccessibleDefaultAction = "Press";
+            this.TabStop = true;
         }
-
-        #region Protected Event Overrides
 
         /// <summary>
-        /// Encapsulates the relevant state from a Command that determines
-        /// whether a re-layout is needed.
+        /// Gets the margin left.
         /// </summary>
-        private class CommandState
-        {
-            private readonly CommandBarButtonStyle style;
-            private readonly string text;
-            private readonly bool on;
-            private readonly bool visibleOnCommandBar;
-            private readonly Size imageSize;
+        /// <value>The margin left.</value>
+        public int MarginLeft { get; private set; }
 
-            public CommandState(Command command, Size imageSize)
-            {
-                style = command.CommandBarButtonStyle;
-                text = command.Text;
-                on = command.On;
-                visibleOnCommandBar = command.VisibleOnCommandBar;
-                this.imageSize = imageSize;
-            }
-
-            public bool NeedsLayout(Command command, Size imageSize)
-            {
-                return style != command.CommandBarButtonStyle
-                       || on != command.On
-                       || visibleOnCommandBar != command.VisibleOnCommandBar
-                       || command.Text != text
-                       || !this.imageSize.Equals(imageSize);
-            }
-        }
-
-        public int MarginLeft
-        {
-            get { return marginLeft; }
-        }
-
-        public int MarginRight
-        {
-            get { return marginRight; }
-        }
+        /// <summary>
+        /// Gets the margin right.
+        /// </summary>
+        /// <value>The margin right.</value>
+        public int MarginRight { get; private set; }
 
         /// <summary>
         /// Raises the Layout event.
@@ -275,167 +241,165 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLayout(e);
 
             //	No layout required if there is no parent or no command.
-            if (Parent == null || Command == null)
+            if (this.Parent == null || this.Command == null)
             {
-                lastLayoutCommandState = null;
+                this.lastLayoutCommandState = null;
 
-                VirtualSize = Size.Empty;
+                this.VirtualSize = Size.Empty;
                 return;
             }
 
-            lastLayoutCommandState = new CommandState(Command, ImageSize);
+            this.lastLayoutCommandState = new CommandState(this.Command, this.ImageSize);
 
             //	The button width and height.
             int buttonWidth = 0, buttonHeight = 0;
-            marginLeft = 0;
-            marginRight = 0;
+            this.MarginLeft = 0;
+            this.MarginRight = 0;
 
             //	If the command bar button style is "System", then do the layout.
-            if (Command.CommandBarButtonStyle == CommandBarButtonStyle.System)
+            switch (this.Command.CommandBarButtonStyle)
             {
-                rImage = Rectangle.Empty;
-                rText = Rectangle.Empty;
-                rArrow = Rectangle.Empty;
-
-                buttonHeight = 24;
-
-                //	Obtain the font.
-                Font font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
-
-                ButtonFeatures features = ButtonFeatures.None;
-
-                //	Adjust the button width and height for the command bar button bitmap, if there is one.
-                if (HasImage && !Command.SuppressCommandBarBitmap)
-                {
-                    features |= ButtonFeatures.Image;
-                    rImage.Size = ImageSize;
-                }
-
-                //	Adjust the button width and height for the command bar button text, if there is text.
-                if (!string.IsNullOrEmpty(Command.CommandBarButtonText))
-                {
-                    features |= ButtonFeatures.Text;
-                    using (Graphics graphics = Parent.CreateGraphics())
-                        rText.Size = TextRenderer.MeasureText(graphics, Command.CommandBarButtonText, font, Size.Empty, TextFormatFlags.NoPadding);
-                }
-
-                //	Enlarge the width for the drop-down button or context menu indicator, as needed.
-                if (DropDownContextMenuUserInterface)
-                {
-                    features |= ButtonFeatures.SplitMenu;
-                    rArrow.Size = contextMenuArrowBitmap.Size;
-                }
-                else if (ContextMenuUserInterface)
-                {
-                    features |= ButtonFeatures.Menu;
-                    rArrow.Size = contextMenuArrowBitmap.Size;
-                }
-
-                ButtonMargins? margins = commandBarLightweightControl.GetButtonMargins(features, rightAligned);
-                if (margins == null)
-                {
-                    Trace.Fail("Don't know how to layout these features: " + features + ", " + commandBarLightweightControl.GetType().Name);
-                    VirtualSize = Size.Empty;
-                    return;
-                }
-                ButtonMargins margin = margins.Value;
-                marginRight = margin.RightMargin;
-
-                rImage.Y = Utility.CenterMinZero(rImage.Height, buttonHeight);
-                rText.Y = Utility.CenterMinZero(rText.Height, buttonHeight);
-                rArrow.Y = Utility.CenterMinZero(rArrow.Height, buttonHeight);
-
-                rImage.X = margin.LeftOfImage;
-                rText.X = rImage.Right + margin.LeftOfText;
-                rArrow.X = rText.Right + margin.LeftOfArrow;
-                buttonWidth = rArrow.Right + margin.RightPadding;
-            }
-            else if (Command.CommandBarButtonStyle == CommandBarButtonStyle.Bitmap)
-            {
-                buttonWidth += HorizontalMargin + Command.CommandBarButtonBitmapEnabled.Width + HorizontalMargin;
-                buttonHeight += TOP_MARGIN + Command.CommandBarButtonBitmapEnabled.Height + BOTTOM_MARGIN;
-            }
-            else if (Command.CommandBarButtonStyle == CommandBarButtonStyle.Provider)
-            {
-                if (HasImage)
-                {
-                    buttonHeight = ProviderButtonFaceLeftEnabled.Height;
-                    if (DropDownContextMenuUserInterface)
+                case CommandBarButtonStyle.System:
                     {
-                        buttonWidth = ProviderButtonFaceLeftEnabled.Width + ProviderButtonFaceRightEnabled.Width;
+                        this.rImage = Rectangle.Empty;
+                        this.rText = Rectangle.Empty;
+                        this.rArrow = Rectangle.Empty;
+
+                        buttonHeight = 24;
+
+                        //	Obtain the font.
+                        var font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
+
+                        var features = ButtonFeatures.None;
+
+                        //	Adjust the button width and height for the command bar button bitmap, if there is one.
+                        if (this.HasImage && !this.Command.SuppressCommandBarBitmap)
+                        {
+                            features |= ButtonFeatures.Image;
+                            this.rImage.Size = this.ImageSize;
+                        }
+
+                        //	Adjust the button width and height for the command bar button text, if there is text.
+                        if (!string.IsNullOrEmpty(this.Command.CommandBarButtonText))
+                        {
+                            features |= ButtonFeatures.Text;
+                            using (var graphics = this.Parent.CreateGraphics())
+                            {
+                                this.rText.Size = TextRenderer.MeasureText(graphics, this.Command.CommandBarButtonText, font, Size.Empty, TextFormatFlags.NoPadding);
+                            }
+                        }
+
+                        //	Enlarge the width for the drop-down button or context menu indicator, as needed.
+                        if (this.DropDownContextMenuUserInterface)
+                        {
+                            features |= ButtonFeatures.SplitMenu;
+                            this.rArrow.Size = this.contextMenuArrowBitmap.Size;
+                        }
+                        else if (this.ContextMenuUserInterface)
+                        {
+                            features |= ButtonFeatures.Menu;
+                            this.rArrow.Size = this.contextMenuArrowBitmap.Size;
+                        }
+
+                        var margins = this.commandBarLightweightControl.GetButtonMargins(features, this.rightAligned);
+                        if (margins == null)
+                        {
+                            Trace.Fail("Don't know how to layout these features: " + features + ", " + this.commandBarLightweightControl.GetType().Name);
+                            this.VirtualSize = Size.Empty;
+                            return;
+                        }
+                        var margin = margins.Value;
+                        this.MarginRight = margin.RightMargin;
+
+                        this.rImage.Y = Utility.CenterMinZero(this.rImage.Height, buttonHeight);
+                        this.rText.Y = Utility.CenterMinZero(this.rText.Height, buttonHeight);
+                        this.rArrow.Y = Utility.CenterMinZero(this.rArrow.Height, buttonHeight);
+
+                        this.rImage.X = margin.LeftOfImage;
+                        this.rText.X = this.rImage.Right + margin.LeftOfText;
+                        this.rArrow.X = this.rText.Right + margin.LeftOfArrow;
+                        buttonWidth = this.rArrow.Right + margin.RightPadding;
+                        break;
                     }
-                    else if (ContextMenuUserInterface)
+
+                case CommandBarButtonStyle.Bitmap:
+                    buttonWidth += this.HorizontalMargin + this.Command.CommandBarButtonBitmapEnabled.Width + this.HorizontalMargin;
+                    buttonHeight += TOP_MARGIN + this.Command.CommandBarButtonBitmapEnabled.Height + BOTTOM_MARGIN;
+                    break;
+                case CommandBarButtonStyle.Provider:
+                    if (this.HasImage)
                     {
-                        buttonWidth = ProviderButtonFaceDropDownEnabled.Width;
+                        buttonHeight = ProviderButtonFaceLeftEnabled.Height;
+                        if (this.DropDownContextMenuUserInterface)
+                        {
+                            buttonWidth = ProviderButtonFaceLeftEnabled.Width + ProviderButtonFaceRightEnabled.Width;
+                        }
+                        else if (this.ContextMenuUserInterface)
+                        {
+                            buttonWidth = ProviderButtonFaceDropDownEnabled.Width;
+                        }
+                        else
+                        {
+                            buttonWidth = ProviderButtonFaceEnabled.Width;
+                        }
+                        buttonWidth += (2 * PROVIDER_HORIZONTAL_PAD);
                     }
-                    else
-                    {
-                        buttonWidth = ProviderButtonFaceEnabled.Width;
-                    }
-                    buttonWidth += (2 * PROVIDER_HORIZONTAL_PAD);
-                }
+
+                    break;
             }
 
             //	Set the new virtual size.
-            VirtualSize = new Size(buttonWidth, buttonHeight + 2 * VerticalPadding);
+            this.VirtualSize = new Size(buttonWidth, buttonHeight + 2 * this.VerticalPadding);
         }
 
-        private int HorizontalMargin
-        {
-            get
-            {
-                if (IsLargeButton)
-                    return 6;
-                else
-                    return 4;
-            }
-        }
+        /// <summary>
+        /// Gets the horizontal margin.
+        /// </summary>
+        /// <value>The horizontal margin.</value>
+        private int HorizontalMargin => this.IsLargeButton ? 6 : 4;
 
-        private int VerticalPadding
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        /// <summary>
+        /// Gets the vertical padding.
+        /// </summary>
+        /// <value>The vertical padding.</value>
+        private int VerticalPadding => 0;
 
-        private int SnapButtonHeight(int height)
-        {
+        /// <summary>
+        /// Snaps the height of the button.
+        /// </summary>
+        /// <param name="height">The height.</param>
+        /// <returns>System.Int32.</returns>
+        private int SnapButtonHeight(int height) =>
             // large buttons always occupy 42 pixels
-            if (IsLargeButton)
-                return SystemButtonHelper.LARGE_BUTTON_TOTAL_SIZE;
-            else
-                return TOP_MARGIN + height + BOTTOM_MARGIN;
-        }
+            this.IsLargeButton ? SystemButtonHelper.LARGE_BUTTON_TOTAL_SIZE : TOP_MARGIN + height + BOTTOM_MARGIN;
 
-        private bool IsLargeButton
-        {
-            get
-            {
-                return ImageSize.Height > SystemButtonHelper.SMALL_BUTTON_IMAGE_SIZE;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance is large button.
+        /// </summary>
+        /// <value><c>true</c> if this instance is large button; otherwise, <c>false</c>.</value>
+        private bool IsLargeButton => this.ImageSize.Height > SystemButtonHelper.SMALL_BUTTON_IMAGE_SIZE;
 
+        /// <summary>
+        /// Gets a value indicating whether this instance has image.
+        /// </summary>
+        /// <value><c>true</c> if this instance has image; otherwise, <c>false</c>.</value>
         private bool HasImage
         {
             get
             {
-                Size size = ImageSize;
+                var size = this.ImageSize;
                 return size.Width > 0 && size.Height > 0;
             }
         }
 
-        private Size ImageSize
-        {
-            get
-            {
-                if (Command is ICustomButtonBitmapPaint)
-                    return new Size(((ICustomButtonBitmapPaint)Command).Width, ((ICustomButtonBitmapPaint)Command).Height);
-                if (Command.CommandBarButtonBitmapEnabled != null)
-                    return Command.CommandBarButtonBitmapEnabled.Size;
-                return new Size(0, 0);
-            }
-        }
+        /// <summary>
+        /// Gets the size of the image.
+        /// </summary>
+        /// <value>The size of the image.</value>
+        private Size ImageSize =>
+            this.Command is ICustomButtonBitmapPaint
+                ? new Size(((ICustomButtonBitmapPaint)this.Command).Width, ((ICustomButtonBitmapPaint)this.Command).Height)
+                : this.Command.CommandBarButtonBitmapEnabled == null ? new Size(0, 0) : this.Command.CommandBarButtonBitmapEnabled.Size;
 
         /// <summary>
         /// Raises the MouseEnter event.
@@ -447,11 +411,13 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseEnter(e);
 
             //	Ignore the event if input events are disabled.
-            if (InputEventsDisabled)
+            if (this.InputEventsDisabled)
+            {
                 return;
+            }
 
             //	Set the MouseInside property.
-            MouseInside = true;
+            this.MouseInside = true;
         }
 
         /// <summary>
@@ -461,47 +427,69 @@ namespace OpenLiveWriter.ApplicationFramework
         protected override void OnMouseDown(MouseEventArgs e)
         {
             //	Ignore the event if input events are disabled.
-            if (InputEventsDisabled)
+            if (this.InputEventsDisabled)
+            {
                 return;
+            }
 
             //	Process left mouse button.
             if (e.Button == MouseButtons.Left)
             {
                 //	If the drop down context menu user interface is being displayed, hit-test and
                 //	do the dropdown if the mouse was pressed in the right area.  Otherwise, if the
-                if (DropDownContextMenuUserInterface)
+                if (this.DropDownContextMenuUserInterface)
                 {
-                    if (InContextMenuArrow(e))
-                        DoShowContextMenu();
+                    if (this.InContextMenuArrow(e))
+                    {
+                        this.DoShowContextMenu();
+                    }
                     else
-                        ButtonPushed = true;
+                    {
+                        this.ButtonPushed = true;
+                    }
                 }
-                else if (ContextMenuUserInterface)
-                    DoShowContextMenu();
+                else if (this.ContextMenuUserInterface)
+                {
+                    this.DoShowContextMenu();
+                }
                 else
-                    ButtonPushed = true;
+                {
+                    this.ButtonPushed = true;
+                }
             }
 
             //	Call the base class's method so that registered delegates receive the event.
             base.OnMouseDown(e);
         }
 
+        /// <summary>
+        /// Ins the context menu arrow.
+        /// </summary>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool InContextMenuArrow(MouseEventArgs e)
         {
-            if (!DropDownContextMenuUserInterface)
+            if (!this.DropDownContextMenuUserInterface)
+            {
                 return false;
+            }
 
-            int x = e.X;
+            var x = e.X;
 
             if (BidiHelper.IsRightToLeft)
-                x = VirtualWidth - x;
+            {
+                x = this.VirtualWidth - x;
+            }
 
-            if (Command.CommandBarButtonStyle == CommandBarButtonStyle.System)
-                return x >= VirtualWidth - DROP_DOWN_BUTTON_WIDTH;
-            else if (Command.CommandBarButtonStyle == CommandBarButtonStyle.Provider)
-                return x >= VirtualWidth - ProviderButtonFaceRightEnabled.Width;
-            else
-                return false;
+            switch (this.Command.CommandBarButtonStyle)
+            {
+                case CommandBarButtonStyle.System:
+                    return x >= this.VirtualWidth - DROP_DOWN_BUTTON_WIDTH;
+                case CommandBarButtonStyle.Provider:
+                    return x >= this.VirtualWidth - ProviderButtonFaceRightEnabled.Width;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -514,11 +502,13 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseLeave(e);
 
             //	Ignore the event if input events are disabled.
-            if (InputEventsDisabled)
+            if (this.InputEventsDisabled)
+            {
                 return;
+            }
 
             //	Clear the ButtonPushed and MouseInside properties.
-            ButtonPushed = MouseInside = MouseInsideContextMenu = false;
+            this.ButtonPushed = this.MouseInside = this.MouseInsideContextMenu = false;
         }
 
         /// <summary>
@@ -531,15 +521,19 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseMove(e);
 
             //	Ignore the event if input events are disabled.
-            if (InputEventsDisabled)
+            if (this.InputEventsDisabled)
+            {
                 return;
+            }
 
-            MouseInsideContextMenu = this.InContextMenuArrow(e);
+            this.MouseInsideContextMenu = this.InContextMenuArrow(e);
 
             //	Update the state of the MouseInside property if the LeftMouseButtonDown property
             //	is true.
-            if (ButtonPushed)
-                MouseInside = VirtualClientRectangle.Contains(e.X, e.Y);
+            if (this.ButtonPushed)
+            {
+                this.MouseInside = this.VirtualClientRectangle.Contains(e.X, e.Y);
+            }
         }
 
         /// <summary>
@@ -552,21 +546,25 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseUp(e);
 
             //	Ignore the event if input events are disabled.
-            if (InputEventsDisabled)
+            if (this.InputEventsDisabled)
+            {
                 return;
+            }
 
             //	If the button is the left button, set the LeftMouseButtonDown property.
-            if (e.Button == MouseButtons.Left && ButtonPushed)
+            if (e.Button == MouseButtons.Left && this.ButtonPushed)
             {
                 //	Note that the button is not pushed.
-                ButtonPushed = false;
+                this.ButtonPushed = false;
 
                 //	If the mouse was inside the lightweight control, execute the event.
-                if (VirtualClientRectangle.Contains(e.X, e.Y))
+                if (this.VirtualClientRectangle.Contains(e.X, e.Y))
                 {
                     //	Execute the event.
-                    if (Command != null && Command.On && Command.Enabled)
-                        Command.PerformExecute();
+                    if (this.Command != null && this.Command.On && this.Command.Enabled)
+                    {
+                        this.Command.PerformExecute();
+                    }
                 }
             }
         }
@@ -574,7 +572,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Raises the Paint event.
         /// </summary>
-        /// <param name="e">A PaintEventArgs that contains the event data.</param>
+        /// <param name="args">The <see cref="PaintEventArgs"/> instance containing the event data.</param>
         protected override void OnPaint(PaintEventArgs args)
         {
             //	Call the base class's method so that registered delegates receive the event.
@@ -582,192 +580,261 @@ namespace OpenLiveWriter.ApplicationFramework
 
             // Fix bug 602576: The 'Remove Effects' button is truncated in right-to-left builds
             if (BidiHelper.IsRightToLeft)
+            {
                 args.Graphics.ResetClip();
+            }
 
             // Take int account vertical padding
-            Rectangle rect = new Rectangle(VirtualClientRectangle.X, VirtualClientRectangle.Y + VerticalPadding, VirtualClientRectangle.Width, VirtualClientRectangle.Height);
+            var rect = new Rectangle(this.VirtualClientRectangle.X, this.VirtualClientRectangle.Y + this.VerticalPadding, this.VirtualClientRectangle.Width, this.VirtualClientRectangle.Height);
 
-            BidiGraphics g = new BidiGraphics(args.Graphics, rect);
+            var g = new BidiGraphics(args.Graphics, rect);
 
             //	No painting required if there is no parent or no command.
-            if (Parent == null || Command == null)
+            if (this.Parent == null || this.Command == null)
+            {
                 return;
+            }
 
             //	Determine the draw state of the button.
             DrawState drawState;
-            if (!Command.Enabled)
-                drawState = DrawState.Disabled;
-            else if (Command.Latched || (ButtonPushed && MouseInside) || (ContextMenuUserInterface && ContextMenuShowing))
-                drawState = DrawState.Pushed;
-            else if (MouseInside || (DropDownContextMenuUserInterface && ContextMenuShowing))
-                drawState = DrawState.Selected;
-            else
-                drawState = DrawState.Enabled;
-
-            //	Draw the button.
-            if (Command.CommandBarButtonStyle == CommandBarButtonStyle.System)
+            if (this.Command.Enabled)
             {
-                Size imageSize = ImageSize;
-
-                // is this a large button?
-                bool isLargeButton = false;
-                if (imageSize.Height > SystemButtonHelper.SMALL_BUTTON_IMAGE_SIZE)
-                    isLargeButton = true;
-
-                if (Command is ICustomButtonBitmapPaint)
+                if (this.Command.Latched || (this.ButtonPushed && this.MouseInside) || (this.ContextMenuUserInterface && this.ContextMenuShowing))
                 {
-                    switch (drawState)
-                    {
-                        case DrawState.Selected:
-                            SystemButtonHelper.DrawSystemButtonFace(g, DropDownContextMenuUserInterface, contextMenuShowing, VirtualClientRectangle, isLargeButton);
-                            break;
-                        case DrawState.Pushed:
-                            SystemButtonHelper.DrawSystemButtonFacePushed(g, DropDownContextMenuUserInterface, VirtualClientRectangle, isLargeButton);
-                            break;
-                    }
-
-                    ((ICustomButtonBitmapPaint)Command).Paint(g, rImage, drawState);
+                    drawState = DrawState.Pushed;
+                }
+                else if (this.MouseInside || (this.DropDownContextMenuUserInterface && this.ContextMenuShowing))
+                {
+                    drawState = DrawState.Selected;
                 }
                 else
                 {
-                    Bitmap buttonBitmap = null;
-                    switch (drawState)
-                    {
-                        case DrawState.Disabled:
-                            buttonBitmap = Command.CommandBarButtonBitmapDisabled;
-                            break;
-                        case DrawState.Enabled:
-                            buttonBitmap = Command.CommandBarButtonBitmapEnabled;
-                            break;
-                        case DrawState.Selected:
-                            SystemButtonHelper.DrawSystemButtonFace(g, DropDownContextMenuUserInterface, contextMenuShowing, VirtualClientRectangle, isLargeButton);
-                            buttonBitmap = Command.CommandBarButtonBitmapSelected;
-                            break;
-                        case DrawState.Pushed:
-                            SystemButtonHelper.DrawSystemButtonFacePushed(g, DropDownContextMenuUserInterface, VirtualClientRectangle, isLargeButton);
-                            buttonBitmap = Command.CommandBarButtonBitmapSelected;
-                            break;
-                    }
-
-                    //	Draw the button bitmap.
-                    if (buttonBitmap != null && !Command.SuppressCommandBarBitmap)
-                    {
-                        if (!SystemInformation.HighContrast)
-                            g.DrawImage(false, buttonBitmap, rImage);
-                        else
-                        {
-                            //apply a high contrast image matrix
-                            ImageAttributes ia = new ImageAttributes();
-                            ia.SetColorMatrix(HighContrastColorMatrix);
-                            ColorMap cm = new ColorMap();
-                            cm.OldColor = Color.White;
-                            cm.NewColor = SystemColors.Control;
-                            ia.SetRemapTable(new ColorMap[] { cm });
-                            g.DrawImage(false, buttonBitmap, rImage, 0, 0, buttonBitmap.Width, buttonBitmap.Height, GraphicsUnit.Pixel, ia);
-                        }
-                    }
+                    drawState = DrawState.Enabled;
                 }
-
-                //	Draw the text.
-                if (Command.CommandBarButtonText != null && Command.CommandBarButtonText.Length != 0)
-                {
-                    Color textColor;
-                    if (drawState == DrawState.Disabled)
-                        textColor = commandBarLightweightControl.DisabledTextColor;
-                    else
-                        textColor = commandBarLightweightControl.TextColor;
-
-                    g.DrawText(
-                        Command.CommandBarButtonText,
-                        ApplicationManager.ApplicationStyle.NormalApplicationFont,
-                        rText,
-                        textColor,
-                        TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.NoPadding | TextFormatFlags.NoClipping);
-                }
-
-                //	Draw the context menu arrow, if needed.
-                if (DropDownContextMenuUserInterface || ContextMenuUserInterface)
-                {
-                    Bitmap contextMenuArrowBitmapToDraw;
-                    if (drawState == DrawState.Disabled)
-                        contextMenuArrowBitmapToDraw = contextMenuArrowBitmapDisabled;
-                    else
-                        contextMenuArrowBitmapToDraw = contextMenuArrowBitmap;
-
-                    int height = isLargeButton ? SystemButtonHelper.LARGE_BUTTON_TOTAL_SIZE : VirtualHeight;
-                    g.DrawImage(false, contextMenuArrowBitmapToDraw, rArrow);
-                }
-            }
-            else if (Command.CommandBarButtonStyle == CommandBarButtonStyle.Bitmap)
-            {
-                switch (drawState)
-                {
-                    case DrawState.Disabled:
-                        g.DrawImage(true, Command.CommandBarButtonBitmapDisabled, HorizontalMargin, TOP_MARGIN);
-                        break;
-                    case DrawState.Enabled:
-                        g.DrawImage(true, Command.CommandBarButtonBitmapEnabled, HorizontalMargin, TOP_MARGIN);
-                        break;
-                    case DrawState.Selected:
-                        g.DrawImage(true, Command.CommandBarButtonBitmapSelected, HorizontalMargin, TOP_MARGIN);
-                        break;
-                    case DrawState.Pushed:
-                        g.DrawImage(true, Command.CommandBarButtonBitmapPushed, HorizontalMargin, TOP_MARGIN);
-                        break;
-                }
-            }
-            else if (Command.CommandBarButtonStyle == CommandBarButtonStyle.Provider)
-            {
-                DrawProviderButtonFace(g, drawState);
-                DrawProviderButton(g, drawState);
-            }
-
-            if (Focused)
-                g.DrawFocusRectangle(new Rectangle(0, 0, VirtualWidth, VirtualHeight), Parent.ForeColor, Parent.BackColor);
-        }
-
-        private void DrawProviderButtonFace(BidiGraphics g, DrawState drawState)
-        {
-            if (DropDownContextMenuUserInterface)
-            {
-                if (drawState == DrawState.Selected)
-                {
-                    g.DrawImage(true, ProviderButtonFaceLeftEnabled, PROVIDER_HORIZONTAL_PAD, 0);
-                    if (ContextMenuShowing)
-                        g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
-                    else
-                        g.DrawImage(true, ProviderButtonFaceRightEnabled, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
-                }
-                else if (drawState == DrawState.Pushed)
-                {
-                    if (ContextMenuShowing)
-                    {
-                        g.DrawImage(true, ProviderButtonFaceLeftEnabled, PROVIDER_HORIZONTAL_PAD, 0);
-                        g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
-                    }
-                    else
-                    {
-                        g.DrawImage(true, ProviderButtonFaceLeftPressed, PROVIDER_HORIZONTAL_PAD, 0);
-                        g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
-                    }
-                }
-            }
-            else if (ContextMenuUserInterface)
-            {
-                if (drawState == DrawState.Selected)
-                    g.DrawImage(true, ProviderButtonFaceDropDownEnabled, PROVIDER_HORIZONTAL_PAD, 0);
-                else if (drawState == DrawState.Pushed)
-                    g.DrawImage(true, ProviderButtonFaceDropDownPressed, PROVIDER_HORIZONTAL_PAD, 0);
             }
             else
             {
-                if (drawState == DrawState.Selected)
-                    g.DrawImage(true, ProviderButtonFaceEnabled, PROVIDER_HORIZONTAL_PAD, 0);
-                else if (drawState == DrawState.Pushed)
-                    g.DrawImage(true, ProviderButtonFacePressed, PROVIDER_HORIZONTAL_PAD, 0);
+                drawState = DrawState.Disabled;
+            }
+
+            //	Draw the button.
+            switch (this.Command.CommandBarButtonStyle)
+            {
+                case CommandBarButtonStyle.System:
+                    {
+                        var imageSize = this.ImageSize;
+
+                        // is this a large button?
+                        var isLargeButton = false;
+                        if (imageSize.Height > SystemButtonHelper.SMALL_BUTTON_IMAGE_SIZE)
+                        {
+                            isLargeButton = true;
+                        }
+
+                        if (this.Command is ICustomButtonBitmapPaint)
+                        {
+                            switch (drawState)
+                            {
+                                case DrawState.Selected:
+                                    SystemButtonHelper.DrawSystemButtonFace(
+                                        g,
+                                        this.DropDownContextMenuUserInterface,
+                                        this.contextMenuShowing,
+                                        this.VirtualClientRectangle,
+                                        isLargeButton);
+                                    break;
+                                case DrawState.Pushed:
+                                    SystemButtonHelper.DrawSystemButtonFacePushed(
+                                        g,
+                                        this.DropDownContextMenuUserInterface,
+                                        this.VirtualClientRectangle,
+                                        isLargeButton);
+                                    break;
+                            }
+
+                            ((ICustomButtonBitmapPaint)this.Command).Paint(g, this.rImage, drawState);
+                        }
+                        else
+                        {
+                            Bitmap buttonBitmap = null;
+                            switch (drawState)
+                            {
+                                case DrawState.Disabled:
+                                    buttonBitmap = this.Command.CommandBarButtonBitmapDisabled;
+                                    break;
+                                case DrawState.Enabled:
+                                    buttonBitmap = this.Command.CommandBarButtonBitmapEnabled;
+                                    break;
+                                case DrawState.Selected:
+                                    SystemButtonHelper.DrawSystemButtonFace(
+                                        g,
+                                        this.DropDownContextMenuUserInterface,
+                                        this.contextMenuShowing,
+                                        this.VirtualClientRectangle,
+                                        isLargeButton);
+                                    buttonBitmap = this.Command.CommandBarButtonBitmapSelected;
+                                    break;
+                                case DrawState.Pushed:
+                                    SystemButtonHelper.DrawSystemButtonFacePushed(
+                                        g,
+                                        this.DropDownContextMenuUserInterface,
+                                        this.VirtualClientRectangle,
+                                        isLargeButton);
+                                    buttonBitmap = this.Command.CommandBarButtonBitmapSelected;
+                                    break;
+                            }
+
+                            //	Draw the button bitmap.
+                            if (buttonBitmap != null && !this.Command.SuppressCommandBarBitmap)
+                            {
+                                if (SystemInformation.HighContrast)
+                                {
+                                    //apply a high contrast image matrix
+                                    var ia = new ImageAttributes();
+                                    ia.SetColorMatrix(HighContrastColorMatrix);
+                                    var cm = new ColorMap
+                                    {
+                                        OldColor = Color.White,
+                                        NewColor = SystemColors.Control
+                                    };
+                                    ia.SetRemapTable(new ColorMap[] { cm });
+                                    g.DrawImage(false, buttonBitmap, this.rImage, 0, 0, buttonBitmap.Width, buttonBitmap.Height, GraphicsUnit.Pixel, ia);
+                                }
+                                else
+                                {
+                                    g.DrawImage(false, buttonBitmap, this.rImage);
+                                }
+                            }
+                        }
+
+                        //	Draw the text.
+                        if (this.Command.CommandBarButtonText != null && this.Command.CommandBarButtonText.Length != 0)
+                        {
+                            var textColor = drawState == DrawState.Disabled
+                                ? this.commandBarLightweightControl.DisabledTextColor
+                                : this.commandBarLightweightControl.TextColor;
+
+                            g.DrawText(
+                                this.Command.CommandBarButtonText,
+                                ApplicationManager.ApplicationStyle.NormalApplicationFont,
+                                this.rText,
+                                textColor,
+                                TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.NoPadding | TextFormatFlags.NoClipping);
+                        }
+
+                        //	Draw the context menu arrow, if needed.
+                        if (this.DropDownContextMenuUserInterface || this.ContextMenuUserInterface)
+                        {
+                            var contextMenuArrowBitmapToDraw = drawState == DrawState.Disabled
+                                ? this.contextMenuArrowBitmapDisabled
+                                : this.contextMenuArrowBitmap;
+
+                            _ = isLargeButton ? SystemButtonHelper.LARGE_BUTTON_TOTAL_SIZE : this.VirtualHeight;
+                            g.DrawImage(false, contextMenuArrowBitmapToDraw, this.rArrow);
+                        }
+
+                        break;
+                    }
+
+                case CommandBarButtonStyle.Bitmap:
+                    switch (drawState)
+                    {
+                        case DrawState.Disabled:
+                            g.DrawImage(true, this.Command.CommandBarButtonBitmapDisabled, this.HorizontalMargin, TOP_MARGIN);
+                            break;
+                        case DrawState.Enabled:
+                            g.DrawImage(true, this.Command.CommandBarButtonBitmapEnabled, this.HorizontalMargin, TOP_MARGIN);
+                            break;
+                        case DrawState.Selected:
+                            g.DrawImage(true, this.Command.CommandBarButtonBitmapSelected, this.HorizontalMargin, TOP_MARGIN);
+                            break;
+                        case DrawState.Pushed:
+                            g.DrawImage(true, this.Command.CommandBarButtonBitmapPushed, this.HorizontalMargin, TOP_MARGIN);
+                            break;
+                    }
+
+                    break;
+                case CommandBarButtonStyle.Provider:
+                    this.DrawProviderButtonFace(g, drawState);
+                    this.DrawProviderButton(g, drawState);
+                    break;
+            }
+
+            if (this.Focused)
+            {
+                g.DrawFocusRectangle(new Rectangle(0, 0, this.VirtualWidth, this.VirtualHeight), this.Parent.ForeColor, this.Parent.BackColor);
             }
         }
 
+        /// <summary>
+        /// Draws the provider button face.
+        /// </summary>
+        /// <param name="g">The g.</param>
+        /// <param name="drawState">State of the draw.</param>
+        private void DrawProviderButtonFace(BidiGraphics g, DrawState drawState)
+        {
+            if (this.DropDownContextMenuUserInterface)
+            {
+                switch (drawState)
+                {
+                    case DrawState.Selected:
+                        g.DrawImage(true, ProviderButtonFaceLeftEnabled, PROVIDER_HORIZONTAL_PAD, 0);
+                        if (this.ContextMenuShowing)
+                        {
+                            g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
+                        }
+                        else
+                        {
+                            g.DrawImage(true, ProviderButtonFaceRightEnabled, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
+                        }
+
+                        break;
+                    case DrawState.Pushed:
+                        if (this.ContextMenuShowing)
+                        {
+                            g.DrawImage(true, ProviderButtonFaceLeftEnabled, PROVIDER_HORIZONTAL_PAD, 0);
+                            g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
+                        }
+                        else
+                        {
+                            g.DrawImage(true, ProviderButtonFaceLeftPressed, PROVIDER_HORIZONTAL_PAD, 0);
+                            g.DrawImage(true, ProviderButtonFaceRightPressed, PROVIDER_HORIZONTAL_PAD + ProviderButtonFaceLeftEnabled.Width, 0);
+                        }
+
+                        break;
+                }
+            }
+            else if (this.ContextMenuUserInterface)
+            {
+                switch (drawState)
+                {
+                    case DrawState.Selected:
+                        g.DrawImage(true, ProviderButtonFaceDropDownEnabled, PROVIDER_HORIZONTAL_PAD, 0);
+                        break;
+                    case DrawState.Pushed:
+                        g.DrawImage(true, ProviderButtonFaceDropDownPressed, PROVIDER_HORIZONTAL_PAD, 0);
+                        break;
+                }
+            }
+            else
+            {
+                switch (drawState)
+                {
+                    case DrawState.Selected:
+                        g.DrawImage(true, ProviderButtonFaceEnabled, PROVIDER_HORIZONTAL_PAD, 0);
+                        break;
+                    case DrawState.Pushed:
+                        g.DrawImage(true, ProviderButtonFacePressed, PROVIDER_HORIZONTAL_PAD, 0);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the provider button.
+        /// </summary>
+        /// <param name="g">The g.</param>
+        /// <param name="drawState">State of the draw.</param>
         private void DrawProviderButton(BidiGraphics g, DrawState drawState)
         {
             // determine the bitmap to draw
@@ -775,186 +842,193 @@ namespace OpenLiveWriter.ApplicationFramework
             switch (drawState)
             {
                 case DrawState.Disabled:
-                    buttonBitmap = Command.CommandBarButtonBitmapDisabled;
+                    buttonBitmap = this.Command.CommandBarButtonBitmapDisabled;
                     break;
                 case DrawState.Enabled:
-                    buttonBitmap = Command.CommandBarButtonBitmapEnabled;
+                    buttonBitmap = this.Command.CommandBarButtonBitmapEnabled;
                     break;
                 case DrawState.Pushed:
-                    buttonBitmap = Command.CommandBarButtonBitmapPushed;
+                    buttonBitmap = this.Command.CommandBarButtonBitmapPushed;
                     break;
                 case DrawState.Selected:
-                    buttonBitmap = Command.CommandBarButtonBitmapSelected;
+                    buttonBitmap = this.Command.CommandBarButtonBitmapSelected;
                     break;
                 default:
                     Debug.Fail("Unexpected DrawState!");
-                    buttonBitmap = Command.CommandBarButtonBitmapEnabled;
+                    buttonBitmap = this.Command.CommandBarButtonBitmapEnabled;
                     break;
             }
 
             // draw the button
             Rectangle centerButtonInRect;
-            if (DropDownContextMenuUserInterface)
+            if (this.DropDownContextMenuUserInterface)
+            {
                 centerButtonInRect = new Rectangle(PROVIDER_HORIZONTAL_PAD, 0, ProviderButtonFaceLeftEnabled.Width, ProviderButtonFaceRightEnabled.Height);
-            else if (ContextMenuUserInterface)
+            }
+            else if (this.ContextMenuUserInterface)
+            {
                 centerButtonInRect = new Rectangle(PROVIDER_HORIZONTAL_PAD, 0, ProviderButtonFaceEnabled.Width, ProviderButtonFaceEnabled.Height);
+            }
             else
+            {
                 centerButtonInRect = new Rectangle(PROVIDER_HORIZONTAL_PAD, 0, ProviderButtonFaceEnabled.Width, ProviderButtonFaceEnabled.Height);
+            }
 
-            int left = centerButtonInRect.Left + (centerButtonInRect.Width / 2) - (buttonBitmap.Width / 2) + (drawState == DrawState.Pushed ? 1 : 0);
-            int top = centerButtonInRect.Top + (centerButtonInRect.Height / 2) - (buttonBitmap.Height / 2) + (drawState == DrawState.Pushed ? 1 : 0);
+            var left = centerButtonInRect.Left + (centerButtonInRect.Width / 2) - (buttonBitmap.Width / 2) + (drawState == DrawState.Pushed ? 1 : 0);
+            var top = centerButtonInRect.Top + (centerButtonInRect.Height / 2) - (buttonBitmap.Height / 2) + (drawState == DrawState.Pushed ? 1 : 0);
             g.DrawImage(false, buttonBitmap, left, top);
 
             // draw the accompanying arrow if necessary
-            Rectangle centerArrowInRect = Rectangle.Empty;
-            if (DropDownContextMenuUserInterface)
+            var centerArrowInRect = Rectangle.Empty;
+            if (this.DropDownContextMenuUserInterface)
+            {
                 centerArrowInRect = new Rectangle(centerButtonInRect.Width, 0, ProviderButtonFaceRightEnabled.Width, ProviderButtonFaceRightEnabled.Height);
-            else if (ContextMenuUserInterface)
+            }
+            else if (this.ContextMenuUserInterface)
+            {
                 centerArrowInRect = new Rectangle(centerButtonInRect.Width - 1, 0, ProviderButtonFaceDropDownEnabled.Width - ProviderButtonFaceEnabled.Width, ProviderButtonFaceDropDownEnabled.Height);
+            }
+
             if (centerArrowInRect != Rectangle.Empty)
             {
-                int arrowLeft = centerArrowInRect.Left + (centerArrowInRect.Width / 2) - (ProviderDownArrow.Width / 2) + (ContextMenuShowing ? 1 : 0);
-                int arrowTop = centerArrowInRect.Top + (centerArrowInRect.Height / 2) - (ProviderDownArrow.Height / 2) + (ContextMenuShowing ? 1 : 0);
+                var arrowLeft = centerArrowInRect.Left + (centerArrowInRect.Width / 2) - (ProviderDownArrow.Width / 2) + (this.ContextMenuShowing ? 1 : 0);
+                var arrowTop = centerArrowInRect.Top + (centerArrowInRect.Height / 2) - (ProviderDownArrow.Height / 2) + (this.ContextMenuShowing ? 1 : 0);
                 g.DrawImage(true, ProviderDownArrow, arrowLeft, arrowTop);
             }
         }
 
-        #endregion Protected Event Overrides
-
-        #region Private Properties
-
         /// <summary>
         /// Gets or sets command that is associated with this CommandBarButtonLightweightControl.
         /// </summary>
+        /// <value>The command.</value>
         private Command Command
         {
-            get
-            {
-                return command;
-            }
+            get => this.command;
             set
             {
                 //	If the command is changing, change it.
-                if (command != value)
+                if (this.command != value)
                 {
                     //	Remove event handlers.
-                    if (command != null)
+                    if (this.command != null)
                     {
-                        command.ShowCommandBarButtonContextMenu -= new EventHandler(command_ShowCommandBarButtonContextMenu);
-                        command.StateChanged -= new EventHandler(command_StateChanged);
-                        command.CommandBarButtonTextChanged -= new EventHandler(command_StateChanged);
-                        command.VisibleOnCommandBarChanged -= new EventHandler(command_StateChanged);
-                        command.CommandBarButtonContextMenuDefinitionChanged -= new EventHandler(command_CommandBarButtonContextMenuDefinitionChanged);
-                        Visible = false;
+                        this.command.ShowCommandBarButtonContextMenu -= new EventHandler(this.command_ShowCommandBarButtonContextMenu);
+                        this.command.StateChanged -= new EventHandler(this.command_StateChanged);
+                        this.command.CommandBarButtonTextChanged -= new EventHandler(this.command_StateChanged);
+                        this.command.VisibleOnCommandBarChanged -= new EventHandler(this.command_StateChanged);
+                        this.command.CommandBarButtonContextMenuDefinitionChanged -= new EventHandler(this.command_CommandBarButtonContextMenuDefinitionChanged);
+                        this.Visible = false;
                     }
 
                     //	Set the new command.
-                    command = value;
+                    this.command = value;
 
                     //	Add event handlers.
-                    if (command != null)
+                    if (this.command != null)
                     {
-                        command.ShowCommandBarButtonContextMenu += new EventHandler(command_ShowCommandBarButtonContextMenu);
-                        command.StateChanged += new EventHandler(command_StateChanged);
-                        command.CommandBarButtonTextChanged += new EventHandler(command_StateChanged);
-                        command.VisibleOnCommandBarChanged += new EventHandler(command_StateChanged);
-                        Visible = command.On && command.VisibleOnCommandBar;
-                        command.CommandBarButtonContextMenuDefinitionChanged += new EventHandler(command_CommandBarButtonContextMenuDefinitionChanged);
+                        this.command.ShowCommandBarButtonContextMenu += new EventHandler(this.command_ShowCommandBarButtonContextMenu);
+                        this.command.StateChanged += new EventHandler(this.command_StateChanged);
+                        this.command.CommandBarButtonTextChanged += new EventHandler(this.command_StateChanged);
+                        this.command.VisibleOnCommandBarChanged += new EventHandler(this.command_StateChanged);
+                        this.Visible = this.command.On && this.command.VisibleOnCommandBar;
+                        this.command.CommandBarButtonContextMenuDefinitionChanged += new EventHandler(this.command_CommandBarButtonContextMenuDefinitionChanged);
                     }
 
-                    SetAccessibleInfo();
+                    this.SetAccessibleInfo();
                 }
             }
         }
 
-        void command_CommandBarButtonContextMenuDefinitionChanged(object sender, EventArgs e)
-        {
-            SetAccessibleInfo();
-        }
+        /// <summary>
+        /// Handles the CommandBarButtonContextMenuDefinitionChanged event of the command control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        void command_CommandBarButtonContextMenuDefinitionChanged(object sender, EventArgs e) => this.SetAccessibleInfo();
 
+        /// <summary>
+        /// Sets the accessible information.
+        /// </summary>
         public void SetAccessibleInfo()
         {
-            if (ContextMenuUserInterface || DropDownContextMenuUserInterface)
-                AccessibleRole = AccessibleRole.ButtonMenu;
-            else
-                AccessibleRole = AccessibleRole.PushButton;
+            this.AccessibleRole =
+                this.ContextMenuUserInterface || this.DropDownContextMenuUserInterface
+                    ? AccessibleRole.ButtonMenu
+                    : AccessibleRole.PushButton;
 
             //update the accessibility name of this control
-            AccessibleName = command != null ? command.Text : null;
+            this.AccessibleName = this.command?.Text;
 
-            AccessibleKeyboardShortcut = command != null && command.Shortcut != Shortcut.None ? KeyboardHelper.FormatShortcutString(command.Shortcut) : null;
+            this.AccessibleKeyboardShortcut =
+                this.command != null
+                && this.command.Shortcut != Shortcut.None
+                    ? KeyboardHelper.FormatShortcutString(this.command.Shortcut)
+                    : null;
         }
 
         /// <summary>
         /// Returns a value indicating whether input events are disabled.
         /// </summary>
-        private bool InputEventsDisabled
-        {
-            get
-            {
+        /// <value><c>true</c> if [input events disabled]; otherwise, <c>false</c>.</value>
+        private bool InputEventsDisabled =>
                 //	Disable input events if there is no command, or if there is a command but it is
                 //	not active and enabled.
-                return Command == null || !(Command.On && Command.Enabled);
-            }
-        }
+                this.Command == null || !(this.Command.On && this.Command.Enabled);
 
         /// <summary>
         /// Gets the tool tip text.
         /// </summary>
-        private string ToolTipText
-        {
-            get
-            {
-                if (Command == null || !Command.On)
-                    return null;
-                else
-                    return Command.Text;
-            }
-        }
+        /// <value>The tool tip text.</value>
+        private string ToolTipText => this.Command == null || !this.Command.On ? null : this.Command.Text;
 
         /// <summary>
         /// Gets or sets a value indicating whether the mouse is inside the control.
         /// </summary>
+        /// <value><c>true</c> if [mouse inside]; otherwise, <c>false</c>.</value>
         private bool MouseInside
         {
-            get
-            {
-                return mouseInside;
-            }
+            get => this.mouseInside;
             set
             {
                 //	Ensure that the property is actually changing.
-                if (mouseInside != value)
+                if (this.mouseInside != value)
                 {
                     //	Update the value.
-                    mouseInside = value;
+                    this.mouseInside = value;
 
-                    Invalidate();
+                    this.Invalidate();
 
                     //	Update the tool tip text, if the parent implements IToolTipDisplay.  Note
                     //	that we set the tool tip text when the parent implements IToolTipDisplay so
                     //	an older tool tip will be erased if it was being displayed.
-                    if (Parent is IToolTipDisplay)
+                    if (this.Parent is IToolTipDisplay toolTipDisplay)
                     {
-                        IToolTipDisplay toolTipDisplay = (IToolTipDisplay)Parent;
-                        if (mouseInside && !ButtonPushed)
-                            toolTipDisplay.SetToolTip(ToolTipText);
+                        if (this.mouseInside && !this.ButtonPushed)
+                        {
+                            toolTipDisplay.SetToolTip(this.ToolTipText);
+                        }
                         else
+                        {
                             toolTipDisplay.SetToolTip(null);
+                        }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [mouse inside context menu].
+        /// </summary>
+        /// <value><c>true</c> if [mouse inside context menu]; otherwise, <c>false</c>.</value>
         private bool MouseInsideContextMenu
         {
-            get { return mouseInsideContextMenu; }
+            get => this.mouseInsideContextMenu;
             set
             {
-                if (mouseInsideContextMenu != value)
+                if (this.mouseInsideContextMenu != value)
                 {
-                    mouseInsideContextMenu = value;
-                    Invalidate();
+                    this.mouseInsideContextMenu = value;
+                    this.Invalidate();
                 }
             }
         }
@@ -962,18 +1036,16 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether the button is pushed.
         /// </summary>
+        /// <value><c>true</c> if [button pushed]; otherwise, <c>false</c>.</value>
         private bool ButtonPushed
         {
-            get
-            {
-                return buttonPushed;
-            }
+            get => this.buttonPushed;
             set
             {
-                if (buttonPushed != value)
+                if (this.buttonPushed != value)
                 {
-                    buttonPushed = value;
-                    Invalidate();
+                    this.buttonPushed = value;
+                    this.Invalidate();
                 }
             }
         }
@@ -981,68 +1053,104 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets a value indicating whether the dropdown context menu user interface should be displayed.
         /// </summary>
-        public bool DropDownContextMenuUserInterface
-        {
-            get
-            {
-                return Command != null &&
-                        (Command.CommandBarButtonContextMenu != null
-                            || Command.CommandBarButtonContextMenuDefinition != null
-                            || Command.CommandBarButtonContextMenuControlHandler != null
-                            || Command.CommandBarButtonContextMenuHandler != null) &&
-                        Command.CommandBarButtonContextMenuDropDown;
-            }
-        }
+        /// <value><c>true</c> if [drop down context menu user interface]; otherwise, <c>false</c>.</value>
+        public bool DropDownContextMenuUserInterface => this.Command != null &&
+                        (this.Command.CommandBarButtonContextMenu != null
+                            || this.Command.CommandBarButtonContextMenuDefinition != null
+                            || this.Command.CommandBarButtonContextMenuControlHandler != null
+                            || this.Command.CommandBarButtonContextMenuHandler != null) &&
+                        this.Command.CommandBarButtonContextMenuDropDown;
 
         /// <summary>
         /// Gets a value indicating whether the context menu user interface should be displayed.
         /// </summary>
-        private bool ContextMenuUserInterface
-        {
-            get
-            {
-                return Command != null &&
-                        (Command.CommandBarButtonContextMenu != null
-                            || Command.CommandBarButtonContextMenuDefinition != null
-                            || Command.CommandBarButtonContextMenuControlHandler != null
-                            || Command.CommandBarButtonContextMenuHandler != null) &&
-                        !Command.CommandBarButtonContextMenuDropDown;
-            }
-        }
+        /// <value><c>true</c> if [context menu user interface]; otherwise, <c>false</c>.</value>
+        private bool ContextMenuUserInterface => this.Command != null &&
+                        (this.Command.CommandBarButtonContextMenu != null
+                            || this.Command.CommandBarButtonContextMenuDefinition != null
+                            || this.Command.CommandBarButtonContextMenuControlHandler != null
+                            || this.Command.CommandBarButtonContextMenuHandler != null) &&
+                        !this.Command.CommandBarButtonContextMenuDropDown;
 
         /// <summary>
         /// Gets or sets a value indicating whether the context menu is showing.
         /// </summary>
+        /// <value><c>true</c> if [context menu showing]; otherwise, <c>false</c>.</value>
         private bool ContextMenuShowing
         {
-            get
-            {
-                return contextMenuShowing;
-            }
+            get => this.contextMenuShowing;
             set
             {
-                if (contextMenuShowing != value)
+                if (this.contextMenuShowing != value)
                 {
-                    contextMenuShowing = value;
-                    Invalidate();
-                    Update();
+                    this.contextMenuShowing = value;
+                    this.Invalidate();
+                    this.Update();
                 }
             }
         }
 
-        private static Bitmap ProviderButtonFaceEnabled { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceEnabled.png"); } }
-        private static Bitmap ProviderButtonFacePressed { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFacePressed.png"); } }
-        private static Bitmap ProviderButtonFaceDropDownEnabled { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceDropDownEnabled.png"); } }
-        private static Bitmap ProviderButtonFaceDropDownPressed { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceDropDownPressed.png"); } }
-        private static Bitmap ProviderButtonFaceLeftEnabled { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceLeftEnabled.png"); } }
-        private static Bitmap ProviderButtonFaceLeftPressed { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceLeftPressed.png"); } }
-        private static Bitmap ProviderButtonFaceRightEnabled { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceRightEnabled.png"); } }
-        private static Bitmap ProviderButtonFaceRightPressed { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderButtonFaceRightPressed.png"); } }
-        private static Bitmap ProviderDownArrow { get { return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderDownArrow.png"); } }
+        /// <summary>
+        /// Gets the provider button face enabled.
+        /// </summary>
+        /// <value>The provider button face enabled.</value>
+        private static Bitmap ProviderButtonFaceEnabled => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceEnabled.png");
 
-        #endregion Private Properties
+        /// <summary>
+        /// Gets the provider button face pressed.
+        /// </summary>
+        /// <value>The provider button face pressed.</value>
+        private static Bitmap ProviderButtonFacePressed => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFacePressed.png");
 
-        #region Private Methods
+        /// <summary>
+        /// Gets the provider button face drop down enabled.
+        /// </summary>
+        /// <value>The provider button face drop down enabled.</value>
+        private static Bitmap ProviderButtonFaceDropDownEnabled => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceDropDownEnabled.png");
+
+        /// <summary>
+        /// Gets the provider button face drop down pressed.
+        /// </summary>
+        /// <value>The provider button face drop down pressed.</value>
+        private static Bitmap ProviderButtonFaceDropDownPressed => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceDropDownPressed.png");
+
+        /// <summary>
+        /// Gets the provider button face left enabled.
+        /// </summary>
+        /// <value>The provider button face left enabled.</value>
+        private static Bitmap ProviderButtonFaceLeftEnabled => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceLeftEnabled.png");
+
+        /// <summary>
+        /// Gets the provider button face left pressed.
+        /// </summary>
+        /// <value>The provider button face left pressed.</value>
+        private static Bitmap ProviderButtonFaceLeftPressed => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceLeftPressed.png");
+
+        /// <summary>
+        /// Gets the provider button face right enabled.
+        /// </summary>
+        /// <value>The provider button face right enabled.</value>
+        private static Bitmap ProviderButtonFaceRightEnabled => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceRightEnabled.png");
+
+        /// <summary>
+        /// Gets the provider button face right pressed.
+        /// </summary>
+        /// <value>The provider button face right pressed.</value>
+        private static Bitmap ProviderButtonFaceRightPressed => ResourceHelper.LoadAssemblyResourceBitmap(
+            "Images.CommandBar.ProviderButtonFaceRightPressed.png");
+
+        /// <summary>
+        /// Gets the provider down arrow.
+        /// </summary>
+        /// <value>The provider down arrow.</value>
+        private static Bitmap ProviderDownArrow => ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ProviderDownArrow.png");
 
         /// <summary>
         /// Updates the command.
@@ -1050,10 +1158,10 @@ namespace OpenLiveWriter.ApplicationFramework
         private void UpdateCommand()
         {
             //	Locate the command.
-            Command updateCommand = commandBarLightweightControl.CommandManager.Get(commandIdentifier);
+            var updateCommand = this.commandBarLightweightControl.CommandManager.Get(this.commandIdentifier);
 
             //	Set the command.
-            Command = updateCommand;
+            this.Command = updateCommand;
         }
 
         /// <summary>
@@ -1062,108 +1170,105 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void DoShowContextMenu()
         {
-            if (Command != null)
+            if (this.Command != null)
             {
                 // calculate point to show context menu at as well as alternative point
                 // in the case where the menu might go off the right edge of the screen
-                Point menuLocation = VirtualClientPointToScreen(new Point(0, VirtualHeight));
-                int alternativeLocation = VirtualClientPointToScreen(new Point(VirtualWidth, VirtualHeight)).X;
+                var menuLocation = this.VirtualClientPointToScreen(new Point(0, this.VirtualHeight));
+                var alternativeLocation = this.VirtualClientPointToScreen(new Point(this.VirtualWidth, this.VirtualHeight)).X;
 
-                if (Command.CommandBarButtonContextMenuDefinition != null)
+                if (this.Command.CommandBarButtonContextMenuDefinition != null)
                 {
                     //	Note that the context menu is showing.
-                    StartShowContextMenu();
+                    this.StartShowContextMenu();
 
                     //	Show the context menu.
-                    Command command = CommandContextMenu.ShowModal(commandBarLightweightControl.CommandManager, Parent, menuLocation, alternativeLocation, Command.CommandBarButtonContextMenuDefinition);
+                    var command = CommandContextMenu.ShowModal(this.commandBarLightweightControl.CommandManager, this.Parent, menuLocation, alternativeLocation, this.Command.CommandBarButtonContextMenuDefinition);
 
                     // cleanup state/ui
-                    EndShowContextMenu();
+                    this.EndShowContextMenu();
 
                     //	If a command was selected, execute it.
                     if (command != null)
+                    {
                         command.PerformExecute();
+                    }
                 }
-                else if (Command.CommandBarButtonContextMenuControlHandler != null)
+                else if (this.Command.CommandBarButtonContextMenuControlHandler != null)
                 {
                     //	Note that the context menu is showing.
-                    StartShowContextMenu();
+                    this.StartShowContextMenu();
 
                     // create the mini-form
-                    CommandContextMenuMiniForm miniForm = new CommandContextMenuMiniForm(Win32WindowImpl.ForegroundWin32Window, Command);
+                    var miniForm = new CommandContextMenuMiniForm(Win32WindowImpl.ForegroundWin32Window, this.Command);
 
                     miniForm.Location = PositionMenu(menuLocation, alternativeLocation, miniForm.Size);
-                    miniForm.Closed += new EventHandler(miniForm_Closed);
+                    miniForm.Closed += new EventHandler(this.miniForm_Closed);
                     miniForm.Show();
                 }
-                else if (Command.CommandBarButtonContextMenuHandler != null)
+                else if (this.Command.CommandBarButtonContextMenuHandler != null)
                 {
-                    StartShowContextMenu();
-                    Command.CommandBarButtonContextMenuHandler(Parent, menuLocation, alternativeLocation, new EndShowContextMenuDisposable(this));
+                    this.StartShowContextMenu();
+                    this.Command.CommandBarButtonContextMenuHandler(this.Parent, menuLocation, alternativeLocation, new EndShowContextMenuDisposable(this));
                 }
             }
 
         }
 
+        /// <summary>
+        /// Positions the menu.
+        /// </summary>
+        /// <param name="menuLocation">The menu location.</param>
+        /// <param name="alternativeLocation">The alternative location.</param>
+        /// <param name="menuSize">Size of the menu.</param>
+        /// <returns>Point.</returns>
         public static Point PositionMenu(Point menuLocation, int alternativeLocation, Size menuSize)
         {
             if (!BidiHelper.IsRightToLeft)
             {
-                int top = menuLocation.Y;
-                int left = menuLocation.X;
+                var top = menuLocation.Y;
+                var left = menuLocation.X;
                 if (!Screen.FromPoint(new Point(alternativeLocation, menuLocation.Y)).Bounds.Contains(new Point(left + menuSize.Width, top)))
+                {
                     left = alternativeLocation - menuSize.Width;
+                }
+
                 return new Point(left, top);
             }
             else
             {
-                int top = menuLocation.Y;
-                int left = alternativeLocation - menuSize.Width;
+                var top = menuLocation.Y;
+                var left = alternativeLocation - menuSize.Width;
                 if (!Screen.FromPoint(new Point(alternativeLocation, menuLocation.Y)).Bounds.Contains(new Point(left, top)))
+                {
                     left = menuLocation.X;
+                }
+
                 return new Point(left, top);
             }
         }
 
-        private class EndShowContextMenuDisposable : IDisposable
-        {
-            private readonly CommandBarButtonLightweightControl control;
-            private bool disposed = false;
-
-            public EndShowContextMenuDisposable(CommandBarButtonLightweightControl control)
-            {
-                this.control = control;
-            }
-
-            public void Dispose()
-            {
-                if (!disposed)
-                {
-                    disposed = true;
-                    control.EndShowContextMenu();
-                }
-            }
-        }
-
         // cleanup when the mini form closes
+        /// <summary>
+        /// Handles the Closed event of the miniForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void miniForm_Closed(object sender, EventArgs e)
         {
             // cleanup form
-            CommandContextMenuMiniForm miniForm = sender as CommandContextMenuMiniForm;
-            miniForm.Closed -= new EventHandler(miniForm_Closed);
+            var miniForm = sender as CommandContextMenuMiniForm;
+            miniForm.Closed -= new EventHandler(this.miniForm_Closed);
             miniForm.Dispose();
 
             // cleanup ui
-            EndShowContextMenu();
+            this.EndShowContextMenu();
         }
 
         /// <summary>
         /// Initialize state/UI for context menu
         /// </summary>
-        private void StartShowContextMenu()
-        {
-            ContextMenuShowing = true;
-        }
+        private void StartShowContextMenu() => this.ContextMenuShowing = true;
 
         /// <summary>
         /// Make sure the state and UI is cleaned up after showing the context menu
@@ -1171,46 +1276,48 @@ namespace OpenLiveWriter.ApplicationFramework
         private void EndShowContextMenu()
         {
             //	Note that the context menu is not showing and ensure that the mouse is not inside.
-            ContextMenuShowing = false;
-            MouseInside = false;
+            this.ContextMenuShowing = false;
+            this.MouseInside = false;
 
             // if requested, invalidate the parent so that the command bar repaints
             // correctly (this is necessary for the IE ToolBand which won't paint
             // its background correctly unless the entire control is invalidated)
-            if (Command != null)
+            if (this.Command != null)
             {
-                if (Command.CommandBarButtonContextMenuInvalidateParent)
-                    Parent.Invalidate(true);
+                if (this.Command.CommandBarButtonContextMenuInvalidateParent)
+                {
+                    this.Parent.Invalidate(true);
+                }
             }
         }
 
         /// <summary>
         /// Returns a color matrix that will draw buttons in a high-contrast-friendly mode.
         /// </summary>
+        /// <value>The high contrast color matrix.</value>
         private static ColorMatrix HighContrastColorMatrix
         {
             get
             {
-                if (_highContrastColorMatrix == null)
-                    _highContrastColorMatrix = ImageHelper.GetHighContrastImageMatrix();
-                return _highContrastColorMatrix;
+                if (highContrastColorMatrix == null)
+                {
+                    highContrastColorMatrix = ImageHelper.GetHighContrastImageMatrix();
+                }
+
+                return highContrastColorMatrix;
             }
         }
-        private static ColorMatrix _highContrastColorMatrix;
-
-        #endregion Private Methods
-
-        #region Private Event Handlers
+        /// <summary>
+        /// The high contrast color matrix
+        /// </summary>
+        private static ColorMatrix highContrastColorMatrix;
 
         /// <summary>
         /// commandBarLightweightControl_CommandManagerChanged event handler.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void commandBarLightweightControl_CommandManagerChanged(object sender, EventArgs e)
-        {
-            UpdateCommand();
-        }
+        private void commandBarLightweightControl_CommandManagerChanged(object sender, EventArgs e) => this.UpdateCommand();
 
         /// <summary>
         /// command_CommandBarButtonTextChanged event handler.
@@ -1219,8 +1326,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         private void command_CommandBarButtonTextChanged(object sender, EventArgs e)
         {
-            commandBarLightweightControl.PerformLayout();
-            Parent.Invalidate();
+            this.commandBarLightweightControl.PerformLayout();
+            this.Parent.Invalidate();
         }
 
         /// <summary>
@@ -1228,10 +1335,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void command_ShowCommandBarButtonContextMenu(object sender, EventArgs e)
-        {
-            DoShowContextMenu();
-        }
+        private void command_ShowCommandBarButtonContextMenu(object sender, EventArgs e) => this.DoShowContextMenu();
 
         /// <summary>
         /// command_StateChanged event handler.
@@ -1240,50 +1344,48 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         private void command_StateChanged(object sender, EventArgs e)
         {
-            AccessibleName = command != null ? command.Text : null;
-            Visible = command.On && command.VisibleOnCommandBar;
+            this.AccessibleName = this.command != null ? this.command.Text : null;
+            this.Visible = this.command.On && this.command.VisibleOnCommandBar;
 
-            if (lastLayoutCommandState == null || lastLayoutCommandState.NeedsLayout(Command, ImageSize))
-                commandBarLightweightControl.PerformLayout();
-            Parent.Invalidate();
+            if (this.lastLayoutCommandState == null || this.lastLayoutCommandState.NeedsLayout(this.Command, this.ImageSize))
+            {
+                this.commandBarLightweightControl.PerformLayout();
+            }
+
+            this.Parent.Invalidate();
         }
-
-        #endregion Private Event Handlers
 
         /// <summary>
-        /// Commands can implement this interface to provide
-        /// dynamic command bar button images.
+        /// Does the default action.
         /// </summary>
-        public interface ICustomButtonBitmapPaint
-        {
-            int Width { get; }
-            int Height { get; }
-            void Paint(BidiGraphics g, Rectangle bounds, DrawState drawState);
-        }
-
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public override bool DoDefaultAction()
         {
-            if (ContextMenuUserInterface || DropDownContextMenuUserInterface)
+            if (this.ContextMenuUserInterface || this.DropDownContextMenuUserInterface)
             {
-                DoShowContextMenu();
+                this.DoShowContextMenu();
                 return true;
             }
+
             //	Execute the event.
-            if (Command != null && Command.On && Command.Enabled)
+            if (this.Command != null && this.Command.On && this.Command.Enabled)
             {
-                Command.PerformExecute();
+                this.Command.PerformExecute();
             }
+
             return true;
         }
 
-        public override bool Focus()
-        {
-            return base.Focus();
-        }
+        /// <summary>
+        /// Focuses this instance.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public override bool Focus() => base.Focus();
 
-        public override bool Unfocus()
-        {
-            return base.Unfocus();
-        }
+        /// <summary>
+        /// Unfocuses this instance.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public override bool Unfocus() => base.Unfocus();
     }
 }

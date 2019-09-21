@@ -1,55 +1,85 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices.UI;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices.UI;
+
+    /// <summary>
+    /// Class TransparentCommandBarControl.
+    /// Implements the <see cref="CommandBarControl" />
+    /// </summary>
+    /// <seealso cref="CommandBarControl" />
     public class TransparentCommandBarControl : CommandBarControl
     {
-        private Control _parent;
+        /// <summary>
+        /// The parent
+        /// </summary>
+        private Control parent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransparentCommandBarControl"/> class.
+        /// </summary>
+        /// <param name="commandBar">The command bar.</param>
+        /// <param name="commandBarDefinition">The command bar definition.</param>
         public TransparentCommandBarControl(CommandBarLightweightControl commandBar, CommandBarDefinition commandBarDefinition) : base(commandBar, commandBarDefinition)
         {
         }
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_parent != null && !_parent.IsDisposed)
-                    _parent.Invalidated -= new InvalidateEventHandler(TransparentCommandBarControl_Invalidated);
+                if (this.parent != null && !this.parent.IsDisposed)
+                {
+                    this.parent.Invalidated -= new InvalidateEventHandler(this.TransparentCommandBarControl_Invalidated);
+                }
             }
+
             base.Dispose(disposing);
         }
 
-        public void ForceLayout()
-        {
-            CommandBarLightweightControl.PerformLayout();
-        }
+        /// <summary>
+        /// Forces the layout.
+        /// </summary>
+        public void ForceLayout() => this.CommandBarLightweightControl.PerformLayout();
 
+        /// <summary>
+        /// Paints the background of the control.
+        /// </summary>
+        /// <param name="pevent">A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains information about the control to paint.</param>
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
-            if (_parent == null)
+            if (this.parent == null)
             {
-                _parent = (Control)VirtualTransparency.VirtualParent(this);
-                _parent.Invalidated += new InvalidateEventHandler(TransparentCommandBarControl_Invalidated);
+                this.parent = (Control)VirtualTransparency.VirtualParent(this);
+                this.parent.Invalidated += new InvalidateEventHandler(this.TransparentCommandBarControl_Invalidated);
             }
-            VirtualTransparency.VirtualPaint((IVirtualTransparencyHost)_parent, this, pevent);
+
+            VirtualTransparency.VirtualPaint((IVirtualTransparencyHost)this.parent, this, pevent);
         }
 
+        /// <summary>
+        /// Handles the Invalidated event of the TransparentCommandBarControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="InvalidateEventArgs"/> instance containing the event data.</param>
         private void TransparentCommandBarControl_Invalidated(object sender, InvalidateEventArgs e)
         {
-            Point absLoc = _parent.PointToScreen(e.InvalidRect.Location);
-            Point relLoc = PointToClient(absLoc);
-            Rectangle relRect = new Rectangle(relLoc, e.InvalidRect.Size);
-            if (ClientRectangle.IntersectsWith(relRect))
+            var absLoc = this.parent.PointToScreen(e.InvalidRect.Location);
+            var relLoc = this.PointToClient(absLoc);
+            var relRect = new Rectangle(relLoc, e.InvalidRect.Size);
+            if (this.ClientRectangle.IntersectsWith(relRect))
             {
-                relRect.Intersect(ClientRectangle);
-                Invalidate(relRect);
+                relRect.Intersect(this.ClientRectangle);
+                this.Invalidate(relRect);
             }
         }
     }

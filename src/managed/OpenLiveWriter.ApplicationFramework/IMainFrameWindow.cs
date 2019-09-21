@@ -1,244 +1,91 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.Interop.Windows;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using OpenLiveWriter.Controls;
 
+    /// <summary>
+    /// Interface IMainFrameWindow
+    /// Implements the <see cref="IWin32Window" />
+    /// Implements the <see cref="ISynchronizeInvoke" />
+    /// Implements the <see cref="IMiniFormOwner" />
+    /// </summary>
+    /// <seealso cref="IWin32Window" />
+    /// <seealso cref="ISynchronizeInvoke" />
+    /// <seealso cref="IMiniFormOwner" />
     public interface IMainFrameWindow : IWin32Window, ISynchronizeInvoke, IMiniFormOwner
     {
+        /// <summary>
+        /// Sets the caption.
+        /// </summary>
+        /// <value>The caption.</value>
         string Caption { set; }
 
+        /// <summary>
+        /// Gets the location.
+        /// </summary>
+        /// <value>The location.</value>
         Point Location { get; }
+
+        /// <summary>
+        /// Gets the size.
+        /// </summary>
+        /// <value>The size.</value>
         Size Size { get; }
 
+        /// <summary>
+        /// Occurs when [location changed].
+        /// </summary>
         event EventHandler LocationChanged;
 
+        /// <summary>
+        /// Occurs when [size changed].
+        /// </summary>
         event EventHandler SizeChanged;
 
+        /// <summary>
+        /// Occurs when [deactivate].
+        /// </summary>
         event EventHandler Deactivate;
 
+        /// <summary>
+        /// Occurs when [layout].
+        /// </summary>
         event LayoutEventHandler Layout;
 
+        /// <summary>
+        /// Activates this instance.
+        /// </summary>
         void Activate();
 
+        /// <summary>
+        /// Updates this instance.
+        /// </summary>
         void Update();
 
+        /// <summary>
+        /// Performs the layout.
+        /// </summary>
         void PerformLayout();
+
+        /// <summary>
+        /// Invalidates this instance.
+        /// </summary>
         void Invalidate();
 
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
         void Close();
 
+        /// <summary>
+        /// Called when [keyboard language changed].
+        /// </summary>
         void OnKeyboardLanguageChanged();
     }
-
-    public interface IStatusBar
-    {
-        void SetWordCountMessage(string msg);
-        void PushStatusMessage(string msg);
-        void PopStatusMessage();
-        void SetStatusMessage(string msg);
-    }
-
-    public class NullStatusBar : IStatusBar
-    {
-        private int msgCount;
-
-        public void SetWordCountMessage(string msg)
-        {
-        }
-
-        public void PushStatusMessage(string msg)
-        {
-            msgCount++;
-        }
-
-        public void PopStatusMessage()
-        {
-            msgCount--;
-            Debug.Assert(msgCount >= 0);
-        }
-
-        public void SetStatusMessage(string msg)
-        {
-        }
-    }
-
-    public class StatusMessage
-    {
-        public StatusMessage(string blogPostStatus)
-            : this(null, blogPostStatus, null)
-        {
-        }
-
-        public StatusMessage(Image icon, string blogPostStatus, string wordCountValue)
-        {
-            Icon = icon;
-            BlogPostStatus = blogPostStatus;
-            WordCountValue = wordCountValue;
-        }
-
-        public void ConsumeValues(StatusMessage externalMessage)
-        {
-            if (BlogPostStatus == null)
-            {
-                BlogPostStatus = externalMessage.BlogPostStatus;
-                Icon = externalMessage.Icon;
-            }
-
-            if (WordCountValue == null)
-                WordCountValue = externalMessage.WordCountValue;
-        }
-
-        private Image _icon;
-        public Image Icon
-        {
-            get
-            {
-                return _icon;
-            }
-            set
-            {
-                _icon = value;
-            }
-        }
-
-        private string _blogPostStatus;
-        public string BlogPostStatus
-        {
-            get
-            {
-                return _blogPostStatus;
-            }
-            set
-            {
-                _blogPostStatus = value;
-            }
-        }
-
-        private string _wordCountValue;
-        public string WordCountValue
-        {
-            get
-            {
-                return _wordCountValue;
-            }
-            set
-            {
-                _wordCountValue = value;
-            }
-        }
-    }
-
-    public class DesignModeMainFrameWindow : SameThreadSimpleInvokeTarget, IMainFrameWindow
-    {
-
-        public string Caption
-        {
-            get
-            {
-                return String.Empty;
-            }
-            set
-            {
-            }
-        }
-
-        public Point Location { get { return Point.Empty; } }
-        public Size Size { get { return Size.Empty; } }
-
-        public void Activate()
-        {
-        }
-
-        public void Update()
-        {
-        }
-
-        public void AddOwnedForm(Form form)
-        {
-        }
-
-        public void RemoveOwnedForm(Form form)
-        {
-        }
-
-        public void SetStatusBarMessage(StatusMessage message)
-        {
-        }
-
-        public void PushStatusBarMessage(StatusMessage message)
-        {
-        }
-
-        public void PopStatusBarMessage()
-        {
-        }
-
-        public void PerformLayout()
-        {
-        }
-
-        public void Invalidate()
-        {
-
-        }
-
-        public void Close()
-        {
-        }
-
-        public IntPtr Handle
-        {
-            get
-            {
-                return User32.GetForegroundWindow();
-            }
-        }
-
-        public event EventHandler SizeChanged;
-        protected void OnSizeChanged()
-        {
-            // prevent compiler warnings
-            if (SizeChanged != null)
-                SizeChanged(this, EventArgs.Empty);
-        }
-
-        public event EventHandler LocationChanged;
-        protected void OnLocationChanged()
-        {
-            // prevent compiler warnings
-            if (LocationChanged != null)
-                LocationChanged(this, EventArgs.Empty);
-        }
-
-        public event EventHandler Deactivate;
-        protected void OnDeactivate()
-        {
-            // prevent compiler warnings
-            if (Deactivate != null)
-                Deactivate(this, EventArgs.Empty);
-        }
-
-        public event LayoutEventHandler Layout;
-        protected void OnLayout(LayoutEventArgs ea)
-        {
-            if (Layout != null)
-                Layout(this, ea);
-        }
-
-        public void OnKeyboardLanguageChanged()
-        {
-        }
-    }
 }
-
-

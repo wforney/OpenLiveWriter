@@ -39,5 +39,4 @@ namespace OpenLiveWriter.Api
         /// </summary>
         LiveResize = 4
     }
-
 }

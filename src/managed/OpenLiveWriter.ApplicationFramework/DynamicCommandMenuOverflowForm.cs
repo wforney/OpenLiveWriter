@@ -1,78 +1,76 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// Summary description for DynamicCommandMenuOverflowForm.
     /// </summary>
-    public class DynamicCommandMenuOverflowForm : ApplicationDialog
+    public partial class DynamicCommandMenuOverflowForm : ApplicationDialog
     {
         private Button buttonOK;
         private Button buttonCancel;
         private ListBox listBoxCommands;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicCommandMenuOverflowForm"/> class.
+        /// </summary>
+        /// <param name="menuCommandObjects">The menu command objects.</param>
         public DynamicCommandMenuOverflowForm(IMenuCommandObject[] menuCommandObjects)
         {
             //
             // Required for Windows Form Designer support
             //
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.buttonOK.Text = Res.Get(StringId.OKButtonText);
             this.buttonCancel.Text = Res.Get(StringId.CancelButton);
 
             // initialize the listbox
-            foreach (IMenuCommandObject menuCommandObject in menuCommandObjects)
-                listBoxCommands.Items.Add(new MenuCommandObjectListBoxAdapter(menuCommandObject));
+            foreach (var menuCommandObject in menuCommandObjects)
+            {
+                this.listBoxCommands.Items.Add(new MenuCommandObjectListBoxAdapter(menuCommandObject));
+            }
 
             // select the top item in the list box
-            if (listBoxCommands.Items.Count > 0)
-                listBoxCommands.SelectedIndex = 0;
+            if (this.listBoxCommands.Items.Count > 0)
+            {
+                this.listBoxCommands.SelectedIndex = 0;
+            }
         }
 
+        /// <summary>
+        /// Gets the selected object.
+        /// </summary>
+        /// <value>The selected object.</value>
         public IMenuCommandObject SelectedObject
         {
             get
             {
-                if (listBoxCommands.SelectedIndex != -1)
-                    return (listBoxCommands.SelectedItem as MenuCommandObjectListBoxAdapter).MenuCommandObject;
-                else
-                    return null;
+                return this.listBoxCommands.SelectedIndex != -1
+                    ? (this.listBoxCommands.SelectedItem as MenuCommandObjectListBoxAdapter).MenuCommandObject
+                    : null;
             }
         }
 
-        private void listBoxCommands_DoubleClick(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
-
-        private class MenuCommandObjectListBoxAdapter
-        {
-            public MenuCommandObjectListBoxAdapter(IMenuCommandObject menuCommandObject)
-            {
-                _menuCommandObject = menuCommandObject;
-            }
-
-            public override string ToString()
-            {
-                return _menuCommandObject.CaptionNoMnemonic;
-            }
-
-            public IMenuCommandObject MenuCommandObject { get { return _menuCommandObject; } }
-            private IMenuCommandObject _menuCommandObject;
-
-        }
+        /// <summary>
+        /// Handles the DoubleClick event of the listBoxCommands control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void listBoxCommands_DoubleClick(object sender, EventArgs e) => this.DialogResult = DialogResult.OK;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -81,11 +79,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -96,15 +95,15 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.listBoxCommands = new System.Windows.Forms.ListBox();
+            this.buttonOK = new Button();
+            this.buttonCancel = new Button();
+            this.listBoxCommands = new ListBox();
             this.SuspendLayout();
             //
             // buttonOK
             //
-            this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonOK.DialogResult = DialogResult.OK;
+            this.buttonOK.FlatStyle = FlatStyle.System;
             this.buttonOK.Location = new System.Drawing.Point(88, 228);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 0;
@@ -112,8 +111,8 @@ namespace OpenLiveWriter.ApplicationFramework
             //
             // buttonCancel
             //
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonCancel.DialogResult = DialogResult.Cancel;
+            this.buttonCancel.FlatStyle = FlatStyle.System;
             this.buttonCancel.Location = new System.Drawing.Point(171, 228);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 1;
@@ -125,7 +124,7 @@ namespace OpenLiveWriter.ApplicationFramework
             this.listBoxCommands.Name = "listBoxCommands";
             this.listBoxCommands.Size = new System.Drawing.Size(238, 212);
             this.listBoxCommands.TabIndex = 2;
-            this.listBoxCommands.DoubleClick += new System.EventHandler(this.listBoxCommands_DoubleClick);
+            this.listBoxCommands.DoubleClick += new EventHandler(this.listBoxCommands_DoubleClick);
             //
             // DynamicCommandMenuOverflowForm
             //
@@ -136,18 +135,16 @@ namespace OpenLiveWriter.ApplicationFramework
             this.Controls.Add(this.listBoxCommands);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(0, 0);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DynamicCommandMenuOverflowForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = FormStartPosition.CenterParent;
             this.Text = "DynamicCommandMenuOverflowForm";
             this.ResumeLayout(false);
-
         }
         #endregion
-
     }
 }

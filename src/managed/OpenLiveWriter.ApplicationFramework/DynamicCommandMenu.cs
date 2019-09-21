@@ -1,108 +1,131 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Globalization;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+
+    /// <summary>
+    /// Class DynamicCommandMenu.
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public class DynamicCommandMenu : IDisposable
     {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicCommandMenu"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
         public DynamicCommandMenu(IDynamicCommandMenuContext context)
         {
             // save reference to command list context
-            _context = context;
+            this.Context = context;
 
             // initialize commands
-            InitializeCommands();
+            this.InitializeCommands();
         }
 
         /// <summary>
         /// Get the underlying command identifiers managed by this dynamic command menu
         /// (this would allow us to embed these commands within the scope of a context-menu definition)
         /// </summary>
+        /// <value>The command identifiers.</value>
         public string[] CommandIdentifiers
         {
             get
             {
-                ArrayList commands = new ArrayList(_commands.Count + 1);
-                foreach (Command command in _commands)
+                var commands = new ArrayList(this.commands.Count + 1);
+                foreach (Command command in this.commands)
+                {
                     commands.Add(command.Identifier);
-                if (commandMore != null)
-                    commands.Add(commandMore.Identifier);
+                }
+
+                if (this.commandMore != null)
+                {
+                    commands.Add(this.commandMore.Identifier);
+                }
+
                 return (string[])commands.ToArray(typeof(string));
             }
         }
 
-        // <summary>
-        /// Clean up any resources being used.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            foreach (Command command in _commands)
-                Context.CommandManager.Remove(command);
-
-            if (components != null)
+            foreach (Command command in this.commands)
             {
-                components.Dispose();
+                this.Context.CommandManager.Remove(command);
+            }
+
+            if (this.components != null)
+            {
+                this.components.Dispose();
             }
         }
 
+        /// <summary>
+        /// Initializes the commands.
+        /// </summary>
         private void InitializeCommands()
         {
-            Context.CommandManager.BeginUpdate();
+            this.Context.CommandManager.BeginUpdate();
 
             // add commands
-            for (int i = 0; i < Context.Options.MaxCommandsShownOnMenu; i++)
+            for (var i = 0; i < this.Context.Options.MaxCommandsShownOnMenu; i++)
             {
                 // create the command
-                Command command = new Command(this.components);
+                var command = new Command(this.components);
 
                 // First command added should have a BeforeShowInMenu so that we can
                 // dynamically update the contents of the menu
                 if (i == 0)
-                    command.BeforeShowInMenu += new EventHandler(commands_BeforeShowInMenu);
+                {
+                    command.BeforeShowInMenu += new EventHandler(this.commands_BeforeShowInMenu);
+                }
 
                 // provide the command with a unique identifier
                 command.Identifier = Guid.NewGuid().ToString();
 
-                string separator = i == 0 && Context.Options.SeparatorBegin ? "-" : "";
+                var separator = i == 0 && this.Context.Options.SeparatorBegin ? "-" : string.Empty;
 
                 // define menu paths
-                string menuMergeText = (Context.Options.MenuMergeOffset + i).ToString(CultureInfo.InvariantCulture);
-                command.MenuText = (Context.Options.UseNumericMnemonics ? "&" + (i + 1).ToString(CultureInfo.InvariantCulture) + " {0}" : "{0}");
-                command.MainMenuPath = Context.Options.MainMenuBasePath + "/" + separator + command.MenuText + "@" + menuMergeText;
+                var menuMergeText = (this.Context.Options.MenuMergeOffset + i).ToString(CultureInfo.InvariantCulture);
+                command.MenuText = (this.Context.Options.UseNumericMnemonics ? $"&{(i + 1).ToString(CultureInfo.InvariantCulture)} {{0}}" : "{0}");
+                command.MainMenuPath = $"{this.Context.Options.MainMenuBasePath}/{separator}{command.MenuText}@{menuMergeText}";
 
                 // generic execute handler for all window menu commands
-                command.Execute += new EventHandler(command_Execute);
+                command.Execute += new EventHandler(this.command_Execute);
 
                 // add the command to our internal list
-                _commands.Add(command);
+                this.commands.Add(command);
 
                 // add the command to the system command manager
-                Context.CommandManager.Add(command);
+                this.Context.CommandManager.Add(command);
             }
 
             // add 'more' command if appropriate
-            if (Context.Options.MoreCommandsMenuCaption != null)
+            if (this.Context.Options.MoreCommandsMenuCaption != null)
             {
-                commandMore = new Command(this.components);
-                commandMore.Identifier = Guid.NewGuid().ToString();
-                commandMore.VisibleOnContextMenu = true;
-                commandMore.VisibleOnMainMenu = true;
-                commandMore.MenuText = Context.Options.MoreCommandsMenuCaption;
-                commandMore.MainMenuPath = Context.Options.MainMenuBasePath + "/" + Context.Options.MoreCommandsMenuCaption + "@" + (Context.Options.MenuMergeOffset + Context.Options.MaxCommandsShownOnMenu).ToString(CultureInfo.InvariantCulture);
-                commandMore.Execute += new EventHandler(commandMore_Execute);
-                Context.CommandManager.Add(commandMore);
+                this.commandMore = new Command(this.components);
+                this.commandMore.Identifier = Guid.NewGuid().ToString();
+                this.commandMore.VisibleOnContextMenu = true;
+                this.commandMore.VisibleOnMainMenu = true;
+                this.commandMore.MenuText = this.Context.Options.MoreCommandsMenuCaption;
+                this.commandMore.MainMenuPath = $"{this.Context.Options.MainMenuBasePath}/{this.Context.Options.MoreCommandsMenuCaption}@{(this.Context.Options.MenuMergeOffset + this.Context.Options.MaxCommandsShownOnMenu).ToString(CultureInfo.InvariantCulture)}";
+                this.commandMore.Execute += new EventHandler(this.commandMore_Execute);
+                this.Context.CommandManager.Add(this.commandMore);
             }
 
-            Context.CommandManager.EndUpdate();
+            this.Context.CommandManager.EndUpdate();
         }
 
         /// <summary>
@@ -113,13 +136,13 @@ namespace OpenLiveWriter.ApplicationFramework
         private void commands_BeforeShowInMenu(object sender, EventArgs ea)
         {
             // obtain the list of command objects
-            IMenuCommandObject[] menuCommandObjects = Context.GetMenuCommandObjects();
+            var menuCommandObjects = this.Context.GetMenuCommandObjects();
 
             //	Adjust the commands
-            for (int i = 0; i < _commands.Count; i++)
+            for (var i = 0; i < this.commands.Count; i++)
             {
                 //	Get the command.
-                Command command = _commands[i] as Command;
+                var command = this.commands[i] as Command;
 
                 //	If the command is beyond the set of command objects files turn it off.  Otherwise,
                 //	turn it on and update it.
@@ -131,8 +154,8 @@ namespace OpenLiveWriter.ApplicationFramework
                     command.Enabled = false;
 
                     //	Update the command.
-                    command.Tag = String.Empty;
-                    command.MenuFormatArgs = new object[] { String.Empty };
+                    command.Tag = string.Empty;
+                    command.MenuFormatArgs = new object[] { string.Empty };
                 }
                 else
                 {
@@ -150,160 +173,67 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             // show or hide the 'more' command as necessary
-            if (commandMore != null)
+            if (this.commandMore != null)
             {
-                bool showCommandMore = Context.Options.MoreCommandsMenuCaption != null && (menuCommandObjects.Length > _commands.Count);
-                commandMore.VisibleOnContextMenu = showCommandMore;
-                commandMore.VisibleOnMainMenu = showCommandMore;
-                commandMore.Enabled = showCommandMore;
+                var showCommandMore = this.Context.Options.MoreCommandsMenuCaption != null && (menuCommandObjects.Length > this.commands.Count);
+                this.commandMore.VisibleOnContextMenu = showCommandMore;
+                this.commandMore.VisibleOnMainMenu = showCommandMore;
+                this.commandMore.Enabled = showCommandMore;
             }
         }
 
-        private void command_Execute(object sender, EventArgs ea)
-        {
+        /// <summary>
+        /// Handles the Execute event of the command control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="ea">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void command_Execute(object sender, EventArgs ea) =>
             // notify context
-            Context.CommandExecuted((sender as Command).Tag as IMenuCommandObject);
-        }
+            this.Context.CommandExecuted((sender as Command).Tag as IMenuCommandObject);
 
+        /// <summary>
+        /// Handles the Execute event of the commandMore control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="ea">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void commandMore_Execute(object sender, EventArgs ea)
         {
-            using (DynamicCommandMenuOverflowForm form = new DynamicCommandMenuOverflowForm(Context.GetMenuCommandObjects()))
+            using (var form = new DynamicCommandMenuOverflowForm(this.Context.GetMenuCommandObjects()))
             {
                 // configure the title bar
-                form.Text = Context.Options.MoreCommandsDialogTitle;
+                form.Text = this.Context.Options.MoreCommandsDialogTitle;
 
                 // show the form
                 using (new WaitCursor())
                 {
-                    DialogResult result = form.ShowDialog();
+                    var result = form.ShowDialog();
                     if (result == DialogResult.OK)
-                        Context.CommandExecuted(form.SelectedObject);
+                    {
+                        this.Context.CommandExecuted(form.SelectedObject);
+                    }
                 }
             }
         }
 
-        private IDynamicCommandMenuContext Context
-        {
-            get { return _context; }
-        }
-        private IDynamicCommandMenuContext _context;
+        /// <summary>
+        /// Gets the context.
+        /// </summary>
+        /// <value>The context.</value>
+        private IDynamicCommandMenuContext Context { get; }
 
-        private ArrayList _commands = new ArrayList();
+        /// <summary>
+        /// The commands
+        /// </summary>
+        private readonly ArrayList commands = new ArrayList();
 
+        /// <summary>
+        /// The command more
+        /// </summary>
         private Command commandMore;
 
-        private Container components = new Container();
-
+        /// <summary>
+        /// The components
+        /// </summary>
+        private readonly Container components = new Container();
     }
-
-    public interface IDynamicCommandMenuContext
-    {
-        /// <summary>
-        /// Get the options for the menu
-        /// </summary>
-        DynamicCommandMenuOptions Options { get; }
-
-        /// <summary>
-        /// Command manager to add commands to
-        /// </summary>
-        CommandManager CommandManager { get; }
-
-        /// <summary>
-        /// Command objects to show on the menu
-        /// </summary>
-        /// <returns></returns>
-        IMenuCommandObject[] GetMenuCommandObjects();
-
-        /// <summary>
-        /// Notification that the user executed a command
-        /// </summary>
-        /// <param name="commandObject"></param>
-        void CommandExecuted(IMenuCommandObject menuCommandObject);
-    }
-
-    public interface IMenuCommandObject
-    {
-        Bitmap Image { get; }
-        string Caption { get; }
-        bool Enabled { get; }
-        bool Latched { get; }
-        string CaptionNoMnemonic { get; }
-    }
-
-    public class DynamicCommandMenuOptions
-    {
-        public DynamicCommandMenuOptions(string mainMenuBasePath, int menuMergeOffset)
-            : this(mainMenuBasePath, menuMergeOffset, null, null)
-        {
-        }
-
-        public DynamicCommandMenuOptions(
-            string mainMenuBasePath, int menuMergeOffset,
-            string moreCommandsMenuCaption, string moreCommandsDialogTitle)
-        {
-            // copy passed in values
-            MainMenuBasePath = mainMenuBasePath;
-            MenuMergeOffset = menuMergeOffset;
-            MoreCommandsMenuCaption = moreCommandsMenuCaption;
-            MoreCommandsDialogTitle = moreCommandsDialogTitle;
-            SeparatorBegin = true;
-
-            // default other options
-            MaxCommandsShownOnMenu = 9;
-            UseNumericMnemonics = true;
-            SeparatorBegin = false;
-        }
-
-        /// <summary>
-        /// Base path for main menu
-        /// </summary>
-        public readonly string MainMenuBasePath;
-
-        /// <summary>
-        /// Offset for menu items to be merged into the main menu
-        /// </summary>
-        public readonly int MenuMergeOffset;
-
-        /// <summary>
-        /// Menu caption to be used if more commands are available than are displayable on the menu
-        /// (you can display up to 9 on the menu). If null then no 'More' option is provided.
-        /// </summary>
-        public readonly string MoreCommandsMenuCaption;
-
-        /// <summary>
-        /// Dialog title to be used when showing the more dialog
-        /// </summary>
-        public readonly string MoreCommandsDialogTitle;
-
-        /// <summary>
-        /// Maximum number of commands to show on the menu (must be from 1 to 9)
-        /// </summary>
-        public int MaxCommandsShownOnMenu
-        {
-            get
-            {
-                return _maxCommandsShownOnMenu;
-            }
-            set
-            {
-                if (value < 1 || (UseNumericMnemonics && (value > 9)))
-                    throw new ArgumentException("Invalid value for MaxCommandsShownOnMenu");
-                else
-                    _maxCommandsShownOnMenu = value;
-            }
-        }
-        private int _maxCommandsShownOnMenu;
-
-        /// <summary>
-        /// Should we add numeric Mnemonics to the commands
-        /// </summary>
-        public bool UseNumericMnemonics;
-
-        /// <summary>
-        /// Use a separator before the first command
-        /// </summary>
-        public bool SeparatorBegin;
-    }
-
 }
-

@@ -1,25 +1,25 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
 
+    using OpenLiveWriter.Localization;
+
+    /// <summary>
+    /// Class CommandBarDefinition.
+    /// Implements the <see cref="Component" />
+    /// </summary>
+    /// <seealso cref="Component" />
     public class CommandBarDefinition : Component
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-
-        /// <summary>
-        /// The command bar identifier.
-        /// </summary>
-        private string identifier;
 
         /// <summary>
         /// Gets or sets the command bar identifier.
@@ -29,22 +29,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(false),
                 Description("The identifier of the command bar definition.")
         ]
-        public string Identifier
-        {
-            get
-            {
-                return identifier;
-            }
-            set
-            {
-                identifier = value;
-            }
-        }
-
-        /// <summary>
-        /// Collection of command bar entries that defines what will appear on the command bar.
-        /// </summary>
-        private CommandBarEntryCollection leftCommandBarEntries = new CommandBarEntryCollection();
+        public string Identifier { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -53,22 +38,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public CommandBarEntryCollection LeftCommandBarEntries
-        {
-            get
-            {
-                return leftCommandBarEntries;
-            }
-            set
-            {
-                leftCommandBarEntries = value;
-            }
-        }
-
-        /// <summary>
-        /// Collection of command bar entries that defines what will appear on the command bar.
-        /// </summary>
-        private CommandBarEntryCollection rightCommandBarEntries = new CommandBarEntryCollection();
+        public CommandBarEntryCollection LeftCommandBarEntries { get; set; } = new CommandBarEntryCollection();
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -77,17 +47,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public CommandBarEntryCollection RightCommandBarEntries
-        {
-            get
-            {
-                return rightCommandBarEntries;
-            }
-            set
-            {
-                rightCommandBarEntries = value;
-            }
-        }
+        public CommandBarEntryCollection RightCommandBarEntries { get; set; } = new CommandBarEntryCollection();
 
         /// <summary>
         /// Initializes a new instance of the CommandBarDefinition class.
@@ -99,39 +59,34 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
         /// Initializes a new instance of the CommandBarDefinition class.
         /// </summary>
-        public CommandBarDefinition()
-        {
+        public CommandBarDefinition() =>
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new Container();
-        }
+        private void InitializeComponent() => this.components = new Container();
 
         public static CommandBarDefinition Create(params object[] items)
         {
-            CommandBarDefinition cbd = new CommandBarDefinition();
+            var cbd = new CommandBarDefinition();
             AddItems(cbd.LeftCommandBarEntries, items);
             return cbd;
         }
 
         public static CommandBarDefinition Create(object[] leftItems, object[] rightItems)
         {
-            CommandBarDefinition cbd = new CommandBarDefinition();
+            var cbd = new CommandBarDefinition();
             AddItems(cbd.LeftCommandBarEntries, leftItems);
             AddItems(cbd.RightCommandBarEntries, rightItems);
             return cbd;
@@ -139,11 +94,11 @@ namespace OpenLiveWriter.ApplicationFramework
 
         private static void AddItems(CommandBarEntryCollection entries, object[] items)
         {
-            foreach (object item in items)
+            foreach (var item in items)
             {
                 if (item is string || item is CommandId)
                 {
-                    string commandIdentifier = item.ToString();
+                    var commandIdentifier = item.ToString();
                     if (commandIdentifier == "-")
                     {
                         entries.Add(new CommandBarSeparatorEntry());
@@ -154,8 +109,10 @@ namespace OpenLiveWriter.ApplicationFramework
                     }
                     else
                     {
-                        CommandBarButtonEntry cbbe = new CommandBarButtonEntry();
-                        cbbe.CommandIdentifier = commandIdentifier;
+                        var cbbe = new CommandBarButtonEntry
+                        {
+                            CommandIdentifier = commandIdentifier
+                        };
                         entries.Add(cbbe);
                     }
                 }

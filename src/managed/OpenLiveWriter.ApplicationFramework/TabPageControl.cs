@@ -1,53 +1,30 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
     /// <summary>
     /// The TabPageControl control provides a convenient means of getting a control and an optional
     /// TabPageCommandBarLightweightControl to appear as a page on a TabLightweightControl.
+    /// Implements the <see cref="UserControl" />
     /// </summary>
-    public class TabPageControl : UserControl
+    /// <seealso cref="UserControl" />
+    public partial class TabPageControl : UserControl
     {
-        #region Private Member Variables
-
         /// <summary>
         /// Required designer cruft.
         /// </summary>
         private IContainer components;
 
         /// <summary>
-        /// The tab bitmap.
-        /// </summary>
-        private Bitmap tabBitmap;
-
-        /// <summary>
-        /// A value which indicates whether the tab is drag-and-drop selectable.
-        /// </summary>
-        private bool dragDropSelectable = true;
-
-        /// <summary>
         /// The tab text.
         /// </summary>
         private string tabText;
-
-        /// <summary>
-        /// The tab ToolTip text.
-        /// </summary>
-        private string tabToolTipText;
-
-        /// <summary>
-        /// Keeps track of whether the tab is selected or not
-        /// </summary>
-        private bool _tabSelected = false;
-        #endregion Private Member Variables
-
-        #region Public Events
 
         /// <summary>
         /// Occurs when the TabPageControl is selected.
@@ -67,36 +44,32 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public event EventHandler Unselected;
 
-        #endregion Public Events
-
-        #region Class Initialization & Termination
-
         /// <summary>
         /// Initializes a new instance of the TabPage class.
         /// </summary>
         public TabPageControl()
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-            Visible = false;
+            this.InitializeComponent();
+            this.Visible = false;
         }
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
@@ -105,42 +78,32 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.components = new Container();
             //
             // TabPageControl
             //
             this.Name = "TabPageControl";
-            this.Size = new System.Drawing.Size(268, 298);
+            this.Size = new Size(268, 298);
 
         }
         #endregion
 
-        #region Public Properties
-
         /// <summary>
         /// Gets or sets the tab bitmap.
         /// </summary>
+        /// <value>The tab bitmap.</value>
         [
             Category("Appearance"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the tab bitmap.")
         ]
-        public Bitmap TabBitmap
-        {
-            get
-            {
-                return tabBitmap;
-            }
-            set
-            {
-                tabBitmap = value;
-            }
-        }
+        public Bitmap TabBitmap { get; set; }
 
         /// <summary>
         /// Gets or sets the tab text.
         /// </summary>
+        /// <value>The tab text.</value>
         [
             Category("Appearance"),
                 Localizable(true),
@@ -149,77 +112,49 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string TabText
         {
-            get
-            {
-                return tabText;
-            }
+            get => this.tabText;
             set
             {
-                tabText = value;
-                AccessibleName = value;
+                this.tabText = value;
+                this.AccessibleName = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the tab ToolTip text.
         /// </summary>
+        /// <value>The tab tool tip text.</value>
         [
             Category("Appearance"),
                 Localizable(true),
                 DefaultValue(null),
                 Description("Specifies the tab ToolTip text.")
         ]
-        public string TabToolTipText
-        {
-            get
-            {
-                return tabToolTipText;
-            }
-            set
-            {
-                tabToolTipText = value;
-            }
-        }
+        public string TabToolTipText { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether the tab is drag-and-drop selectable.
         /// </summary>
+        /// <value><c>true</c> if [drag drop selectable]; otherwise, <c>false</c>.</value>
         [
             Category("Behavior"),
                 Localizable(false),
                 DefaultValue(true),
                 Description("Specifies whether the tab is drag-and-drop selectable.")
         ]
-        public bool DragDropSelectable
-        {
-            get
-            {
-                return dragDropSelectable;
-            }
-            set
-            {
-                dragDropSelectable = value;
-            }
-        }
+        public bool DragDropSelectable { get; set; } = true;
 
-        public virtual ApplicationStyle ApplicationStyle
-        {
-            get
-            {
-                return ApplicationManager.ApplicationStyle;
-            }
-        }
+        /// <summary>
+        /// Gets the application style.
+        /// </summary>
+        /// <value>The application style.</value>
+        public virtual ApplicationStyle ApplicationStyle => ApplicationManager.ApplicationStyle;
 
-        public bool IsSelected
-        {
-            get
-            {
-                return _tabSelected;
-            }
-        }
-        #endregion Public Properties
-
-        #region Protected Events
+        /// <summary>
+        /// Gets a value indicating whether this instance is selected.
+        /// </summary>
+        /// <value><c>true</c> if this instance is selected; otherwise, <c>false</c>.</value>
+        public bool IsSelected { get; private set; } = false;
 
         /// <summary>
         /// Raises the Selected event.
@@ -227,9 +162,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSelected(EventArgs e)
         {
-            _tabSelected = true;
-            if (Selected != null)
-                Selected(this, e);
+            this.IsSelected = true;
+            Selected?.Invoke(this, e);
         }
 
         /// <summary>
@@ -238,66 +172,37 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnUnselected(EventArgs e)
         {
-            _tabSelected = false;
-            if (Unselected != null)
-                Unselected(this, e);
+            this.IsSelected = false;
+            Unselected?.Invoke(this, e);
         }
-
-        #endregion Protected Events
-
-        #region Internal Methods
 
         /// <summary>
         /// Helper method to raise the Selected event.
         /// </summary>
-        internal void RaiseSelected()
-        {
-            OnSelected(EventArgs.Empty);
-        }
+        internal void RaiseSelected() => this.OnSelected(EventArgs.Empty);
 
         /// <summary>
         /// Helper method to raise the Unselected event.
         /// </summary>
-        internal void RaiseUnselected()
-        {
-            OnUnselected(EventArgs.Empty);
-        }
+        internal void RaiseUnselected() => this.OnUnselected(EventArgs.Empty);
 
-        #endregion Internal Methods
+        /// <summary>
+        /// The accessible object
+        /// </summary>
+        private TabPageAccessibility accessibleObject;
 
-        #region Accessibility
-        private TabPageAccessibility _accessibleObject;
+        /// <summary>
+        /// Creates a new accessibility object for the control.
+        /// </summary>
+        /// <returns>A new <see cref="T:System.Windows.Forms.AccessibleObject" /> for the control.</returns>
         protected override AccessibleObject CreateAccessibilityInstance()
         {
-            if (_accessibleObject == null)
-                _accessibleObject = new TabPageAccessibility(this);
-            return _accessibleObject;
-        }
-
-        class TabPageAccessibility : ControlAccessibleObject
-        {
-            TabPageControl _tabpage;
-            public TabPageAccessibility(TabPageControl ownerControl) : base(ownerControl)
+            if (this.accessibleObject == null)
             {
-                _tabpage = ownerControl;
+                this.accessibleObject = new TabPageAccessibility(this);
             }
 
-            public override Rectangle Bounds
-            {
-                get
-                {
-                    if (_tabpage.Visible)
-                        return base.Bounds;
-                    else
-                    {
-                        //return empty rect when not visible to prevent bugs with MSAA info
-                        //returning info on the wrong controls when mousing over tab controls
-                        return Rectangle.Empty;
-                    }
-                }
-            }
-
+            return this.accessibleObject;
         }
-        #endregion
     }
 }

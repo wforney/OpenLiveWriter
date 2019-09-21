@@ -16,23 +16,8 @@ namespace OpenLiveWriter.Api
     /// responsibilities of the various methods are passed as parameters to the
     /// respective methods).
     /// </remarks>
-    public abstract class HeaderFooterSource : WriterPlugin
+    public abstract partial class HeaderFooterSource : WriterPlugin
     {
-        /// <summary>
-        /// Determines whether content should be placed above or below the
-        /// post body.
-        /// </summary>
-        public enum Position
-        {
-            /// <summary>
-            /// Places content above the post body.
-            /// </summary>
-            Header,
-            /// <summary>
-            /// Places content below the post body.
-            /// </summary>
-            Footer
-        };
 
         /// <summary>
         /// Subclasses should override this method and return true if a

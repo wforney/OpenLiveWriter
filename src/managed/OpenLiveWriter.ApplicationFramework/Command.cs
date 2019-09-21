@@ -18,21 +18,28 @@ namespace OpenLiveWriter.ApplicationFramework
     using OpenLiveWriter.Interop.Com.Ribbon;
     using OpenLiveWriter.Localization;
 
+    /// <summary>
+    /// Delegate CommandBarButtonContextMenuHandler
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="menuLocation">The menu location.</param>
+    /// <param name="alternativeLocation">The alternative location.</param>
+    /// <param name="disposeWhenDone">The dispose when done.</param>
     public delegate void CommandBarButtonContextMenuHandler(Control parent, Point menuLocation, int alternativeLocation, IDisposable disposeWhenDone);
 
-    public class Command : ICommandTextDisplayProperties, IComparable
+    /// <summary>
+    /// Class Command.
+    /// Implements the <see cref="OpenLiveWriter.ApplicationFramework.ICommandTextDisplayProperties" />
+    /// Implements the <see cref="System.IComparable" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.ApplicationFramework.ICommandTextDisplayProperties" />
+    /// <seealso cref="System.IComparable" />
+    public partial class Command : ICommandTextDisplayProperties, IComparable
     {
-        #region Private Member Variables
-
         /// <summary>
         /// The command identifier.  Each command must have a unique command identifier.
         /// </summary>
         private string identifier;
-
-        /// <summary>
-        /// The description of the command used by accessibility client applications.
-        /// </summary>
-        private string accessibleDescription;
 
         /// <summary>
         /// The name of the command used by accessibility client applications
@@ -44,12 +51,10 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private Shortcut shortcut = Shortcut.None;
 
-        private Keys advancedShortcut = Keys.None;
-
         /// <summary>
-        /// The AcceleratorMnemonic of the command.
+        /// The advanced shortcut
         /// </summary>
-        private AcceleratorMnemonic acceleratorMnemonic;
+        private Keys advancedShortcut = Keys.None;
 
         /// <summary>
         /// A value indicating whether the command should be visible on a context menu.
@@ -67,38 +72,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private bool visibleOnCommandBar = true;
 
         /// <summary>
-        /// A value indicating whether the Shortcut of the command should be shown when the command
-        /// appears on a menu.
-        /// </summary>
-        private bool showShortcut = true;
-
-        /// <summary>
-        /// The menu text of the command.
-        /// </summary>
-        private string menuText = string.Empty;
-
-        /// <summary>
-        /// The menu format arguments.
-        /// </summary>
-        private object[] menuFormatArgs;
-
-        /// <summary>
-        /// The menu path of the command when it appears on a main menu.  The menu path has the form Name@n/Name@n where 'n'
-        /// is the merge level.
-        /// </summary>
-        private string mainMenuPath = string.Empty;
-
-        private bool suppressMenuBitmap;
-
-        /// <summary>
         /// Menu bitmap for the latched enabled state.
         /// </summary>
         private Bitmap menuBitmapLatchedEnabled;
-
-        /// <summary>
-        /// Command bar button style.
-        /// </summary>
-        private CommandBarButtonStyle commandBarButtonStyle = CommandBarButtonStyle.System;
 
         /// <summary>
         /// Command bar button text.
@@ -126,38 +102,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private Bitmap commandBarButtonBitmapPushed;
 
         /// <summary>
-        /// The AcceleratorMnemonic that will show the CommandBarButtonContextMenu.
-        /// </summary>
-        private AcceleratorMnemonic commandBarButtonContextMenuAcceleratorMnemonic;
-
-        /// <summary>
-        /// The command bar button context menu.
-        /// </summary>
-        private CommandContextMenu commandBarButtonContextMenu;
-
-        /// <summary>
         /// The command bar button command context menu definition.
         /// </summary>
         private CommandContextMenuDefinition commandBarButtonContextMenuDefinition;
-
-        private CommandBarButtonContextMenuHandler commandBarButtonContextMenuHandler;
-
-        /// <summary>
-        /// A value indicating whether the command bar button context menu is accessed through a
-        /// separate dropdown control.
-        /// </summary>
-        private bool commandBarButtonContextMenuDropDown;
-
-        /// <summary>
-        /// The command text.  This is the "user visible text" that is associate with the command
-        /// (such as "Save All").  It appears whenever the user can see text for the command.
-        /// </summary>
-        private string text;
-
-        /// <summary>
-        /// The command tag.
-        /// </summary>
-        private object tag;
 
         /// <summary>
         /// A value indicating whether the Command is on or not.
@@ -174,17 +121,24 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private bool latched;
 
-        #endregion Private Member Variables
-
-        #region Public Events
-
+        /// <summary>
+        /// The events
+        /// </summary>
         private EventHandlerList events;
+
+        /// <summary>
+        /// Gets the events.
+        /// </summary>
+        /// <value>The events.</value>
         private EventHandlerList Events
         {
             get
             {
                 if (this.events == null)
+                {
                     this.events = new EventHandlerList();
+                }
+
                 return this.events;
             }
         }
@@ -261,6 +215,9 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The command bar button context menu definition key
+        /// </summary>
         private static readonly object CommandBarButtonContextMenuDefinitionKey = new object();
         /// <summary>
         /// Occurs when the CommandBarButtonContextMenuDefinition should be shown.
@@ -425,26 +382,32 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        #endregion Public Events
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public Command(IContainer container) => this.InitializeImageLoaders();
 
-        #region Class Initialization & Termination
-
-        public Command(IContainer container)
-        {
-            this.InitializeImageLoaders();
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// </summary>
         public Command()
         {
             this.CommandId = CommandId.None;
             this.InitializeImageLoaders();
         }
 
-        public Command(CommandId commandId, object tag) : this(commandId)
-        {
-            this.Tag = tag;
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// </summary>
+        /// <param name="commandId">The command identifier.</param>
+        /// <param name="tag">The tag.</param>
+        public Command(CommandId commandId, object tag) : this(commandId) => this.Tag = tag;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// </summary>
+        /// <param name="commandId">The command identifier.</param>
         public Command(CommandId commandId)
         {
             this.UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
@@ -454,8 +417,13 @@ namespace OpenLiveWriter.ApplicationFramework
             this.LoadResources();
         }
 
-        #endregion Class Initialization & Termination
-
+        /// <summary>
+        /// Gets the property variant.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="value">The value.</param>
+        /// <exception cref="Exception">Failed to get PropVariant for " + key</exception>
         public virtual void GetPropVariant(PropertyKey key, PropVariantRef currentValue, ref PropVariant value)
         {
             if (key == PropertyKeys.Enabled)
@@ -508,7 +476,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else if (key == PropertyKeys.RepresentativeString)
             {
-                IRepresentativeString rs = (IRepresentativeString)this;
+                var rs = (IRepresentativeString)this;
                 value.SetString(rs.RepresentativeString);
             }
             else if (key == PropertyKeys.BooleanValue)
@@ -522,11 +490,10 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        #region Public Properties
-
         /// <summary>
         /// The command identifier.  Each command must have a unique command identifier.
         /// </summary>
+        /// <value>The identifier.</value>
         [
             Category("Design"),
                 Localizable(false),
@@ -538,39 +505,31 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 if (this.identifier == null)
+                {
                     this.identifier = Guid.NewGuid().ToString();
+                }
+
                 return this.identifier;
             }
-            set
-            {
-                this.identifier = value;
-            }
+            set => this.identifier = value;
         }
 
         /// <summary>
         /// Gets or sets the description of the command used by accessibility client applications.
         /// </summary>
+        /// <value>The accessible description.</value>
         [
             Category("Accessibility"),
                 Localizable(true),
                 DefaultValue(null),
                 Description("Specifies the description that will be reported to accessibility clients.")
         ]
-        public string AccessibleDescription
-        {
-            get
-            {
-                return this.accessibleDescription;
-            }
-            set
-            {
-                this.accessibleDescription = value;
-            }
-        }
+        public string AccessibleDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the command used by accessibility client applications.
         /// </summary>
+        /// <value>The name of the accessible.</value>
         [
             Category("Accessibility"),
                 Localizable(true),
@@ -579,10 +538,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string AccessibleName
         {
-            get
-            {
-                return this.accessibleName;
-            }
+            get => this.accessibleName;
             set
             {
                 this.accessibleName = value;
@@ -593,6 +549,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the Shortcut of the command.
         /// </summary>
+        /// <value>The shortcut.</value>
         [
             Category("Behavior"),
                 Localizable(true),
@@ -601,10 +558,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Shortcut Shortcut
         {
-            get
-            {
-                return this.shortcut;
-            }
+            get => this.shortcut;
             set
             {
                 Debug.Assert(this.shortcut == Shortcut.None, "Changing shortcuts is a bad idea. CommandManager.RebuildCommandShortcutTable() will get stale.");
@@ -615,6 +569,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// For shortcuts that can't be expressed by the Shortcut enum/property.
         /// </summary>
+        /// <value>The advanced shortcut.</value>
         [Localizable(false)]
         // There's no reason why these couldn't be localized.  Consider enabling this in the future.  See Commands.xsl.
         //[
@@ -625,7 +580,7 @@ namespace OpenLiveWriter.ApplicationFramework
         //]
         public Keys AdvancedShortcut
         {
-            get { return this.advancedShortcut; }
+            get => this.advancedShortcut;
             set
             {
                 Debug.Assert(this.advancedShortcut == Keys.None,
@@ -637,26 +592,18 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the Shortcut of the command.
         /// </summary>
+        /// <value>The accelerator mnemonic.</value>
         [
             Category("Behavior"),
                 Localizable(true),
                 Description("Specifies the AcceleratorMnemonic of the command.")
         ]
-        public AcceleratorMnemonic AcceleratorMnemonic
-        {
-            get
-            {
-                return this.acceleratorMnemonic;
-            }
-            set
-            {
-                this.acceleratorMnemonic = value;
-            }
-        }
+        public AcceleratorMnemonic AcceleratorMnemonic { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command should be visible on a context menu.
         /// </summary>
+        /// <value><c>true</c> if [visible on context menu]; otherwise, <c>false</c>.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(false),
@@ -665,10 +612,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public bool VisibleOnContextMenu
         {
-            get
-            {
-                return this.visibleOnContextMenu;
-            }
+            get => this.visibleOnContextMenu;
             set
             {
                 if (this.visibleOnContextMenu != value)
@@ -682,6 +626,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether the command should be visible on a main menu.
         /// </summary>
+        /// <value><c>true</c> if [visible on main menu]; otherwise, <c>false</c>.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(false),
@@ -690,10 +635,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public bool VisibleOnMainMenu
         {
-            get
-            {
-                return this.visibleOnMainMenu;
-            }
+            get => this.visibleOnMainMenu;
             set
             {
                 if (this.visibleOnMainMenu != value)
@@ -707,6 +649,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether the command should be visible on a command bar
         /// </summary>
+        /// <value><c>true</c> if [visible on command bar]; otherwise, <c>false</c>.</value>
         [
         Category("Appearance.Menu"),
         Localizable(false),
@@ -715,10 +658,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public bool VisibleOnCommandBar
         {
-            get
-            {
-                return this.visibleOnCommandBar;
-            }
+            get => this.visibleOnCommandBar;
             set
             {
                 if (this.visibleOnCommandBar != value)
@@ -733,138 +673,91 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Gets or sets A value indicating whether the Shortcut of the command should be shown when the
         /// command appears on a menu.
         /// </summary>
+        /// <value><c>true</c> if [show shortcut]; otherwise, <c>false</c>.</value>
         [
             Category("Appearance.MainMenu"),
                 Localizable(false),
                 DefaultValue(true),
                 Description("Specifies whether the Shortcut of the command should be shown when the command appears on a main menu.")
         ]
-        public bool ShowShortcut
-        {
-            get
-            {
-                return this.showShortcut;
-            }
-            set
-            {
-                this.showShortcut = value;
-            }
-        }
+        public bool ShowShortcut { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the main menu path of the command.
         /// </summary>
+        /// <value>The menu text.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(true),
                 DefaultValue(null),
                 Description("Specifies the menu text of the command when it appears on a menu.")
         ]
-        public string MenuText
-        {
-            get
-            {
-                return this.menuText;
-            }
-            set
-            {
-                this.menuText = value;
-            }
-        }
+        public string MenuText { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the menu format arguments.
         /// </summary>
+        /// <value>The menu format arguments.</value>
         [
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public object[] MenuFormatArgs
-        {
-            get
-            {
-                return this.menuFormatArgs;
-            }
-            set
-            {
-                this.menuFormatArgs = value;
-            }
-        }
+        public object[] MenuFormatArgs { get; set; }
 
         /// <summary>
         /// Gets or sets the main menu path of the command.
         /// </summary>
+        /// <value>The main menu path.</value>
         [
             Category("Appearance.MainMenu"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the menu path of the command when it appears on a main menu.  Include the menu merge order after each path entry.  Example: 'File@0/[-]New@1'.")
         ]
-        public string MainMenuPath
-        {
-            get
-            {
-                return this.mainMenuPath;
-            }
-            set
-            {
-                this.mainMenuPath = value;
-            }
-        }
+        public string MainMenuPath { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the menu bitmap for the disabled state.
         /// </summary>
+        /// <value>The menu bitmap disabled.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the menu bitmap for the disabled state.")
         ]
-        public Bitmap MenuBitmapDisabled
-        {
-            get
-            {
-                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapDisabled;
-            }
-        }
+        public Bitmap MenuBitmapDisabled => this.SuppressMenuBitmap ? null : this.CommandBarButtonBitmapDisabled;
 
         /// <summary>
         /// Gets or sets the menu bitmap for the enabled state.
         /// </summary>
+        /// <value>The menu bitmap enabled.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the menu bitmap for the enabled state.")
         ]
-        public Bitmap MenuBitmapEnabled
-        {
-            get
-            {
-                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapEnabled;
-            }
-        }
+        public Bitmap MenuBitmapEnabled => this.SuppressMenuBitmap ? null : this.CommandBarButtonBitmapEnabled;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [suppress menu bitmap].
+        /// </summary>
+        /// <value><c>true</c> if [suppress menu bitmap]; otherwise, <c>false</c>.</value>
         [Localizable(false)]
-        public bool SuppressMenuBitmap
-        {
-            get { return this.suppressMenuBitmap; }
-            set { this.suppressMenuBitmap = value; }
-        }
+        public bool SuppressMenuBitmap { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [suppress command bar bitmap].
+        /// </summary>
+        /// <value><c>true</c> if [suppress command bar bitmap]; otherwise, <c>false</c>.</value>
         [Localizable(false)]
-        public bool SuppressCommandBarBitmap
-        {
-            get { return this._suppressCommandBarBitmap; }
-            set { this._suppressCommandBarBitmap = value; }
-        }
-
-        private bool _suppressCommandBarBitmap = false;
+        public bool SuppressCommandBarBitmap { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the menu bitmap for the latched enabled state.
         /// </summary>
+        /// <value>The menu bitmap latched enabled.</value>
         [
             Category("Appearance.Latched"),
                 Localizable(false),
@@ -880,75 +773,56 @@ namespace OpenLiveWriter.ApplicationFramework
 
                 //	If there was no custom bitmap for the command, load the stock one.
                 if (this.menuBitmapLatchedEnabled == null)
+                {
                     this.menuBitmapLatchedEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.Application.CommandMenuBitmapLatchedEnabled.png");
+                }
 
                 //	Done.
                 return this.menuBitmapLatchedEnabled;
             }
-            set
-            {
-                this.menuBitmapLatchedEnabled = value;
-            }
+            set => this.menuBitmapLatchedEnabled = value;
         }
 
         /// <summary>
         /// Gets or sets the menu bitmap for the latched selected state.
         /// </summary>
+        /// <value>The menu bitmap latched selected.</value>
         [
             Category("Appearance.Latched"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the menu bitmap for the latched selected state.")
         ]
-        public Bitmap MenuBitmapLatchedSelected
-        {
-            get
-            {
-                return this.MenuBitmapLatchedEnabled;
-            }
-        }
+        public Bitmap MenuBitmapLatchedSelected => this.MenuBitmapLatchedEnabled;
 
         /// <summary>
         /// Gets or sets the menu selected bitmap.
         /// </summary>
+        /// <value>The menu bitmap selected.</value>
         [
             Category("Appearance.Menu"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the menu bitmap for the selected state.")
         ]
-        public Bitmap MenuBitmapSelected
-        {
-            get
-            {
-                return this.suppressMenuBitmap ? null : this.CommandBarButtonBitmapSelected;
-            }
-        }
+        public Bitmap MenuBitmapSelected => this.SuppressMenuBitmap ? null : this.CommandBarButtonBitmapSelected;
 
         /// <summary>
         /// Gets or sets the command bar button style.
         /// </summary>
+        /// <value>The command bar button style.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(false),
                 DefaultValue(CommandBarButtonStyle.System),
                 Description("Specifies the command bar button style.")
         ]
-        public CommandBarButtonStyle CommandBarButtonStyle
-        {
-            get
-            {
-                return this.commandBarButtonStyle;
-            }
-            set
-            {
-                this.commandBarButtonStyle = value;
-            }
-        }
+        public CommandBarButtonStyle CommandBarButtonStyle { get; set; } = CommandBarButtonStyle.System;
 
         /// <summary>
         /// Gets or sets the command bar button bar button text.
         /// </summary>
+        /// <value>The command bar button text.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(true),
@@ -957,10 +831,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string CommandBarButtonText
         {
-            get
-            {
-                return this.commandBarButtonText;
-            }
+            get => this.commandBarButtonText;
             set
             {
                 if (this.commandBarButtonText != value)
@@ -977,6 +848,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command bar button bitmap for the disabled state.
         /// </summary>
+        /// <value>The command bar button bitmap disabled.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(true),
@@ -994,15 +866,13 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 return this.commandBarButtonBitmapDisabled;
             }
-            set
-            {
-                this.commandBarButtonBitmapDisabled = value;
-            }
+            set => this.commandBarButtonBitmapDisabled = value;
         }
 
         /// <summary>
         /// Gets or sets the command bar button bitmap for the enabled state.
         /// </summary>
+        /// <value>The command bar button bitmap enabled.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(true),
@@ -1011,10 +881,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public Bitmap CommandBarButtonBitmapEnabled
         {
-            get
-            {
-                return this.BitmapProperty("CommandBarButtonBitmapEnabled", ref this.commandBarButtonBitmapEnabled);
-            }
+            get => this.BitmapProperty("CommandBarButtonBitmapEnabled", ref this.commandBarButtonBitmapEnabled);
             set
             {
                 // set the value
@@ -1034,6 +901,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command bar button bitmap for the selected state.
         /// </summary>
+        /// <value>The command bar button bitmap selected.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(true),
@@ -1051,15 +919,13 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 return this.commandBarButtonBitmapSelected;
             }
-            set
-            {
-                this.commandBarButtonBitmapSelected = value;
-            }
+            set => this.commandBarButtonBitmapSelected = value;
         }
 
         /// <summary>
         /// Gets or sets the command bar button bitmap for the selected state.
         /// </summary>
+        /// <value>The command bar button bitmap pushed.</value>
         [
             Category("Appearance.CommandBar.System"),
                 Localizable(true),
@@ -1077,55 +943,35 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 return this.commandBarButtonBitmapPushed;
             }
-            set
-            {
-                this.commandBarButtonBitmapPushed = value;
-            }
+            set => this.commandBarButtonBitmapPushed = value;
         }
 
         /// <summary>
         /// Gets or sets the AcceleratorMnemonic that will show the CommandBarContextMenu.
         /// </summary>
+        /// <value>The command bar button context menu accelerator mnemonic.</value>
         [
             Category("Behavior"),
             Description("Not normally used!  Specifies the the AcceleratorMnemonic that will show the CommandBarButtonContextMenu of the Command.  This value is only useful under certain conditions.")
         ]
-        public AcceleratorMnemonic CommandBarButtonContextMenuAcceleratorMnemonic
-        {
-            get
-            {
-                return this.commandBarButtonContextMenuAcceleratorMnemonic;
-            }
-            set
-            {
-                this.commandBarButtonContextMenuAcceleratorMnemonic = value;
-            }
-        }
+        public AcceleratorMnemonic CommandBarButtonContextMenuAcceleratorMnemonic { get; set; }
 
         /// <summary>
         /// Gets or sets the command bar button context menu.
         /// </summary>
+        /// <value>The command bar button context menu.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the command bar button context menu.")
         ]
-        public CommandContextMenu CommandBarButtonContextMenu
-        {
-            get
-            {
-                return this.commandBarButtonContextMenu;
-            }
-            set
-            {
-                this.commandBarButtonContextMenu = value;
-            }
-        }
+        public CommandContextMenu CommandBarButtonContextMenu { get; set; }
 
         /// <summary>
         /// Gets or sets the command bar button context menu.
         /// </summary>
+        /// <value>The command bar button context menu definition.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(false),
@@ -1134,10 +980,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public CommandContextMenuDefinition CommandBarButtonContextMenuDefinition
         {
-            get
-            {
-                return this.commandBarButtonContextMenuDefinition;
-            }
+            get => this.commandBarButtonContextMenuDefinition;
             set
             {
                 this.commandBarButtonContextMenuDefinition = value;
@@ -1148,95 +991,61 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command bar button mini form factory
         /// </summary>
-        public ICommandContextMenuControlHandler CommandBarButtonContextMenuControlHandler
-        {
-            get
-            {
-                return this.commandBarButtonContextMenuControlHandler;
-            }
-            set
-            {
-                this.commandBarButtonContextMenuControlHandler = value;
-            }
-        }
-        private ICommandContextMenuControlHandler commandBarButtonContextMenuControlHandler = null;
+        /// <value>The command bar button context menu control handler.</value>
+        public ICommandContextMenuControlHandler CommandBarButtonContextMenuControlHandler { get; set; } = null;
 
-        public CommandBarButtonContextMenuHandler CommandBarButtonContextMenuHandler
-        {
-            get { return this.commandBarButtonContextMenuHandler; }
-            set { this.commandBarButtonContextMenuHandler = value; }
-        }
+        /// <summary>
+        /// Gets or sets the command bar button context menu handler.
+        /// </summary>
+        /// <value>The command bar button context menu handler.</value>
+        public CommandBarButtonContextMenuHandler CommandBarButtonContextMenuHandler { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command bar context menu is accessed
         /// through a separate dropdown control.
         /// </summary>
+        /// <value><c>true</c> if [command bar button context menu drop down]; otherwise, <c>false</c>.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies whether the the command bar button context menu is accessed through a separate dropdown control.")
         ]
-        public bool CommandBarButtonContextMenuDropDown
-        {
-            get
-            {
-                return this.commandBarButtonContextMenuDropDown;
-            }
-            set
-            {
-                this.commandBarButtonContextMenuDropDown = value;
-            }
-        }
+        public bool CommandBarButtonContextMenuDropDown { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command bar context menu is accessed
         /// through a separate dropdown control.
         /// </summary>
+        /// <value><c>true</c> if [command bar button context menu invalidate parent]; otherwise, <c>false</c>.</value>
         [
             Category("Appearance.CommandBar"),
                 Localizable(false),
                 DefaultValue(false),
                 Description("Specifies whether the parent should be invalidated after showing the context menu (used for IE ToolBand).")
         ]
-        public bool CommandBarButtonContextMenuInvalidateParent
-        {
-            get
-            {
-                return this.commandBarButtonContextMenuInvalidateParent;
-            }
-            set
-            {
-                this.commandBarButtonContextMenuInvalidateParent = value;
-            }
-        }
-        private bool commandBarButtonContextMenuInvalidateParent = false;
+        public bool CommandBarButtonContextMenuInvalidateParent { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the command text.
         /// </summary>
+        /// <value>The text.</value>
         [
             Category("Appearance"),
                 Localizable(true),
                 DefaultValue(null),
                 Description("Specifies the text that is associated with the command.")
         ]
-        public string Text
-        {
-            get
-            {
-                return this.text;
-            }
-            set
-            {
-                this.text = value;
-            }
-        }
+        public string Text { get; set; }
 
+        /// <summary>
+        /// The large image
+        /// </summary>
         private LazyLoader<Bitmap> largeImage;
         /// <summary>
         /// Gets or sets the command LargeImage.
         /// </summary>
+        /// <value>The large image.</value>
         [
             Category("Appearance"),
                 Localizable(false),
@@ -1245,10 +1054,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Bitmap LargeImage
         {
-            get
-            {
-                return this.largeImage;
-            }
+            get => this.largeImage;
             set
             {
                 // set the value
@@ -1260,10 +1066,14 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The large high contrast image
+        /// </summary>
         private LazyLoader<Bitmap> largeHighContrastImage;
         /// <summary>
         /// Gets or sets the command LargeImage.
         /// </summary>
+        /// <value>The large high contrast image.</value>
         [
             Category("Appearance"),
                 Localizable(false),
@@ -1272,10 +1082,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Bitmap LargeHighContrastImage
         {
-            get
-            {
-                return this.largeHighContrastImage;
-            }
+            get => this.largeHighContrastImage;
             set
             {
                 // set the value
@@ -1288,10 +1095,14 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The small image
+        /// </summary>
         private LazyLoader<Bitmap> smallImage;
         /// <summary>
         /// Gets or sets the command SmallImage.
         /// </summary>
+        /// <value>The small image.</value>
         [
             Category("Appearance"),
                 Localizable(false),
@@ -1300,10 +1111,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Bitmap SmallImage
         {
-            get
-            {
-                return this.smallImage;
-            }
+            get => this.smallImage;
             set
             {
                 // set the value
@@ -1316,13 +1124,21 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The small high contrast image
+        /// </summary>
         private LazyLoader<Bitmap> smallHighContrastImage;
 
+        /// <summary>
+        /// Gets or sets the invalidation count.
+        /// </summary>
+        /// <value>The invalidation count.</value>
         public int InvalidationCount { get; set; }
 
         /// <summary>
         /// Gets or sets the command SmallHighContrastImage.
         /// </summary>
+        /// <value>The small high contrast image.</value>
         [
             Category("Appearance"),
                 Localizable(false),
@@ -1331,11 +1147,9 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual Bitmap SmallHighContrastImage
         {
-            get
-            {
+            get =>
                 // You'll need to take dpi into consideration as well.
-                return this.smallHighContrastImage;
-            }
+                this.smallHighContrastImage;
             set
             {
                 // set the value
@@ -1348,10 +1162,14 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        private string _labelTitle;
+        /// <summary>
+        /// The label title
+        /// </summary>
+        private string labelTitle;
         /// <summary>
         /// Gets or sets the command description.
         /// </summary>
+        /// <value>The label title.</value>
         [
             Category("Appearance"),
             Localizable(true),
@@ -1360,13 +1178,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual string LabelTitle
         {
-            get { return this._labelTitle; }
+            get => this.labelTitle;
 
             set
             {
-                if (this._labelTitle != value)
+                if (this.labelTitle != value)
                 {
-                    this._labelTitle = TextHelper.UnescapeNewlines(value);
+                    this.labelTitle = TextHelper.UnescapeNewlines(value);
 
                     this.UpdateInvalidationState(PropertyKeys.Label, InvalidationState.Pending);
 
@@ -1375,10 +1193,14 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        private string _labelDescription;
+        /// <summary>
+        /// The label description
+        /// </summary>
+        private string labelDescription;
         /// <summary>
         /// Gets or sets the command label title.
         /// </summary>
+        /// <value>The label description.</value>
         [
             Category("Appearance"),
             Localizable(true),
@@ -1387,23 +1209,27 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string LabelDescription
         {
-            get { return this._labelDescription; }
+            get => this.labelDescription;
 
             set
             {
-                if (this._labelDescription != value)
+                if (this.labelDescription != value)
                 {
-                    this._labelDescription = value;
+                    this.labelDescription = value;
                     this.UpdateInvalidationState(PropertyKeys.LabelDescription, InvalidationState.Pending);
                     this.OnStateChanged(EventArgs.Empty);
                 }
             }
         }
 
-        private string _tooltipDescription;
+        /// <summary>
+        /// The tooltip description
+        /// </summary>
+        private string tooltipDescription;
         /// <summary>
         /// Gets or sets the tooltip description.
         /// </summary>
+        /// <value>The tooltip description.</value>
         [
             Category("Appearance"),
             Localizable(true),
@@ -1412,12 +1238,12 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual string TooltipDescription
         {
-            get { return this._tooltipDescription; }
+            get => this.tooltipDescription;
             set
             {
-                if (this._tooltipDescription != value)
+                if (this.tooltipDescription != value)
                 {
-                    this._tooltipDescription = value;
+                    this.tooltipDescription = value;
                     this.UpdateInvalidationState(PropertyKeys.TooltipDescription, InvalidationState.Pending);
                     this.OnStateChanged(EventArgs.Empty);
                 }
@@ -1427,6 +1253,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the keytip.
         /// </summary>
+        /// <value>The keytip.</value>
         [
             Category("Appearance"),
                 Localizable(true),
@@ -1435,10 +1262,14 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string Keytip { get; set; }
 
-        private string _tooltipTitle;
+        /// <summary>
+        /// The tooltip title
+        /// </summary>
+        private string tooltipTitle;
         /// <summary>
         /// Gets or sets the tooltip title.
         /// </summary>
+        /// <value>The tooltip title.</value>
         [
             Category("Appearance"),
             Localizable(true),
@@ -1447,12 +1278,12 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public string TooltipTitle
         {
-            get { return this._tooltipTitle; }
+            get => this.tooltipTitle;
             set
             {
-                if (this._tooltipTitle != value)
+                if (this.tooltipTitle != value)
                 {
-                    this._tooltipTitle = value;
+                    this.tooltipTitle = value;
                     this.UpdateInvalidationState(PropertyKeys.TooltipTitle, InvalidationState.Pending);
                     this.OnStateChanged(EventArgs.Empty);
                 }
@@ -1462,27 +1293,19 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command tag.
         /// </summary>
+        /// <value>The tag.</value>
         [
             Category("Behavior"),
                 Localizable(false),
                 DefaultValue(null),
                 Description("Specifies the tag that is associated with the command.")
         ]
-        public object Tag
-        {
-            get
-            {
-                return this.tag;
-            }
-            set
-            {
-                this.tag = value;
-            }
-        }
+        public object Tag { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the Command is on or not.
         /// </summary>
+        /// <value><c>true</c> if on; otherwise, <c>false</c>.</value>
         [
             Category("Behavior"),
                 DefaultValue(true),
@@ -1490,10 +1313,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public bool On
         {
-            get
-            {
-                return this.on;
-            }
+            get => this.on;
             set
             {
                 if (this.on != value)
@@ -1510,6 +1330,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether the Command is enabled or not.
         /// </summary>
+        /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         [
             Category("Behavior"),
                 DefaultValue(true),
@@ -1517,10 +1338,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public virtual bool Enabled
         {
-            get
-            {
-                return this.enabled;
-            }
+            get => this.enabled;
             set
             {
                 if (this.enabled != value)
@@ -1539,6 +1357,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets A value indicating whether the Command is latched or not.
         /// </summary>
+        /// <value><c>true</c> if latched; otherwise, <c>false</c>.</value>
         [
             Category("Behavior"),
                 DefaultValue(false),
@@ -1546,10 +1365,7 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public bool Latched
         {
-            get
-            {
-                return this.latched;
-            }
+            get => this.latched;
             set
             {
                 if (this.latched != value)
@@ -1561,12 +1377,15 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
             }
         }
-        #endregion
 
-        #region Public Methods
-
+        /// <summary>
+        /// Loads the resources.
+        /// </summary>
         public void LoadResources() => CommandResourceLoader.ApplyResources(this);
 
+        /// <summary>
+        /// Initializes the image loaders.
+        /// </summary>
         private void InitializeImageLoaders()
         {
             this.largeImage = new LazyLoader<Bitmap>(() => CommandResourceLoader.LoadCommandBitmap(this.Identifier, "LargeImage") ?? CommandResourceLoader.MissingLarge);
@@ -1594,6 +1413,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// This method can be called to raise the Execute event.
         /// </summary>
+        /// <param name="args">The arguments.</param>
         public void PerformExecuteWithArgs(ExecuteEventHandlerArgs args)
         {
             if (this.On && this.Enabled)
@@ -1606,6 +1426,11 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Performs the execute with arguments.
+        /// </summary>
+        /// <param name="verb">The verb.</param>
+        /// <param name="args">The arguments.</param>
         protected virtual void PerformExecuteWithArgs(CommandExecutionVerb verb, ExecuteEventHandlerArgs args)
         {
             if (verb == CommandExecutionVerb.Execute)
@@ -1625,6 +1450,14 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Performs the execute.
+        /// </summary>
+        /// <param name="verb">The verb.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="commandExecutionProperties">The command execution properties.</param>
+        /// <returns>System.Int32.</returns>
         public virtual int PerformExecute(CommandExecutionVerb verb, PropertyKeyRef key, PropVariantRef currentValue, IUISimplePropertySet commandExecutionProperties)
         {
             switch (verb)
@@ -1646,9 +1479,16 @@ namespace OpenLiveWriter.ApplicationFramework
             return HRESULT.S_OK;
         }
 
+        /// <summary>
+        /// Updates the property.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="newValue">The new value.</param>
+        /// <returns>System.Int32.</returns>
         public virtual int UpdateProperty(ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)
         {
-            Debug.Assert(!this._flushing, "UpdateProperty called while flushing pending invalidations!");
+            Debug.Assert(!this.flushing, "UpdateProperty called while flushing pending invalidations!");
             try
             {
                 newValue = new PropVariant();
@@ -1684,18 +1524,11 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void PerformShowCommandBarButtonContextMenu() => this.OnShowCommandBarButtonContextMenu(EventArgs.Empty);
 
-        #endregion Public Methods
-
-        #region Internal Methods
-
         /// <summary>
         /// Raises the BeforeShowInMenu event.
         /// </summary>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         internal void InvokeBeforeShowInMenu(EventArgs e) => this.OnBeforeShowInMenu(e);
-
-        #endregion Internal Methods
-
-        #region Protected Events
 
         /// <summary>
         /// Raises the CommandBarButtonTextChanged event.
@@ -1711,7 +1544,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             try
             {
-                bool executed = this.RaiseEvent(ExecuteEventKey, e);
+                var executed = this.RaiseEvent(ExecuteEventKey, e);
                 Debug.Assert(executed || this.Events[ExecuteWithArgsEventKey] == null, "Command " + this.CommandId + " was executed without args, but only arg handlers were registered");
             }
             catch (Exception ex)
@@ -1723,12 +1556,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Raises the Execute event.
         /// </summary>
-        /// <param name="e">An EventArgs that contains the event data.</param>
+        /// <param name="args">The arguments.</param>
         protected virtual void OnExecute(ExecuteEventHandlerArgs args)
         {
             try
             {
-                bool executed = this.RaiseEvent(ExecuteWithArgsEventKey, args);
+                var executed = this.RaiseEvent(ExecuteWithArgsEventKey, args);
                 Debug.Assert(executed || this.Events[ExecuteEventKey] == null, "Command " + this.CommandId + " was executed with args, but only non-arg handlers were registered");
             }
             catch (Exception ex)
@@ -1743,16 +1576,25 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnShowCommandBarButtonContextMenu(EventArgs e) => this.RaiseEvent(ShowCommandBarButtonContextMenuEventKey, e);
 
+        /// <summary>
+        /// Invalidates this instance.
+        /// </summary>
         public virtual void Invalidate()
         {
             this.UpdateInvalidationState(PropertyKeys.Enabled, InvalidationState.Pending);
             this.OnStateChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Invalidates the specified keys.
+        /// </summary>
+        /// <param name="keys">The keys.</param>
         public void Invalidate(PropertyKey[] keys)
         {
-            foreach (PropertyKey key in keys)
+            foreach (var key in keys)
+            {
                 this.UpdateInvalidationState(key, InvalidationState.Pending);
+            }
 
             this.OnStateChanged(EventArgs.Empty);
         }
@@ -1763,6 +1605,10 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnStateChanged(EventArgs e) => this.RaiseEvent(StateChangedEventKey, e);
 
+        /// <summary>
+        /// Gets or sets the command identifier.
+        /// </summary>
+        /// <value>The command identifier.</value>
         public CommandId CommandId { get; set; }
 
         /// <summary>
@@ -1789,20 +1635,21 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnBeforeShowInMenu(EventArgs e) => this.RaiseEvent(BeforeShowInMenuEventKey, e);
 
-        #endregion Protected Events
-
-        #region Private Methods
-
         /// <summary>
         /// Common initialization.
         /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Bitmap.</returns>
         private Bitmap BitmapProperty(string propertyName, ref Bitmap bitmap)
         {
             if (bitmap != null)
+            {
                 return bitmap;
+            }
 
             //	Obtain the type.
-            Type type = this.GetType();
+            var type = this.GetType();
 
             //	Attempt to load the bitmap from an Assembly resource stream.
             bitmap = ResourceHelper.LoadAssemblyResourceBitmap(type.Assembly, type.Namespace + ".Images", type.Name + propertyName + ".png", false);
@@ -1815,14 +1662,16 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         /// <param name="eventKey">The event key of the event to raise.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool RaiseEvent(object eventKey, EventArgs e)
         {
-            EventHandler eventHandler = (EventHandler)this.Events[eventKey];
+            var eventHandler = (EventHandler)this.Events[eventKey];
             if (eventHandler != null)
             {
                 eventHandler(this, e);
                 return true;
             }
+
             return false;
         }
 
@@ -1831,26 +1680,28 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         /// <param name="eventKey">The event key of the event to raise.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool RaiseEvent(object eventKey, ExecuteEventHandlerArgs e)
         {
-            ExecuteEventHandler eventHandler = this.Events[eventKey] as ExecuteEventHandler;
-            if (eventHandler != null)
+            if (this.Events[eventKey] is ExecuteEventHandler eventHandler)
             {
                 eventHandler(this, e);
                 return true;
             }
+
             return false;
         }
 
-        #endregion Private Methods
-
-        #region IComparable Members
-
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj">An object to compare with this instance.</param>
+        /// <returns>A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.</returns>
+        /// <exception cref="ArgumentException">object is not a Command</exception>
         public int CompareTo(object obj)
         {
-            if (obj is Command)
+            if (obj is Command otherCommand)
             {
-                Command otherCommand = (Command)obj;
                 return this.CommandId.CompareTo(otherCommand.CommandId);
             }
             else if (obj == null)
@@ -1862,34 +1713,35 @@ namespace OpenLiveWriter.ApplicationFramework
             throw new ArgumentException("object is not a Command");
         }
 
-        #endregion
+        /// <summary>
+        /// The flushing
+        /// </summary>
+        bool flushing = false;
 
-        public enum InvalidationState
-        {
-            Pending, // We have not yet set or invalidated the ribbon
-            WaitingForUpdateProperty, // We have called InvalidateUICommand and are waiting for an UpdateProperty callback.
-            Error // The ribbon APIs to set and invalidate this command have return an failing error code.
-        }
-
-        bool _flushing = false;
-
+        /// <summary>
+        /// The keys
+        /// </summary>
         private PropertyKey[] _keys = new PropertyKey[MAX_PENDING_INVALIDATIONS];
+        /// <summary>
+        /// Flushes the pending invalidations.
+        /// </summary>
+        /// <param name="framework">The framework.</param>
         public void FlushPendingInvalidations(IUIFramework framework)
         {
-            Debug.Assert(!this._flushing, "Flushing while already flushing!?!");
-            this._flushing = true;
+            Debug.Assert(!this.flushing, "Flushing while already flushing!?!");
+            this.flushing = true;
 
             try
             {
                 Debug.Assert(this.pendingInvalidations.Count < this._keys.Length, "Need to increase the size of MAX_PENDING_INVALIDATIONS.");
                 this.pendingInvalidations.Keys.CopyTo(this._keys, 0);
 
-                for (int i = 0; i < this.pendingInvalidations.Count; i++)
+                for (var i = 0; i < this.pendingInvalidations.Count; i++)
                 {
-                    PropertyKey key = this._keys[i];
+                    var key = this._keys[i];
                     if (this.pendingInvalidations[key] == InvalidationState.Pending)
                     {
-                        int result = framework.InvalidateUICommand((uint)this.CommandId,
+                        var result = framework.InvalidateUICommand((uint)this.CommandId,
                                                       PropertyKeyExtensions.GetCommandInvalidationFlags(key),
                                                       key.ToPointer());
                         this.pendingInvalidations[key] = result == 0 ? InvalidationState.WaitingForUpdateProperty : InvalidationState.Error;
@@ -1903,13 +1755,24 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             finally
             {
-                this._flushing = false;
+                this.flushing = false;
             }
         }
 
+        /// <summary>
+        /// The maximum pending invalidations
+        /// </summary>
         private const int MAX_PENDING_INVALIDATIONS = 15;
+        /// <summary>
+        /// The pending invalidations
+        /// </summary>
         private Dictionary<PropertyKey, InvalidationState> pendingInvalidations = new Dictionary<PropertyKey, InvalidationState>(MAX_PENDING_INVALIDATIONS);
 
+        /// <summary>
+        /// Updates the state of the invalidation.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="invalidationState">State of the invalidation.</param>
         protected internal void UpdateInvalidationState(PropertyKey key, InvalidationState invalidationState)
         {
             if (this.pendingInvalidations.ContainsKey(key))
@@ -1925,12 +1788,17 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else
             {
-                Debug.Assert(!this._flushing);
+                Debug.Assert(!this.flushing);
                 this.pendingInvalidations.Add(key, invalidationState);
                 Debug.Assert(this.pendingInvalidations.Count <= MAX_PENDING_INVALIDATIONS, "Need to increase MAX_PENDING_INVALIDATIONS?");
             }
         }
     }
 
+    /// <summary>
+    /// Delegate ExecuteEventHandler
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="args">The arguments.</param>
     public delegate void ExecuteEventHandler(object sender, ExecuteEventHandlerArgs args);
 }

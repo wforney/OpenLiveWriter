@@ -1,14 +1,15 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// Provides a tab scroller lightweight control.
     /// </summary>
@@ -51,19 +52,17 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
         /// Initializes a new instance of the TabScrollerButtonLightweightControl class.
         /// </summary>
-        public TabScrollerButtonLightweightControl()
-        {
+        public TabScrollerButtonLightweightControl() =>
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         #region Designer generated code
         /// <summary>
@@ -72,14 +71,14 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.timerAutoScroll = new System.Windows.Forms.Timer(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            this.components = new Container();
+            this.timerAutoScroll = new Timer(this.components);
+            ((ISupportInitialize)this).BeginInit();
             //
             // timerAutoScroll
             //
-            this.timerAutoScroll.Tick += new System.EventHandler(this.timerAutoScroll_Tick);
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+            this.timerAutoScroll.Tick += new EventHandler(this.timerAutoScroll_Tick);
+            ((ISupportInitialize)this).EndInit();
 
         }
         #endregion
@@ -91,13 +90,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size DefaultVirtualSize
-        {
-            get
-            {
-                return new Size(DEFAULT_WIDTH, 0);
-            }
-        }
+        public override Size DefaultVirtualSize => new Size(DEFAULT_WIDTH, 0);
 
         /// <summary>
         /// Gets the minimum virtual size of the lightweight control.
@@ -106,13 +99,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size MinimumVirtualSize
-        {
-            get
-            {
-                return DefaultVirtualSize;
-            }
-        }
+        public override Size MinimumVirtualSize => this.DefaultVirtualSize;
 
         /// <summary>
         /// Raises the Click event.
@@ -124,8 +111,10 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnClick(e);
 
             //	Raise the Scroll event if auto-scroll has not occurred.
-            if (!autoScrollOccurred)
-                OnScroll(EventArgs.Empty);
+            if (!this.autoScrollOccurred)
+            {
+                this.OnScroll(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -138,8 +127,10 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnDoubleClick(e);
 
             //	Raise the Scroll event if Continuous scroll has not occurred.
-            if (!autoScrollOccurred)
-                OnScroll(EventArgs.Empty);
+            if (!this.autoScrollOccurred)
+            {
+                this.OnScroll(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -152,9 +143,9 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseDown(e);
 
             //	Start the auto-scroll timer.
-            autoScrollOccurred = false;
-            timerAutoScroll.Interval = 200;
-            timerAutoScroll.Start();
+            this.autoScrollOccurred = false;
+            this.timerAutoScroll.Interval = 200;
+            this.timerAutoScroll.Start();
         }
 
         /// <summary>
@@ -167,7 +158,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseUp(e);
 
             //	Stop the mouse down timer.
-            timerAutoScroll.Stop();
+            this.timerAutoScroll.Stop();
         }
 
         /// <summary>
@@ -180,10 +171,10 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnPaint(e);
 
             //	Obtain the face rectangle.
-            Rectangle faceRectangle = VirtualClientRectangle;
+            var faceRectangle = this.VirtualClientRectangle;
 
             //	Draw the edges of the scroller.
-            using (SolidBrush solidBrush = new SolidBrush(ApplicationManager.ApplicationStyle.BorderColor))
+            using (var solidBrush = new SolidBrush(ApplicationManager.ApplicationStyle.BorderColor))
             {
                 //	Draw the top edge.
                 e.Graphics.FillRectangle(solidBrush,
@@ -218,11 +209,13 @@ namespace OpenLiveWriter.ApplicationFramework
             faceRectangle.Inflate(-1, -1);
 
             //	Fill face of the scroller.
-            using (SolidBrush solidBrush = new SolidBrush(Color.Red))
+            using (var solidBrush = new SolidBrush(Color.Red))
+            {
                 e.Graphics.FillRectangle(solidBrush, faceRectangle);
+            }
 
             Color topLeftColor, bottomRightColor;
-            if (LeftMouseButtonDown)
+            if (this.LeftMouseButtonDown)
             {
                 topLeftColor = Color.FromArgb(128, ApplicationManager.ApplicationStyle.ActiveTabLowlightColor);
                 bottomRightColor = Color.FromArgb(128, ApplicationManager.ApplicationStyle.ActiveTabHighlightColor);
@@ -234,7 +227,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Draw the top/left inside the scroller.
-            using (SolidBrush solidBrush = new SolidBrush(topLeftColor))
+            using (var solidBrush = new SolidBrush(topLeftColor))
             {
                 //	Draw the top edge.
                 e.Graphics.FillRectangle(solidBrush,
@@ -252,7 +245,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Draw the bottom/right inside the scroller.
-            using (SolidBrush solidBrush = new SolidBrush(bottomRightColor))
+            using (var solidBrush = new SolidBrush(bottomRightColor))
             {
                 //	Draw the bottom edge.
                 e.Graphics.FillRectangle(solidBrush,
@@ -274,11 +267,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Raises the Scroll event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected internal virtual void OnScroll(EventArgs e)
-        {
-            if (Scroll != null)
-                Scroll(this, e);
-        }
+        protected internal virtual void OnScroll(EventArgs e) => Scroll?.Invoke(this, e);
 
         /// <summary>
         /// Raises the AutoScroll event.
@@ -288,7 +277,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (AutoScroll != null)
             {
-                autoScrollOccurred = true;
+                this.autoScrollOccurred = true;
                 AutoScroll(this, e);
             }
         }
@@ -301,10 +290,10 @@ namespace OpenLiveWriter.ApplicationFramework
         private void timerAutoScroll_Tick(object sender, EventArgs e)
         {
             //	Speed up the timer.
-            timerAutoScroll.Interval = 15;
+            this.timerAutoScroll.Interval = 15;
 
             //	Scroll.
-            OnAutoScroll(EventArgs.Empty);
+            this.OnAutoScroll(EventArgs.Empty);
         }
     }
 }

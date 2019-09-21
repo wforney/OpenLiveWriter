@@ -11,49 +11,27 @@ namespace OpenLiveWriter.Api
         /// <summary>
         /// Alignment of object relative to text.
         /// </summary>
-        Alignment Alignment
-        {
-            get;
-            set;
-        }
+        Alignment Alignment { get; set; }
 
         /// <summary>
         /// Margin (in pixels) above the object.
         /// </summary>
-        int TopMargin
-        {
-            get;
-            set;
-        }
+        int TopMargin { get; set; }
 
         /// <summary>
         /// Margin (in pixels) to the right of object.
         /// </summary>
-        int RightMargin
-        {
-            get;
-            set;
-        }
+        int RightMargin { get; set; }
 
         /// <summary>
         /// Margin (in pixels) below the object.
         /// </summary>
-        int BottomMargin
-        {
-            get;
-            set;
-        }
+        int BottomMargin { get; set; }
 
         /// <summary>
         /// Margin (in pixels) to the left of the object.
         /// </summary>
-        int LeftMargin
-        {
-            get;
-            set;
-        }
-
+        int LeftMargin { get; set; }
     }
-
 }
 

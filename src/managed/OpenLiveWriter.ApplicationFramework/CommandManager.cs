@@ -1,100 +1,36 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Interop.Com.Ribbon;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Com.Ribbon;
+    using OpenLiveWriter.Localization;
+
     public delegate void ExecuteWithArgsDelegate(ExecuteEventHandlerArgs args);
 
-    public class CommandManager : Component, IUICommandHandler, IUICommandHandlerOverride
+    /// <summary>
+    /// Class CommandManager.
+    /// Implements the <see cref="System.ComponentModel.Component" />
+    /// Implements the <see cref="OpenLiveWriter.Interop.Com.Ribbon.IUICommandHandler" />
+    /// Implements the <see cref="OpenLiveWriter.Interop.Com.Ribbon.IUICommandHandlerOverride" />
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.Component" />
+    /// <seealso cref="OpenLiveWriter.Interop.Com.Ribbon.IUICommandHandler" />
+    /// <seealso cref="OpenLiveWriter.Interop.Com.Ribbon.IUICommandHandlerOverride" />
+    public partial class CommandManager : Component, IUICommandHandler, IUICommandHandlerOverride
     {
-        #region Private Class Declarations
-
         /// <summary>
-        ///	Manages command instances.
+        /// The generic command handler
         /// </summary>
-        private class CommandInstanceManager
-        {
-            /// <summary>
-            ///	The command instance collection.
-            /// </summary>
-            private CommandCollection commandInstanceCollection = new CommandCollection();
-
-            /// <summary>
-            /// Initializes a new instance of the CommandInstanceManager class.
-            /// </summary>
-            /// <param name="command">The initial command instance to add.</param>
-            public CommandInstanceManager(Command command)
-            {
-                Add(command);
-            }
-
-            /// <summary>
-            /// Gets a value indicating whether the CommandInstanceManager is empty.
-            /// </summary>
-            public bool IsEmpty
-            {
-                get
-                {
-                    return commandInstanceCollection.Count == 0;
-                }
-            }
-
-            /// <summary>
-            /// Gets the active command instance.
-            /// </summary>
-            public Command ActiveCommandInstance
-            {
-                get
-                {
-                    return IsEmpty ? null : commandInstanceCollection[commandInstanceCollection.Count - 1];
-                }
-            }
-
-            /// <summary>
-            /// Adds a command instance.
-            /// </summary>
-            /// <param name="command">The command instance to add.</param>
-            public void Add(Command command)
-            {
-                //	Ensure that the command instance has not already been added.
-                Debug.Assert(!commandInstanceCollection.Contains(command), String.Format(CultureInfo.InvariantCulture, "Command instance {0} already added.", command.Identifier));
-
-                //	Add the command instance.
-                if (!commandInstanceCollection.Contains(command))
-                    commandInstanceCollection.Add(command);
-            }
-
-            /// <summary>
-            /// Removes a command instance.
-            /// </summary>
-            /// <param name="command">The command to remove.</param>
-            public void Remove(Command command)
-            {
-                //	Ensure that the command instance has been added and is not active.
-                Debug.Assert(commandInstanceCollection.Contains(command), String.Format(CultureInfo.InvariantCulture, "Command instance {0} not found.", command.Identifier));
-
-                //	Remove the command instance.
-                if (commandInstanceCollection.Contains(command))
-                    commandInstanceCollection.Remove(command);
-            }
-        }
-
-        #endregion Private Class Declarations
-
-        #region Private Member Variables
-
         private GenericCommandHandler genericCommandHandler;
 
         /// <summary>
@@ -154,22 +90,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private bool pendingChange = false;
 
         /// <summary>
-        /// A value which indicates whether we are suppressing events.
-        /// </summary>
-        private bool suppressEvents;
-
-        #endregion Private Member Variables
-
-        #region Public Events
-
-        /// <summary>
         /// The changed event.
         /// </summary>
         public event EventHandler Changed;
-
-        #endregion Public Events
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Initializes a new instance of the Command class.
@@ -179,15 +102,12 @@ namespace OpenLiveWriter.ApplicationFramework
             ///
             /// Required for Windows.Forms Class Composition Designer support
             ///
-            CreateGenericCommandHandler();
+            this.CreateGenericCommandHandler();
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        private void CreateGenericCommandHandler()
-        {
-            genericCommandHandler = new GenericCommandHandler(this);
-        }
+        private void CreateGenericCommandHandler() => this.genericCommandHandler = new GenericCommandHandler(this);
 
         /// <summary>
         /// Initializes a new instance of the Command class.
@@ -197,8 +117,8 @@ namespace OpenLiveWriter.ApplicationFramework
             ///
             /// Required for Windows.Forms Class Composition Designer support
             ///
-            CreateGenericCommandHandler();
-            InitializeComponent();
+            this.CreateGenericCommandHandler();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -208,95 +128,65 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-        }
+        private void InitializeComponent() => this.components = new Container();
         #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets or sets a value which indicates whether we are suppressing events.
         /// </summary>
-        public bool SuppressEvents
-        {
-            get
-            {
-                return suppressEvents;
-            }
-            set
-            {
-                suppressEvents = value;
-            }
-        }
+        public bool SuppressEvents { get; set; }
 
         /// <summary>
         /// Gets the count of commands in the command manager.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return commandTable.Count;
-            }
-        }
-
-        #endregion Public Properties
-
-        #region Public Methods
+        public int Count => this.commandTable.Count;
 
         /// <summary>
         /// Begins update to CommandManager allowing multiple Change events to be batched.
         /// </summary>
-        public void BeginUpdate()
-        {
-            updateCount++;
-        }
+        public void BeginUpdate() => this.updateCount++;
 
         /// <summary>
         /// Ends update to CommandManager allowing multiple Change events to be batched.
         /// </summary>
-        public void EndUpdate()
-        {
-            EndUpdate(false);
-        }
+        public void EndUpdate() => this.EndUpdate(false);
 
         public void EndUpdate(bool forceUpdate)
         {
-            Debug.Assert(updateCount > 0, "EndUpdate called incorrectly.");
-            if (updateCount > 0)
-                if (--updateCount == 0)
+            Debug.Assert(this.updateCount > 0, "EndUpdate called incorrectly.");
+            if (this.updateCount > 0)
+            {
+                if (--this.updateCount == 0)
                 {
-                    if (pendingChange || forceUpdate)
+                    if (this.pendingChange || forceUpdate)
                     {
-                        pendingChange = false;
+                        this.pendingChange = false;
 
-                        foreach (var entry in batchedCommands)
+                        foreach (var entry in this.batchedCommands)
                         {
-                            if (CommandStateChanged != null)
-                                CommandStateChanged(entry.Key, entry.Value);
+                            CommandStateChanged?.Invoke(entry.Key, entry.Value);
                         }
-                        batchedCommands.Clear();
 
-                        OnChanged(EventArgs.Empty);
+                        this.batchedCommands.Clear();
+
+                        this.OnChanged(EventArgs.Empty);
                     }
                 }
+            }
         }
 
         /// <summary>
@@ -305,62 +195,62 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="commands">The Command(s) to add.</param>
         public void Add(params Command[] commands)
         {
-            foreach (Command command in commands)
+            foreach (var command in commands)
             {
-                AddCommand(command);
-                command.StateChanged += OnCommandStateChanged;
-                OnCommandStateChanged(command, EventArgs.Empty);
+                this.AddCommand(command);
+                command.StateChanged += this.OnCommandStateChanged;
+                this.OnCommandStateChanged(command, EventArgs.Empty);
             }
 
-            OnChanged(EventArgs.Empty);
+            this.OnChanged(EventArgs.Empty);
         }
 
         private const int MAX_BATCHED_INVALIDATIONS = 90;
-        private Dictionary<object, EventArgs> batchedCommands = new Dictionary<object, EventArgs>(MAX_BATCHED_INVALIDATIONS);
+        private readonly Dictionary<object, EventArgs> batchedCommands = new Dictionary<object, EventArgs>(MAX_BATCHED_INVALIDATIONS);
 
         private void OnCommandStateChanged(object sender, EventArgs e)
         {
             // If we're in batch mode, then make a note of the sender and batch notifications
-            if (updateCount > 0)
+            if (this.updateCount > 0)
             {
-                if (!batchedCommands.ContainsKey(sender))
+                if (!this.batchedCommands.ContainsKey(sender))
                 {
-                    pendingChange = true;
-                    batchedCommands.Add(sender, e);
+                    this.pendingChange = true;
+                    this.batchedCommands.Add(sender, e);
                 }
 
-                Debug.Assert(batchedCommands.Count <= MAX_BATCHED_INVALIDATIONS, "Need to increase the size of MAX_BATCHED_INVALIDATIONS.");
+                Debug.Assert(
+                    this.batchedCommands.Count <= MAX_BATCHED_INVALIDATIONS,
+                    "Need to increase the size of MAX_BATCHED_INVALIDATIONS.");
             }
             else
             {
                 // Send notification directly
-                if (CommandStateChanged != null)
-                    CommandStateChanged(sender, e);
+                CommandStateChanged?.Invoke(sender, e);
             }
-
         }
 
         public Command Add(CommandId commandId, EventHandler handler)
         {
-            Command command = new Command(commandId);
+            var command = new Command(commandId);
             command.Execute += handler;
-            Add(command);
+            this.Add(command);
             return command;
         }
 
         public Command Add(Command command, ExecuteEventHandler handler)
         {
             command.ExecuteWithArgs += handler;
-            Add(command);
+            this.Add(command);
             return command;
         }
 
         public Command Add(CommandId commandId, EventHandler handler, bool enabled)
         {
-            Command command = new Command(commandId);
+            var command = new Command(commandId);
             command.Execute += handler;
             command.Enabled = enabled;
-            Add(command);
+            this.Add(command);
             return command;
         }
 
@@ -372,9 +262,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="commandCollection">The Command(s) to add.</param>
         public void Add(CommandCollection commandCollection)
         {
-            foreach (Command command in commandCollection)
-                AddCommand(command);
-            OnChanged(EventArgs.Empty);
+            foreach (var command in commandCollection)
+            {
+                this.AddCommand(command);
+            }
+
+            this.OnChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -383,9 +276,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="commands">The Command(s) to remove.</param>
         public void Remove(params Command[] commands)
         {
-            foreach (Command command in commands)
-                RemoveCommand(command);
-            OnChanged(EventArgs.Empty);
+            foreach (var command in commands)
+            {
+                this.RemoveCommand(command);
+            }
+
+            this.OnChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -394,9 +290,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="commandCollection">The Command(s) to remove.</param>
         public void Remove(CommandCollection commandCollection)
         {
-            foreach (Command command in commandCollection)
-                RemoveCommand(command);
-            OnChanged(EventArgs.Empty);
+            foreach (var command in commandCollection)
+            {
+                this.RemoveCommand(command);
+            }
+
+            this.OnChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -409,7 +308,9 @@ namespace OpenLiveWriter.ApplicationFramework
             Command command = null;
 
             if (keyData != Keys.None)
-                command = FindCommandWithShortcut(keyData);
+            {
+                command = this.FindCommandWithShortcut(keyData);
+            }
 
             if (command != null)
             {
@@ -419,10 +320,12 @@ namespace OpenLiveWriter.ApplicationFramework
                     //	firing the BeforeShowInMenu event on the command.  Very important.
                     command.InvokeBeforeShowInMenu(EventArgs.Empty);
                     if (!command.On || !command.Enabled)
+                    {
                         return false;
+                    }
 
                     //	Execute the command.
-                    ExecuteCommandAndFireEvents(command);
+                    this.ExecuteCommandAndFireEvents(command);
                     return true;
                 }
             }
@@ -439,10 +342,10 @@ namespace OpenLiveWriter.ApplicationFramework
         public bool ProcessCmdKeyAcceleratorMnemonic(Keys keyData)
         {
             //	Attempt to process the Keys value as a Command.AcceleratorMnemonic.
-            AcceleratorMnemonic acceleratorMnemonic = KeyboardHelper.MapToAcceleratorMnemonic(keyData);
+            var acceleratorMnemonic = KeyboardHelper.MapToAcceleratorMnemonic(keyData);
             if (acceleratorMnemonic != AcceleratorMnemonic.None)
             {
-                Command command = FindCommandWithAcceleratorMnemonic(acceleratorMnemonic);
+                var command = this.FindCommandWithAcceleratorMnemonic(acceleratorMnemonic);
                 if (command != null)
                 {
                     if (command.On && command.Enabled)
@@ -451,10 +354,12 @@ namespace OpenLiveWriter.ApplicationFramework
                         //	firing the BeforeShowInMenu event on the command.  Very important.
                         command.InvokeBeforeShowInMenu(EventArgs.Empty);
                         if (!command.On || !command.Enabled)
+                        {
                             return false;
+                        }
 
                         //	Execute the command.
-                        ExecuteCommandAndFireEvents(command);
+                        this.ExecuteCommandAndFireEvents(command);
                         return true;
                     }
                 }
@@ -472,10 +377,10 @@ namespace OpenLiveWriter.ApplicationFramework
         public bool ProcessCmdKeyCommandBarButtonContextMenuAcceleratorMnemonic(Keys keyData)
         {
             //	Attempt to process the Keys value as a Command.CommandBarButtonContextMenuAcceleratorMnemonic.
-            AcceleratorMnemonic acceleratorMnemonic = KeyboardHelper.MapToAcceleratorMnemonic(keyData);
+            var acceleratorMnemonic = KeyboardHelper.MapToAcceleratorMnemonic(keyData);
             if (acceleratorMnemonic != AcceleratorMnemonic.None)
             {
-                Command command = FindCommandWithCommandBarButtonContextMenuAcceleratorMnemonic(acceleratorMnemonic);
+                var command = this.FindCommandWithCommandBarButtonContextMenuAcceleratorMnemonic(acceleratorMnemonic);
                 if (command != null)
                 {
                     if (command.On && command.Enabled)
@@ -496,16 +401,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         /// <param name="keyData">Specifies key codes and modifiers and process.</param>
         /// <returns>true if the Keys value was processed; otherwise, false.</returns>
-        public bool ProcessCmdKeyAll(Keys keyData)
-        {
-            if (ProcessCmdKeyShortcut(keyData))
-                return true;
-            if (ProcessCmdKeyAcceleratorMnemonic(keyData))
-                return true;
-            if (ProcessCmdKeyCommandBarButtonContextMenuAcceleratorMnemonic(keyData))
-                return true;
-            return false;
-        }
+        public bool ProcessCmdKeyAll(Keys keyData) => this.ProcessCmdKeyShortcut(keyData) || this.ProcessCmdKeyAcceleratorMnemonic(keyData)
+                ? true
+                : this.ProcessCmdKeyCommandBarButtonContextMenuAcceleratorMnemonic(keyData);
 
         /// <summary>
         /// Instructs the command manager to ignore the shortcut until
@@ -516,10 +414,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void IgnoreShortcut(Shortcut shortcut)
         {
-            if (maskedShortcuts == null)
-                maskedShortcuts = new HashSet();
-            bool isNewElement = maskedShortcuts.Add(shortcut);
-            Debug.Assert(isNewElement, "Shortcut " + shortcut + " was already masked");
+            if (this.maskedShortcuts == null)
+            {
+                this.maskedShortcuts = new HashSet();
+            }
+
+            var isNewElement = this.maskedShortcuts.Add(shortcut);
+            Debug.Assert(isNewElement, $"Shortcut {shortcut} was already masked");
         }
 
         /// <summary>
@@ -527,29 +428,33 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void UnignoreShortcut(Shortcut shortcut)
         {
-            Trace.Assert(maskedShortcuts != null, "UnignoreShortcut called before IgnoreShortcut");
-            if (maskedShortcuts != null)
+            Trace.Assert(this.maskedShortcuts != null, "UnignoreShortcut called before IgnoreShortcut");
+            if (this.maskedShortcuts != null)
             {
-                bool wasPresent = maskedShortcuts.Remove(shortcut);
-                Trace.Assert(wasPresent, "Shortcut " + shortcut + " was not masked");
-                if (maskedShortcuts.Count == 0)
-                    maskedShortcuts = null;
+                var wasPresent = this.maskedShortcuts.Remove(shortcut);
+                Trace.Assert(wasPresent, $"Shortcut {shortcut} was not masked");
+                if (this.maskedShortcuts.Count == 0)
+                {
+                    this.maskedShortcuts = null;
+                }
             }
         }
 
-        public bool ShouldIgnore(Shortcut shortcut)
-        {
-            if (maskedShortcuts != null && maskedShortcuts.Contains(shortcut))
-                return true;
-            return false;
-        }
+        /// <summary>
+        /// Shoulds the ignore.
+        /// </summary>
+        /// <param name="shortcut">The shortcut.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public bool ShouldIgnore(Shortcut shortcut) =>
+            this.maskedShortcuts != null && this.maskedShortcuts.Contains(shortcut);
 
-        public bool ShouldIgnore(Keys keys)
-        {
-            if (maskedShortcuts != null && maskedShortcuts.Contains(KeyboardHelper.MapToShortcut(keys)))
-                return true;
-            return false;
-        }
+        /// <summary>
+        /// Shoulds the ignore.
+        /// </summary>
+        /// <param name="keys">The keys.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public bool ShouldIgnore(Keys keys) =>
+            this.maskedShortcuts != null && this.maskedShortcuts.Contains(KeyboardHelper.MapToShortcut(keys));
 
         /// <summary>
         /// Gets the command with the specified command identifier.
@@ -558,23 +463,28 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>The command, or null if a command with the specified command identifier cannot be found.</returns>
         public Command Get(string commandIdentifier)
         {
-            CommandInstanceManager commandInstanceManager = (CommandInstanceManager)commandTable[commandIdentifier];
-            Command command = (commandInstanceManager == null) ? null : commandInstanceManager.ActiveCommandInstance;
+            var commandInstanceManager = (CommandInstanceManager)this.commandTable[commandIdentifier];
+            var command = commandInstanceManager?.ActiveCommandInstance;
             return command;
         }
 
-        Dictionary<CommandId, string> commandIdToString = new Dictionary<CommandId, string>();
+        private readonly Dictionary<CommandId, string> commandIdToString = new Dictionary<CommandId, string>();
 
+        /// <summary>
+        /// Gets the specified command identifier.
+        /// </summary>
+        /// <param name="commandIdentifier">The command identifier.</param>
+        /// <returns>Command.</returns>
         public Command Get(CommandId commandIdentifier)
         {
-            string str;
-            if (!commandIdToString.TryGetValue(commandIdentifier, out str))
+            if (!this.commandIdToString.TryGetValue(commandIdentifier, out var str))
             {
                 str = commandIdentifier.ToString();
-                commandIdToString.Add(commandIdentifier, str);
+                this.commandIdToString.Add(commandIdentifier, str);
             }
-            CommandInstanceManager commandInstanceManager = (CommandInstanceManager)commandTable[str];
-            Command command = (commandInstanceManager == null) ? null : commandInstanceManager.ActiveCommandInstance;
+
+            var commandInstanceManager = (CommandInstanceManager)this.commandTable[str];
+            var command = commandInstanceManager?.ActiveCommandInstance;
             return command;
         }
 
@@ -585,20 +495,26 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>The command, or null if a command with the specified Shortcut cannot be found.</returns>
         public Command FindCommandWithShortcut(Keys commandShortcut)
         {
-            RebuildCommandShortcutTable(true);
+            this.RebuildCommandShortcutTable(true);
 
             // WinLive 293185: If the shortcut involves CTRL - (right) ALT key, ignore it.
             if (KeyboardHelper.IsCtrlRightAlt(commandShortcut))
+            {
                 return null;
+            }
 
             //	Return the command with the matching shortcut.
-            Command command = (Command)commandShortcutTable[commandShortcut];
+            var command = (Command)this.commandShortcutTable[commandShortcut];
             if (command != null)
+            {
                 return command;
+            }
 
-            Shortcut shortcut = KeyboardHelper.MapToShortcut(commandShortcut);
-            if (shortcut != Shortcut.None && !ShouldIgnore(shortcut))
-                return (Command)commandShortcutTable[shortcut];
+            var shortcut = KeyboardHelper.MapToShortcut(commandShortcut);
+            if (shortcut != Shortcut.None && !this.ShouldIgnore(shortcut))
+            {
+                return (Command)this.commandShortcutTable[shortcut];
+            }
 
             return null;
         }
@@ -611,17 +527,17 @@ namespace OpenLiveWriter.ApplicationFramework
         public Command FindCommandWithAcceleratorMnemonic(AcceleratorMnemonic acceleratorMnemonic)
         {
             //	If the AcceleratorMnemonic table has not been built, build it.
-            if (acceleratorMnemonicTable == null)
+            if (this.acceleratorMnemonicTable == null)
             {
                 //	Instantiate the AcceleratorMnemonic table.
-                acceleratorMnemonicTable = new Hashtable();
+                this.acceleratorMnemonicTable = new Hashtable();
 
                 //	Rebuild the AcceleratorMnemonic table.
-                RebuildAcceleratorMnemonicTable();
+                this.RebuildAcceleratorMnemonicTable();
             }
 
             //	Return the command with the specified AcceleratorMnemonic.
-            return (Command)acceleratorMnemonicTable[acceleratorMnemonic];
+            return (Command)this.acceleratorMnemonicTable[acceleratorMnemonic];
         }
 
         /// <summary>
@@ -632,17 +548,17 @@ namespace OpenLiveWriter.ApplicationFramework
         public Command FindCommandWithCommandBarButtonContextMenuAcceleratorMnemonic(AcceleratorMnemonic acceleratorMnemonic)
         {
             //	If the CommandBarButtonContextMenuAcceleratorMnemonic table has not been built, build it.
-            if (commandBarButtonContextMenuAcceleratorMnemonicTable == null)
+            if (this.commandBarButtonContextMenuAcceleratorMnemonicTable == null)
             {
                 //	Instantiate the CommandBarButtonContextMenuAcceleratorMnemonic table.
-                commandBarButtonContextMenuAcceleratorMnemonicTable = new Hashtable();
+                this.commandBarButtonContextMenuAcceleratorMnemonicTable = new Hashtable();
 
                 //	Rebuild the CommandBarButtonContextMenuAcceleratorMnemonic table.
-                RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable();
+                this.RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable();
             }
 
             //	Return the command with the specified CommandBarButtonContextMenuAcceleratorMnemonic.
-            return (Command)commandBarButtonContextMenuAcceleratorMnemonicTable[acceleratorMnemonic];
+            return (Command)this.commandBarButtonContextMenuAcceleratorMnemonicTable[acceleratorMnemonic];
         }
 
         /// <summary>
@@ -654,13 +570,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	Instantiate a new CommandMenuBuilder so we can build the menu from the set of
             //	commands in this command manager.
-            CommandMenuBuilder commandMenuBuilder = new CommandMenuBuilder(menuType);
+            var commandMenuBuilder = new CommandMenuBuilder(menuType);
 
             //	Enumerate the commands and merge each one into the merge menu.
-            foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)
+            foreach (CommandInstanceManager commandInstanceManager in this.commandTable.Values)
             {
                 if (commandInstanceManager.ActiveCommandInstance != null && commandInstanceManager.ActiveCommandInstance.On)
+                {
                     commandMenuBuilder.MergeCommand(commandInstanceManager.ActiveCommandInstance);
+                }
             }
 
             //	Return the menu items.
@@ -672,20 +590,25 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void Clear()
         {
-            commandShortcutTableIsStale = true;
-            commandTable.Clear();
-            if (commandShortcutTable != null)
-                commandShortcutTable.Clear();
-            if (acceleratorMnemonicTable != null)
-                acceleratorMnemonicTable.Clear();
-            if (commandBarButtonContextMenuAcceleratorMnemonicTable != null)
-                commandBarButtonContextMenuAcceleratorMnemonicTable.Clear();
-            OnChanged(EventArgs.Empty);
+            this.commandShortcutTableIsStale = true;
+            this.commandTable.Clear();
+            if (this.commandShortcutTable != null)
+            {
+                this.commandShortcutTable.Clear();
+            }
+
+            if (this.acceleratorMnemonicTable != null)
+            {
+                this.acceleratorMnemonicTable.Clear();
+            }
+
+            if (this.commandBarButtonContextMenuAcceleratorMnemonicTable != null)
+            {
+                this.commandBarButtonContextMenuAcceleratorMnemonicTable.Clear();
+            }
+
+            this.OnChanged(EventArgs.Empty);
         }
-
-        #endregion Public Methods
-
-        #region Protected Methods
 
         /// <summary>
         /// Raises the Changed event.
@@ -693,21 +616,21 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         public virtual void OnChanged(EventArgs e)
         {
-            if (updateCount > 0)
-                pendingChange = true;
+            if (this.updateCount > 0)
+            {
+                this.pendingChange = true;
+            }
             else
             {
-                RebuildCommandShortcutTable(false);
-                RebuildAcceleratorMnemonicTable();
-                RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable();
-                if (!suppressEvents && Changed != null)
+                this.RebuildCommandShortcutTable(false);
+                this.RebuildAcceleratorMnemonicTable();
+                this.RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable();
+                if (!this.SuppressEvents && Changed != null)
+                {
                     Changed(null, e);
+                }
             }
         }
-
-        #endregion Protected Methods
-
-        #region Private Methods
 
         /// <summary>
         /// Adds a command instance.
@@ -715,12 +638,16 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="command">The Command instance to add.</param>
         private void AddCommand(Command command)
         {
-            commandShortcutTableIsStale = true;
-            CommandInstanceManager commandInstanceManager = (CommandInstanceManager)commandTable[command.Identifier];
+            this.commandShortcutTableIsStale = true;
+            var commandInstanceManager = (CommandInstanceManager)this.commandTable[command.Identifier];
             if (commandInstanceManager == null)
-                commandTable[command.Identifier] = new CommandInstanceManager(command);
+            {
+                this.commandTable[command.Identifier] = new CommandInstanceManager(command);
+            }
             else
+            {
                 commandInstanceManager.Add(command);
+            }
         }
 
         /// <summary>
@@ -729,13 +656,15 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="commandList">The Command instance to remove.</param>
         private void RemoveCommand(Command command)
         {
-            commandShortcutTableIsStale = true;
-            CommandInstanceManager commandInstanceManager = (CommandInstanceManager)commandTable[command.Identifier];
+            this.commandShortcutTableIsStale = true;
+            var commandInstanceManager = (CommandInstanceManager)this.commandTable[command.Identifier];
             if (commandInstanceManager != null)
             {
                 commandInstanceManager.Remove(command);
                 if (commandInstanceManager.IsEmpty)
-                    commandTable.Remove(command.Identifier);
+                {
+                    this.commandTable.Remove(command.Identifier);
+                }
             }
         }
 
@@ -744,35 +673,39 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void RebuildCommandShortcutTable(bool createIfNecessary)
         {
-            if (createIfNecessary && commandShortcutTable == null)
-                commandShortcutTable = new Hashtable();
-
-            if (commandShortcutTable != null)
+            if (createIfNecessary && this.commandShortcutTable == null)
             {
-                if (!commandShortcutTableIsStale)
-                    return;
+                this.commandShortcutTable = new Hashtable();
+            }
 
-                commandShortcutTable.Clear();
-                foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)
+            if (this.commandShortcutTable != null)
+            {
+                if (!this.commandShortcutTableIsStale)
                 {
-                    Command cmd = commandInstanceManager.ActiveCommandInstance;
+                    return;
+                }
+
+                this.commandShortcutTable.Clear();
+                foreach (CommandInstanceManager commandInstanceManager in this.commandTable.Values)
+                {
+                    var cmd = commandInstanceManager.ActiveCommandInstance;
                     if (cmd != null)
                     {
                         if (cmd.AdvancedShortcut != Keys.None)
                         {
-                            Debug.Assert(!commandShortcutTable.ContainsKey(cmd.AdvancedShortcut), "Shortcut " + cmd.AdvancedShortcut + " is already registered");
-                            commandShortcutTable[cmd.AdvancedShortcut] = cmd;
+                            Debug.Assert(!this.commandShortcutTable.ContainsKey(cmd.AdvancedShortcut), $"Shortcut {cmd.AdvancedShortcut} is already registered");
+                            this.commandShortcutTable[cmd.AdvancedShortcut] = cmd;
                         }
 
                         if (cmd.Shortcut != Shortcut.None)
                         {
-                            Debug.Assert(!commandShortcutTable.ContainsKey(cmd.Shortcut), "Shortcut " + cmd.Shortcut + " is already registered");
-                            commandShortcutTable[cmd.Shortcut] = cmd;
+                            Debug.Assert(!this.commandShortcutTable.ContainsKey(cmd.Shortcut), $"Shortcut {cmd.Shortcut} is already registered");
+                            this.commandShortcutTable[cmd.Shortcut] = cmd;
                         }
                     }
                 }
 
-                commandShortcutTableIsStale = false;
+                this.commandShortcutTableIsStale = false;
             }
         }
 
@@ -781,13 +714,15 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void RebuildAcceleratorMnemonicTable()
         {
-            if (acceleratorMnemonicTable != null)
+            if (this.acceleratorMnemonicTable != null)
             {
-                acceleratorMnemonicTable.Clear();
-                foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)
+                this.acceleratorMnemonicTable.Clear();
+                foreach (CommandInstanceManager commandInstanceManager in this.commandTable.Values)
                 {
                     if (commandInstanceManager.ActiveCommandInstance != null && commandInstanceManager.ActiveCommandInstance.AcceleratorMnemonic != AcceleratorMnemonic.None)
-                        acceleratorMnemonicTable[commandInstanceManager.ActiveCommandInstance.AcceleratorMnemonic] = commandInstanceManager.ActiveCommandInstance;
+                    {
+                        this.acceleratorMnemonicTable[commandInstanceManager.ActiveCommandInstance.AcceleratorMnemonic] = commandInstanceManager.ActiveCommandInstance;
+                    }
                 }
             }
         }
@@ -797,83 +732,101 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable()
         {
-            if (commandBarButtonContextMenuAcceleratorMnemonicTable != null)
+            if (this.commandBarButtonContextMenuAcceleratorMnemonicTable != null)
             {
-                commandBarButtonContextMenuAcceleratorMnemonicTable.Clear();
-                foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)
+                this.commandBarButtonContextMenuAcceleratorMnemonicTable.Clear();
+                foreach (CommandInstanceManager commandInstanceManager in this.commandTable.Values)
                 {
                     if (commandInstanceManager.ActiveCommandInstance != null && commandInstanceManager.ActiveCommandInstance.CommandBarButtonContextMenuAcceleratorMnemonic != AcceleratorMnemonic.None)
-                        commandBarButtonContextMenuAcceleratorMnemonicTable[commandInstanceManager.ActiveCommandInstance.CommandBarButtonContextMenuAcceleratorMnemonic] = commandInstanceManager.ActiveCommandInstance;
+                    {
+                        this.commandBarButtonContextMenuAcceleratorMnemonicTable[commandInstanceManager.ActiveCommandInstance.CommandBarButtonContextMenuAcceleratorMnemonic] = commandInstanceManager.ActiveCommandInstance;
+                    }
                 }
             }
         }
 
-        #endregion Private Methods
+        private static readonly PropertyKey[] ImageKeys = new[]
+        {
+            PropertyKeys.SmallImage,
+            PropertyKeys.SmallHighContrastImage,
+            PropertyKeys.LargeImage,
+            PropertyKeys.LargeHighContrastImage
+        };
 
-        private static PropertyKey[] ImageKeys = new[] { PropertyKeys.SmallImage, PropertyKeys.SmallHighContrastImage, PropertyKeys.LargeImage, PropertyKeys.LargeHighContrastImage };
         public void InvalidateAllImages()
         {
-            foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)
+            foreach (CommandInstanceManager commandInstanceManager in this.commandTable.Values)
             {
                 if (commandInstanceManager.ActiveCommandInstance != null)
+                {
                     commandInstanceManager.ActiveCommandInstance.Invalidate(ImageKeys);
+                }
             }
         }
 
         public void Invalidate(CommandId commandId)
         {
-            Command command = Get(commandId);
+            var command = this.Get(commandId);
             if (command != null)
+            {
                 command.Invalidate();
+            }
         }
 
         public bool IsEnabled(CommandId id)
         {
-            Command c = this.Get(id);
-            if (c != null)
-                return c.Enabled;
-            return false;
+            var c = this.Get(id);
+            return c == null ? false : c.Enabled;
         }
 
         public void SetEnabled(CommandId id, bool enabled)
         {
-            Command c = this.Get(id);
+            var c = this.Get(id);
             if (c != null)
+            {
                 c.Enabled = enabled;
+            }
         }
 
         public void Execute(CommandId commandId)
         {
-            Command command = Get(commandId);
+            var command = this.Get(commandId);
             if (command != null)
-                ExecuteCommandAndFireEvents(command);
+            {
+                this.ExecuteCommandAndFireEvents(command);
+            }
         }
 
         private void ExecuteCommandAndFireEvents(Command command)
         {
-            FireBeforeExecute(command.CommandId);
+            this.FireBeforeExecute(command.CommandId);
             try
             {
                 command.PerformExecute();
             }
             finally
             {
-                FireAfterExecute(command.CommandId);
+                this.FireAfterExecute(command.CommandId);
             }
         }
 
-        #region Implementation of IUICommandHandler
-
-        public int Execute(uint commandId, CommandExecutionVerb verb, PropertyKeyRef key, PropVariantRef currentValue, IUISimplePropertySet commandExecutionProperties)
+        public int Execute(
+            uint commandId,
+            CommandExecutionVerb verb,
+            PropertyKeyRef key,
+            PropVariantRef currentValue,
+            IUISimplePropertySet commandExecutionProperties)
         {
             try
             {
-                Command command = Get((CommandId)commandId);
+                var command = this.Get((CommandId)commandId);
 
                 if (verb != CommandExecutionVerb.Execute)
+                {
                     return HRESULT.S_OK;
+                }
 
-                FireBeforeExecute((CommandId)commandId);
+                this.FireBeforeExecute((CommandId)commandId);
                 int result;
                 try
                 {
@@ -881,73 +834,52 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 finally
                 {
-                    FireAfterExecute((CommandId)commandId);
+                    this.FireAfterExecute((CommandId)commandId);
                 }
 
                 return result;
             }
             catch (Exception ex)
             {
-                Trace.Fail("Exception thrown when executing " + (CommandId)commandId + ": " + ex);
+                Trace.Fail($"Exception thrown when executing {(CommandId)commandId}: {ex}");
             }
 
             return HRESULT.S_OK;
         }
 
         public event CommandManagerExecuteEventHandler BeforeExecute;
-        protected void FireBeforeExecute(CommandId commandId)
-        {
-            if (BeforeExecute != null)
-            {
-                BeforeExecute(this, new CommandManagerExecuteEventArgs(commandId));
-            }
-        }
+        protected void FireBeforeExecute(CommandId commandId) => BeforeExecute?.Invoke(this, new CommandManagerExecuteEventArgs(commandId));
 
         public event CommandManagerExecuteEventHandler AfterExecute;
-        protected void FireAfterExecute(CommandId commandId)
-        {
-            if (AfterExecute != null)
-            {
-                AfterExecute(this, new CommandManagerExecuteEventArgs(commandId));
-            }
-        }
+        protected void FireAfterExecute(CommandId commandId) => AfterExecute?.Invoke(this, new CommandManagerExecuteEventArgs(commandId));
 
         public int UpdateProperty(uint commandId, ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)
         {
             try
             {
-                Command command = Get((CommandId)commandId);
-                if (command == null)
-                {
-                    return genericCommandHandler.NullCommandUpdateProperty(commandId, ref key, currentValue, out newValue);
-                }
-
-                return command.UpdateProperty(ref key, currentValue, out newValue);
+                var command = this.Get((CommandId)commandId);
+                return command == null
+                    ? this.genericCommandHandler.NullCommandUpdateProperty(commandId, ref key, currentValue, out newValue)
+                    : command.UpdateProperty(ref key, currentValue, out newValue);
             }
             catch (Exception ex)
             {
-                Debug.Fail("Exception throw in CommandManager.UpdateProperty: " + ex + "\r\n\r\nCommand: " + commandId + " Key: " + PropertyKeys.GetName(key));
+                Debug.Fail($"Exception throw in CommandManager.UpdateProperty: {ex}\r\n\r\nCommand: {commandId} Key: {PropertyKeys.GetName(key)}");
                 throw;
             }
         }
-
-        #endregion
-
-        #region IUICommandHandlerOverride Members
 
         public int OverrideProperty(uint commandId, ref PropertyKey key, PropVariantRef overrideValue)
         {
             try
             {
-                IOverridableCommand overridableCommand = Get((CommandId)commandId) as IOverridableCommand;
-                if (overridableCommand == null)
-                    return HRESULT.E_INVALIDARG;
-
-                return overridableCommand.OverrideProperty(ref key, overrideValue);
+                return !(this.Get((CommandId)commandId) is IOverridableCommand overridableCommand)
+                    ? HRESULT.E_INVALIDARG
+                    : overridableCommand.OverrideProperty(ref key, overrideValue);
             }
             catch (Exception ex)
             {
-                Debug.Fail("Exception throw in CommandManager.OverrideProperty: " + ex + "\r\n\r\nCommand: " + commandId + " Key: " + PropertyKeys.GetName(key));
+                Debug.Fail($"Exception throw in CommandManager.OverrideProperty: {ex}\r\n\r\nCommand: {commandId} Key: {PropertyKeys.GetName(key)}");
                 throw;
             }
         }
@@ -956,36 +888,17 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             try
             {
-                IOverridableCommand overridableCommand = Get((CommandId)commandId) as IOverridableCommand;
-                if (overridableCommand == null)
-                    return HRESULT.E_INVALIDARG;
-
-                return overridableCommand.CancelOverride(ref key);
+                return !(this.Get((CommandId)commandId) is IOverridableCommand overridableCommand)
+                    ? HRESULT.E_INVALIDARG
+                    : overridableCommand.CancelOverride(ref key);
             }
             catch (Exception ex)
             {
-                Debug.Fail("Exception throw in CommandManager.OverrideProperty: " + ex + "\r\n\r\nCommand: " + commandId + " Key: " + PropertyKeys.GetName(key));
+                Debug.Fail($"Exception throw in CommandManager.OverrideProperty: {ex}\r\n\r\nCommand: {commandId} Key: {PropertyKeys.GetName(key)}");
                 throw;
             }
         }
-
-        #endregion
     }
 
     public delegate void CommandManagerExecuteEventHandler(object sender, CommandManagerExecuteEventArgs eventArgs);
-
-    public class CommandManagerExecuteEventArgs : EventArgs
-    {
-        public CommandId CommandId { get; set; }
-
-        public CommandManagerExecuteEventArgs(CommandId commandId)
-        {
-            CommandId = commandId;
-        }
-    }
-
-    public interface ICommandManagerHost
-    {
-        CommandManager CommandManager { get; }
-    }
 }

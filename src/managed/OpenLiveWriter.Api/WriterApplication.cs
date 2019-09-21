@@ -12,7 +12,7 @@ namespace OpenLiveWriter.Api
     /// Provides the ability to launch the Writer application either to create a new post, open an existing post, or Blog This
     /// for a Link, Snippet, Image, or Feed Item.
     /// </summary>
-    public sealed class WriterApplication
+    public sealed partial class WriterApplication
     {
         /// <summary>
         /// Is Open Live Writer currently installed.
@@ -21,7 +21,10 @@ namespace OpenLiveWriter.Api
         {
             get
             {
-                var writerApplicationClsidKey = string.Format(CultureInfo.InvariantCulture, "CLSID\\{0}", typeof(OpenLiveWriterApplicationClass).GUID.ToString("B"));
+                var writerApplicationClsidKey = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "CLSID\\{0}",
+                    typeof(OpenLiveWriterApplicationClass).GUID.ToString("B"));
                 using (var key = Registry.ClassesRoot.OpenSubKey(writerApplicationClsidKey))
                 {
                     return key != null;
@@ -63,30 +66,5 @@ namespace OpenLiveWriter.Api
         [ComImport]
         [Guid("366FF6CE-CA04-433D-8522-741094458839")]
         private class OpenLiveWriterApplicationClass { }  // implements IOpenLiveWriterApplication
-
-        /// <summary>
-        /// Interface IOpenLiveWriterApplication
-        /// </summary>
-        [ComImport]
-        [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-        [Guid("D7E5B1EC-FEEA-476C-9CE1-BC5C3E2DB662")]
-        private interface IOpenLiveWriterApplication
-        {
-            /// <summary>
-            /// Creates new post.
-            /// </summary>
-            void NewPost();
-
-            /// <summary>
-            /// Opens the post.
-            /// </summary>
-            void OpenPost();
-
-            /// <summary>
-            /// Shows the options.
-            /// </summary>
-            /// <param name="optionsPage">The options page.</param>
-            void ShowOptions(string optionsPage);
-        }
     }
 }

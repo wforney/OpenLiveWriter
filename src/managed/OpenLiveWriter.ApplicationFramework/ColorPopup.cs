@@ -1,53 +1,53 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Windows;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Drawing;
+    using System.Drawing.Text;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Windows;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// Summary description for ColorPopup.
     /// </summary>
-    public class ColorPopup : System.Windows.Forms.UserControl
+    public class ColorPopup : UserControl
     {
         private Color m_color = Color.Empty;
-        private Bitmap m_dropDownArrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.BlackDropArrow.png");
-        private Bitmap m_buttonOutlineHover = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonHover.png");
-        private Bitmap m_buttonOutlinePressed = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonPressed.png");
+        private readonly Bitmap m_dropDownArrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.BlackDropArrow.png");
+        private readonly Bitmap m_buttonOutlineHover = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonHover.png");
+        private readonly Bitmap m_buttonOutlinePressed = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonPressed.png");
         private bool m_hover = false;
         private bool m_pressed = false;
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public ColorPopup()
         {
             // enable double buffered painting.
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.DoubleBuffer, true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public Color Color
         {
-            get { return m_color; }
+            get => this.m_color;
             set
             {
-                m_color = value;
-                if (ColorSelected != null)
-                    ColorSelected(this, new ColorSelectedEventArgs(value));
-                Invalidate();
+                this.m_color = value;
+                ColorSelected?.Invoke(this, new ColorSelectedEventArgs(value));
+                this.Invalidate();
             }
         }
 
@@ -55,10 +55,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                if (m_color == Color.Empty)
-                    return Color.FromArgb(86, 150, 172);
-                else
-                    return m_color;
+                return this.m_color == Color.Empty ? Color.FromArgb(86, 150, 172) : this.m_color;
             }
         }
 
@@ -71,11 +68,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -90,42 +88,41 @@ namespace OpenLiveWriter.ApplicationFramework
             // ColorPopup
             //
             this.Name = "ColorPopup";
-            this.Size = new System.Drawing.Size(150, 40);
+            this.Size = new Size(150, 40);
             this.Text = "&Color Scheme";
-
         }
         #endregion
 
         public void AutoSizeForm()
         {
-            using (Graphics g = Graphics.FromHwnd(User32.GetDesktopWindow()))
+            using (var g = Graphics.FromHwnd(User32.GetDesktopWindow()))
             {
-                StringFormat sf = new StringFormat(StringFormat.GenericDefault);
-                sf.HotkeyPrefix = ShowKeyboardCues ? HotkeyPrefix.Show : HotkeyPrefix.Hide;
-                SizeF size = g.MeasureString(Text, Font, new PointF(0, 0), sf);
-                Width = PADDING * 2 + GUTTER_SIZE * 2 + COLOR_SIZE + (int)Math.Ceiling(size.Width) + m_dropDownArrow.Width;
-                Height = PADDING * 2 + COLOR_SIZE;
+                var sf = new StringFormat(StringFormat.GenericDefault);
+                sf.HotkeyPrefix = this.ShowKeyboardCues ? HotkeyPrefix.Show : HotkeyPrefix.Hide;
+                var size = g.MeasureString(this.Text, this.Font, new PointF(0, 0), sf);
+                this.Width = PADDING * 2 + GUTTER_SIZE * 2 + COLOR_SIZE + (int)Math.Ceiling(size.Width) + this.m_dropDownArrow.Width;
+                this.Height = PADDING * 2 + COLOR_SIZE;
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Invalidate();
+            this.Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            m_hover = true;
-            Invalidate();
+            this.m_hover = true;
+            this.Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            m_hover = false;
-            Invalidate();
+            this.m_hover = false;
+            this.Invalidate();
         }
 
         const int PADDING = 6;
@@ -134,40 +131,45 @@ namespace OpenLiveWriter.ApplicationFramework
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            BidiGraphics g = new BidiGraphics(e.Graphics, ClientRectangle);
-            if (m_pressed)
+            var g = new BidiGraphics(e.Graphics, this.ClientRectangle);
+            if (this.m_pressed)
             {
-                SystemButtonHelper.DrawSystemButtonFacePushed(g, false, ClientRectangle, false);
+                SystemButtonHelper.DrawSystemButtonFacePushed(g, false, this.ClientRectangle, false);
             }
-            else if (m_hover)
+            else if (this.m_hover)
             {
-                SystemButtonHelper.DrawSystemButtonFace(g, false, false, ClientRectangle, false);
+                SystemButtonHelper.DrawSystemButtonFace(g, false, false, this.ClientRectangle, false);
             }
 
-            Rectangle colorRect = new Rectangle(PADDING, PADDING, COLOR_SIZE, COLOR_SIZE);
-            Rectangle dropDownArrowRect = new Rectangle(Width - PADDING - m_dropDownArrow.Width,
+            var colorRect = new Rectangle(PADDING, PADDING, COLOR_SIZE, COLOR_SIZE);
+            var dropDownArrowRect = new Rectangle(this.Width - PADDING - this.m_dropDownArrow.Width,
                                                         PADDING,
-                                                        m_dropDownArrow.Width,
+                                                        this.m_dropDownArrow.Width,
                                                         colorRect.Height);
-            Rectangle textRect = new Rectangle(PADDING + GUTTER_SIZE + colorRect.Width,
+            var textRect = new Rectangle(PADDING + GUTTER_SIZE + colorRect.Width,
                 PADDING,
-                Width - (PADDING + GUTTER_SIZE + colorRect.Width) - (PADDING + GUTTER_SIZE + dropDownArrowRect.Width),
+                this.Width - (PADDING + GUTTER_SIZE + colorRect.Width) - (PADDING + GUTTER_SIZE + dropDownArrowRect.Width),
                 colorRect.Height);
 
-            using (Brush b = new SolidBrush(EffectiveColor))
+            using (Brush b = new SolidBrush(this.EffectiveColor))
+            {
                 g.FillRectangle(b, colorRect);
-            using (Pen p = new Pen(SystemColors.Highlight, 1))
-                g.DrawRectangle(p, colorRect);
+            }
 
-            g.DrawText(Text, Font, textRect, SystemColors.ControlText, ShowKeyboardCues ? TextFormatFlags.Default : TextFormatFlags.NoPrefix);
+            using (var p = new Pen(SystemColors.Highlight, 1))
+            {
+                g.DrawRectangle(p, colorRect);
+            }
+
+            g.DrawText(this.Text, this.Font, textRect, SystemColors.ControlText, this.ShowKeyboardCues ? TextFormatFlags.Default : TextFormatFlags.NoPrefix);
 
             g.DrawImage(false,
-                        m_dropDownArrow,
-                        RectangleHelper.Center(m_dropDownArrow.Size, dropDownArrowRect, false),
+                        this.m_dropDownArrow,
+                        RectangleHelper.Center(this.m_dropDownArrow.Size, dropDownArrowRect, false),
                         0,
                         0,
-                        m_dropDownArrow.Width,
-                        m_dropDownArrow.Height,
+                        this.m_dropDownArrow.Width,
+                        this.m_dropDownArrow.Height,
                         GraphicsUnit.Pixel);
         }
 
@@ -175,29 +177,26 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             base.OnMouseDown(e);
 
-            ColorPickerForm form = new ColorPickerForm();
-            form.Color = Color;
-            form.ColorSelected += new ColorSelectedEventHandler(form_ColorSelected);
-            form.Closed += new EventHandler(form_Closed);
+            var form = new ColorPickerForm();
+            form.Color = this.Color;
+            form.ColorSelected += new ColorSelectedEventHandler(this.form_ColorSelected);
+            form.Closed += new EventHandler(this.form_Closed);
             form.TopMost = true;
 
             form.StartPosition = FormStartPosition.Manual;
-            Point p = PointToScreen(new Point(0, Height));
+            var p = this.PointToScreen(new Point(0, this.Height));
             form.Location = p;
             form.Show();
-            m_pressed = true;
-            Invalidate();
+            this.m_pressed = true;
+            this.Invalidate();
         }
 
-        private void form_ColorSelected(object sender, ColorSelectedEventArgs args)
-        {
-            Color = args.SelectedColor;
-        }
+        private void form_ColorSelected(object sender, ColorSelectedEventArgs args) => this.Color = args.SelectedColor;
 
         private void form_Closed(object sender, EventArgs e)
         {
-            m_pressed = false;
-            Invalidate();
+            this.m_pressed = false;
+            this.Invalidate();
         }
     }
 }

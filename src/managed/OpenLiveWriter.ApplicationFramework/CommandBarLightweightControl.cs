@@ -1,41 +1,24 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
-    #region Public Enumerations
+    using System;
+    using System.Collections;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Windows.Forms;
 
-    /// <summary>
-    /// Bevel styles.
-    /// </summary>
-    public enum BevelStyle
-    {
-        None,
-        SingleLine,
-        DoubleLine
-    }
-
-    #endregion Public Enumerations
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Localization.Bidi;
 
     /// <summary>
     /// CommandBar lightweight control.
     /// </summary>
     public class CommandBarLightweightControl : LightweightControl
     {
-        #region Private Memeber Variables & Declarations
-
         /// <summary>
         /// The CommandManager for the CommandBarLightweightControl.
         /// </summary>
@@ -71,18 +54,10 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private BevelStyle bottomBevelStyle = BevelStyle.None;
 
-        #endregion Private Memeber Variables & Declarations
-
-        #region Public Events
-
         /// <summary>
         /// The CommandManagerChanged event.
         /// </summary>
         public event EventHandler CommandManagerChanged;
-
-        #endregion Public Events
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Initializes a new instance of the CommandBarLightweightControl class.
@@ -94,10 +69,10 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Common object initialization.
-            InitializeObject();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -108,19 +83,16 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Common object initialization.
-            InitializeObject();
+            this.InitializeObject();
         }
 
         /// <summary>
         /// Common object initialization.
         /// </summary>
-        private void InitializeObject()
-        {
-            AccessibleRole = AccessibleRole.ToolBar;
-        }
+        private void InitializeObject() => this.AccessibleRole = AccessibleRole.ToolBar;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -129,15 +101,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
@@ -146,12 +117,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.leftContainer = new OpenLiveWriter.ApplicationFramework.CommandBarContainerLightweightControl(this.components);
-            this.rightContainer = new OpenLiveWriter.ApplicationFramework.CommandBarContainerLightweightControl(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.leftContainer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rightContainer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            this.components = new Container();
+            this.leftContainer = new CommandBarContainerLightweightControl(this.components);
+            this.rightContainer = new CommandBarContainerLightweightControl(this.components);
+            ((ISupportInitialize)(this.leftContainer)).BeginInit();
+            ((ISupportInitialize)(this.rightContainer)).BeginInit();
+            ((ISupportInitialize)(this)).BeginInit();
             //
             // leftContainer
             //
@@ -160,14 +131,12 @@ namespace OpenLiveWriter.ApplicationFramework
             // rightContainer
             //
             this.rightContainer.LightweightControlContainerControl = this;
-            ((System.ComponentModel.ISupportInitialize)(this.leftContainer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rightContainer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+            ((ISupportInitialize)(this.leftContainer)).EndInit();
+            ((ISupportInitialize)(this.rightContainer)).EndInit();
+            ((ISupportInitialize)(this)).EndInit();
 
         }
         #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets or sets the CommandManager for the CommandBarLightweightControl.
@@ -178,19 +147,20 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public CommandManager CommandManager
         {
-            get
-            {
-                return commandManager;
-            }
+            get => this.commandManager;
             set
             {
-                if (commandManager != null)
-                    commandManager.Changed -= new EventHandler(commandManager_Changed);
+                if (this.commandManager != null)
+                {
+                    this.commandManager.Changed -= new EventHandler(this.commandManager_Changed);
+                }
 
-                commandManager = value;
+                this.commandManager = value;
 
-                if (commandManager != null)
-                    commandManager.Changed += new EventHandler(commandManager_Changed);
+                if (this.commandManager != null)
+                {
+                    this.commandManager.Changed += new EventHandler(this.commandManager_Changed);
+                }
             }
         }
 
@@ -204,16 +174,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public BevelStyle TopBevelStyle
         {
-            get
-            {
-                return topBevelStyle;
-            }
+            get => this.topBevelStyle;
             set
             {
-                if (topBevelStyle != value)
+                if (this.topBevelStyle != value)
                 {
-                    topBevelStyle = value;
-                    PerformLayout();
+                    this.topBevelStyle = value;
+                    this.PerformLayout();
                 }
             }
         }
@@ -229,16 +196,13 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public BevelStyle BottomBevelStyle
         {
-            get
-            {
-                return bottomBevelStyle;
-            }
+            get => this.bottomBevelStyle;
             set
             {
-                if (bottomBevelStyle != value)
+                if (this.bottomBevelStyle != value)
                 {
-                    bottomBevelStyle = value;
-                    PerformLayout();
+                    this.bottomBevelStyle = value;
+                    this.PerformLayout();
                 }
             }
         }
@@ -246,174 +210,93 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets the top layout margin.
         /// </summary>
-        public virtual int TopLayoutMargin
-        {
-            get
-            {
-                return -1;
-            }
-        }
+        public virtual int TopLayoutMargin => -1;
 
         /// <summary>
         /// Gets the left layout margin.
         /// </summary>
-        public virtual int LeftLayoutMargin
-        {
-            get
-            {
-                return 2;
-            }
-        }
+        public virtual int LeftLayoutMargin => 2;
 
         /// <summary>
         /// Gets the bottom layout margin.
         /// </summary>
-        public virtual int BottomLayoutMargin
-        {
-            get
-            {
-                return -2;
-            }
-        }
+        public virtual int BottomLayoutMargin => -2;
 
         /// <summary>
         /// Gets the right layout margin.
         /// </summary>
-        public virtual int RightLayoutMargin
-        {
-            get
-            {
-                return 2;
-            }
-        }
+        public virtual int RightLayoutMargin => 2;
 
         /// <summary>
         /// Gets the separator layout margin.
         /// </summary>
-        public virtual int SeparatorLayoutMargin
-        {
-            get
-            {
-                return 2;
-            }
-        }
+        public virtual int SeparatorLayoutMargin => 2;
 
         /// <summary>
         ///	Gets the top command bar color.
         /// </summary>
-        public virtual Color TopColor
-        {
-            get
-            {
-                return SystemColors.Control;
-            }
-        }
+        public virtual Color TopColor => SystemColors.Control;
 
         /// <summary>
         ///	Gets the bottom command bar color.
         /// </summary>
-        public virtual Color BottomColor
-        {
-            get
-            {
-                return SystemColors.Control;
-            }
-        }
+        public virtual Color BottomColor => SystemColors.Control;
 
         /// <summary>
         ///	Gets the top bevel first line color.
         /// </summary>
-        public virtual Color TopBevelFirstLineColor
-        {
-            get
-            {
-                return !UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
-            }
-        }
+        public virtual Color TopBevelFirstLineColor => !this.UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
 
         /// <summary>
         ///	Gets the top bevel second line color.
         /// </summary>
-        public virtual Color TopBevelSecondLineColor
-        {
-            get
-            {
-                return !UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
-            }
-        }
+        public virtual Color TopBevelSecondLineColor => !this.UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
 
         /// <summary>
         ///	Gets the bottom bevel first line color.
         /// </summary>
-        public virtual Color BottomBevelFirstLineColor
-        {
-            get
-            {
-                return !UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
-            }
-        }
+        public virtual Color BottomBevelFirstLineColor => !this.UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
 
         /// <summary>
         ///	Gets the bottom bevel second line color.
         /// </summary>
-        public virtual Color BottomBevelSecondLineColor
-        {
-            get
-            {
-                return !UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
-            }
-        }
+        public virtual Color BottomBevelSecondLineColor => !this.UseHighContrastMode ? SystemColors.Control : SystemColors.ControlLight;
 
         /// <summary>
         ///	Gets the text color.
         /// </summary>
-        public virtual Color TextColor
-        {
-            get
-            {
-                return !UseHighContrastMode ? SystemColors.WindowText : SystemColors.ControlText;
-            }
-        }
+        public virtual Color TextColor => !this.UseHighContrastMode ? SystemColors.WindowText : SystemColors.ControlText;
 
         /// <summary>
         ///	Gets the text color.
         /// </summary>
-        public virtual Color DisabledTextColor
-        {
-            get
-            {
-                return SystemColors.GrayText;
-            }
-        }
+        public virtual Color DisabledTextColor => SystemColors.GrayText;
 
+        /// <summary>
+        /// Gets or sets the left container off set spacing.
+        /// </summary>
+        /// <value>The left container off set spacing.</value>
         public int LeftContainerOffSetSpacing
         {
-            get
-            {
-                return leftContainer.OffsetSpacing;
-            }
-            set
-            {
-                leftContainer.OffsetSpacing = value;
-            }
+            get => this.leftContainer.OffsetSpacing;
+            set => this.leftContainer.OffsetSpacing = value;
         }
 
+        /// <summary>
+        /// Gets or sets the right container off set spacing.
+        /// </summary>
+        /// <value>The right container off set spacing.</value>
         public int RightContainerOffSetSpacing
         {
-            get
-            {
-                return rightContainer.OffsetSpacing;
-            }
-            set
-            {
-                rightContainer.OffsetSpacing = value;
-            }
+            get => this.rightContainer.OffsetSpacing;
+            set => this.rightContainer.OffsetSpacing = value;
         }
 
-        protected bool UseHighContrastMode
-        {
-            get { return SystemInformation.HighContrast; }
-        }
+        /// <summary>
+        /// Gets a value indicating whether [use high contrast mode].
+        /// </summary>
+        /// <value><c>true</c> if [use high contrast mode]; otherwise, <c>false</c>.</value>
+        protected bool UseHighContrastMode => SystemInformation.HighContrast;
 
         /// <summary>
         /// Gets or sets the command bar definition for this command bar lightweight control.
@@ -425,52 +308,53 @@ namespace OpenLiveWriter.ApplicationFramework
         ]
         public CommandBarDefinition CommandBarDefinition
         {
-            get
-            {
-                return commandBarDefinition;
-            }
+            get => this.commandBarDefinition;
             set
             {
                 //	If we have a current command bar definition, clear all the current command bar
                 //	lightweight controls.
-                if (commandBarDefinition != null)
+                if (this.commandBarDefinition != null)
                 {
-                    leftContainer.LightweightControls.Clear();
-                    rightContainer.LightweightControls.Clear();
+                    this.leftContainer.LightweightControls.Clear();
+                    this.rightContainer.LightweightControls.Clear();
                 }
 
                 //	Se the new command bar definition.
-                commandBarDefinition = value;
+                this.commandBarDefinition = value;
 
                 //	If we have a new command bar definition, add the new command bar lightweight
                 //	controls.
-                if (commandBarDefinition != null)
+                if (this.commandBarDefinition != null)
                 {
                     //	Enumerate the left command bar entries.
-                    foreach (CommandBarEntry commandBarEntry in commandBarDefinition.LeftCommandBarEntries)
+                    foreach (var commandBarEntry in this.commandBarDefinition.LeftCommandBarEntries)
                     {
                         //	Get the lightweight control for this command bar entry.
-                        LightweightControl lightweightControl = commandBarEntry.GetLightweightControl(this, false);
+                        var lightweightControl = commandBarEntry.GetLightweightControl(this, false);
 
                         //	Add the lightweight control to the left command bar container lightweight control.
                         if (lightweightControl != null)
-                            leftContainer.LightweightControls.Add(lightweightControl);
+                        {
+                            this.leftContainer.LightweightControls.Add(lightweightControl);
+                        }
                     }
 
                     //	Enumerate the right command bar entries.
-                    foreach (CommandBarEntry commandBarEntry in commandBarDefinition.RightCommandBarEntries)
+                    foreach (var commandBarEntry in this.commandBarDefinition.RightCommandBarEntries)
                     {
                         //	Get the lightweight control for this command bar entry.
-                        LightweightControl lightweightControl = commandBarEntry.GetLightweightControl(this, true);
+                        var lightweightControl = commandBarEntry.GetLightweightControl(this, true);
 
                         //	Add the lightweight control to the left command bar container lightweight control.
                         if (lightweightControl != null)
-                            rightContainer.LightweightControls.Add(lightweightControl);
+                        {
+                            this.rightContainer.LightweightControls.Add(lightweightControl);
+                        }
                     }
                 }
 
                 //	Layout the command bar lightweight controls.
-                PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -481,14 +365,9 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size MinimumVirtualSize
-        {
-            get
-            {
+        public override Size MinimumVirtualSize =>
                 //	The minimum virtual size (adjust this for expansion joint).
-                return new Size(0, DefaultVirtualSize.Height);
-            }
-        }
+                new Size(0, this.DefaultVirtualSize.Height);
 
         /// <summary>
         /// Gets the default virtual size of the lightweight control.
@@ -502,48 +381,44 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 //	If we are not initialized, just return.
-                if (leftContainer == null && rightContainer == null)
+                if (this.leftContainer == null && this.rightContainer == null)
+                {
                     return Size.Empty;
+                }
 
                 //	Obtain the left container size and the right container size.
-                Size leftContainerSize = leftContainer.DefaultVirtualSize;
-                Size rightContainerSize = rightContainer.DefaultVirtualSize;
+                var leftContainerSize = this.leftContainer.DefaultVirtualSize;
+                var rightContainerSize = this.rightContainer.DefaultVirtualSize;
 
                 //	If left and and right containers are empty, the command bar is empty, so it has no size.
                 if (leftContainerSize == Size.Empty && rightContainerSize == Size.Empty)
+                {
                     return Size.Empty;
+                }
 
                 //	If right container is empty, the command bar is sized for the left container.
                 if (rightContainerSize == Size.Empty)
-                    return new Size(LeftLayoutMargin + leftContainerSize.Width + RightLayoutMargin,
-                        TopLayoutMargin + leftContainerSize.Height + BottomLayoutMargin);
+                {
+                    return new Size(this.LeftLayoutMargin + leftContainerSize.Width + this.RightLayoutMargin,
+                        this.TopLayoutMargin + leftContainerSize.Height + this.BottomLayoutMargin);
+                }
 
                 //	If left container is empty, the command bar is sized for the right container.
                 if (leftContainerSize == Size.Empty)
-                    return new Size(LeftLayoutMargin + rightContainerSize.Width + RightLayoutMargin,
-                        TopLayoutMargin + rightContainerSize.Height + BottomLayoutMargin);
+                {
+                    return new Size(this.LeftLayoutMargin + rightContainerSize.Width + this.RightLayoutMargin,
+                        this.TopLayoutMargin + rightContainerSize.Height + this.BottomLayoutMargin);
+                }
 
                 //	Size the command bar for both left and right containers.
-                return new Size(LeftLayoutMargin + leftContainerSize.Width + LeftLayoutMargin + rightContainerSize.Width + RightLayoutMargin,
-                    TopLayoutMargin + Math.Max(leftContainerSize.Height, rightContainerSize.Height) + BottomLayoutMargin);
+                return new Size(this.LeftLayoutMargin + leftContainerSize.Width + this.LeftLayoutMargin + rightContainerSize.Width + this.RightLayoutMargin,
+                    this.TopLayoutMargin + Math.Max(leftContainerSize.Height, rightContainerSize.Height) + this.BottomLayoutMargin);
             }
         }
 
-        public virtual Bitmap ContextMenuArrowBitmap
-        {
-            get
-            {
-                return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ContextMenuArrow.png");
-            }
-        }
+        public virtual Bitmap ContextMenuArrowBitmap => ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ContextMenuArrow.png");
 
-        public virtual Bitmap ContextMenuArrowBitmapDisabled
-        {
-            get
-            {
-                return ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ContextMenuArrowDisabled.png");
-            }
-        }
+        public virtual Bitmap ContextMenuArrowBitmapDisabled => ResourceHelper.LoadAssemblyResourceBitmap("Images.CommandBar.ContextMenuArrowDisabled.png");
 
         public virtual ButtonMargins? GetButtonMargins(ButtonFeatures features, bool rightAligned)
         {
@@ -564,23 +439,11 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        #endregion Public Properties
-
-        #region Protected Methods
-
         /// <summary>
         /// Raises the CommandManagerChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnCommandManagerChanged(EventArgs e)
-        {
-            if (CommandManagerChanged != null)
-                CommandManagerChanged(null, e);
-        }
-
-        #endregion Protected Methods
-
-        #region Protected Event Overrides
+        protected virtual void OnCommandManagerChanged(EventArgs e) => CommandManagerChanged?.Invoke(null, e);
 
         /// <summary>
         /// Raises the Layout event.
@@ -592,31 +455,36 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLayout(e);
 
             //	Have the containers perform their layout.
-            leftContainer.PerformLayout();
-            rightContainer.PerformLayout();
+            this.leftContainer.PerformLayout();
+            this.rightContainer.PerformLayout();
 
             //	Calculate the layout height.
-            int layoutHeight = this.VirtualHeight - (TopLayoutMargin + BottomLayoutMargin);
+            var layoutHeight = this.VirtualHeight - (this.TopLayoutMargin + this.BottomLayoutMargin);
 
             //	Set the left container height to the layout hight, and have it layout.
-            leftContainer.VirtualHeight = layoutHeight;
+            this.leftContainer.VirtualHeight = layoutHeight;
 
             //	Set the right container height to the layout hight, and have it layout.
-            rightContainer.VirtualHeight = layoutHeight;
+            this.rightContainer.VirtualHeight = layoutHeight;
 
             //	Place the left container control (this is easy).
-            leftContainer.VirtualLocation = new Point(LeftLayoutMargin, TopLayoutMargin);
-            leftContainer.PerformLayout();
+            this.leftContainer.VirtualLocation = new Point(this.LeftLayoutMargin, this.TopLayoutMargin);
+            this.leftContainer.PerformLayout();
 
             //	Place the right container (either immediately following the left container, or
             //	right aligned, if possible).
-            if (leftContainer.VirtualBounds.Right + LeftLayoutMargin + rightContainer.VirtualWidth + RightLayoutMargin > VirtualWidth)
-                rightContainer.VirtualLocation = new Point(leftContainer.VirtualBounds.Right + LeftLayoutMargin, TopLayoutMargin);
+            if (this.leftContainer.VirtualBounds.Right + this.LeftLayoutMargin + this.rightContainer.VirtualWidth + this.RightLayoutMargin > this.VirtualWidth)
+            {
+                this.rightContainer.VirtualLocation = new Point(this.leftContainer.VirtualBounds.Right + this.LeftLayoutMargin, this.TopLayoutMargin);
+            }
             else
-                rightContainer.VirtualLocation = new Point(VirtualClientRectangle.Right - (rightContainer.VirtualWidth + RightLayoutMargin), TopLayoutMargin);
-            rightContainer.PerformLayout();
+            {
+                this.rightContainer.VirtualLocation = new Point(this.VirtualClientRectangle.Right - (this.rightContainer.VirtualWidth + this.RightLayoutMargin), this.TopLayoutMargin);
+            }
 
-            RtlLayoutFixup(false);
+            this.rightContainer.PerformLayout();
+
+            this.RtlLayoutFixup(false);
         }
 
         /// <summary>
@@ -625,45 +493,64 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">A PaintEventArgs that contains the event data.</param>
         protected override void OnPaint(PaintEventArgs e)
         {
-            BidiGraphics g = new BidiGraphics(e.Graphics, VirtualClientRectangle);
+            var g = new BidiGraphics(e.Graphics, this.VirtualClientRectangle);
             //	Fill the background.
-            if (TopColor == BottomColor)
-                using (SolidBrush solidBrush = new SolidBrush(TopColor))
-                    g.FillRectangle(solidBrush, VirtualClientRectangle);
+            if (this.TopColor == this.BottomColor)
+            {
+                using (var solidBrush = new SolidBrush(this.TopColor))
+                {
+                    g.FillRectangle(solidBrush, this.VirtualClientRectangle);
+                }
+            }
             else
-                using (LinearGradientBrush linearGradientBrush = new LinearGradientBrush(VirtualClientRectangle, TopColor, BottomColor, LinearGradientMode.Vertical))
-                    g.FillRectangle(linearGradientBrush, VirtualClientRectangle);
+            {
+                using (var linearGradientBrush = new LinearGradientBrush(this.VirtualClientRectangle, this.TopColor, this.BottomColor, LinearGradientMode.Vertical))
+                {
+                    g.FillRectangle(linearGradientBrush, this.VirtualClientRectangle);
+                }
+            }
 
             //	Draw the first line of the top bevel, if we should.
-            if (TopBevelStyle != BevelStyle.None)
-                using (SolidBrush solidBrush = new SolidBrush(TopBevelFirstLineColor))
-                    g.FillRectangle(solidBrush, 0, 0, VirtualWidth, 1);
+            if (this.TopBevelStyle != BevelStyle.None)
+            {
+                using (var solidBrush = new SolidBrush(this.TopBevelFirstLineColor))
+                {
+                    g.FillRectangle(solidBrush, 0, 0, this.VirtualWidth, 1);
+                }
+            }
 
-            if (TopBevelStyle == BevelStyle.DoubleLine)
-                using (SolidBrush solidBrush = new SolidBrush(TopBevelSecondLineColor))
-                    g.FillRectangle(solidBrush, 0, 1, VirtualWidth, 1);
+            if (this.TopBevelStyle == BevelStyle.DoubleLine)
+            {
+                using (var solidBrush = new SolidBrush(this.TopBevelSecondLineColor))
+                {
+                    g.FillRectangle(solidBrush, 0, 1, this.VirtualWidth, 1);
+                }
+            }
 
             //	Draw the first line of the bottom bevel.
-            if (BottomBevelStyle == BevelStyle.DoubleLine)
+            if (this.BottomBevelStyle == BevelStyle.DoubleLine)
             {
-                using (SolidBrush solidBrush = new SolidBrush(BottomBevelFirstLineColor))
-                    g.FillRectangle(solidBrush, 0, VirtualHeight - 2, VirtualWidth, 1);
-                using (SolidBrush solidBrush = new SolidBrush(BottomBevelSecondLineColor))
-                    g.FillRectangle(solidBrush, 0, VirtualHeight - 1, VirtualWidth, 1);
+                using (var solidBrush = new SolidBrush(this.BottomBevelFirstLineColor))
+                {
+                    g.FillRectangle(solidBrush, 0, this.VirtualHeight - 2, this.VirtualWidth, 1);
+                }
+
+                using (var solidBrush = new SolidBrush(this.BottomBevelSecondLineColor))
+                {
+                    g.FillRectangle(solidBrush, 0, this.VirtualHeight - 1, this.VirtualWidth, 1);
+                }
             }
-            else if (BottomBevelStyle == BevelStyle.SingleLine)
+            else if (this.BottomBevelStyle == BevelStyle.SingleLine)
             {
-                using (SolidBrush solidBrush = new SolidBrush(BottomBevelFirstLineColor))
-                    g.FillRectangle(solidBrush, 0, VirtualHeight - 1, VirtualWidth, 1);
+                using (var solidBrush = new SolidBrush(this.BottomBevelFirstLineColor))
+                {
+                    g.FillRectangle(solidBrush, 0, this.VirtualHeight - 1, this.VirtualWidth, 1);
+                }
             }
 
             //	Call the base class's method so that registered delegates receive the event.
             base.OnPaint(e);
         }
-
-        #endregion Protected Event Overrides
-
-        #region Private Event Handlers
 
         /// <summary>
         /// commandManager_Changed event handler.
@@ -673,58 +560,25 @@ namespace OpenLiveWriter.ApplicationFramework
         private void commandManager_Changed(object sender, EventArgs e)
         {
             //	Raise the CommandManagerChanged event.
-            OnCommandManagerChanged(EventArgs.Empty);
+            this.OnCommandManagerChanged(EventArgs.Empty);
 
             //	Layout.
-            LightweightControlContainerControl.PerformLayout();
-            Invalidate();
+            this.LightweightControlContainerControl.PerformLayout();
+            this.Invalidate();
         }
 
-        #endregion Private Event Handlers
-
-        #region Accessibility
         protected override void AddAccessibleControlsToList(ArrayList list)
         {
-            AddCommandBarEntries(commandBarDefinition.LeftCommandBarEntries, list, false);
-            AddCommandBarEntries(commandBarDefinition.RightCommandBarEntries, list, true);
+            this.AddCommandBarEntries(this.commandBarDefinition.LeftCommandBarEntries, list, false);
+            this.AddCommandBarEntries(this.commandBarDefinition.RightCommandBarEntries, list, true);
         }
         private void AddCommandBarEntries(CommandBarEntryCollection entries, ArrayList list, bool rightAligned)
         {
-            foreach (CommandBarEntry entry in entries)
+            foreach (var entry in entries)
             {
-                LightweightControl control = entry.GetLightweightControl(this, rightAligned);
+                var control = entry.GetLightweightControl(this, rightAligned);
                 list.Add(control);
             }
         }
-        #endregion
     }
-
-    public struct ButtonMargins
-    {
-        public readonly int LeftOfImage;
-        public readonly int LeftOfText;
-        public readonly int LeftOfArrow;
-        public readonly int RightPadding;
-        public readonly int RightMargin;
-
-        public ButtonMargins(int leftOfImage, int leftOfText, int leftOfArrow, int rightPadding, int rightMargin)
-        {
-            LeftOfImage = leftOfImage;
-            LeftOfText = leftOfText;
-            LeftOfArrow = leftOfArrow;
-            RightPadding = rightPadding;
-            RightMargin = rightMargin;
-        }
-    }
-
-    [Flags]
-    public enum ButtonFeatures
-    {
-        None = 0,
-        Image = 1,
-        Text = 2,
-        Menu = 4,
-        SplitMenu = 8
-    };
-
 }

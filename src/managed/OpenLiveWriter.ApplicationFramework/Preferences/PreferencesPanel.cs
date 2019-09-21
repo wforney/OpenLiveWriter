@@ -1,15 +1,15 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework.Preferences
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using OpenLiveWriter.Localization;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// Preferences panel base class.
     /// </summary>
@@ -19,19 +19,10 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
 
         #region Component Designer generated code
 
-        private System.Windows.Forms.Label labelPanelName;
-        private System.ComponentModel.Container components = null;
+        private Label labelPanelName;
+        private Container components = null;
 
         #endregion Component Designer generated code
-
-        #region Private Member Variables
-
-        /// <summary>
-        /// The panel bitmap.
-        /// </summary>
-        private Bitmap panelBitmap;
-
-        #endregion Private Member Variables
 
         #region Public Events
 
@@ -52,10 +43,10 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             // Fixes multiple bugs in right-to-left builds, that
             // occur when OnLoad gets called more than once, with different .Font values
             // depending on whether it is parented at the time.
-            Font = Res.DefaultFont;
+            this.Font = Res.DefaultFont;
 
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
+            this.InitializeComponent();
             this.labelPanelName.Font = Res.GetFont(FontSize.XXLarge, FontStyle.Regular);
         }
 
@@ -66,9 +57,9 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             base.Dispose(disposing);
@@ -83,17 +74,17 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// </summary>
         private void InitializeComponent()
         {
-            this.labelPanelName = new System.Windows.Forms.Label();
+            this.labelPanelName = new Label();
             this.SuspendLayout();
             //
             // labelPanelName
             //
-            this.labelPanelName.BackColor = System.Drawing.SystemColors.Control;
-            this.labelPanelName.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+            this.labelPanelName.BackColor = SystemColors.Control;
+            this.labelPanelName.FlatStyle = FlatStyle.Standard;
             this.labelPanelName.Font = Res.GetFont(FontSize.XXLarge, FontStyle.Regular);
-            this.labelPanelName.Location = new System.Drawing.Point(8, 8);
+            this.labelPanelName.Location = new Point(8, 8);
             this.labelPanelName.Name = "labelPanelName";
-            this.labelPanelName.Size = new System.Drawing.Size(354, 23);
+            this.labelPanelName.Size = new Size(354, 23);
             this.labelPanelName.TabIndex = 0;
             this.labelPanelName.Text = "Options";
             //
@@ -101,7 +92,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //
             this.Controls.Add(this.labelPanelName);
             this.Name = "PreferencesPanel";
-            this.Size = new System.Drawing.Size(370, 370);
+            this.Size = new Size(370, 370);
             this.ResumeLayout(false);
 
         }
@@ -120,14 +111,11 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         ]
         public string PanelName
         {
-            get
-            {
-                return labelPanelName.Text;
-            }
+            get => this.labelPanelName.Text;
             set
             {
-                labelPanelName.Text = value;
-                AccessibleName = value;
+                this.labelPanelName.Text = value;
+                this.AccessibleName = value;
             }
         }
 
@@ -140,17 +128,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                 DefaultValue(null),
                 Description("Specifies the panel bitmap.")
         ]
-        public Bitmap PanelBitmap
-        {
-            get
-            {
-                return panelBitmap;
-            }
-            set
-            {
-                panelBitmap = value;
-            }
-        }
+        public Bitmap PanelBitmap { get; set; }
 
         #endregion Public Properties
 
@@ -167,10 +145,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// Returns true if validation was successful, false if
         /// not (i.e. the save operation should be aborted).
         /// </summary>
-        public virtual bool PrepareSave(SwitchToPanel switchToPanel)
-        {
-            return true;
-        }
+        public virtual bool PrepareSave(SwitchToPanel switchToPanel) => true;
 
         /// <summary>
         /// Saves the PreferencesPanel.
@@ -187,11 +162,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// Raises the Modified event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnModified(EventArgs e)
-        {
-            if (Modified != null)
-                Modified(this, e);
-        }
+        protected virtual void OnModified(EventArgs e) => Modified?.Invoke(this, e);
 
         #endregion Protected Events
 
@@ -202,21 +173,19 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void preferences_PreferencesModified(object sender, EventArgs e)
-        {
+        private void preferences_PreferencesModified(object sender, EventArgs e) =>
             //	Raise the Modified event.
-            OnModified(EventArgs.Empty);
-        }
+            this.OnModified(EventArgs.Empty);
 
         #endregion Private Event Handlers
 
         private bool reversed = false;
         void IRtlAware.Layout()
         {
-            if (!reversed)
+            if (!this.reversed)
             {
-                reversed = true;
-                BidiHelper.RtlLayoutFixup(this, true, true, Controls);
+                this.reversed = true;
+                BidiHelper.RtlLayoutFixup(this, true, true, this.Controls);
             }
         }
     }

@@ -1,61 +1,84 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections.Generic;
+
+    using OpenLiveWriter.Localization;
+
+    /// <summary>
+    /// Class CommandLoader.
+    /// Implements the <see cref="IDisposable" />
+    /// </summary>
+    /// <seealso cref="IDisposable" />
     public class CommandLoader : IDisposable
     {
-        private readonly CommandManager _commandManager;
-        private readonly ArrayList _loadedCommands = new ArrayList();
+        /// <summary>
+        /// The command manager
+        /// </summary>
+        private readonly CommandManager commandManager;
 
+        /// <summary>
+        /// The loaded commands
+        /// </summary>
+        private readonly List<Command> loadedCommands = new List<Command>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandLoader"/> class.
+        /// </summary>
+        /// <param name="commandManager">The command manager.</param>
+        /// <param name="commandIds">The command ids.</param>
+        /// <exception cref="ArgumentNullException">commandManager</exception>
         public CommandLoader(CommandManager commandManager, params CommandId[] commandIds)
         {
-            if (commandManager == null)
-                throw new ArgumentNullException("commandManager");
-
-            this._commandManager = commandManager;
+            this.commandManager = commandManager ?? throw new ArgumentNullException(nameof(commandManager));
             try
             {
-                _commandManager.BeginUpdate();
-                foreach (CommandId commandId in commandIds)
+                this.commandManager.BeginUpdate();
+                foreach (var commandId in commandIds)
                 {
-                    Command command = new Command(commandId);
+                    var command = new Command(commandId);
                     commandManager.Add(command);
-                    _loadedCommands.Add(command);
+                    this.loadedCommands.Add(command);
                 }
             }
             catch (Exception)
             {
-                Dispose();
+                this.Dispose();
                 throw;
             }
             finally
             {
-                _commandManager.EndUpdate();
+                this.commandManager.EndUpdate();
             }
         }
 
-        public Command[] Commands
-        {
-            get { return (Command[])_loadedCommands.ToArray(typeof(Command)); }
-        }
+        /// <summary>
+        /// Gets the commands.
+        /// </summary>
+        /// <value>The commands.</value>
+        public Command[] Commands => this.loadedCommands.ToArray();
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             try
             {
-                _commandManager.BeginUpdate();
-                foreach (Command command in _loadedCommands)
-                    _commandManager.Remove(command);
-                _loadedCommands.Clear();
+                this.commandManager.BeginUpdate();
+                foreach (var command in this.loadedCommands)
+                {
+                    this.commandManager.Remove(command);
+                }
+
+                this.loadedCommands.Clear();
             }
             finally
             {
-                _commandManager.EndUpdate();
+                this.commandManager.EndUpdate();
             }
         }
     }

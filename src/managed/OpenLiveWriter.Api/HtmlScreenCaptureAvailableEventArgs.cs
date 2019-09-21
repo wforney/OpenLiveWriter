@@ -30,5 +30,4 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public bool CaptureCompleted { get; set; } = true;
     }
-
 }

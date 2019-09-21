@@ -1,32 +1,35 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.Localization.Bidi;
-using System.Security.Permissions;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.Drawing;
+
+    using OpenLiveWriter.Localization;
+
     /// <summary>
     /// Summary description for ColorDefaultColorControl.
+    /// Implements the <see cref="IColorPickerSubControl" />
     /// </summary>
+    /// <seealso cref="IColorPickerSubControl" />
     public class ColorDefaultColorControl : IColorPickerSubControl
     {
+        /// <summary>
+        /// The selected
+        /// </summary>
         private bool selected = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorDefaultColorControl"/> class.
+        /// </summary>
+        /// <param name="colorSelected">The color selected.</param>
+        /// <param name="navigate">The navigate.</param>
         public ColorDefaultColorControl(ColorSelectedEventHandler colorSelected, NavigateEventHandler navigate) : base(colorSelected, navigate)
         {
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
+            this.InitializeComponent();
             this.Text = Res.Get(StringId.ColorPickerDefaultColor);
-            Color = Color.Empty;
+            this.Color = Color.Empty;
         }
 
         #region Component Designer generated code
@@ -40,23 +43,21 @@ namespace OpenLiveWriter.ApplicationFramework
             // ColorDefaultColorControl
             //
             this.Name = "ColorDefaultColorControl";
-            this.Size = new System.Drawing.Size(108, 24);
+            this.Size = new Size(108, 24);
         }
 
         #endregion
 
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>The color.</value>
+        /// Used by ColorPickerForm to inform a subcontrol of the currently selected color.
         public override Color Color
         {
-            get
-            {
-                return Color.Empty;
-            }
+            get => Color.Empty;
 
-            set
-            {
-                selected = (value == Color.Empty);
-            }
+            set => this.selected = value == Color.Empty;
         }
-
     }
 }

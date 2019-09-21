@@ -14,26 +14,64 @@ using OpenLiveWriter.Localization.Bidi;
 
 namespace OpenLiveWriter.ApplicationFramework
 {
+    /// <summary>
+    /// Class MiniTabsControl.
+    /// Implements the <see cref="OpenLiveWriter.Controls.LightweightControlContainerControl" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.Controls.LightweightControlContainerControl" />
     public class MiniTabsControl : LightweightControlContainerControl
     {
+        /// <summary>
+        /// Class SelectedTabChangedEventArgs.
+        /// </summary>
         public class SelectedTabChangedEventArgs
         {
+            /// <summary>
+            /// The selected tab index
+            /// </summary>
             public readonly int SelectedTabIndex;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="SelectedTabChangedEventArgs"/> class.
+            /// </summary>
+            /// <param name="selectedTabIndex">Index of the selected tab.</param>
             public SelectedTabChangedEventArgs(int selectedTabIndex)
             {
                 SelectedTabIndex = selectedTabIndex;
             }
         }
 
+        /// <summary>
+        /// Delegate SelectedTabChangedEventHandler
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="SelectedTabChangedEventArgs"/> instance containing the event data.</param>
         public delegate void SelectedTabChangedEventHandler(object sender, SelectedTabChangedEventArgs args);
 
+        /// <summary>
+        /// The tabs
+        /// </summary>
         private MiniTab[] tabs = new MiniTab[0];
+        /// <summary>
+        /// The CTX
+        /// </summary>
         private MiniTabContext ctx;
+        /// <summary>
+        /// The indent
+        /// </summary>
         private int indent = 6;
+        /// <summary>
+        /// The padding
+        /// </summary>
         private const int PADDING = 5;
+        /// <summary>
+        /// The top border color
+        /// </summary>
         private Color topBorderColor = Color.Transparent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MiniTabsControl"/> class.
+        /// </summary>
         public MiniTabsControl()
         {
             TabStop = false;
@@ -42,13 +80,23 @@ namespace OpenLiveWriter.ApplicationFramework
             InitFocusAndAccessibility();
         }
 
+        /// <summary>
+        /// Initializes the focus and accessibility.
+        /// </summary>
         private void InitFocusAndAccessibility()
         {
             InitFocusManager();
         }
 
+        /// <summary>
+        /// Occurs when [selected tab changed].
+        /// </summary>
         public event SelectedTabChangedEventHandler SelectedTabChanged;
 
+        /// <summary>
+        /// Gets or sets the indent.
+        /// </summary>
+        /// <value>The indent.</value>
         public int Indent
         {
             get { return indent; }
@@ -63,6 +111,10 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Sets the tab names.
+        /// </summary>
+        /// <value>The tab names.</value>
         public string[] TabNames
         {
             set
@@ -101,11 +153,20 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Sets the tool tip.
+        /// </summary>
+        /// <param name="tabNum">The tab number.</param>
+        /// <param name="toolTipText">The tool tip text.</param>
         public void SetToolTip(int tabNum, string toolTipText)
         {
             tabs[tabNum].ToolTip = toolTipText;
         }
 
+        /// <summary>
+        /// Gets or sets the color of the top border.
+        /// </summary>
+        /// <value>The color of the top border.</value>
         public Color TopBorderColor
         {
             get { return topBorderColor; }
@@ -116,6 +177,10 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [draw shadow].
+        /// </summary>
+        /// <value><c>true</c> if [draw shadow]; otherwise, <c>false</c>.</value>
         public bool DrawShadow
         {
             get
@@ -128,8 +193,15 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The draw shadow
+        /// </summary>
         private bool _drawShadow;
 
+        /// <summary>
+        /// Gets or sets the width of the shadow.
+        /// </summary>
+        /// <value>The width of the shadow.</value>
         public int ShadowWidth
         {
             get
@@ -145,14 +217,27 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// The shadow width
+        /// </summary>
         private int _shadowWidth = -1;
 
+        /// <summary>
+        /// Handles the MouseDown event of the MiniTabsControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
         private void MiniTabsControl_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 ((MiniTab)sender).Select();
         }
 
+        /// <summary>
+        /// Handles the SelectedChanged event of the MiniTab control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         void MiniTab_SelectedChanged(object sender, EventArgs e)
         {
             if (!((MiniTab)sender).Selected)
@@ -183,6 +268,10 @@ namespace OpenLiveWriter.ApplicationFramework
                 SelectedTabChanged(this, new SelectedTabChangedEventArgs(selectedIndex));
         }
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.Control.Layout" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="T:System.Windows.Forms.LayoutEventArgs" /> that contains the event data.</param>
         protected override void OnLayout(System.Windows.Forms.LayoutEventArgs e)
         {
             base.OnLayout(e);
@@ -203,6 +292,10 @@ namespace OpenLiveWriter.ApplicationFramework
             RtlLayoutFixupLightweightControls(true);
         }
 
+        /// <summary>
+        /// Raises the Paint event.
+        /// </summary>
+        /// <param name="e">A PaintEventArgs that contains the event data.</param>
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
         {
             if (topBorderColor != Color.Transparent)
@@ -220,6 +313,10 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnPaint(e);
         }
 
+        /// <summary>
+        /// Selects the tab.
+        /// </summary>
+        /// <param name="i">The i.</param>
         public void SelectTab(int i)
         {
             tabs[i].Select();

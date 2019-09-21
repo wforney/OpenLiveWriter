@@ -1,13 +1,13 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Windows.Forms;
+
     /// <summary>
     /// Base class of CommandBarLightweightControls for the WorkspaceControl.
     /// </summary>
@@ -16,16 +16,14 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         /// <summary>
         /// Initializes a new instance of the ApplicationCommandBarLightweightControl class.
         /// </summary>
-        public WorkspaceCommandBarLightweightControl()
-        {
+        public WorkspaceCommandBarLightweightControl() =>
             // This call is required by the Windows.Forms Form Designer.
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Initializes a new instance of the ApplicationCommandBarLightweightControl class.
@@ -37,7 +35,7 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -47,11 +45,12 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -62,8 +61,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+            ((ISupportInitialize)(this)).BeginInit();
+            ((ISupportInitialize)(this)).EndInit();
 
         }
         #endregion
@@ -75,9 +74,10 @@ namespace OpenLiveWriter.ApplicationFramework
         protected override void OnPaint(PaintEventArgs e)
         {
             //	Our LightweightControlContainerControl will be a WorkspaceControl.  Get it.
-            WorkspaceControl workspaceControl = LightweightControlContainerControl as WorkspaceControl;
-            if (workspaceControl == null)
+            if (!(this.LightweightControlContainerControl is WorkspaceControl))
+            {
                 return;
+            }
 
             //	Based on the type of workspace control, select the colors to use when painting.
             Color topColor;
@@ -95,27 +95,43 @@ namespace OpenLiveWriter.ApplicationFramework
 
             //	Fill the background.
             if (topColor == bottomColor)
-                using (SolidBrush solidBrush = new SolidBrush(topColor))
-                    e.Graphics.FillRectangle(solidBrush, VirtualClientRectangle);
+            {
+                using (var solidBrush = new SolidBrush(topColor))
+                {
+                    e.Graphics.FillRectangle(solidBrush, this.VirtualClientRectangle);
+                }
+            }
             else
-                using (LinearGradientBrush linearGradientBrush = new LinearGradientBrush(VirtualClientRectangle, topColor, bottomColor, LinearGradientMode.Vertical))
-                    e.Graphics.FillRectangle(linearGradientBrush, VirtualClientRectangle);
+            {
+                using (var linearGradientBrush = new LinearGradientBrush(this.VirtualClientRectangle, topColor, bottomColor, LinearGradientMode.Vertical))
+                {
+                    e.Graphics.FillRectangle(linearGradientBrush, this.VirtualClientRectangle);
+                }
+            }
 
             //	Draw the first line of the top bevel.
-            using (SolidBrush solidBrush = new SolidBrush(topBevelFirstLineColor))
-                e.Graphics.FillRectangle(solidBrush, 0, 0, VirtualWidth, 1);
+            using (var solidBrush = new SolidBrush(topBevelFirstLineColor))
+            {
+                e.Graphics.FillRectangle(solidBrush, 0, 0, this.VirtualWidth, 1);
+            }
 
             //	Draw the second line of the top bevel.
-            using (SolidBrush solidBrush = new SolidBrush(topBevelSecondLineColor))
-                e.Graphics.FillRectangle(solidBrush, 0, 1, VirtualWidth, 1);
+            using (var solidBrush = new SolidBrush(topBevelSecondLineColor))
+            {
+                e.Graphics.FillRectangle(solidBrush, 0, 1, this.VirtualWidth, 1);
+            }
 
             //	Draw the first line of the bottom bevel.
-            using (SolidBrush solidBrush = new SolidBrush(bottomBevelFirstLineColor))
-                e.Graphics.FillRectangle(solidBrush, 0, VirtualHeight - 2, VirtualWidth, 1);
+            using (var solidBrush = new SolidBrush(bottomBevelFirstLineColor))
+            {
+                e.Graphics.FillRectangle(solidBrush, 0, this.VirtualHeight - 2, this.VirtualWidth, 1);
+            }
 
             //	Draw the first line of the bottom bevel.
-            using (SolidBrush solidBrush = new SolidBrush(bottomBevelSecondLineColor))
-                e.Graphics.FillRectangle(solidBrush, 0, VirtualHeight - 1, VirtualWidth, 1);
+            using (var solidBrush = new SolidBrush(bottomBevelSecondLineColor))
+            {
+                e.Graphics.FillRectangle(solidBrush, 0, this.VirtualHeight - 1, this.VirtualWidth, 1);
+            }
 
             //	Call the base class's method so that registered delegates receive the event.
             base.OnPaint(e);

@@ -1,21 +1,20 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// WorkspaceColumnPaneLightweightControl.
     /// </summary>
     public class WorkspaceColumnPaneLightweightControl : LightweightControl
     {
-        #region Private Member Variables & Declarations
-
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -32,11 +31,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private LightweightControl lightweightControl;
 
         /// <summary>
-        /// A value indicating whether a border will be drawn.
-        /// </summary>
-        private bool border;
-
-        /// <summary>
         /// A value which indicates whether the pane should be layed out with a fixed height, when
         /// possible.
         /// </summary>
@@ -46,10 +40,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// The fixed height to be used when the FixedHeightLayout property is true.
         /// </summary>
         private int fixedHeight;
-
-        #endregion Private Member Variables & Declarations
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Initializes a new instance of the DummyPaneLightweightControl class.
@@ -61,19 +51,17 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
         /// Initializes a new instance of the DummyPaneLightweightControl class.
         /// </summary>
-        public WorkspaceColumnPaneLightweightControl()
-        {
+        public WorkspaceColumnPaneLightweightControl() =>
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -82,55 +70,46 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
-        #endregion Class Initialization & Termination
-
-        #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
-
+            ((ISupportInitialize)this).BeginInit();
+            ((ISupportInitialize)this).EndInit();
         }
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets or sets the control.
         /// </summary>
         public Control Control
         {
-            get
-            {
-                return control;
-            }
+            get => this.control;
             set
             {
                 //	If the control is changing, change it.
-                if (control != value)
+                if (this.control != value)
                 {
                     //	Clear.
-                    Clear();
+                    this.Clear();
 
                     //	Set the new control.
-                    if ((control = value) != null)
+                    if ((this.control = value) != null)
                     {
-                        control.Parent = Parent;
-                        Visible = true;
-                        PerformLayout();
-                        Invalidate();
+                        this.control.Parent = this.Parent;
+                        this.Visible = true;
+                        this.PerformLayout();
+                        this.Invalidate();
                     }
                 }
             }
@@ -141,25 +120,22 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public LightweightControl LightweightControl
         {
-            get
-            {
-                return lightweightControl;
-            }
+            get => this.lightweightControl;
             set
             {
                 //	If the control is changing, change it.
-                if (lightweightControl != value)
+                if (this.lightweightControl != value)
                 {
                     //	Clear.
-                    Clear();
+                    this.Clear();
 
                     //	Set the new control.
-                    if ((lightweightControl = value) != null)
+                    if ((this.lightweightControl = value) != null)
                     {
-                        lightweightControl.LightweightControlContainerControl = this;
-                        Visible = true;
-                        PerformLayout();
-                        Invalidate();
+                        this.lightweightControl.LightweightControlContainerControl = this;
+                        this.Visible = true;
+                        this.PerformLayout();
+                        this.Invalidate();
                     }
                 }
             }
@@ -168,17 +144,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether a border will be drawn.
         /// </summary>
-        public bool Border
-        {
-            get
-            {
-                return border;
-            }
-            set
-            {
-                border = value;
-            }
-        }
+        public bool Border { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether the pane should be layed out with a fixed
@@ -186,16 +152,13 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public bool FixedHeightLayout
         {
-            get
-            {
-                return fixedHeightLayout;
-            }
+            get => this.fixedHeightLayout;
             set
             {
-                if (fixedHeightLayout != value)
+                if (this.fixedHeightLayout != value)
                 {
-                    fixedHeightLayout = value;
-                    Parent.PerformLayout();
+                    this.fixedHeightLayout = value;
+                    this.Parent.PerformLayout();
                 }
             }
         }
@@ -205,23 +168,16 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public int FixedHeight
         {
-            get
-            {
-                return fixedHeight;
-            }
+            get => this.fixedHeight;
             set
             {
-                if (fixedHeight != value)
+                if (this.fixedHeight != value)
                 {
-                    fixedHeight = value;
-                    Parent.PerformLayout();
+                    this.fixedHeight = value;
+                    this.Parent.PerformLayout();
                 }
             }
         }
-
-        #endregion Public Properties
-
-        #region Protected Event Overrides
 
         /// <summary>
         /// Raises the Layout event.
@@ -232,23 +188,31 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Call the base class's method so that registered delegates receive the event.
             base.OnLayout(e);
 
-            if (Parent == null)
+            if (this.Parent == null)
+            {
                 return;
+            }
 
             //	Layout the control.
-            if (control != null)
+            if (this.control != null)
             {
-                Rectangle layoutRectangle = VirtualClientRectangle;
-                if (border)
+                var layoutRectangle = this.VirtualClientRectangle;
+                if (this.Border)
+                {
                     layoutRectangle.Inflate(-1, -1);
-                control.Bounds = VirtualClientRectangleToParent(layoutRectangle);
+                }
+
+                this.control.Bounds = this.VirtualClientRectangleToParent(layoutRectangle);
             }
-            else if (lightweightControl != null)
+            else if (this.lightweightControl != null)
             {
-                Rectangle layoutRectangle = VirtualClientRectangle;
-                if (border)
+                var layoutRectangle = this.VirtualClientRectangle;
+                if (this.Border)
+                {
                     layoutRectangle.Inflate(-1, -1);
-                lightweightControl.VirtualBounds = layoutRectangle;
+                }
+
+                this.lightweightControl.VirtualBounds = layoutRectangle;
             }
         }
 
@@ -262,13 +226,17 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnPaint(e);
 
             //	If we're drawing a border, draw it.
-            if (border)
-                using (Pen pen = new Pen(ApplicationManager.ApplicationStyle.BorderColor))
+            if (this.Border)
+            {
+                using (var pen = new Pen(ApplicationManager.ApplicationStyle.BorderColor))
+                {
                     e.Graphics.DrawRectangle(pen,
-                                                VirtualClientRectangle.X,
-                                                VirtualClientRectangle.Y,
-                                                VirtualClientRectangle.Width - 1,
-                                                VirtualClientRectangle.Height - 1);
+                                                this.VirtualClientRectangle.X,
+                                                this.VirtualClientRectangle.Y,
+                                                this.VirtualClientRectangle.Width - 1,
+                                                this.VirtualClientRectangle.Height - 1);
+                }
+            }
         }
 
         /// <summary>
@@ -281,15 +249,15 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnVisibleChanged(e);
 
             //	Ensure that the Control/LightweightControl Visible property is matched.
-            if (control != null)
-                control.Visible = Visible;
-            else if (lightweightControl != null)
-                lightweightControl.Visible = Visible;
+            if (this.control != null)
+            {
+                this.control.Visible = this.Visible;
+            }
+            else if (this.lightweightControl != null)
+            {
+                this.lightweightControl.Visible = this.Visible;
+            }
         }
-
-        #endregion Protected Event Overrides
-
-        #region Private Methods
 
         /// <summary>
         /// Clears the workspace column pane.
@@ -297,23 +265,21 @@ namespace OpenLiveWriter.ApplicationFramework
         private void Clear()
         {
             //	If there's a control or a lightweight control, remove it.
-            if (control != null)
+            if (this.control != null)
             {
-                control.Parent = null;
-                control.Dispose();
-                control = null;
+                this.control.Parent = null;
+                this.control.Dispose();
+                this.control = null;
             }
-            else if (lightweightControl != null)
+            else if (this.lightweightControl != null)
             {
-                lightweightControl.LightweightControlContainerControl = null;
-                lightweightControl.Dispose();
-                lightweightControl = null;
+                this.lightweightControl.LightweightControlContainerControl = null;
+                this.lightweightControl.Dispose();
+                this.lightweightControl = null;
             }
 
             //	Poof!  We're invisible.
-            Visible = false;
+            this.Visible = false;
         }
-
-        #endregion Private Methods
     }
 }

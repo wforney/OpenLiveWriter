@@ -1,31 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.Collections;
-using System.Diagnostics;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
-    /// <summary>
-    /// Enumeration of the allowable command context values.
-    /// </summary>
-    public enum CommandContext
-    {
-        /// <summary>
-        /// A command that is added to the CommandManager at all times.
-        /// </summary>
-        Normal,
-
-        /// <summary>
-        /// A command that is added to the CommandManager when active.
-        /// </summary>
-        Activated,
-
-        /// <summary>
-        /// A command that is added to the CommandManager when entered.
-        /// </summary>
-        Entered
-    }
+    using System.Collections;
+    using System.Diagnostics;
 
     /// <summary>
     /// Provides services for managing commands.
@@ -35,63 +14,44 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         ///	The CommandManager.
         /// </summary>
-        private CommandManager commandManager;
-
-        /// <summary>
-        /// A value which indicates whether this CommandContextManager is "Activated".
-        /// </summary>
-        private bool activated = false;
-
-        /// <summary>
-        /// A value which indicates whether this CommandContextManager is "Entered".
-        /// </summary>
-        private bool entered = false;
+        private readonly CommandManager commandManager;
 
         /// <summary>
         /// The command context table.
         /// </summary>
-        private Hashtable commandContextTable = new Hashtable();
+        private readonly Hashtable commandContextTable = new Hashtable();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager at all times.
         /// </summary>
-        private CommandCollection normalCommandCollection = new CommandCollection();
+        private readonly CommandCollection normalCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager when the user of this
         /// CommandContextManager is "Activated".
         /// </summary>
-        private CommandCollection activatedCommandCollection = new CommandCollection();
+        private readonly CommandCollection activatedCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager when the user of this
         /// CommandContextManager is "Entered".
         /// </summary>
-        private CommandCollection enteredCommandCollection = new CommandCollection();
+        private readonly CommandCollection enteredCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Initializes a new instance of the CommandContextManager class.
         /// </summary>
-        public CommandContextManager(CommandManager commandManager)
-        {
-            this.commandManager = commandManager;
-        }
+        public CommandContextManager(CommandManager commandManager) => this.commandManager = commandManager;
 
         /// <summary>
         /// Begins update to CommandContextManager allowing multiple change events to be batched.
         /// </summary>
-        public void BeginUpdate()
-        {
-            commandManager.BeginUpdate();
-        }
+        public void BeginUpdate() => this.commandManager.BeginUpdate();
 
         /// <summary>
         /// Ends update to CommandContextManager allowing multiple change events to be batched.
         /// </summary>
-        public void EndUpdate()
-        {
-            commandManager.EndUpdate();
-        }
+        public void EndUpdate() => this.commandManager.EndUpdate();
 
         /// <summary>
         /// Closes the CommandContextManager, ensuring that all commands have been removed from
@@ -100,27 +60,31 @@ namespace OpenLiveWriter.ApplicationFramework
         public void Close()
         {
             //	Begin the batch update.
-            BeginUpdate();
+            this.BeginUpdate();
 
             //	If entered, leave.
-            if (entered)
-                Leave();
+            if (this.Entered)
+            {
+                this.Leave();
+            }
 
             //	If activated, deactivate.
-            if (activated)
-                Deactivate();
+            if (this.Activated)
+            {
+                this.Deactivate();
+            }
 
             //	Remove normal commands.
-            commandManager.Remove(normalCommandCollection);
+            this.commandManager.Remove(this.normalCommandCollection);
 
             //	End the batch update.
-            EndUpdate();
+            this.EndUpdate();
 
             //	Clear our internal tables.
-            normalCommandCollection.Clear();
-            activatedCommandCollection.Clear();
-            enteredCommandCollection.Clear();
-            commandContextTable.Clear();
+            this.normalCommandCollection.Clear();
+            this.activatedCommandCollection.Clear();
+            this.enteredCommandCollection.Clear();
+            this.commandContextTable.Clear();
         }
 
         /// <summary>
@@ -133,12 +97,14 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Ensure that the command is not null.
             Debug.Assert(command != null, "Command cannot be null");
             if (command == null)
+            {
                 return;
+            }
 
             //	Ensure the the command has not already been added.
-            if (commandContextTable.Contains(command))
+            if (this.commandContextTable.Contains(command))
             {
-                Debug.Fail("Command " + command.Identifier + " was already added.");
+                Debug.Fail($"Command {command.Identifier} was already added.");
                 return;
             }
 
@@ -147,22 +113,28 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 //	Normal commands.
                 case CommandContext.Normal:
-                    normalCommandCollection.Add(command);
-                    commandManager.Add(command);
+                    this.normalCommandCollection.Add(command);
+                    this.commandManager.Add(command);
                     break;
 
                 //	Activated commands.
                 case CommandContext.Activated:
-                    activatedCommandCollection.Add(command);
-                    if (activated)
-                        commandManager.Add(command);
+                    this.activatedCommandCollection.Add(command);
+                    if (this.Activated)
+                    {
+                        this.commandManager.Add(command);
+                    }
+
                     break;
 
                 //	Entered commands.
                 case CommandContext.Entered:
-                    enteredCommandCollection.Add(command);
-                    if (entered)
-                        commandManager.Add(command);
+                    this.enteredCommandCollection.Add(command);
+                    if (this.Entered)
+                    {
+                        this.commandManager.Add(command);
+                    }
+
                     break;
 
                 //	Can't happen.
@@ -172,7 +144,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Add the command to the command context table.
-            commandContextTable[command] = commandContext;
+            this.commandContextTable[command] = commandContext;
         }
 
         /// <summary>
@@ -185,36 +157,44 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Ensure that the command is not null.
             Debug.Assert(command != null, "Command cannot be null");
             if (command == null)
+            {
                 return;
+            }
 
             //	Ensure the the command has been added.
-            if (!commandContextTable.Contains(command))
+            if (!this.commandContextTable.Contains(command))
             {
-                Debug.Fail("Command " + command.Identifier + " was not added.");
+                Debug.Fail($"Command {command.Identifier} was not added.");
                 return;
             }
 
             //	Handle the command, removing it from the appropriate command collection.
-            switch ((CommandContext)commandContextTable[command])
+            switch ((CommandContext)this.commandContextTable[command])
             {
                 //	Normal commands.
                 case CommandContext.Normal:
-                    normalCommandCollection.Remove(command);
-                    commandManager.Remove(command);
+                    this.normalCommandCollection.Remove(command);
+                    this.commandManager.Remove(command);
                     break;
 
                 //	Activated commands.
                 case CommandContext.Activated:
-                    activatedCommandCollection.Remove(command);
-                    if (activated)
-                        commandManager.Remove(command);
+                    this.activatedCommandCollection.Remove(command);
+                    if (this.Activated)
+                    {
+                        this.commandManager.Remove(command);
+                    }
+
                     break;
 
                 //	Entered commands.
                 case CommandContext.Entered:
-                    enteredCommandCollection.Remove(command);
-                    if (entered)
-                        commandManager.Remove(command);
+                    this.enteredCommandCollection.Remove(command);
+                    if (this.Entered)
+                    {
+                        this.commandManager.Remove(command);
+                    }
+
                     break;
 
                 //	Can't happen.
@@ -224,27 +204,21 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Remove the command from the command context table.
-            commandContextTable.Remove(command);
+            this.commandContextTable.Remove(command);
         }
 
-        public bool Activated
-        {
-            get
-            {
-                return activated;
-            }
-        }
+        public bool Activated { get; private set; } = false;
 
         /// <summary>
         /// Set the "Activated" state of the CommandContextManager.
         /// </summary>
         public void Activate()
         {
-            Debug.Assert(!activated, "CommandContextManager already activated.");
-            if (!activated)
+            Debug.Assert(!this.Activated, "CommandContextManager already activated.");
+            if (!this.Activated)
             {
-                commandManager.Add(activatedCommandCollection);
-                activated = true;
+                this.commandManager.Add(this.activatedCommandCollection);
+                this.Activated = true;
             }
         }
 
@@ -253,21 +227,15 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void Deactivate()
         {
-            Debug.Assert(activated, "CommandContextManager not activated.");
-            if (activated)
+            Debug.Assert(this.Activated, "CommandContextManager not activated.");
+            if (this.Activated)
             {
-                commandManager.Remove(activatedCommandCollection);
-                activated = false;
+                this.commandManager.Remove(this.activatedCommandCollection);
+                this.Activated = false;
             }
         }
 
-        public bool Entered
-        {
-            get
-            {
-                return entered;
-            }
-        }
+        public bool Entered { get; private set; } = false;
 
         /// <summary>
         /// Set the "Entered" state of the CommandContextManager.
@@ -275,10 +243,10 @@ namespace OpenLiveWriter.ApplicationFramework
         public void Enter()
         {
             //Debug.Assert(!entered, "CommandContextManager already entered.");
-            if (!entered)
+            if (!this.Entered)
             {
-                commandManager.Add(enteredCommandCollection);
-                entered = true;
+                this.commandManager.Add(this.enteredCommandCollection);
+                this.Entered = true;
             }
         }
 
@@ -288,10 +256,10 @@ namespace OpenLiveWriter.ApplicationFramework
         public void Leave()
         {
             //Debug.Assert(entered, "CommandContextManager not entered.");
-            if (entered)
+            if (this.Entered)
             {
-                commandManager.Remove(enteredCommandCollection);
-                entered = false;
+                this.commandManager.Remove(this.enteredCommandCollection);
+                this.Entered = false;
             }
         }
     }

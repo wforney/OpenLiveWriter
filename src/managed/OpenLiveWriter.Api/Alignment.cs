@@ -22,12 +22,11 @@ namespace OpenLiveWriter.Api
         /// Right alignment (text wraps around the left side of the object)
         /// </summary>
         Right,
+
         /// <summary>
         /// Places the smart content in the middle of the block, sometimes splitting the
         /// current block to accomplish the task.
         /// </summary>
         Center
     }
-
 }
-

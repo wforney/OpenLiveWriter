@@ -1,107 +1,111 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Windows.Forms;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+
+    /// <summary>
+    /// Interface ISimpleTextEditorCommandSource
+    /// </summary>
     public interface ISimpleTextEditorCommandSource
     {
+        /// <summary>
+        /// Gets a value indicating whether this instance has focus.
+        /// </summary>
+        /// <value><c>true</c> if this instance has focus; otherwise, <c>false</c>.</value>
         bool HasFocus { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can undo.
+        /// </summary>
+        /// <value><c>true</c> if this instance can undo; otherwise, <c>false</c>.</value>
         bool CanUndo { get; }
+
+        /// <summary>
+        /// Undoes this instance.
+        /// </summary>
         void Undo();
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can redo.
+        /// </summary>
+        /// <value><c>true</c> if this instance can redo; otherwise, <c>false</c>.</value>
         bool CanRedo { get; }
+
+        /// <summary>
+        /// Redoes this instance.
+        /// </summary>
         void Redo();
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can cut.
+        /// </summary>
+        /// <value><c>true</c> if this instance can cut; otherwise, <c>false</c>.</value>
         bool CanCut { get; }
+
+        /// <summary>
+        /// Cuts this instance.
+        /// </summary>
         void Cut();
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can copy.
+        /// </summary>
+        /// <value><c>true</c> if this instance can copy; otherwise, <c>false</c>.</value>
         bool CanCopy { get; }
+
+        /// <summary>
+        /// Copies this instance.
+        /// </summary>
         void Copy();
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can paste.
+        /// </summary>
+        /// <value><c>true</c> if this instance can paste; otherwise, <c>false</c>.</value>
         bool CanPaste { get; }
+
+        /// <summary>
+        /// Pastes this instance.
+        /// </summary>
         void Paste();
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can clear.
+        /// </summary>
+        /// <value><c>true</c> if this instance can clear; otherwise, <c>false</c>.</value>
         bool CanClear { get; }
+
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
         void Clear();
 
+        /// <summary>
+        /// Selects all.
+        /// </summary>
         void SelectAll();
+
+        /// <summary>
+        /// Inserts the euro symbol.
+        /// </summary>
         void InsertEuroSymbol();
 
+        /// <summary>
+        /// Gets a value indicating whether [read only].
+        /// </summary>
+        /// <value><c>true</c> if [read only]; otherwise, <c>false</c>.</value>
         bool ReadOnly { get; }
 
-        event EventHandler CommandStateChanged;
-        event EventHandler AggressiveCommandStateChanged;
-    }
-
-    public class SimpleTextEditorCommandHelper
-    {
         /// <summary>
-        /// Call this method to ensure that the passed control
-        /// gets to handle cut, copy, paste, undo, redo, and del
-        /// natively instead of through the SimpleTextEditorCommand
-        /// system.
+        /// Occurs when [command state changed].
         /// </summary>
-        public static IDisposable UseNativeBehaviors(CommandManager commandManager, params Control[] controls)
-        {
-            return new NativeBehaviors(commandManager, controls);
-        }
+        event EventHandler CommandStateChanged;
 
-        public class NativeBehaviors : IDisposable
-        {
-            private readonly Control[] Controls;
-            private readonly CommandManager CommandManager;
-
-            public NativeBehaviors(CommandManager commandManager, params Control[] controls)
-            {
-                Controls = controls;
-                CommandManager = commandManager;
-                foreach (Control c in Controls)
-                {
-                    c.GotFocus += new EventHandler(c_GotFocus);
-                    c.LostFocus += new EventHandler(c_LostFocus);
-                }
-            }
-
-            /// <summary>
-            /// Call this method to ensure that the passed control
-            /// does NOT get to handle cut, copy, paste, undo, redo,
-            /// and del natively, but gets passed through the
-            /// SimpleTextEditorCommand system instead.
-            /// </summary>
-            public void Dispose()
-            {
-                foreach (Control c in Controls)
-                {
-                    c.GotFocus -= new EventHandler(c_GotFocus);
-                    c.LostFocus -= new EventHandler(c_LostFocus);
-                }
-            }
-
-            private void c_GotFocus(object sender, EventArgs e)
-            {
-                CommandManager.IgnoreShortcut(Shortcut.CtrlZ);
-                CommandManager.IgnoreShortcut(Shortcut.CtrlY);
-                CommandManager.IgnoreShortcut(Shortcut.CtrlX);
-                CommandManager.IgnoreShortcut(Shortcut.CtrlC);
-                CommandManager.IgnoreShortcut(Shortcut.CtrlV);
-                CommandManager.IgnoreShortcut(Shortcut.Del);
-            }
-
-            private void c_LostFocus(object sender, EventArgs e)
-            {
-                CommandManager.UnignoreShortcut(Shortcut.CtrlZ);
-                CommandManager.UnignoreShortcut(Shortcut.CtrlY);
-                CommandManager.UnignoreShortcut(Shortcut.CtrlX);
-                CommandManager.UnignoreShortcut(Shortcut.CtrlC);
-                CommandManager.UnignoreShortcut(Shortcut.CtrlV);
-                CommandManager.UnignoreShortcut(Shortcut.Del);
-            }
-
-        }
-
+        /// <summary>
+        /// Occurs when [aggressive command state changed].
+        /// </summary>
+        event EventHandler AggressiveCommandStateChanged;
     }
 }

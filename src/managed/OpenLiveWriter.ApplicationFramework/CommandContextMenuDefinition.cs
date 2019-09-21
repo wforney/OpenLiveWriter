@@ -1,12 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Specialized;
-using System.ComponentModel;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+
     /// <summary>
     /// Provides a Command-based ContextMenu definition.
     /// </summary>
@@ -21,22 +20,6 @@ namespace OpenLiveWriter.ApplicationFramework
 
         #endregion Component Designer Generated Code
 
-        #region Private Member Variables
-
-        /// <summary>
-        /// A value indicating whether shortcuts should be shown on the CommandContextMenu.
-        /// </summary>
-        private bool commandBar = false;
-
-        /// <summary>
-        /// Collection of MenuDefinitionEntry objects that defines the CommandContextMenu.
-        /// </summary>
-        private MenuDefinitionEntryCollection menuDefinitionEntryCollection = new MenuDefinitionEntryCollection();
-
-        #endregion Private Member Variables
-
-        #region Public Events
-
         /// <summary>
         /// Occurs before the CommandContextMenuDefinition is used to show a context menu.
         /// </summary>
@@ -45,10 +28,6 @@ namespace OpenLiveWriter.ApplicationFramework
                 Description("Occurs before the CommandContextMenuDefinition is used to show a context menu.")
         ]
         public event EventHandler BeforeShowMenu;
-
-        #endregion Public Events
-
-        #region Class Initialization & Termination
 
         /// <summary>
         /// Initializes a new instance of the CommandContextMenu class.
@@ -60,19 +39,17 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
         /// Initializes a new instance of the CommandContextMenu class.
         /// </summary>
-        public CommandContextMenuDefinition()
-        {
+        public CommandContextMenuDefinition() =>
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-        }
+            this.InitializeComponent();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -81,13 +58,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (disposing)
             {
-                if (components != null)
-                    components.Dispose();
+                if (this.components != null)
+                {
+                    this.components.Dispose();
+                }
             }
+
             base.Dispose(disposing);
         }
-
-        #endregion Class Initialization & Termination
 
         #region Component Designer generated code
         /// <summary>
@@ -96,11 +74,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-
         }
         #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether shortcuts should be shown on the CommandContextMenu.
@@ -111,17 +86,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(false),
                 Description("Specifies whether shortcuts should be shown on the CommandContextMenu.")
         ]
-        public bool CommandBar
-        {
-            get
-            {
-                return commandBar;
-            }
-            set
-            {
-                commandBar = value;
-            }
-        }
+        public bool CommandBar { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -130,44 +95,17 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public MenuDefinitionEntryCollection Entries
-        {
-            get
-            {
-                return menuDefinitionEntryCollection;
-            }
-            set
-            {
-                menuDefinitionEntryCollection = value;
-            }
-        }
-
-        #endregion Public Properties
-
-        #region Internal Methods
+        public MenuDefinitionEntryCollection Entries { get; set; } = new MenuDefinitionEntryCollection();
 
         /// <summary>
         /// Raises the BeforeShowMenu event.
         /// </summary>
-        internal void RaiseBeforeShowMenu()
-        {
-            OnBeforeShowMenu(EventArgs.Empty);
-        }
-
-        #endregion Internal Methods
-
-        #region Protected Events
+        internal void RaiseBeforeShowMenu() => this.OnBeforeShowMenu(EventArgs.Empty);
 
         /// <summary>
         /// Raises the BeforeShowMenu event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected virtual void OnBeforeShowMenu(EventArgs e)
-        {
-            if (BeforeShowMenu != null)
-                BeforeShowMenu(this, e);
-        }
-
-        #endregion
+        protected virtual void OnBeforeShowMenu(EventArgs e) => BeforeShowMenu?.Invoke(this, e);
     }
 }

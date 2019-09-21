@@ -1,12 +1,13 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// Command bar control entry.  Allows any control to be added to a command bar definition.
     /// </summary>
@@ -16,11 +17,6 @@ namespace OpenLiveWriter.ApplicationFramework
     ]
     public class CommandBarControlEntry : CommandBarEntry
     {
-        /// <summary>
-        ///	The control for this CommandBarControlEntry.
-        /// </summary>
-        private Control control;
-
         /// <summary>
         /// The CommandBarControlLightweightControl for this entry.
         /// </summary>
@@ -44,17 +40,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         ///	Gets or sets the control for this CommandBarControlEntry.
         /// </summary>
-        public Control Control
-        {
-            get
-            {
-                return control;
-            }
-            set
-            {
-                control = value;
-            }
-        }
+        public Control Control { get; set; }
 
         /// <summary>
         /// Gets the lightweight control for this entry.
@@ -62,9 +48,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>Lightweight control.</returns>
         public override LightweightControl GetLightweightControl(CommandBarLightweightControl commandBarLightweightControl, bool rightAligned)
         {
-            if (commandBarControlLightweightControl == null)
-                commandBarControlLightweightControl = new CommandBarControlLightweightControl(control);
-            return commandBarControlLightweightControl;
+            if (this.commandBarControlLightweightControl == null)
+            {
+                this.commandBarControlLightweightControl = new CommandBarControlLightweightControl(this.Control);
+            }
+
+            return this.commandBarControlLightweightControl;
         }
     }
 }

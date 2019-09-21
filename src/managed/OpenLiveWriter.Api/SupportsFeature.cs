@@ -23,6 +23,4 @@ namespace OpenLiveWriter.Api
         /// </summary>
         No
     }
-
 }
-

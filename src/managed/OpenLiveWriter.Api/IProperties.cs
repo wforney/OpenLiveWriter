@@ -11,11 +11,7 @@ namespace OpenLiveWriter.Api
         /// <summary>
         /// Gets or sets the string value associated with the specified property name.
         /// </summary>
-        string this[string name]
-        {
-            get;
-            set;
-        }
+        string this[string name] { get; set; }
 
         /// <summary>
         /// Gets the string value associated with the specified property name.

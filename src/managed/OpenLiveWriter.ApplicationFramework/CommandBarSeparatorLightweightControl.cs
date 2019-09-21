@@ -1,13 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// CommandBar separator lightweight control.
     /// </summary>
@@ -33,8 +34,8 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         /// <summary>
@@ -45,15 +46,15 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            InitializeObject();
+            this.InitializeComponent();
+            this.InitializeObject();
         }
 
         private void InitializeObject()
         {
-            VirtualSize = DefaultVirtualSize;
-            AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
-            AccessibleName = "Separator";
+            this.VirtualSize = this.DefaultVirtualSize;
+            this.AccessibleRole = AccessibleRole.Separator;
+            this.AccessibleName = "Separator";
         }
 
         #region Component Designer generated code
@@ -61,11 +62,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-
-        }
+        private void InitializeComponent() => this.components = new Container();
         #endregion
 
         /// <summary>
@@ -75,13 +72,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size DefaultVirtualSize
-        {
-            get
-            {
-                return new Size(DEFAULT_WIDTH, 0);
-            }
-        }
+        public override Size DefaultVirtualSize => new Size(DEFAULT_WIDTH, 0);
 
         /// <summary>
         /// Gets the minimum virtual size of the lightweight control.
@@ -90,13 +81,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public override Size MinimumVirtualSize
-        {
-            get
-            {
-                return DefaultVirtualSize;
-            }
-        }
+        public override Size MinimumVirtualSize => this.DefaultVirtualSize;
 
         /// <summary>
         /// Raises the Paint event.
@@ -108,12 +93,27 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnPaint(e);
 
             //	Paint the left line.
-            using (SolidBrush solidBrush = new SolidBrush(Color.FromArgb(64, 0, 0, 0)))
-                e.Graphics.FillRectangle(solidBrush, VirtualClientRectangle.X, VirtualClientRectangle.Y + 1, VirtualClientRectangle.Width / 2, VirtualClientRectangle.Height);
+            using (var solidBrush = new SolidBrush(Color.FromArgb(64, 0, 0, 0)))
+            {
+                e.Graphics.FillRectangle(
+                    solidBrush,
+                    this.VirtualClientRectangle.X,
+                    this.VirtualClientRectangle.Y + 1,
+                    this.VirtualClientRectangle.Width / 2,
+                    this.VirtualClientRectangle.Height);
+            }
 
             //	Paint the right line.
-            using (SolidBrush solidBrush = new SolidBrush(Color.FromArgb(64, 255, 255, 255)))
-                e.Graphics.FillRectangle(solidBrush, VirtualClientRectangle.X + VirtualClientRectangle.Width / 2, VirtualClientRectangle.Y + 1, VirtualClientRectangle.Width - (VirtualClientRectangle.Width / 2), VirtualClientRectangle.Height);
+            using (var solidBrush = new SolidBrush(Color.FromArgb(64, 255, 255, 255)))
+            {
+                e.Graphics.FillRectangle(
+                    solidBrush,
+                    this.VirtualClientRectangle.X
+                    + this.VirtualClientRectangle.Width / 2,
+                    this.VirtualClientRectangle.Y + 1,
+                    this.VirtualClientRectangle.Width - (this.VirtualClientRectangle.Width / 2),
+                    this.VirtualClientRectangle.Height);
+            }
         }
     }
 }

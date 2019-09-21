@@ -1,17 +1,17 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Localization.Bidi;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Localization.Bidi;
+
     /// <summary>
     /// CommandBar label lightweight control.
     /// </summary>
@@ -43,11 +43,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private const int RIGHT_MARGIN = 2;
 
         /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private Container components = null;
-
-        /// <summary>
         /// The label text.
         /// </summary>
         private readonly string text;
@@ -55,7 +50,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The string format used to format text.
         /// </summary>
-        private readonly TextFormatFlags textFormatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.PreserveGraphicsTranslateTransform;
+        private readonly TextFormatFlags textFormatFlags =
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.PreserveGraphicsTranslateTransform;
 
         /// <summary>
         /// The text layout rectangle.  This is the rectangle into which the text is measured and
@@ -73,7 +69,7 @@ namespace OpenLiveWriter.ApplicationFramework
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -84,8 +80,8 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
-            SetAccesibleInfo();
+            this.InitializeComponent();
+            this.SetAccesibleInfo();
         }
 
         /// <summary>
@@ -97,38 +93,31 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
+            this.InitializeComponent();
 
             //	Set the text.
             this.text = text;
 
-            SetAccesibleInfo();
+            this.SetAccesibleInfo();
         }
 
         private void SetAccesibleInfo()
         {
-            AccessibleName = ControlHelper.ToAccessibleName(text);
-            AccessibleRole = AccessibleRole.StaticText;
+            this.AccessibleName = ControlHelper.ToAccessibleName(this.text);
+            this.AccessibleRole = AccessibleRole.StaticText;
         }
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        public Container Components
-        {
-            get { return components; }
-        }
+        public Container Components { get; private set; } = null;
 
         #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-
-        }
+        private void InitializeComponent() => this.Components = new Container();
         #endregion
 
         /// <summary>
@@ -140,32 +129,31 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Call the base class's method so that registered delegates receive the event.
             base.OnLayout(e);
 
-            if (Parent == null)
+            if (this.Parent == null)
+            {
                 return;
+            }
 
             //	If there is no text, we're done.
-            if (text == null || text.Length == 0)
+            if (this.text == null || this.text.Length == 0)
             {
-                VirtualSize = Size.Empty;
+                this.VirtualSize = Size.Empty;
                 return;
             }
 
             //	Obtain the font.
-            Font font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
+            var font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
 
             //	The label width and height.
             int labelWidth = LEFT_MARGIN, labelHeight = TOP_MARGIN + font.Height + BOTTOM_MARGIN;
 
-            using (Graphics graphics = Parent.CreateGraphics())
+            using (var graphics = this.Parent.CreateGraphics())
             {
                 //	Initialize the text layout rectangle.
-                textLayoutRectangle = new Rectangle(labelWidth,
-                                                    TOP_MARGIN,
-                                                    MAX_TEXT_WIDTH,
-                                                    font.Height);
+                this.textLayoutRectangle = new Rectangle(labelWidth, TOP_MARGIN, MAX_TEXT_WIDTH, font.Height);
 
-                Size textSize = TextRenderer.MeasureText(graphics, text, font, textLayoutRectangle.Size, textFormatFlags);
-                textLayoutRectangle.Size = textSize;
+                var textSize = TextRenderer.MeasureText(graphics, this.text, font, this.textLayoutRectangle.Size, this.textFormatFlags);
+                this.textLayoutRectangle.Size = textSize;
 
                 //	Increase the label width to account for the text, plus a bit of extra space.
                 labelWidth += textSize.Width + FontHelper.WidthOfSpace(graphics, font);
@@ -175,7 +163,7 @@ namespace OpenLiveWriter.ApplicationFramework
             labelWidth += RIGHT_MARGIN;
 
             //	Set the new virtual size.
-            VirtualSize = new Size(labelWidth, labelHeight);
+            this.VirtualSize = new Size(labelWidth, labelHeight);
         }
 
         /// <summary>
@@ -187,14 +175,15 @@ namespace OpenLiveWriter.ApplicationFramework
             //	Call the base class's method so that registered delegates receive the event.
             base.OnPaint(e);
 
-            if (!string.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(this.text))
             {
-                BidiGraphics bidiGraphics = new BidiGraphics(e.Graphics, VirtualSize);
-                bidiGraphics.DrawText(text,
-                                              ApplicationManager.ApplicationStyle.NormalApplicationFont,
-                                            textLayoutRectangle,
-                                            Color.Black,
-                                            textFormatFlags | TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.NoPadding);
+                var bidiGraphics = new BidiGraphics(e.Graphics, this.VirtualSize);
+                bidiGraphics.DrawText(
+                    this.text,
+                    ApplicationManager.ApplicationStyle.NormalApplicationFont,
+                    this.textLayoutRectangle,
+                    Color.Black,
+                    this.textFormatFlags | TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.NoPadding);
             }
         }
     }

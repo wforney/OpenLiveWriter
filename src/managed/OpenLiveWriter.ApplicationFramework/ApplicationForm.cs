@@ -78,6 +78,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

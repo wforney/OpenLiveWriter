@@ -1,32 +1,42 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using OpenLiveWriter.ApplicationFramework.Skinning;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Drawing;
+
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// Use this if you need a command bar as a heavyweight control.
+    /// Implements the <see cref="OpenLiveWriter.Controls.LightweightControlContainerControl" />
     /// </summary>
+    /// <seealso cref="OpenLiveWriter.Controls.LightweightControlContainerControl" />
     public class CommandBarControl : LightweightControlContainerControl
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private Container components = null;
 
-        protected CommandBarLightweightControl _commandBar;
+        /// <summary>
+        /// The command bar
+        /// </summary>
+        protected CommandBarLightweightControl commandBar;
 
-        public CommandBarControl()
-        {
-            InitializeComponent();
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandBarControl"/> class.
+        /// </summary>
+        public CommandBarControl() => this.InitializeComponent();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandBarControl"/> class.
+        /// </summary>
+        /// <param name="commandBar">The command bar.</param>
+        /// <param name="commandBarDefinition">The command bar definition.</param>
         public CommandBarControl(CommandBarLightweightControl commandBar, CommandBarDefinition commandBarDefinition)
         {
             // It's important that the commandBarDefinition not be set
@@ -37,48 +47,51 @@ namespace OpenLiveWriter.ApplicationFramework
             Debug.Assert(commandBar.CommandBarDefinition == null,
                          "Don't set the command bar definition before creating CommandBarControl!");
 
-            InitializeComponent();
+            this.InitializeComponent();
 
-            _commandBar = commandBar;
+            this.commandBar = commandBar;
 
-            _commandBar.LightweightControlContainerControl = this;
-            _commandBar.CommandBarDefinition = commandBarDefinition;
+            this.commandBar.LightweightControlContainerControl = this;
+            this.commandBar.CommandBarDefinition = commandBarDefinition;
 
-            _commandBar.VirtualBounds = new Rectangle(new Point(0, 0), _commandBar.DefaultVirtualSize);
-            Height = _commandBar.VirtualHeight;
-            SizeChanged += new EventHandler(CommandBarControl_SizeChanged);
+            this.commandBar.VirtualBounds = new Rectangle(new Point(0, 0), this.commandBar.DefaultVirtualSize);
+            this.Height = this.commandBar.VirtualHeight;
+            SizeChanged += new EventHandler(this.CommandBarControl_SizeChanged);
 
-            AccessibleRole = System.Windows.Forms.AccessibleRole.ToolBar;
-            AccessibleName = commandBar.AccessibleName;
-            InitFocusAndAccessibility();
+            this.AccessibleRole = System.Windows.Forms.AccessibleRole.ToolBar;
+            this.AccessibleName = commandBar.AccessibleName;
+            this.InitFocusAndAccessibility();
         }
 
+        /// <summary>
+        /// Initializes the focus and accessibility.
+        /// </summary>
         private void InitFocusAndAccessibility()
         {
-            InitFocusManager();
-            AddFocusableControls(_commandBar.GetAccessibleControls());
+            this.InitFocusManager();
+            this.AddFocusableControls(this.commandBar.GetAccessibleControls());
         }
 
-        public CommandBarLightweightControl CommandBarLightweightControl
-        {
-            get
-            {
-                return _commandBar;
-            }
-        }
+        /// <summary>
+        /// Gets the command bar lightweight control.
+        /// </summary>
+        /// <value>The command bar lightweight control.</value>
+        public CommandBarLightweightControl CommandBarLightweightControl => this.commandBar;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -88,13 +101,18 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
         }
 
+        /// <summary>
+        /// Handles the SizeChanged event of the CommandBarControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CommandBarControl_SizeChanged(object sender, EventArgs e)
         {
-            _commandBar.VirtualWidth = Width;
-            _commandBar.VirtualHeight = Height;
+            this.commandBar.VirtualWidth = this.Width;
+            this.commandBar.VirtualHeight = this.Height;
         }
     }
 }

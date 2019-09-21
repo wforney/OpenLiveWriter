@@ -1,133 +1,150 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Windows;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Windows;
+
+    /// <summary>
+    /// Class ContainedTextBoxCommandSource.
+    /// Implements the <see cref="OpenLiveWriter.ApplicationFramework.ISimpleTextEditorCommandSource" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.ApplicationFramework.ISimpleTextEditorCommandSource" />
     public class ContainedTextBoxCommandSource : ISimpleTextEditorCommandSource
     {
-        public ContainedTextBoxCommandSource(Control parentControl)
-        {
-            _parentControl = parentControl;
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainedTextBoxCommandSource"/> class.
+        /// </summary>
+        /// <param name="parentControl">The parent control.</param>
+        public ContainedTextBoxCommandSource(Control parentControl) => this.parentControl = parentControl;
 
-        public bool HasFocus
-        {
-            get
-            {
-                return FindFocusedTextBox() != null;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance has focus.
+        /// </summary>
+        /// <value><c>true</c> if this instance has focus; otherwise, <c>false</c>.</value>
+        public bool HasFocus => this.FindFocusedTextBox() != null;
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can undo.
+        /// </summary>
+        /// <value><c>true</c> if this instance can undo; otherwise, <c>false</c>.</value>
         public bool CanUndo
         {
             get
             {
-                TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                    return textBox.CanUndo;
-                else
-                    return false;
+                var textBox = this.FindFocusedTextBox();
+                return textBox == null ? false : textBox.CanUndo;
             }
         }
 
+        /// <summary>
+        /// Undoes this instance.
+        /// </summary>
         public void Undo()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
                 textBox.Undo();
             }
         }
 
-        public bool CanRedo
-        {
-            get
-            {
-                // not supported
-                return false;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance can redo.
+        /// </summary>
+        /// <value><c>true</c> if this instance can redo; otherwise, <c>false</c>.</value>
+        /// <remarks>not supported</remarks>
+        public bool CanRedo => false;
 
+        /// <summary>
+        /// Redoes this instance.
+        /// </summary>
         public void Redo()
         {
             // not supported
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can cut.
+        /// </summary>
+        /// <value><c>true</c> if this instance can cut; otherwise, <c>false</c>.</value>
         public bool CanCut
         {
             get
             {
-                TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                    return textBox.SelectionLength > 0;
-                else
-                    return false;
+                var textBox = this.FindFocusedTextBox();
+                return textBox != null ? textBox.SelectionLength > 0 : false;
             }
         }
 
+        /// <summary>
+        /// Cuts this instance.
+        /// </summary>
         public void Cut()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
                 textBox.Cut();
             }
         }
 
-        public bool CanCopy
-        {
-            get
-            {
-                return CanCut;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance can copy.
+        /// </summary>
+        /// <value><c>true</c> if this instance can copy; otherwise, <c>false</c>.</value>
+        public bool CanCopy => this.CanCut;
 
+        /// <summary>
+        /// Copies this instance.
+        /// </summary>
         public void Copy()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
                 textBox.Copy();
             }
         }
 
-        public bool CanPaste
-        {
-            get
-            {
-                return HasFocus;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance can paste.
+        /// </summary>
+        /// <value><c>true</c> if this instance can paste; otherwise, <c>false</c>.</value>
+        public bool CanPaste => this.HasFocus;
 
+        /// <summary>
+        /// Pastes this instance.
+        /// </summary>
         public void Paste()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
                 textBox.Paste();
             }
         }
 
-        public bool CanClear
-        {
-            get
-            {
-                return HasFocus;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this instance can clear.
+        /// </summary>
+        /// <value><c>true</c> if this instance can clear; otherwise, <c>false</c>.</value>
+        public bool CanClear => this.HasFocus;
 
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
         public void Clear()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
-                int selectionStart = textBox.SelectionStart;
+                var selectionStart = textBox.SelectionStart;
                 if (selectionStart < textBox.Text.Length)
                 {
                     textBox.Text = textBox.Text.Remove(textBox.SelectionStart, Math.Max(1, textBox.SelectionLength));
@@ -136,21 +153,27 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Selects all.
+        /// </summary>
         public void SelectAll()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
                 textBox.SelectAll();
             }
         }
 
+        /// <summary>
+        /// Inserts the euro symbol.
+        /// </summary>
         public void InsertEuroSymbol()
         {
-            TextBoxBase textBox = FindFocusedTextBox();
+            var textBox = this.FindFocusedTextBox();
             if (textBox != null)
             {
-                IntPtr euro = Marshal.StringToCoTaskMemUni("\u20AC");
+                var euro = Marshal.StringToCoTaskMemUni("\u20AC");
                 try
                 {
                     User32.SendMessage(textBox.Handle, WM.EM_REPLACESEL, new IntPtr(1), euro);
@@ -162,41 +185,52 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether [read only].
+        /// </summary>
+        /// <value><c>true</c> if [read only]; otherwise, <c>false</c>.</value>
         public bool ReadOnly
         {
             get
             {
-                TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                {
-                    return textBox.ReadOnly;
-                }
-                return false;
+                var textBox = this.FindFocusedTextBox();
+                return textBox != null ? textBox.ReadOnly : false;
             }
         }
 
+        /// <summary>
+        /// Occurs when [command state changed].
+        /// </summary>
         public event EventHandler CommandStateChanged;
 
-        protected void OnCommandStateChanged()
-        {
-            if (CommandStateChanged != null)
-                CommandStateChanged(this, EventArgs.Empty);
-        }
+        /// <summary>
+        /// Called when [command state changed].
+        /// </summary>
+        protected void OnCommandStateChanged() => CommandStateChanged?.Invoke(this, EventArgs.Empty);
 
+        /// <summary>
+        /// Occurs when [aggressive command state changed].
+        /// </summary>
         public event EventHandler AggressiveCommandStateChanged;
 
-        protected void OnAggressiveCommandStateChanged()
-        {
-            if (AggressiveCommandStateChanged != null)
-                AggressiveCommandStateChanged(this, EventArgs.Empty);
-        }
+        /// <summary>
+        /// Called when [aggressive command state changed].
+        /// </summary>
+        protected void OnAggressiveCommandStateChanged() => AggressiveCommandStateChanged?.Invoke(this, EventArgs.Empty);
 
+        /// <summary>
+        /// Finds the focused text box.
+        /// </summary>
+        /// <returns>TextBoxBase.</returns>
         private TextBoxBase FindFocusedTextBox()
         {
-            Control focusedControl = ControlHelper.FindFocused(_parentControl);
+            var focusedControl = ControlHelper.FindFocused(this.parentControl);
             return focusedControl as TextBoxBase;
         }
 
-        private Control _parentControl;
+        /// <summary>
+        /// The parent control
+        /// </summary>
+        private readonly Control parentControl;
     }
 }

@@ -1,11 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System.ComponentModel;
-using OpenLiveWriter.Controls;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System.ComponentModel;
+    using OpenLiveWriter.Controls;
+
     /// <summary>
     /// Command bar button entry.
     /// </summary>
@@ -16,25 +16,10 @@ namespace OpenLiveWriter.ApplicationFramework
     public class CommandBarLightweightControlEntry : CommandBarEntry
     {
         /// <summary>
-        ///	The lightweight control for this CommandBarLightweightControlEntry.
-        /// </summary>
-        private LightweightControl lightweightControl;
-
-        /// <summary>
         /// Gets or sets The lightweight control for this CommandBarLightweightControlEntry.
         /// </summary>
         /// <returns>Lightweight control.</returns>
-        public LightweightControl LightweightControl
-        {
-            get
-            {
-                return lightweightControl;
-            }
-            set
-            {
-                lightweightControl = value;
-            }
-        }
+        public LightweightControl LightweightControl { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the CommandBarControlEntry class.
@@ -57,8 +42,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>Lightweight control.</returns>
         public override LightweightControl GetLightweightControl(CommandBarLightweightControl commandBarLightweightControl, bool rightAligned)
         {
-            lightweightControl.LightweightControlContainerControl = commandBarLightweightControl;
-            return lightweightControl;
+            this.LightweightControl.LightweightControlContainerControl = commandBarLightweightControl;
+            return this.LightweightControl;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace OpenLiveWriter.Api
         /// <param name="contentWidth">Width of content.</param>
         public HtmlScreenCapture(Uri url, int contentWidth)
         {
-            this._htmlScreenCapture = new HtmlScreenCaptureCore(url, contentWidth);
+            this.htmlScreenCapture = new HtmlScreenCaptureCore(url, contentWidth);
             this.SubscribeToEvents();
         }
 
@@ -30,7 +30,7 @@ namespace OpenLiveWriter.Api
         /// <param name="contentWidth">Width of content.</param>
         public HtmlScreenCapture(string htmlContent, int contentWidth)
         {
-            this._htmlScreenCapture = new HtmlScreenCaptureCore(htmlContent, contentWidth);
+            this.htmlScreenCapture = new HtmlScreenCaptureCore(htmlContent, contentWidth);
             this.SubscribeToEvents();
         }
 
@@ -40,8 +40,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public int MaximumHeight
         {
-            get => this._htmlScreenCapture.MaximumHeight;
-            set => this._htmlScreenCapture.MaximumHeight = value;
+            get => this.htmlScreenCapture.MaximumHeight;
+            set => this.htmlScreenCapture.MaximumHeight = value;
         }
 
         /// <summary>
@@ -63,12 +63,12 @@ namespace OpenLiveWriter.Api
         /// </summary>
         /// <param name="timeoutMs">Timeout (in ms). A timeout value greater than 0 must be specified for all screen captures.</param>
         /// <returns>Bitmap containing captured HTML (or null if a timeout occurred).</returns>
-        public Bitmap CaptureHtml(int timeoutMs) => this._htmlScreenCapture.CaptureHtml(timeoutMs);
+        public Bitmap CaptureHtml(int timeoutMs) => this.htmlScreenCapture.CaptureHtml(timeoutMs);
 
         private void SubscribeToEvents()
         {
-            this._htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(this._htmlScreenCapture_HtmlDocumentAvailable);
-            this._htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(this._htmlScreenCapture_HtmlScreenCaptureAvailable);
+            this.htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(this._htmlScreenCapture_HtmlDocumentAvailable);
+            this.htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(this._htmlScreenCapture_HtmlScreenCaptureAvailable);
         }
 
         private void _htmlScreenCapture_HtmlDocumentAvailable(object sender, HtmlDocumentAvailableEventArgsCore e)
@@ -91,7 +91,7 @@ namespace OpenLiveWriter.Api
             }
         }
 
-        private readonly HtmlScreenCaptureCore _htmlScreenCapture;
+        private readonly HtmlScreenCaptureCore htmlScreenCapture;
     }
 
     /// <summary>

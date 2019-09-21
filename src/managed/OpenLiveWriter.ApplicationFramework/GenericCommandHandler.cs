@@ -1,60 +1,90 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Interop.Com.Ribbon;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Com.Ribbon;
+    using OpenLiveWriter.Localization;
+
+    /// <summary>
+    /// Class GenericCommandHandler.
+    /// Implements the <see cref="IUICommandHandler" />
+    /// </summary>
+    /// <seealso cref="IUICommandHandler" />
     public class GenericCommandHandler : IUICommandHandler
     {
+        /// <summary>
+        /// The parent command manager
+        /// </summary>
         private readonly CommandManager ParentCommandManager;
 
-        public GenericCommandHandler(CommandManager commandManager)
-        {
-            ParentCommandManager = commandManager;
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericCommandHandler"/> class.
+        /// </summary>
+        /// <param name="commandManager">The command manager.</param>
+        public GenericCommandHandler(CommandManager commandManager) => this.ParentCommandManager = commandManager;
 
+        /// <summary>
+        /// Gets the placeholder image.
+        /// </summary>
+        /// <returns>IUIImage.</returns>
         protected IUIImage GetPlaceholderImage()
         {
-            Bitmap bitmap = Images.Missing_LargeImage;
+            var bitmap = Images.Missing_LargeImage;
 
-            if (bitmap != null)
-            {
-                return RibbonHelper.CreateImage(bitmap.GetHbitmap(), ImageCreationOptions.Transfer);
-            }
-            return null;
+            return bitmap == null ? null : RibbonHelper.CreateImage(bitmap.GetHbitmap(), ImageCreationOptions.Transfer);
         }
 
-        #region IUICommandHandler Members
-
-        public virtual int Execute(UInt32 commandId, CommandExecutionVerb verb, PropertyKeyRef key, PropVariantRef currentValue, IUISimplePropertySet commandExecutionProperties)
+        /// <summary>
+        /// Executes the specified command identifier.
+        /// </summary>
+        /// <param name="commandId">The command identifier.</param>
+        /// <param name="verb">The verb.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="commandExecutionProperties">The command execution properties.</param>
+        /// <returns>System.Int32.</returns>
+        public virtual int Execute(
+            uint commandId,
+            CommandExecutionVerb verb,
+            PropertyKeyRef key,
+            PropVariantRef currentValue,
+            IUISimplePropertySet commandExecutionProperties)
         {
             switch (verb)
             {
                 case CommandExecutionVerb.Execute:
-                    ParentCommandManager.Execute((CommandId)commandId);
+                    this.ParentCommandManager.Execute((CommandId)commandId);
                     return HRESULT.S_OK;
                 case CommandExecutionVerb.Preview:
                     break;
                 case CommandExecutionVerb.CancelPreview:
                     break;
             }
+
             return HRESULT.S_OK;
         }
 
+        /// <summary>
+        /// Updates the property.
+        /// </summary>
+        /// <param name="commandId">The command identifier.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="newValue">The new value.</param>
+        /// <returns>System.Int32.</returns>
         public virtual int UpdateProperty(uint commandId, ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)
         {
-            Command command = ParentCommandManager.Get((CommandId)commandId);
+            var command = this.ParentCommandManager.Get((CommandId)commandId);
             if (command == null)
             {
-                return NullCommandUpdateProperty(commandId, ref key, currentValue, out newValue);
+                return this.NullCommandUpdateProperty(commandId, ref key, currentValue, out newValue);
             }
 
             try
@@ -64,25 +94,30 @@ namespace OpenLiveWriter.ApplicationFramework
 
                 if (newValue.IsNull())
                 {
-                    Trace.Fail("Didn't property update property for " + PropertyKeys.GetName(key) + " on command " + ((CommandId)commandId).ToString());
+                    Trace.Fail($"Didn't property update property for {PropertyKeys.GetName(key)} on command {((CommandId)commandId).ToString()}");
 
                     newValue = PropVariant.FromObject(currentValue.PropVariant.Value);
                 }
             }
             catch (Exception ex)
             {
-                Trace.Fail("Exception in UpdateProperty for " + PropertyKeys.GetName(key) + " on command " + commandId + ": " + ex);
+                Trace.Fail($"Exception in UpdateProperty for {PropertyKeys.GetName(key)} on command {commandId}: {ex}");
                 newValue = PropVariant.FromObject(currentValue.PropVariant.Value);
             }
 
             return HRESULT.S_OK;
         }
 
-        #endregion
-
+        /// <summary>
+        /// Nulls the command update property.
+        /// </summary>
+        /// <param name="commandId">The command identifier.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="currentValue">The current value.</param>
+        /// <param name="newValue">The new value.</param>
+        /// <returns>System.Int32.</returns>
         public int NullCommandUpdateProperty(uint commandId, ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)
         {
-
             try
             {
                 newValue = new PropVariant();
@@ -92,12 +127,12 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.SmallImage)
                 {
-                    Bitmap bitmap = CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "SmallImage");
+                    var bitmap = CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "SmallImage");
                     RibbonHelper.CreateImagePropVariant(bitmap, out newValue);
                 }
                 else if (key == PropertyKeys.SmallHighContrastImage)
                 {
-                    Bitmap bitmap =
+                    var bitmap =
                         CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(),
                                                                 "SmallHighContrastImage") ??
                         CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "SmallImage");
@@ -106,12 +141,12 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.LargeImage)
                 {
-                    Bitmap bitmap = CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "LargeImage");
+                    var bitmap = CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "LargeImage");
                     RibbonHelper.CreateImagePropVariant(bitmap, out newValue);
                 }
                 else if (key == PropertyKeys.LargeHighContrastImage)
                 {
-                    Bitmap bitmap =
+                    var bitmap =
                         CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(),
                                                                 "LargeHighContrastImage") ??
                         CommandResourceLoader.LoadCommandBitmap(((CommandId)commandId).ToString(), "LargeImage");
@@ -120,24 +155,24 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.Label)
                 {
-                    string str = "Command." + ((CommandId)commandId).ToString() + ".LabelTitle";
-                    newValue = new PropVariant(TextHelper.UnescapeNewlines(Res.GetProp(str)) ?? String.Empty);
+                    var str = $"Command.{((CommandId)commandId).ToString()}.LabelTitle";
+                    newValue = new PropVariant(TextHelper.UnescapeNewlines(Res.GetProp(str)) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.LabelDescription)
                 {
-                    string str = "Command." + ((CommandId)commandId).ToString() + ".LabelDescription";
-                    newValue = new PropVariant(Res.GetProp(str) ?? String.Empty);
+                    var str = $"Command.{((CommandId)commandId).ToString()}.LabelDescription";
+                    newValue = new PropVariant(Res.GetProp(str) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.TooltipTitle)
                 {
-                    string commandName = ((CommandId)commandId).ToString();
-                    string str = "Command." + commandName + ".TooltipTitle";
-                    newValue = new PropVariant(Res.GetProp(str) ?? (Res.GetProp("Command." + commandName + ".LabelTitle") ?? String.Empty));
+                    var commandName = ((CommandId)commandId).ToString();
+                    var str = $"Command.{commandName}.TooltipTitle";
+                    newValue = new PropVariant(Res.GetProp(str) ?? (Res.GetProp($"Command.{commandName}.LabelTitle") ?? string.Empty));
                 }
                 else if (key == PropertyKeys.TooltipDescription)
                 {
-                    string str = "Command." + ((CommandId)commandId).ToString() + ".TooltipDescription";
-                    newValue = new PropVariant(Res.GetProp(str) ?? String.Empty);
+                    var str = $"Command.{((CommandId)commandId).ToString()}.TooltipDescription";
+                    newValue = new PropVariant(Res.GetProp(str) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.Keytip)
                 {
@@ -154,25 +189,24 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.RecentItems)
                 {
-                    object[] currColl = (object[])currentValue.PropVariant.Value;
+                    var currColl = (object[])currentValue.PropVariant.Value;
                     newValue = new PropVariant();
                     newValue.SetSafeArray(currColl);
                     return HRESULT.S_OK;
-
                 }
                 else if (key == PropertyKeys.ItemsSource)
                 {
                     // This should only be necessary if you have created a gallery in the ribbon markup that you have not yet put into the command manager.
-                    List<IUISimplePropertySet> list = new List<IUISimplePropertySet>();
+                    var list = new List<IUISimplePropertySet>();
 
-                    OpenLiveWriter.Interop.Com.Ribbon.IEnumUnknown enumUnk = new BasicCollection(list);
+                    Interop.Com.Ribbon.IEnumUnknown enumUnk = new BasicCollection(list);
                     newValue = new PropVariant();
                     newValue.SetIUnknown(enumUnk);
                     return HRESULT.S_OK;
                 }
                 else if (key == PropertyKeys.StringValue)
                 {
-                    newValue = new PropVariant(String.Empty);
+                    newValue = new PropVariant(string.Empty);
                 }
                 else if (key == PropertyKeys.SelectedItem)
                 {
@@ -204,7 +238,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.FormatString)
                 {
-                    newValue.SetString(String.Empty);
+                    newValue.SetString(string.Empty);
                 }
                 else if (key == PropertyKeys.StandardColors)
                 {
@@ -223,18 +257,17 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else
                 {
-                    Trace.Fail("Didn't properly update property for " + PropertyKeys.GetName(key) + " on command " + ((CommandId)commandId));
+                    Trace.Fail($"Didn't properly update property for {PropertyKeys.GetName(key)} on command {((CommandId)commandId)}");
                     newValue = new PropVariant();
                 }
             }
             catch (Exception ex)
             {
-                Trace.Fail("Exception in UpdateProperty for " + PropertyKeys.GetName(key) + " on command " + commandId + ": " + ex);
+                Trace.Fail($"Exception in UpdateProperty for {PropertyKeys.GetName(key)} on command {commandId}: {ex}");
                 newValue = new PropVariant();
             }
 
             return HRESULT.S_OK;
         }
     }
-
 }
