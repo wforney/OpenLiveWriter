@@ -169,6 +169,8 @@
     <Compile Include="Clients\StaticSite\StaticSiteConfigDetector.cs" />
     <Compile Include="Clients\StaticSite\StaticSiteClient.cs" />
     <Compile Include="Clients\StaticSite\StaticSiteConfig.cs" />
+    <Compile Include="Clients\StaticSite\StaticSiteConfigFrontMatterKeys.cs" />
+    <Compile Include="Clients\StaticSite\StaticSiteConfigValidationException.cs" />
     <Compile Include="Clients\StaticSite\StaticSiteConfigValidator.cs" />
     <Compile Include="Clients\StaticSite\StaticSitePage.cs" />
     <Compile Include="Clients\StaticSite\StaticSiteItem.cs" />

@@ -1,31 +1,148 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// <copyright file="StaticSiteConfig.cs" company=".NET Foundation">
+//     Copyright © .NET Foundation. All rights reserved.
+// </copyright>
 
 namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 {
+    /// <summary>
+    /// The StaticSiteConfig class.
+    /// </summary>
     public class StaticSiteConfig
     {
-        // The credential keys where the configuration is stored.
-        private const string CONFIG_POSTS_PATH = "PostsPath";
-        private const string CONFIG_PAGES_ENABLED = "PagesEnabled";
-        private const string CONFIG_PAGES_PATH = "PagesPath";
-        private const string CONFIG_DRAFTS_ENABLED = "DraftsEnabled";
-        private const string CONFIG_DRAFTS_PATH = "DraftsPath";
-        private const string CONFIG_IMAGES_ENABLED = "ImagesEnabled";
-        private const string CONFIG_IMAGES_PATH = "ImagesPath";
-        private const string CONFIG_BUILDING_ENABLED = "BuildingEnabled";
-        private const string CONFIG_OUTPUT_PATH = "OutputPath";
-        private const string CONFIG_BUILD_COMMAND = "BuildCommand";
-        private const string CONFIG_PUBLISH_COMMAND = "PublishCommand";
-        private const string CONFIG_SITE_URL = "SiteUrl"; // Store Site Url in credentials as well, for acccess by StaticSiteClient
-        private const string CONFIG_SHOW_CMD_WINDOWS = "ShowCmdWindows";
-        private const string CONFIG_CMD_TIMEOUT_MS = "CmdTimeoutMs";
-        private const string CONFIG_INITIALISED = "Initialised";
+        /// <summary>
+        /// The configuration build command
+        /// </summary>
+        private const string ConfigBuildCommand = "BuildCommand";
 
-        public static int DEFAULT_CMD_TIMEOUT = 60000;
+        /// <summary>
+        /// The configuration building enabled
+        /// </summary>
+        private const string ConfigBuildingEnabled = "BuildingEnabled";
+
+        /// <summary>
+        /// The configuration command timeout milliseconds
+        /// </summary>
+        private const string ConfigCmdTimeoutMs = "CmdTimeoutMs";
+
+        /// <summary>
+        /// The configuration drafts enabled
+        /// </summary>
+        private const string ConfigDraftsEnabled = "DraftsEnabled";
+
+        /// <summary>
+        /// The configuration drafts path
+        /// </summary>
+        private const string ConfigDraftsPath = "DraftsPath";
+
+        /// <summary>
+        /// The configuration images enabled
+        /// </summary>
+        private const string ConfigImagesEnabled = "ImagesEnabled";
+
+        /// <summary>
+        /// The configuration images path
+        /// </summary>
+        private const string ConfigImagesPath = "ImagesPath";
+
+        /// <summary>
+        /// The configuration initialized
+        /// </summary>
+        private const string ConfigInitialized = "Initialized";
+
+        /// <summary>
+        /// The configuration output path
+        /// </summary>
+        private const string ConfigOutputPath = "OutputPath";
+
+        /// <summary>
+        /// The configuration pages enabled
+        /// </summary>
+        private const string ConfigPagesEnabled = "PagesEnabled";
+
+        /// <summary>
+        /// The configuration pages path
+        /// </summary>
+        private const string ConfigPagesPath = "PagesPath";
+
+        /// <summary>
+        /// The configuration posts path
+        /// </summary>
+        private const string ConfigPostsPath = "PostsPath";
+
+        /// <summary>
+        /// The configuration publish command
+        /// </summary>
+        private const string ConfigPublishCommand = "PublishCommand";
+
+        /// <summary>
+        /// The configuration show command windows
+        /// </summary>
+        private const string ConfigShowCmdWindows = "ShowCmdWindows";
+
+        /// <summary>
+        /// The configuration site URL
+        /// </summary>
+        private const string
+            ConfigSiteUrl = "SiteUrl"; // Store Site Url in credentials as well, for access by StaticSiteClient
+
+        /// <summary>
+        /// Gets the default command timeout
+        /// </summary>
+        public static int DefaultCmdTimeout { get; } = 60000;
+
+        /// <summary>
+        /// Gets or sets the build command, executed by system command interpreter with LocalSitePath working directory
+        /// </summary>
+        /// <value>The build command.</value>
+        public string BuildCommand { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the site is locally built.
+        /// </summary>
+        /// <value><c>true</c> if [building enabled]; otherwise, <c>false</c>.</value>
+        public bool BuildingEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timeout for commands. Default is 60k MS (60 seconds).
+        /// </summary>
+        /// <value>The command timeout milliseconds.</value>
+        public int CmdTimeoutMs { get; set; } = StaticSiteConfig.DefaultCmdTimeout;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether drafts can be saved to this blog.
+        /// </summary>
+        /// <value><c>true</c> if [drafts enabled]; otherwise, <c>false</c>.</value>
+        public bool DraftsEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path to Drafts directory, relative to LocalSitePath.
+        /// </summary>
+        /// <value>The drafts path.</value>
+        public string DraftsPath { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the front matter keys.
+        /// </summary>
+        /// <value>The front matter keys.</value>
+        public StaticSiteConfigFrontMatterKeys FrontMatterKeys { get; set; } = new StaticSiteConfigFrontMatterKeys();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether images can be uploaded to this blog.
+        /// </summary>
+        /// <value><c>true</c> if [images enabled]; otherwise, <c>false</c>.</value>
+        public bool ImagesEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path to Images directory, relative to LocalSitePath.
+        /// </summary>
+        /// <value>The images path.</value>
+        public string ImagesPath { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the parameter detection has occurred, default false.
+        /// </summary>
+        /// <value><c>true</c> if initialized; otherwise, <c>false</c>.</value>
+        public bool Initialized { get; set; }
 
         // Public Site Url is stored in the blog's BlogConfig. Loading is handled in this class, but saving is handled from the WizardController.
         // This is done to avoid referencing PostEditor from this project.
@@ -33,204 +150,82 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         // NOTE: When setting default config values below, also make sure to alter LoadFromCredentials to not overwrite defaults if a key was not found.
 
         /// <summary>
-        /// The full path to the local static site 'project' directory
+        /// Gets or sets the full path to the local static site 'project' directory
         /// </summary>
-        public string LocalSitePath { get; set; } = "";
+        /// <value>The local site path.</value>
+        public string LocalSitePath { get; set; } = string.Empty;
 
         /// <summary>
-        /// Path to Posts directory, relative to LocalSitePath
+        /// Gets or sets the path to Output directory, relative to LocalSitePath. Can be possibly used in future for preset publishing routines.
         /// </summary>
-        public string PostsPath { get; set; } = "";
+        /// <value>The output path.</value>
+        public string OutputPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// True if Pages can be posted to this blog.
+        /// Gets or sets a value indicating whether pages can be posted to this blog.
         /// </summary>
-        public bool PagesEnabled { get; set; } = false;
+        /// <value><c>true</c> if [pages enabled]; otherwise, <c>false</c>.</value>
+        public bool PagesEnabled { get; set; }
 
         /// <summary>
-        /// Path to Pages directory, relative to LocalSitePath.
+        /// Gets or sets the path to Pages directory, relative to LocalSitePath.
         /// </summary>
-        public string PagesPath { get; set; } = "";
+        /// <value>The pages path.</value>
+        public string PagesPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// True if Drafts can be saved to this blog.
+        /// Gets or sets the path to Posts directory, relative to LocalSitePath
         /// </summary>
-        public bool DraftsEnabled { get; set; } = false;
+        /// <value>The posts path.</value>
+        public string PostsPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// Path to Drafts directory, relative to LocalSitePath.
+        /// Gets or sets the publish command, executed by system command interpreter with LocalSitePath working directory
         /// </summary>
-        public string DraftsPath { get; set; } = "";
+        /// <value>The publish command.</value>
+        public string PublishCommand { get; set; } = string.Empty;
 
         /// <summary>
-        /// True if Images can be uploaded to this blog.
+        /// Gets or sets a value indicating whether to show CMD windows. Useful for debugging. Default is false.
         /// </summary>
-        public bool ImagesEnabled { get; set; } = false;
+        /// <value><c>true</c> if [show command windows]; otherwise, <c>false</c>.</value>
+        public bool ShowCmdWindows { get; set; }
 
         /// <summary>
-        /// Path to Images directory, relative to LocalSitePath.
+        /// Gets or sets the site title
         /// </summary>
-        public string ImagesPath { get; set; } = "";
+        /// <value>The site title.</value>
+        public string SiteTitle { get; set; } = string.Empty;
 
         /// <summary>
-        /// True if site is locally built.
+        /// Gets or sets the public site URL
         /// </summary>
-        public bool BuildingEnabled { get; set; } = false;
+        /// <value>The site URL.</value>
+        public string SiteUrl { get; set; } = string.Empty;
 
         /// <summary>
-        /// Path to Output directory, relative to LocalSitePath. Can be possibly used in future for preset publishing routines.
+        /// Gets the validator.
         /// </summary>
-        public string OutputPath { get; set; } = "";
-
-        /// <summary>
-        /// Build command, executed by system command interpreter with LocalSitePath working directory
-        /// </summary>
-        public string BuildCommand { get; set; } = "";
-
-        /// <summary>
-        /// Publish command, executed by system command interpreter with LocalSitePath working directory
-        /// </summary>
-        public string PublishCommand { get; set; } = "";
-
-        /// <summary>
-        /// Public site URL
-        /// </summary>
-        public string SiteUrl { get; set; } = "";
-
-        /// <summary>
-        /// Site title
-        /// </summary>
-        public string SiteTitle { get; set; } = "";
-
-        /// <summary>
-        /// Show CMD windows. Useful for debugging. Default is false.
-        /// </summary>
-        public bool ShowCmdWindows { get; set; } = false;
-
-        /// <summary>
-        /// Timeout for commands. Default is 60k MS (60 seconds).
-        /// </summary>
-        public int CmdTimeoutMs { get; set; } = DEFAULT_CMD_TIMEOUT;
-
-        /// <summary>
-        /// Used to determine if parameter detection has occurred, default false.
-        /// </summary>
-        public bool Initialised { get; set; } = false;
-
-        public StaticSiteConfigFrontMatterKeys FrontMatterKeys { get; set; } = new StaticSiteConfigFrontMatterKeys();
-
+        /// <value>The validator.</value>
         public StaticSiteConfigValidator Validator => new StaticSiteConfigValidator(this);
 
         /// <summary>
-        /// Load site configuration from blog credentials
+        /// Create a new <see cref="StaticSiteConfig"/> instance and loads site configuration from blog settings
         /// </summary>
-        /// <param name="creds">An IBlogCredentialsAccessor</param>
-        public void LoadFromCredentials(IBlogCredentialsAccessor creds)
+        /// <param name="blogSettings">The blog settings.</param>
+        /// <returns>A <see cref="StaticSiteConfig"/>.</returns>
+        public static StaticSiteConfig LoadConfigFromBlogSettings(IBlogSettingsAccessor blogSettings)
         {
-            LocalSitePath = creds.Username;
-            PostsPath = creds.GetCustomValue(CONFIG_POSTS_PATH);
-
-            PagesEnabled = creds.GetCustomValue(CONFIG_PAGES_ENABLED) == "1";
-            PagesPath = creds.GetCustomValue(CONFIG_PAGES_PATH);
-
-            DraftsEnabled = creds.GetCustomValue(CONFIG_DRAFTS_ENABLED) == "1";
-            DraftsPath = creds.GetCustomValue(CONFIG_DRAFTS_PATH);
-
-            ImagesEnabled = creds.GetCustomValue(CONFIG_IMAGES_ENABLED) == "1";
-            ImagesPath = creds.GetCustomValue(CONFIG_IMAGES_PATH);
-
-            BuildingEnabled = creds.GetCustomValue(CONFIG_BUILDING_ENABLED) == "1";
-            OutputPath = creds.GetCustomValue(CONFIG_OUTPUT_PATH);
-            BuildCommand = creds.GetCustomValue(CONFIG_BUILD_COMMAND);
-
-            PublishCommand = creds.GetCustomValue(CONFIG_PUBLISH_COMMAND);
-
-            SiteUrl = creds.GetCustomValue(CONFIG_SITE_URL); // This will be overidden in LoadFromBlogSettings, HomepageUrl is considered a more accurate source of truth
-
-            ShowCmdWindows = creds.GetCustomValue(CONFIG_SHOW_CMD_WINDOWS) == "1";
-            if (creds.GetCustomValue(CONFIG_CMD_TIMEOUT_MS) != string.Empty) CmdTimeoutMs = int.Parse(creds.GetCustomValue(CONFIG_CMD_TIMEOUT_MS));
-            Initialised = creds.GetCustomValue(CONFIG_INITIALISED) == "1";
-
-            // Load FrontMatterKeys
-            FrontMatterKeys = StaticSiteConfigFrontMatterKeys.LoadKeysFromCredentials(creds);
+            var config = new StaticSiteConfig();
+            config.LoadFromBlogSettings(blogSettings);
+            return config;
         }
 
         /// <summary>
-        /// Loads site configuration from blog settings
-        /// </summary>
-        /// <param name="blogCredentials">An IBlogSettingsAccessor</param>
-        public void LoadFromBlogSettings(IBlogSettingsAccessor blogSettings)
-        {
-            LoadFromCredentials(blogSettings.Credentials);
-
-            SiteUrl = blogSettings.HomepageUrl;
-            SiteTitle = blogSettings.BlogName;
-        }
-
-        /// <summary>
-        /// Saves site configuration to blog credentials
-        /// </summary>
-        public void SaveToCredentials(IBlogCredentialsAccessor creds)
-        {
-            // Set username to Local Site Path
-            creds.Username = LocalSitePath;
-            creds.SetCustomValue(CONFIG_POSTS_PATH, PostsPath);
-
-            creds.SetCustomValue(CONFIG_PAGES_ENABLED, PagesEnabled ? "1" : "0");
-            creds.SetCustomValue(CONFIG_PAGES_PATH, PagesPath);
-
-            creds.SetCustomValue(CONFIG_DRAFTS_ENABLED, DraftsEnabled ? "1" : "0");
-            creds.SetCustomValue(CONFIG_DRAFTS_PATH, DraftsPath);
-
-            creds.SetCustomValue(CONFIG_IMAGES_ENABLED, ImagesEnabled ? "1" : "0");
-            creds.SetCustomValue(CONFIG_IMAGES_PATH, ImagesPath);
-
-            creds.SetCustomValue(CONFIG_BUILDING_ENABLED, BuildingEnabled ? "1" : "0");
-            creds.SetCustomValue(CONFIG_OUTPUT_PATH, OutputPath);
-            creds.SetCustomValue(CONFIG_BUILD_COMMAND, BuildCommand);
-
-            creds.SetCustomValue(CONFIG_PUBLISH_COMMAND, PublishCommand);
-            creds.SetCustomValue(CONFIG_SITE_URL, SiteUrl);
-
-            creds.SetCustomValue(CONFIG_SHOW_CMD_WINDOWS, ShowCmdWindows ? "1" : "0");
-            creds.SetCustomValue(CONFIG_CMD_TIMEOUT_MS, CmdTimeoutMs.ToString());
-            creds.SetCustomValue(CONFIG_INITIALISED, Initialised ? "1" : "0");
-
-            // Save FrontMatterKeys
-            FrontMatterKeys.SaveToCredentials(creds);
-        }
-
-        public void SaveToCredentials(IBlogCredentials blogCredentials)
-            => SaveToCredentials(new BlogCredentialsAccessor("", blogCredentials));
-
-        public StaticSiteConfig Clone()
-            => new StaticSiteConfig()
-            {
-                LocalSitePath = LocalSitePath,
-                PostsPath = PostsPath,
-                PagesEnabled = PagesEnabled,
-                PagesPath = PagesPath,
-                DraftsEnabled = DraftsEnabled,
-                DraftsPath = DraftsPath,
-                ImagesEnabled = ImagesEnabled,
-                ImagesPath = ImagesPath,
-                BuildingEnabled = BuildingEnabled,
-                OutputPath = OutputPath,
-                BuildCommand = BuildCommand,
-                PublishCommand = PublishCommand,
-                SiteUrl = SiteUrl,
-                SiteTitle = SiteTitle,
-                ShowCmdWindows = ShowCmdWindows,
-                CmdTimeoutMs = CmdTimeoutMs,
-                Initialised = Initialised,
-                
-                FrontMatterKeys = FrontMatterKeys.Clone()
-            };
-
-        /// <summary>
-        /// Create a new StaticSiteConfig instance and load site configuration from blog credentials
+        /// Create a new <see cref="StaticSiteConfig"/> instance and load site configuration from blog credentials
         /// </summary>
         /// <param name="blogCredentials">An IBlogCredentialsAccessor</param>
+        /// <returns>A <see cref="StaticSiteConfig"/>.</returns>
         public static StaticSiteConfig LoadConfigFromCredentials(IBlogCredentialsAccessor blogCredentials)
         {
             var config = new StaticSiteConfig();
@@ -238,104 +233,133 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
             return config;
         }
 
-        public static StaticSiteConfig LoadConfigFromCredentials(IBlogCredentials blogCredentials)
-            => LoadConfigFromCredentials(new BlogCredentialsAccessor("", blogCredentials));
+        /// <summary>
+        /// Loads the configuration from credentials.
+        /// </summary>
+        /// <param name="blogCredentials">The blog credentials.</param>
+        /// <returns>A <see cref="StaticSiteConfig"/>.</returns>
+        public static StaticSiteConfig LoadConfigFromCredentials(IBlogCredentials blogCredentials) =>
+            StaticSiteConfig.LoadConfigFromCredentials(new BlogCredentialsAccessor(string.Empty, blogCredentials));
 
         /// <summary>
-        /// Create a new StaticSiteConfig instance and loads site configuration from blog settings
+        /// Clones this instance.
         /// </summary>
-        /// <param name="blogCredentials">An IBlogSettingsAccessor</param>
-        public static StaticSiteConfig LoadConfigFromBlogSettings(IBlogSettingsAccessor blogSettings)
+        /// <returns>A <see cref="StaticSiteConfig"/>.</returns>
+        public StaticSiteConfig Clone() =>
+            new StaticSiteConfig
+                {
+                    LocalSitePath = this.LocalSitePath,
+                    PostsPath = this.PostsPath,
+                    PagesEnabled = this.PagesEnabled,
+                    PagesPath = this.PagesPath,
+                    DraftsEnabled = this.DraftsEnabled,
+                    DraftsPath = this.DraftsPath,
+                    ImagesEnabled = this.ImagesEnabled,
+                    ImagesPath = this.ImagesPath,
+                    BuildingEnabled = this.BuildingEnabled,
+                    OutputPath = this.OutputPath,
+                    BuildCommand = this.BuildCommand,
+                    PublishCommand = this.PublishCommand,
+                    SiteUrl = this.SiteUrl,
+                    SiteTitle = this.SiteTitle,
+                    ShowCmdWindows = this.ShowCmdWindows,
+                    CmdTimeoutMs = this.CmdTimeoutMs,
+                    Initialized = this.Initialized,
+                    FrontMatterKeys = this.FrontMatterKeys.Clone()
+                };
+
+        /// <summary>
+        /// Loads site configuration from blog settings
+        /// </summary>
+        /// <param name="blogSettings">The blog settings.</param>
+        public void LoadFromBlogSettings(IBlogSettingsAccessor blogSettings)
         {
-            var config = new StaticSiteConfig();
-            config.LoadFromBlogSettings(blogSettings);
-            return config;
+            this.LoadFromCredentials(blogSettings.Credentials);
+
+            this.SiteUrl = blogSettings.HomepageUrl;
+            this.SiteTitle = blogSettings.BlogName;
         }
-    }
 
-    /// <summary>
-    /// Represents the YAML keys used for each of these properties in the front matter
-    /// </summary>
-    public class StaticSiteConfigFrontMatterKeys
-    {
-        private const string CONFIG_ID_KEY = "FrontMatterKey.Id";
-        private const string CONFIG_TITLE_KEY = "FrontMatterKey.Title";
-        private const string CONFIG_DATE_KEY = "FrontMatterKey.Date";
-        private const string CONFIG_LAYOUT_KEY = "FrontMatterKey.Layout";
-        private const string CONFIG_TAGS_KEY = "FrontMatterKey.Tags";
-        private const string CONFIG_PARENT_ID_KEY = "FrontMatterKey.ParentId";
-        private const string CONFIG_PERMALINK_KEY = "FrontMatterKey.Permalink";
-
-        public enum KeyIdentifier
+        /// <summary>
+        /// Load site configuration from blog credentials
+        /// </summary>
+        /// <param name="credentials">An <see cref="IBlogCredentialsAccessor"/>.</param>
+        public void LoadFromCredentials(IBlogCredentialsAccessor credentials)
         {
-            Id,
-            Title,
-            Date,
-            Layout,
-            Tags,
-            ParentId,
-            Permalink
-        }
+            this.LocalSitePath = credentials.Username;
+            this.PostsPath = credentials.GetCustomValue(StaticSiteConfig.ConfigPostsPath);
 
-        public string IdKey { get; set; } = "id";
-        public string TitleKey { get; set; } = "title";
-        public string DateKey { get; set; } = "date";
-        public string LayoutKey { get; set; } = "layout";
-        public string TagsKey { get; set; } = "tags";
-        public string ParentIdKey { get; set; } = "parent_id";
-        public string PermalinkKey { get; set; } = "permalink";
+            this.PagesEnabled = credentials.GetCustomValue(StaticSiteConfig.ConfigPagesEnabled) == "1";
+            this.PagesPath = credentials.GetCustomValue(StaticSiteConfig.ConfigPagesPath);
 
-        public StaticSiteConfigFrontMatterKeys Clone()
-            => new StaticSiteConfigFrontMatterKeys()
+            this.DraftsEnabled = credentials.GetCustomValue(StaticSiteConfig.ConfigDraftsEnabled) == "1";
+            this.DraftsPath = credentials.GetCustomValue(StaticSiteConfig.ConfigDraftsPath);
+
+            this.ImagesEnabled = credentials.GetCustomValue(StaticSiteConfig.ConfigImagesEnabled) == "1";
+            this.ImagesPath = credentials.GetCustomValue(StaticSiteConfig.ConfigImagesPath);
+
+            this.BuildingEnabled = credentials.GetCustomValue(StaticSiteConfig.ConfigBuildingEnabled) == "1";
+            this.OutputPath = credentials.GetCustomValue(StaticSiteConfig.ConfigOutputPath);
+            this.BuildCommand = credentials.GetCustomValue(StaticSiteConfig.ConfigBuildCommand);
+
+            this.PublishCommand = credentials.GetCustomValue(StaticSiteConfig.ConfigPublishCommand);
+
+            this.SiteUrl =
+                credentials.GetCustomValue(
+                    StaticSiteConfig
+                       .ConfigSiteUrl); // This will be overridden in LoadFromBlogSettings, HomepageUrl is considered a more accurate source of truth
+
+            this.ShowCmdWindows = credentials.GetCustomValue(StaticSiteConfig.ConfigShowCmdWindows) == "1";
+            if (credentials.GetCustomValue(StaticSiteConfig.ConfigCmdTimeoutMs) != string.Empty)
             {
-                IdKey = IdKey,
-                TitleKey = TitleKey,
-                DateKey = DateKey,
-                LayoutKey = LayoutKey,
-                TagsKey = TagsKey,
-                ParentIdKey = ParentIdKey,
-                PermalinkKey = PermalinkKey
-            };
+                this.CmdTimeoutMs = int.Parse(credentials.GetCustomValue(StaticSiteConfig.ConfigCmdTimeoutMs));
+            }
 
-        /// <summary>
-        /// Load front matter keys configuration from blog credentials
-        /// </summary>
-        /// <param name="creds">An IBlogCredentialsAccessor</param>
-        public void LoadFromCredentials(IBlogCredentialsAccessor creds)
-        {
-            if (creds.GetCustomValue(CONFIG_ID_KEY) != string.Empty) IdKey = creds.GetCustomValue(CONFIG_ID_KEY);
-            if (creds.GetCustomValue(CONFIG_TITLE_KEY) != string.Empty) TitleKey = creds.GetCustomValue(CONFIG_TITLE_KEY);
-            if (creds.GetCustomValue(CONFIG_DATE_KEY) != string.Empty) DateKey = creds.GetCustomValue(CONFIG_DATE_KEY);
-            if (creds.GetCustomValue(CONFIG_LAYOUT_KEY) != string.Empty) LayoutKey = creds.GetCustomValue(CONFIG_LAYOUT_KEY);
-            if (creds.GetCustomValue(CONFIG_TAGS_KEY) != string.Empty) TagsKey = creds.GetCustomValue(CONFIG_TAGS_KEY);
-            if (creds.GetCustomValue(CONFIG_PARENT_ID_KEY) != string.Empty) ParentIdKey = creds.GetCustomValue(CONFIG_PARENT_ID_KEY);
-            if (creds.GetCustomValue(CONFIG_PERMALINK_KEY) != string.Empty) PermalinkKey = creds.GetCustomValue(CONFIG_PERMALINK_KEY);
+            this.Initialized = credentials.GetCustomValue(StaticSiteConfig.ConfigInitialized) == "1";
+
+            // Load FrontMatterKeys
+            this.FrontMatterKeys = StaticSiteConfigFrontMatterKeys.LoadKeysFromCredentials(credentials);
         }
 
         /// <summary>
-        /// Save front matter keys configuration to blog credentials
+        /// Saves site configuration to blog credentials
         /// </summary>
-        /// <param name="creds">An IBlogCredentialsAccessor</param>
-        public void SaveToCredentials(IBlogCredentialsAccessor creds)
+        /// <param name="credentials">The credentials.</param>
+        public void SaveToCredentials(IBlogCredentialsAccessor credentials)
         {
-            creds.SetCustomValue(CONFIG_ID_KEY, IdKey);
-            creds.SetCustomValue(CONFIG_TITLE_KEY, TitleKey);
-            creds.SetCustomValue(CONFIG_DATE_KEY, DateKey);
-            creds.SetCustomValue(CONFIG_LAYOUT_KEY, LayoutKey);
-            creds.SetCustomValue(CONFIG_TAGS_KEY, TagsKey);
-            creds.SetCustomValue(CONFIG_PARENT_ID_KEY, ParentIdKey);
-            creds.SetCustomValue(CONFIG_PERMALINK_KEY, PermalinkKey);
+            // Set username to Local Site Path
+            credentials.Username = this.LocalSitePath;
+            credentials.SetCustomValue(StaticSiteConfig.ConfigPostsPath, this.PostsPath);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigPagesEnabled, this.PagesEnabled ? "1" : "0");
+            credentials.SetCustomValue(StaticSiteConfig.ConfigPagesPath, this.PagesPath);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigDraftsEnabled, this.DraftsEnabled ? "1" : "0");
+            credentials.SetCustomValue(StaticSiteConfig.ConfigDraftsPath, this.DraftsPath);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigImagesEnabled, this.ImagesEnabled ? "1" : "0");
+            credentials.SetCustomValue(StaticSiteConfig.ConfigImagesPath, this.ImagesPath);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigBuildingEnabled, this.BuildingEnabled ? "1" : "0");
+            credentials.SetCustomValue(StaticSiteConfig.ConfigOutputPath, this.OutputPath);
+            credentials.SetCustomValue(StaticSiteConfig.ConfigBuildCommand, this.BuildCommand);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigPublishCommand, this.PublishCommand);
+            credentials.SetCustomValue(StaticSiteConfig.ConfigSiteUrl, this.SiteUrl);
+
+            credentials.SetCustomValue(StaticSiteConfig.ConfigShowCmdWindows, this.ShowCmdWindows ? "1" : "0");
+            credentials.SetCustomValue(StaticSiteConfig.ConfigCmdTimeoutMs, this.CmdTimeoutMs.ToString());
+            credentials.SetCustomValue(StaticSiteConfig.ConfigInitialized, this.Initialized ? "1" : "0");
+
+            // Save FrontMatterKeys
+            this.FrontMatterKeys.SaveToCredentials(credentials);
         }
 
         /// <summary>
-        /// Create a new StaticSiteConfigFrontMatterKeys instance and load configuration from blog credentials
+        /// Saves to credentials.
         /// </summary>
-        /// <param name="blogCredentials">An IBlogCredentialsAccessor</param>
-        public static StaticSiteConfigFrontMatterKeys LoadKeysFromCredentials(IBlogCredentialsAccessor blogCredentials)
-        {
-            var frontMatterKeys = new StaticSiteConfigFrontMatterKeys();
-            frontMatterKeys.LoadFromCredentials(blogCredentials);
-            return frontMatterKeys;
-        }
+        /// <param name="blogCredentials">The blog credentials.</param>
+        public void SaveToCredentials(IBlogCredentials blogCredentials) =>
+            this.SaveToCredentials(new BlogCredentialsAccessor(string.Empty, blogCredentials));
     }
 }

@@ -540,21 +540,21 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
             // Fill blog settings
             this._temporarySettings.SetProvider(
-                StaticSiteClient.PROVIDER_ID,
-                StaticSiteClient.SERVICE_NAME,
-                StaticSiteClient.POST_API_URL,
-                StaticSiteClient.CLIENT_TYPE
+                StaticSiteClient.ProviderId,
+                StaticSiteClient.ServiceName,
+                StaticSiteClient.PostApiUrl,
+                StaticSiteClient.ClientType
                 );
 
             // Save config
             panel.SaveToConfig(this.staticSiteConfig);
 
-            if (!this.staticSiteConfig.Initialised)
+            if (!this.staticSiteConfig.Initialized)
             {
                 // Set initialised flag so detection isn't undertaken again
-                this.staticSiteConfig.Initialised = true;
+                this.staticSiteConfig.Initialized = true;
                 // Attempt parameter detection
-                var detectionResult = StaticSiteConfigDetector.AttmeptAutoDetect(this.staticSiteConfig);
+                var detectionResult = StaticSiteConfigDetector.AttemptAutoDetect(this.staticSiteConfig);
                 if (detectionResult)
                 {
                     // Successful detection of parameters
@@ -677,10 +677,10 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             // Fill blog settings
             this._temporarySettings.SetProvider(
-                StaticSiteClient.PROVIDER_ID,
-                StaticSiteClient.SERVICE_NAME,
-                StaticSiteClient.POST_API_URL,
-                StaticSiteClient.CLIENT_TYPE
+                StaticSiteClient.ProviderId,
+                StaticSiteClient.ServiceName,
+                StaticSiteClient.PostApiUrl,
+                StaticSiteClient.ClientType
                 );
 
             this._temporarySettings.HomepageUrl = this.staticSiteConfig.SiteUrl;

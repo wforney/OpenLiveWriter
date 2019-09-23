@@ -121,7 +121,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
 
         public void GeneralPanel_RunAutoDetect()
         {
-            var result = StaticSiteConfigDetector.AttmeptAutoDetect(Config);
+            var result = StaticSiteConfigDetector.AttemptAutoDetect(Config);
 
             if(result)
             {

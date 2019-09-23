@@ -99,7 +99,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         public void LoadFromConfig(StaticSiteConfig config)
         {
             LocalSitePath = config.LocalSitePath;
-            if(config.Initialised) labelSubtitle.Text = string.Format(Res.Get(StringId.CWStaticSiteInitialSubtitleAlreadyDetected), Res.Get(StringId.ProductNameVersioned));
+            if(config.Initialized) labelSubtitle.Text = string.Format(Res.Get(StringId.CWStaticSiteInitialSubtitleAlreadyDetected), Res.Get(StringId.ProductNameVersioned));
         }
 
         /// <summary>
