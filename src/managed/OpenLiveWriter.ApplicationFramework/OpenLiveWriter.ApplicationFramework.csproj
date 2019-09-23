@@ -240,7 +240,12 @@
     <Compile Include="MiniTab.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MiniTabContext.cs" />
     <Compile Include="MiniTabsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MiniTabsControl.SelectedTabChangedEventArgs.cs">
+      <DependentUpon>MiniTabsControl.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MinMaxClose.cs">

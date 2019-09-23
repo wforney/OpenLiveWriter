@@ -1,59 +1,73 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+// <copyright file="MenuBuilder.cs" company=".NET Foundation">
+// Copyright © .NET Foundation. All rights reserved.
+// </copyright>
+// <summary>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System.Collections;
-using System.Windows.Forms;
+// </summary>
 
 namespace OpenLiveWriter.ApplicationFramework
 {
+    using System;
+    using System.Collections;
+    using System.Linq;
+    using System.Windows.Forms;
+
     /// <summary>
     /// Command-based menu builder.
     /// </summary>
-    public sealed class MenuBuilder
+    public static class MenuBuilder
     {
         /// <summary>
-        /// Initializes a new instance of the MenuBuilder class.
+        /// Creates the menu items.
         /// </summary>
-        private MenuBuilder()
-        {
-        }
-
-        public static MenuItem[] CreateMenuItems(CommandManager commandManager, CommandContextMenuDefinition commandContextMenuDefinition)
-        {
-            return CreateMenuItems(commandManager, commandContextMenuDefinition.CommandBar ? MenuType.CommandBarContext : MenuType.Context, commandContextMenuDefinition.Entries);
-        }
+        /// <param name="commandManager">The command manager.</param>
+        /// <param name="commandContextMenuDefinition">The command context menu definition.</param>
+        /// <returns>A <see cref="Array"/>.</returns>
+        public static MenuItem[] CreateMenuItems(
+            CommandManager commandManager,
+            CommandContextMenuDefinition commandContextMenuDefinition) =>
+            MenuBuilder.CreateMenuItems(
+                commandManager,
+                commandContextMenuDefinition.CommandBar ? MenuType.CommandBarContext : MenuType.Context,
+                commandContextMenuDefinition.Entries);
 
         /// <summary>
         /// Creates menu items for the specified MenuDefinitionEntryCollection.
         /// </summary>
-        ///	<param name="commandManager">The CommandManager to use.</param>
+        /// <param name="commandManager">The CommandManager to use.</param>
+        /// <param name="menuType">Type of the menu.</param>
         /// <param name="menuDefinitionEntryCollection">The MenuDefinitionEntryCollection to create menu items for.</param>
         /// <returns>The menu items.</returns>
-        public static MenuItem[] CreateMenuItems(CommandManager commandManager, MenuType menuType, MenuDefinitionEntryCollection menuDefinitionEntryCollection)
+        public static MenuItem[] CreateMenuItems(
+            CommandManager commandManager,
+            MenuType menuType,
+            MenuDefinitionEntryCollection menuDefinitionEntryCollection)
         {
-            ArrayList menuItemArrayList = new ArrayList();
-            for (int position = 0; position < menuDefinitionEntryCollection.Count; position++)
+            var menuItemArrayList = new ArrayList();
+            foreach (var menuItems in menuDefinitionEntryCollection
+                .Select(menuDefinitionEntry => menuDefinitionEntry.GetMenuItems(commandManager, menuType))
+                .Where(menuItems => menuItems != null))
             {
-                MenuItem[] menuItems = menuDefinitionEntryCollection[position].GetMenuItems(commandManager, menuType);
-                if (menuItems != null)
-                    menuItemArrayList.AddRange(menuItems);
+                menuItemArrayList.AddRange(menuItems);
             }
 
             // remove leading, trailing, and adjacent separators
-            for (int i = menuItemArrayList.Count - 1; i >= 0; i--)
+            for (var i = menuItemArrayList.Count - 1; i >= 0; i--)
             {
-                if (((MenuItem)menuItemArrayList[i]).Text == "-")
+                const string Dash = "-";
+                if (((MenuItem)menuItemArrayList[i]).Text == Dash)
                 {
-                    if (i == 0 ||  // leading
-                        i == menuItemArrayList.Count - 1 ||  // trailing
-                        ((MenuItem)menuItemArrayList[i - 1]).Text == "-")  // adjacent
+                    if (i == 0 || // leading
+                        i == menuItemArrayList.Count - 1 || // trailing
+                        ((MenuItem)menuItemArrayList[i - 1]).Text == Dash)
                     {
+                        // adjacent
                         menuItemArrayList.RemoveAt(i);
                     }
                 }
             }
 
-            return (menuItemArrayList.Count == 0) ? null : (MenuItem[])menuItemArrayList.ToArray(typeof(MenuItem));
+            return menuItemArrayList.Count == 0 ? null : (MenuItem[])menuItemArrayList.ToArray(typeof(MenuItem));
         }
     }
 }
