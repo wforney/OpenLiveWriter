@@ -109,7 +109,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             var uri = this.FeedServiceUrl;
             var serviceDoc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
 
-            foreach (XmlElement entryEl in serviceDoc.SelectNodes("app:service/app:workspace/app:collection", this._nsMgr))
+            foreach (XmlElement entryEl in serviceDoc.SelectNodes("app:service/app:workspace/app:collection", this.NamespaceManager))
             {
                 var href = XmlHelper.GetUrl(entryEl, "@href", uri);
                 if (blogId == href)
@@ -117,7 +117,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     var results = new XmlDocument();
                     var rootElement = results.CreateElement("featuresInfo");
                     results.AppendChild(rootElement);
-                    foreach (XmlElement featuresNode in entryEl.SelectNodes("f:features", this._nsMgr))
+                    foreach (XmlElement featuresNode in entryEl.SelectNodes("f:features", this.NamespaceManager))
                     {
                         this.AddFeaturesXml(featuresNode, rootElement, uri);
                     }
@@ -138,7 +138,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if (baseUri == null || !uri.Equals(baseUri)) // detect simple cycles
                     {
                         var doc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
-                        var features = (XmlElement)doc.SelectSingleNode(@"f:features", this._nsMgr);
+                        var features = (XmlElement)doc.SelectSingleNode(@"f:features", this.NamespaceManager);
                         if (features != null)
                         {
                             this.AddFeaturesXml(features, containerNode, uri);
@@ -172,7 +172,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         private void GetCategoryInfo(string blogId, string inScheme, out string outScheme, out bool supportsNewCategories)
         {
             var xmlDoc = this.GetCategoryXml(ref blogId);
-            foreach (XmlElement categoriesNode in xmlDoc.DocumentElement.SelectNodes("app:categories", this._nsMgr))
+            foreach (XmlElement categoriesNode in xmlDoc.DocumentElement.SelectNodes("app:categories", this.NamespaceManager))
             {
                 var hasScheme = categoriesNode.HasAttribute("scheme");
                 var scheme = categoriesNode.GetAttribute("scheme");
@@ -264,7 +264,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         public override string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
         {
-            var uploader = new AtomMediaUploader(this._nsMgr, this.RequestFilter, this.Options.ImagePostingUrl, this.Options);
+            var uploader = new AtomMediaUploader(this.NamespaceManager, this.RequestFilter, this.Options.ImagePostingUrl, this.Options);
             return uploader.DoBeforePublishUploadWork(uploadContext);
         }
 
@@ -276,10 +276,10 @@ namespace OpenLiveWriter.BlogClient.Clients
             var xmlDoc = xmlRestRequestHelper.Get(ref serviceDocUri, this.RequestFilter);
 
             var blogInfos = new ArrayList();
-            foreach (XmlElement coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", this._nsMgr))
+            foreach (XmlElement coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", this.NamespaceManager))
             {
                 // does this collection accept entries?
-                var acceptNodes = coll.SelectNodes("app:accept", this._nsMgr);
+                var acceptNodes = coll.SelectNodes("app:accept", this.NamespaceManager);
                 var acceptTypes = new string[acceptNodes.Count];
                 for (var i = 0; i < acceptTypes.Length; i++)
                 {
@@ -301,10 +301,10 @@ namespace OpenLiveWriter.BlogClient.Clients
                         Debug.Assert(titleContainerNode != null);
                         if (titleContainerNode != null)
                         {
-                            var titleNode = titleContainerNode.SelectSingleNode("atom:title", this._nsMgr) as XmlElement;
+                            var titleNode = titleContainerNode.SelectSingleNode("atom:title", this.NamespaceManager) as XmlElement;
                             if (titleNode != null)
                             {
-                                var titlePart = this._atomVer.TextNodeToPlaintext(titleNode);
+                                var titlePart = this.atomVersion.TextNodeToPlaintext(titleNode);
                                 if (titlePart.Length != 0)
                                 {
                                     Res.LOCME("loc the separator between parts of the blog name");

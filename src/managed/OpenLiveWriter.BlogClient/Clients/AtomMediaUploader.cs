@@ -2,145 +2,196 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 #define APIHACK
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Threading;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.HtmlParser.Parser;
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net;
+    using System.Xml;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Extensibility.BlogClient;
+
+    /// <summary>
+    /// The AtomMediaUploader class.
+    /// </summary>
     public class AtomMediaUploader
     {
-        protected const string EDIT_MEDIA_LINK = "EditMediaLink";
-        protected const string EDIT_MEDIA_ENTRY_LINK = "EditMediaLinkEntryLink";
-        protected const string MEDIA_ETAG = "MediaEtag";
+        /// <summary>
+        /// The edit media entry link
+        /// </summary>
+        protected const string EditMediaEntryLink = "EditMediaLinkEntryLink";
 
-        protected XmlNamespaceManager _nsMgr
-        {
-            get;
-            private set;
-        }
-        protected HttpRequestFilter _requestFilter
-        {
-            get;
-            private set;
-        }
-        protected readonly string _collectionUri;
-        protected IBlogClientOptions _options
-        {
-            get;
-            private set;
-        }
-        protected XmlRestRequestHelper xmlRestRequestHelper
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// The edit media link
+        /// </summary>
+        protected const string EditMediaLink = "EditMediaLink";
 
-        public AtomMediaUploader(XmlNamespaceManager nsMgr, HttpRequestFilter requestFilter, string collectionUri, IBlogClientOptions options)
-            : this(nsMgr, requestFilter, collectionUri, options, new XmlRestRequestHelper())
-        {
-        }
+        /// <summary>
+        /// The media etag
+        /// </summary>
+        protected const string MediaEtag = "MediaEtag";
 
-        public AtomMediaUploader(XmlNamespaceManager nsMgr, HttpRequestFilter requestFilter, string collectionUri, IBlogClientOptions options, XmlRestRequestHelper xmlRestRequestHelper)
+        /// <summary>
+        /// The collection URI
+        /// </summary>
+        protected readonly string CollectionUri;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AtomMediaUploader"/> class.
+        /// </summary>
+        /// <param name="namespaceManager">The ns MGR.</param>
+        /// <param name="requestFilter">The request filter.</param>
+        /// <param name="collectionUri">The collection URI.</param>
+        /// <param name="options">The options.</param>
+        public AtomMediaUploader(
+            XmlNamespaceManager namespaceManager,
+            HttpRequestFilter requestFilter,
+            string collectionUri,
+            IBlogClientOptions options)
+            : this(namespaceManager, requestFilter, collectionUri, options, new XmlRestRequestHelper())
         {
-            this._nsMgr = nsMgr;
-            this._requestFilter = requestFilter;
-            this._collectionUri = collectionUri;
-            this._options = options;
-            this.xmlRestRequestHelper = xmlRestRequestHelper;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AtomMediaUploader"/> class.
+        /// </summary>
+        /// <param name="namespaceManager">The ns MGR.</param>
+        /// <param name="requestFilter">The request filter.</param>
+        /// <param name="collectionUri">The collection URI.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="xmlRestRequestHelper">The XML rest request helper.</param>
+        public AtomMediaUploader(
+            XmlNamespaceManager namespaceManager,
+            HttpRequestFilter requestFilter,
+            string collectionUri,
+            IBlogClientOptions options,
+            XmlRestRequestHelper xmlRestRequestHelper)
+        {
+            this.NsMgr = namespaceManager;
+            this.RequestFilter = requestFilter;
+            this.CollectionUri = collectionUri;
+            this.Options = options;
+            this.XmlRestRequestHelper = xmlRestRequestHelper;
+        }
+
+        /// <summary>
+        /// Gets the ns MGR.
+        /// </summary>
+        /// <value>The ns MGR.</value>
+        protected XmlNamespaceManager NsMgr { get; }
+
+        /// <summary>
+        /// Gets the options.
+        /// </summary>
+        /// <value>The options.</value>
+        protected IBlogClientOptions Options { get; }
+
+        /// <summary>
+        /// Gets the request filter.
+        /// </summary>
+        /// <value>The request filter.</value>
+        protected HttpRequestFilter RequestFilter { get; }
+
+        /// <summary>
+        /// Gets the XML rest request helper.
+        /// </summary>
+        /// <value>The XML rest request helper.</value>
+        protected XmlRestRequestHelper XmlRestRequestHelper { get; }
+
+        /// <summary>
+        /// Does the before publish upload work.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
+        /// <returns>The result.</returns>
         public string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
         {
-            string path = uploadContext.GetContentsLocalFilePath();
+            var path = uploadContext.GetContentsLocalFilePath();
             string srcUrl;
-            string editUri = uploadContext.Settings.GetString(EDIT_MEDIA_LINK, null);
-            string editEntryUri = uploadContext.Settings.GetString(EDIT_MEDIA_ENTRY_LINK, null);
-            string etag = uploadContext.Settings.GetString(MEDIA_ETAG, null);
+            var editUri = uploadContext.Settings.GetString(AtomMediaUploader.EditMediaLink, null);
+            var editEntryUri = uploadContext.Settings.GetString(AtomMediaUploader.EditMediaEntryLink, null);
+            var etag = uploadContext.Settings.GetString(AtomMediaUploader.MediaEtag, null);
             if (string.IsNullOrEmpty(editUri))
             {
-                PostNewImage(path, false, out srcUrl, out editUri, out editEntryUri);
+                this.PostNewImage(path, false, out srcUrl, out editUri, out editEntryUri);
             }
             else
             {
                 try
                 {
-                    UpdateImage(ref editUri, path, editEntryUri, etag, true, out srcUrl);
+                    this.UpdateImage(ref editUri, path, editEntryUri, etag, true, out srcUrl);
                 }
                 catch (Exception e)
                 {
                     Trace.Fail(e.ToString());
 
-                    bool success = false;
+                    var success = false;
                     srcUrl = null; // compiler complains without this line
                     try
                     {
                         // couldn't update existing image? try posting a new one
-                        PostNewImage(path, false, out srcUrl, out editUri, out editEntryUri);
+                        this.PostNewImage(path, false, out srcUrl, out editUri, out editEntryUri);
                         success = true;
 
-                        if (e is WebException)
+                        if (e is WebException exception)
                         {
                             Trace.WriteLine("Image PUT failed, but POST succeeded. PUT exception follows.");
-                            HttpRequestHelper.LogException((WebException)e);
+                            HttpRequestHelper.LogException(exception);
                         }
                     }
                     catch
                     {
+                        // ignored
                     }
+
                     if (!success)
-                        throw;  // rethrow the exception from the update, not the post
+                    {
+                        throw; // rethrow the exception from the update, not the post
+                    }
                 }
             }
-            uploadContext.Settings.SetString(EDIT_MEDIA_LINK, editUri);
-            uploadContext.Settings.SetString(EDIT_MEDIA_ENTRY_LINK, editEntryUri);
-            uploadContext.Settings.SetString(MEDIA_ETAG, null);
 
-            UpdateETag(uploadContext, editUri);
+            uploadContext.Settings.SetString(AtomMediaUploader.EditMediaLink, editUri);
+            uploadContext.Settings.SetString(AtomMediaUploader.EditMediaEntryLink, editEntryUri);
+            uploadContext.Settings.SetString(AtomMediaUploader.MediaEtag, null);
+
+            this.UpdateETag(uploadContext, editUri);
             return srcUrl;
         }
 
-        protected virtual void UpdateETag(IFileUploadContext uploadContext, string editUri)
+        /// <summary>
+        /// Posts the new image.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="allowWriteStreamBuffering">if set to <c>true</c> [allow write stream buffering].</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="editMediaUri">The edit media URI.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <exception cref="BlogClientFileUploadNotSupportedException"></exception>
+        public virtual void PostNewImage(
+            string path,
+            bool allowWriteStreamBuffering,
+            out string srcUrl,
+            out string editMediaUri,
+            out string editEntryUri)
         {
-            try
+            var mediaCollectionUri = this.CollectionUri;
+            if (string.IsNullOrEmpty(mediaCollectionUri))
             {
-                string newEtag = AtomClient.GetEtag(editUri, _requestFilter);
-                uploadContext.Settings.SetString(MEDIA_ETAG, newEtag);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        public virtual void PostNewImage(string path, bool allowWriteStreamBuffering, out string srcUrl, out string editMediaUri, out string editEntryUri)
-        {
-            string mediaCollectionUri = _collectionUri;
-            if (mediaCollectionUri == null || mediaCollectionUri == "")
                 throw new BlogClientFileUploadNotSupportedException();
+            }
 
             HttpWebResponse response = null;
             try
             {
-                response = RedirectHelper.GetResponse(mediaCollectionUri,
-                new RedirectHelper.RequestFactory(new ImageUploadHelper(this, path, "POST", null, allowWriteStreamBuffering).Create));
+                response = RedirectHelper.GetResponse(
+                    mediaCollectionUri,
+                    new ImageUploadHelper(this, path, "POST", null, allowWriteStreamBuffering).Create);
 
-                string entryUri;
-                string etag;
-                string selfPage;
-                XmlDocument xmlDoc = GetCreatedEntity(response, out entryUri, out etag);
-                ParseResponse(xmlDoc, out srcUrl, out editMediaUri, out editEntryUri, out selfPage);
+                var xmlDoc = this.GetCreatedEntity(response, out var entryUri, out var etag);
+                this.ParseResponse(xmlDoc, out srcUrl, out editMediaUri, out editEntryUri, out var selfPage);
             }
             catch (WebException we)
             {
@@ -148,8 +199,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 // Try again with stream buffering.
                 if (we.Status == WebExceptionStatus.ProtocolError && !allowWriteStreamBuffering)
                 {
-                    PostNewImage(path, true, out srcUrl, out editMediaUri, out editEntryUri);
-
+                    this.PostNewImage(path, true, out srcUrl, out editMediaUri, out editEntryUri);
                 }
                 else
                 {
@@ -158,86 +208,207 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
             finally
             {
-                if (response != null)
-                    response.Close();
+                response?.Close();
             }
         }
 
-        private XmlDocument GetCreatedEntity(HttpWebResponse postResponse, out string editUri, out string etag)
+        /// <summary>
+        /// Parses the response.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="editUri">The edit URI.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <param name="selfPage">The self page.</param>
+        /// <param name="thumbnailSmall">The thumbnail small.</param>
+        /// <param name="thumbnailLarge">The thumbnail large.</param>
+        protected virtual void ParseResponse(
+            XmlDocument xmlDoc,
+            out string srcUrl,
+            out string editUri,
+            out string editEntryUri,
+            out string selfPage,
+            out string thumbnailSmall,
+            out string thumbnailLarge)
         {
-            editUri = postResponse.Headers["Location"];
-            string contentLocation = postResponse.Headers["Content-Location"];
-            if (string.IsNullOrEmpty(editUri) || editUri != contentLocation)
+            thumbnailSmall = null;
+            thumbnailLarge = null;
+            this.ParseResponse(xmlDoc, out srcUrl, out editUri, out editEntryUri, out selfPage);
+        }
+
+        /// <summary>
+        /// Parses the response.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="editUri">The edit URI.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <param name="selfPage">The self page.</param>
+        protected virtual void ParseResponse(
+            XmlDocument xmlDoc,
+            out string srcUrl,
+            out string editUri,
+            out string editEntryUri,
+            out string selfPage)
+        {
+            var contentEl = xmlDoc.SelectSingleNode("/atom:entry/atom:content", this.NsMgr) as XmlElement;
+            srcUrl = XmlHelper.GetUrl(contentEl, "@src", null);
+            editUri = AtomEntry.GetLink(
+                xmlDoc.SelectSingleNode("/atom:entry", this.NsMgr) as XmlElement,
+                this.NsMgr,
+                "edit-media",
+                null,
+                null,
+                null);
+            editEntryUri = AtomEntry.GetLink(
+                xmlDoc.SelectSingleNode("/atom:entry", this.NsMgr) as XmlElement,
+                this.NsMgr,
+                "edit",
+                null,
+                null,
+                null);
+            selfPage = AtomEntry.GetLink(
+                xmlDoc.SelectSingleNode("/atom:entry", this.NsMgr) as XmlElement,
+                this.NsMgr,
+                "alternate",
+                null,
+                null,
+                null);
+        }
+
+        /// <summary>
+        /// Updates the e tag.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
+        /// <param name="editUri">The edit URI.</param>
+        protected virtual void UpdateETag(IFileUploadContext uploadContext, string editUri)
+        {
+            try
             {
-                Uri uri = postResponse.ResponseUri;
-                if (!string.IsNullOrEmpty(editUri))
-                    uri = new Uri(editUri);
-                WebHeaderCollection responseHeaders;
-                XmlDocument doc = xmlRestRequestHelper.Get(ref uri, _requestFilter, out responseHeaders);
-                etag = responseHeaders["ETag"];
-                return doc;
+                var newEtag = AtomClient.GetEtag(editUri, this.RequestFilter);
+                uploadContext.Settings.SetString(AtomMediaUploader.MediaEtag, newEtag);
             }
-            else
+            catch (Exception)
             {
-                etag = postResponse.Headers["ETag"];
-                XmlDocument xmlDoc = new XmlDocument();
-                using (Stream s = postResponse.GetResponseStream())
-                    xmlDoc.Load(s);
-                XmlHelper.ApplyBaseUri(xmlDoc, postResponse.ResponseUri);
-                return xmlDoc;
             }
         }
 
-        protected virtual void UpdateImage(ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl)
-        {
-            string thumbnailSmall;
-            string thumbnailLarge;
+        /// <summary>
+        /// Updates the image.
+        /// </summary>
+        /// <param name="editMediaUri">The edit media URI.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <param name="etag">The etag.</param>
+        /// <param name="getEditInfo">if set to <c>true</c> [get edit information].</param>
+        /// <param name="srcUrl">The source URL.</param>
+        protected virtual void UpdateImage(
+            ref string editMediaUri,
+            string path,
+            string editEntryUri,
+            string etag,
+            bool getEditInfo,
+            out string srcUrl) => this.UpdateImage(
+                false,
+                ref editMediaUri,
+                path,
+                editEntryUri,
+                etag,
+                getEditInfo,
+                out srcUrl,
+                out var thumbnailSmall,
+                out var thumbnailLarge);
 
-            UpdateImage(false, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out thumbnailSmall, out thumbnailLarge);
-        }
+        /// <summary>
+        /// Updates the image.
+        /// </summary>
+        /// <param name="allowWriteStreamBuffering">if set to <c>true</c> [allow write stream buffering].</param>
+        /// <param name="editMediaUri">The edit media URI.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <param name="etag">The etag.</param>
+        /// <param name="getEditInfo">if set to <c>true</c> [get edit information].</param>
+        /// <param name="srcUrl">The source URL.</param>
+        protected virtual void UpdateImage(
+            bool allowWriteStreamBuffering,
+            ref string editMediaUri,
+            string path,
+            string editEntryUri,
+            string etag,
+            bool getEditInfo,
+            out string srcUrl) => this.UpdateImage(
+                allowWriteStreamBuffering,
+                ref editMediaUri,
+                path,
+                editEntryUri,
+                etag,
+                getEditInfo,
+                out srcUrl,
+                out var thumbnailSmall,
+                out var thumbnailLarge);
 
-        protected virtual void UpdateImage(bool allowWriteStreamBuffering, ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl)
-        {
-            string thumbnailSmall;
-            string thumbnailLarge;
-
-            UpdateImage(allowWriteStreamBuffering, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out thumbnailSmall, out thumbnailLarge);
-        }
-
-        protected virtual void UpdateImage(bool allowWriteStreamBuffering, ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl, out string thumbnailSmall, out string thumbnailLarge)
+        /// <summary>
+        /// Updates the image.
+        /// </summary>
+        /// <param name="allowWriteStreamBuffering">if set to <c>true</c> [allow write stream buffering].</param>
+        /// <param name="editMediaUri">The edit media URI.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="editEntryUri">The edit entry URI.</param>
+        /// <param name="etag">The etag.</param>
+        /// <param name="getEditInfo">if set to <c>true</c> [get edit information].</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="thumbnailSmall">The thumbnail small.</param>
+        /// <param name="thumbnailLarge">The thumbnail large.</param>
+        /// <exception cref="BlogClientOperationCancelledException"></exception>
+        protected virtual void UpdateImage(
+            bool allowWriteStreamBuffering,
+            ref string editMediaUri,
+            string path,
+            string editEntryUri,
+            string etag,
+            bool getEditInfo,
+            out string srcUrl,
+            out string thumbnailSmall,
+            out string thumbnailLarge)
         {
             HttpWebResponse response = null;
             try
             {
-                response = RedirectHelper.GetResponse(editMediaUri,
-                    new RedirectHelper.RequestFactory(new ImageUploadHelper(this, path, "PUT", etag, allowWriteStreamBuffering).Create));
+                response = RedirectHelper.GetResponse(
+                    editMediaUri,
+                    new ImageUploadHelper(this, path, "PUT", etag, allowWriteStreamBuffering).Create);
                 response.Close();
-
             }
             catch (WebException we)
             {
-                bool recovered = false;
+                var recovered = false;
 
                 if (we.Status == WebExceptionStatus.ProtocolError && we.Response != null)
                 {
-                    HttpWebResponse errResponse = we.Response as HttpWebResponse;
-                    if (errResponse != null && errResponse.StatusCode == HttpStatusCode.PreconditionFailed)
+                    if (we.Response is HttpWebResponse errResponse && errResponse.StatusCode == HttpStatusCode.PreconditionFailed)
                     {
-                        string newEtag = AtomClient.GetEtag(editMediaUri, _requestFilter);
-                        if (newEtag != null && newEtag.Length > 0 && newEtag != etag)
+                        var newEtag = AtomClient.GetEtag(editMediaUri, this.RequestFilter);
+                        if (!string.IsNullOrEmpty(newEtag) && newEtag != etag)
                         {
                             if (!AtomClient.ConfirmOverwrite())
+                            {
                                 throw new BlogClientOperationCancelledException();
+                            }
 
                             try
                             {
-                                response = RedirectHelper.GetResponse(editMediaUri,
-                                new RedirectHelper.RequestFactory(new ImageUploadHelper(this, path, "PUT", newEtag, allowWriteStreamBuffering).Create));
+                                response = RedirectHelper.GetResponse(
+                                    editMediaUri,
+                                    new ImageUploadHelper(
+                                        this,
+                                        path,
+                                        "PUT",
+                                        newEtag,
+                                        allowWriteStreamBuffering).Create);
                             }
                             finally
                             {
-                                if (response != null)
-                                    response.Close();
+                                response?.Close();
                             }
 
                             recovered = true;
@@ -247,12 +418,24 @@ namespace OpenLiveWriter.BlogClient.Clients
                     {
                         // The error may have been due to the server requiring stream buffering (WinLive 114314, 252175)
                         // Try again with stream buffering.
-                        UpdateImage(true, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out thumbnailSmall, out thumbnailLarge);
+                        this.UpdateImage(
+                            true,
+                            ref editMediaUri,
+                            path,
+                            editEntryUri,
+                            etag,
+                            getEditInfo,
+                            out srcUrl,
+                            out thumbnailSmall,
+                            out thumbnailLarge);
                         recovered = true;
                     }
                 }
+
                 if (!recovered)
+                {
                     throw;
+                }
             }
 
             // Check to see if we are going to get the src url and the etag, in most cases we will want to get this
@@ -260,10 +443,16 @@ namespace OpenLiveWriter.BlogClient.Clients
             // we don't need the information and it can saves an http request.
             if (getEditInfo)
             {
-                string selfPage;
-                Uri uri = new Uri(editEntryUri);
-                XmlDocument mediaLinkEntry = xmlRestRequestHelper.Get(ref uri, _requestFilter);
-                ParseResponse(mediaLinkEntry, out srcUrl, out editMediaUri, out editEntryUri, out selfPage, out thumbnailSmall, out thumbnailLarge);
+                var uri = new Uri(editEntryUri);
+                var mediaLinkEntry = this.XmlRestRequestHelper.Get(ref uri, this.RequestFilter);
+                this.ParseResponse(
+                    mediaLinkEntry,
+                    out srcUrl,
+                    out editMediaUri,
+                    out editEntryUri,
+                    out var selfPage,
+                    out thumbnailSmall,
+                    out thumbnailLarge);
             }
             else
             {
@@ -273,69 +462,128 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
         }
 
-        protected virtual void ParseResponse(XmlDocument xmlDoc, out string srcUrl, out string editUri, out string editEntryUri, out string selfPage, out string thumbnailSmall, out string thumbnailLarge)
+        /// <summary>
+        /// Gets the created entity.
+        /// </summary>
+        /// <param name="postResponse">The post response.</param>
+        /// <param name="editUri">The edit URI.</param>
+        /// <param name="etag">The etag.</param>
+        /// <returns>An <see cref="XmlDocument"/>.</returns>
+        private XmlDocument GetCreatedEntity(WebResponse postResponse, out string editUri, out string etag)
         {
-            thumbnailSmall = null;
-            thumbnailLarge = null;
-            ParseResponse(xmlDoc, out srcUrl, out editUri, out editEntryUri, out selfPage);
-        }
-
-        protected virtual void ParseResponse(XmlDocument xmlDoc, out string srcUrl, out string editUri, out string editEntryUri, out string selfPage)
-        {
-            XmlElement contentEl = xmlDoc.SelectSingleNode("/atom:entry/atom:content", _nsMgr) as XmlElement;
-            srcUrl = XmlHelper.GetUrl(contentEl, "@src", null);
-            editUri = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement, _nsMgr, "edit-media",
-                              null, null, null);
-            editEntryUri = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement, _nsMgr, "edit",
-                                   null, null, null);
-            selfPage = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement, _nsMgr, "alternate",
-                       null, null, null);
-        }
-
-        protected class ImageUploadHelper
-        {
-            private readonly AtomMediaUploader _parent;
-            private readonly string _filename;
-            private readonly string _method;
-            private readonly string _etag;
-            private readonly bool _allowWriteStreamBuffering;
-
-            public ImageUploadHelper(AtomMediaUploader parent, string filename, string method, string etag, bool allowWriteStreamBuffering)
+            editUri = postResponse.Headers["Location"];
+            var contentLocation = postResponse.Headers["Content-Location"];
+            if (string.IsNullOrEmpty(editUri) || editUri != contentLocation)
             {
-                _parent = parent;
-                _filename = filename;
-                _method = method;
-                _etag = etag;
-                _allowWriteStreamBuffering = allowWriteStreamBuffering;
+                var uri = postResponse.ResponseUri;
+                if (!string.IsNullOrEmpty(editUri))
+                {
+                    uri = new Uri(editUri);
+                }
+
+                var doc = this.XmlRestRequestHelper.Get(ref uri, this.RequestFilter, out var responseHeaders);
+                etag = responseHeaders["ETag"];
+                return doc;
             }
 
+            etag = postResponse.Headers["ETag"];
+            var xmlDoc = new XmlDocument();
+            using (var s = postResponse.GetResponseStream())
+            {
+                xmlDoc.Load(s ?? throw new InvalidOperationException());
+            }
+
+            XmlHelper.ApplyBaseUri(xmlDoc, postResponse.ResponseUri);
+            return xmlDoc;
+        }
+
+        /// <summary>
+        /// The ImageUploadHelper class.
+        /// </summary>
+        protected class ImageUploadHelper
+        {
+            /// <summary>
+            /// The allow write stream buffering
+            /// </summary>
+            private readonly bool allowWriteStreamBuffering;
+
+            /// <summary>
+            /// The e-tag
+            /// </summary>
+            private readonly string etag;
+
+            /// <summary>
+            /// The filename
+            /// </summary>
+            private readonly string filename;
+
+            /// <summary>
+            /// The method
+            /// </summary>
+            private readonly string method;
+
+            /// <summary>
+            /// The parent
+            /// </summary>
+            private readonly AtomMediaUploader parent;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ImageUploadHelper"/> class.
+            /// </summary>
+            /// <param name="parent">The parent.</param>
+            /// <param name="filename">The filename.</param>
+            /// <param name="method">The method.</param>
+            /// <param name="etag">The etag.</param>
+            /// <param name="allowWriteStreamBuffering">if set to <c>true</c> [allow write stream buffering].</param>
+            public ImageUploadHelper(
+                AtomMediaUploader parent,
+                string filename,
+                string method,
+                string etag,
+                bool allowWriteStreamBuffering)
+            {
+                this.parent = parent;
+                this.filename = filename;
+                this.method = method;
+                this.etag = etag;
+                this.allowWriteStreamBuffering = allowWriteStreamBuffering;
+            }
+
+            /// <summary>
+            /// Creates the specified URI.
+            /// </summary>
+            /// <param name="uri">The URI.</param>
+            /// <returns>The <see cref="HttpWebRequest"/>.</returns>
             public HttpWebRequest Create(string uri)
             {
                 // TODO: ETag support required??
                 // TODO: choose rational timeout values
-                HttpWebRequest request = HttpRequestHelper.CreateHttpWebRequest(uri, false);
+                var request = HttpRequestHelper.CreateHttpWebRequest(uri, false);
 
-                request.ContentType = MimeHelper.GetContentType(Path.GetExtension(_filename));
-                if (_parent._options != null && _parent._options.SupportsSlug)
-                    request.Headers.Add("Slug", Path.GetFileNameWithoutExtension(_filename));
-
-                request.Method = _method;
-
-                request.AllowWriteStreamBuffering = _allowWriteStreamBuffering;
-
-                if (_etag != null && _etag.Length != 0)
-                    request.Headers.Add("If-match", _etag);
-
-                _parent._requestFilter(request);
-
-                using (Stream inS = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                request.ContentType = MimeHelper.GetContentType(Path.GetExtension(this.filename));
+                if (this.parent.Options != null && this.parent.Options.SupportsSlug)
                 {
-                    using (CancelableStream cs = new CancelableStream(inS))
+                    request.Headers.Add("Slug", Path.GetFileNameWithoutExtension(this.filename));
+                }
+
+                request.Method = this.method;
+
+                request.AllowWriteStreamBuffering = this.allowWriteStreamBuffering;
+
+                if (!string.IsNullOrEmpty(this.etag))
+                {
+                    request.Headers.Add("If-match", this.etag);
+                }
+
+                this.parent.RequestFilter(request);
+
+                using (Stream inS = new FileStream(this.filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    using (var cs = new CancelableStream(inS))
                     {
                         request.ContentLength = cs.Length;
-                        using (Stream s = request.GetRequestStream())
+                        using (var s = request.GetRequestStream())
                         {
-
                             StreamHelper.Transfer(cs, s);
                         }
                     }
@@ -343,71 +591,6 @@ namespace OpenLiveWriter.BlogClient.Clients
 
                 return request;
             }
-        }
-
-    }
-
-    public class MultipartMimeRequestHelper
-    {
-        private string _boundary;
-        private HttpWebRequest _request;
-        Stream _requestStream;
-        protected MemoryStream _requestBodyTop = new MemoryStream();
-        protected MemoryStream _requestBodyBottom = new MemoryStream();
-
-        public virtual void Init(HttpWebRequest request)
-        {
-            _boundary = String.Format(CultureInfo.InvariantCulture, "============{0}==", Guid.NewGuid().ToString().Replace("-", ""));
-            _request = request;
-            _request.Method = "POST";
-            _request.ContentType = String.Format(CultureInfo.InvariantCulture,
-                                                @"multipart/related; boundary=""{0}""; type = ""application/atom+xml""",
-                                                _boundary);
-        }
-
-        public virtual void Open()
-        {
-            AddBoundary(true, _requestBodyTop);
-        }
-
-        public virtual void Close()
-        {
-            AddBoundary(false, _requestBodyBottom);
-            Write("--" + Environment.NewLine, _requestBodyBottom);
-        }
-
-        public virtual void AddBoundary(bool newLine, MemoryStream stream)
-        {
-            Write("--" + _boundary + (newLine ? Environment.NewLine : ""), stream);
-        }
-
-        public virtual void AddXmlRequest(XmlDocument xmlDocument)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void AddFile(string filePath)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected UTF8Encoding _utf8NoBOMEncoding = new UTF8Encoding(false);
-        protected virtual void Write(String s, MemoryStream stream)
-        {
-            byte[] newText = _utf8NoBOMEncoding.GetBytes(s);
-            stream.Write(newText, 0, newText.Length);
-        }
-
-        public virtual HttpWebRequest SendRequest(CancelableStream stream)
-        {
-            _request.ContentLength = _requestBodyTop.Length + stream.Length + _requestBodyBottom.Length;
-            _request.AllowWriteStreamBuffering = false;
-            _requestStream = _request.GetRequestStream();
-            _requestStream.Write(_requestBodyTop.ToArray(), 0, (int)_requestBodyTop.Length);
-            StreamHelper.Transfer(stream, _requestStream, 8192, true);
-            _requestStream.Write(_requestBodyBottom.ToArray(), 0, (int)_requestBodyBottom.Length);
-            _requestStream.Close();
-            return _request;
         }
     }
 }

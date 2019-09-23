@@ -209,7 +209,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             Uri metafeedUri = new Uri("http://www.blogger.com/feeds/default/blogs");
             XmlDocument xmlDoc = xmlRestRequestHelper.Get(ref metafeedUri, RequestFilter);
 
-            XmlElement entryEl = xmlDoc.SelectSingleNode(@"atom:feed/atom:entry[atom:link[@rel='http://schemas.google.com/g/2005#post' and @href='" + blogId + "']]", _nsMgr) as XmlElement;
+            XmlElement entryEl = xmlDoc.SelectSingleNode(@"atom:feed/atom:entry[atom:link[@rel='http://schemas.google.com/g/2005#post' and @href='" + blogId + "']]", this.NamespaceManager) as XmlElement;
             Res.LOCME("Blogger error message");
             if (entryEl == null)
                 throw new BlogClientInvalidServerResponseException("metafeed",
@@ -217,7 +217,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     null);
 
             ArrayList categoryList = new ArrayList();
-            foreach (XmlNode categoryNode in entryEl.SelectNodes("atom:category[@scheme='http://www.blogger.com/atom/ns#']", _nsMgr))
+            foreach (XmlNode categoryNode in entryEl.SelectNodes("atom:category[@scheme='http://www.blogger.com/atom/ns#']", this.NamespaceManager))
             {
                 string categoryName = ((XmlElement)categoryNode).GetAttribute("term");
                 categoryList.Add(new BlogPostCategory(categoryName));
@@ -467,12 +467,12 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 Uri reqUri = picasaUri;
                 XmlDocument albumListDoc = xmlRestRequestHelper.Get(ref reqUri, new HttpRequestFilter(PicasaAuthorizationFilter), "kind", "album");
-                foreach (XmlElement entryEl in albumListDoc.SelectNodes(@"/atom:feed/atom:entry", _nsMgr))
+                foreach (XmlElement entryEl in albumListDoc.SelectNodes(@"/atom:feed/atom:entry", this.NamespaceManager))
                 {
-                    XmlElement titleNode = entryEl.SelectSingleNode(@"atom:title", _nsMgr) as XmlElement;
+                    XmlElement titleNode = entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) as XmlElement;
                     if (titleNode != null)
                     {
-                        string titleText = _atomVer.TextNodeToPlaintext(titleNode);
+                        string titleText = this.atomVersion.TextNodeToPlaintext(titleNode);
                         if (titleText == albumName)
                         {
                             XmlNamespaceManager nsMgr2 = new XmlNamespaceManager(new NameTable());
@@ -487,7 +487,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                                         continue;
                                 }
                             }
-                            string selfHref = AtomEntry.GetLink(entryEl, _nsMgr, FEED_REL, "application/atom+xml", null, reqUri);
+                            string selfHref = AtomEntry.GetLink(entryEl, this.NamespaceManager, FEED_REL, "application/atom+xml", null, reqUri);
                             if (selfHref.Length > 1)
                                 return selfHref;
                         }
@@ -510,15 +510,15 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
 
             XmlDocument newDoc = new XmlDocument();
-            XmlElement newEntryEl = newDoc.CreateElement("atom", "entry", _atomVer.NamespaceUri);
+            XmlElement newEntryEl = newDoc.CreateElement("atom", "entry", this.atomVersion.NamespaceUri);
             newDoc.AppendChild(newEntryEl);
 
-            XmlElement newTitleEl = newDoc.CreateElement("atom", "title", _atomVer.NamespaceUri);
+            XmlElement newTitleEl = newDoc.CreateElement("atom", "title", this.atomVersion.NamespaceUri);
             newTitleEl.SetAttribute("type", "text");
             newTitleEl.InnerText = albumName;
             newEntryEl.AppendChild(newTitleEl);
 
-            XmlElement newSummaryEl = newDoc.CreateElement("atom", "summary", _atomVer.NamespaceUri);
+            XmlElement newSummaryEl = newDoc.CreateElement("atom", "summary", this.atomVersion.NamespaceUri);
             newSummaryEl.SetAttribute("type", "text");
             newSummaryEl.InnerText = Res.Get(StringId.BloggerImageAlbumDescription);
             newEntryEl.AppendChild(newSummaryEl);
@@ -527,16 +527,16 @@ namespace OpenLiveWriter.BlogClient.Clients
             newAccessEl.InnerText = "private";
             newEntryEl.AppendChild(newAccessEl);
 
-            XmlElement newCategoryEl = newDoc.CreateElement("atom", "category", _atomVer.NamespaceUri);
+            XmlElement newCategoryEl = newDoc.CreateElement("atom", "category", this.atomVersion.NamespaceUri);
             newCategoryEl.SetAttribute("scheme", "http://schemas.google.com/g/2005#kind");
             newCategoryEl.SetAttribute("term", "http://schemas.google.com/photos/2007#album");
             newEntryEl.AppendChild(newCategoryEl);
 
             Uri postUri = picasaUri;
             XmlDocument newAlbumResult = xmlRestRequestHelper.Post(ref postUri, new HttpRequestFilter(PicasaAuthorizationFilter), "application/atom+xml", newDoc, null);
-            XmlElement newAlbumResultEntryEl = newAlbumResult.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement;
+            XmlElement newAlbumResultEntryEl = newAlbumResult.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement;
             Debug.Assert(newAlbumResultEntryEl != null);
-            return AtomEntry.GetLink(newAlbumResultEntryEl, _nsMgr, FEED_REL, "application/atom+xml", null, postUri);
+            return AtomEntry.GetLink(newAlbumResultEntryEl, this.NamespaceManager, FEED_REL, "application/atom+xml", null, postUri);
         }
 
         private void ShowPicasaSignupPrompt(object sender, EventArgs e)
@@ -598,20 +598,20 @@ namespace OpenLiveWriter.BlogClient.Clients
             // First try <content src>
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(s);
-            XmlElement contentEl = xmlDoc.SelectSingleNode("/atom:entry/atom:content", _nsMgr) as XmlElement;
+            XmlElement contentEl = xmlDoc.SelectSingleNode("/atom:entry/atom:content", this.NamespaceManager) as XmlElement;
             if (contentEl != null)
-                srcUrl = XmlHelper.GetUrl(contentEl, "@src", _nsMgr, null);
+                srcUrl = XmlHelper.GetUrl(contentEl, "@src", this.NamespaceManager, null);
 
             // Then try media RSS
             if (srcUrl == null || srcUrl.Length == 0)
             {
-                contentEl = xmlDoc.SelectSingleNode("/atom:entry/media:group/media:content[@medium='image']", _nsMgr) as XmlElement;
+                contentEl = xmlDoc.SelectSingleNode("/atom:entry/media:group/media:content[@medium='image']", this.NamespaceManager) as XmlElement;
                 if (contentEl == null)
                     throw new ArgumentException("Picasa photo entry was missing content element");
-                srcUrl = XmlHelper.GetUrl(contentEl, "@url", _nsMgr, null);
+                srcUrl = XmlHelper.GetUrl(contentEl, "@url", this.NamespaceManager, null);
             }
 
-            editUri = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement, _nsMgr, "edit-media", null, null, null);
+            editUri = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement, this.NamespaceManager, "edit-media", null, null, null);
         }
 
         private class UploadFileRequestFactory
@@ -681,19 +681,19 @@ namespace OpenLiveWriter.BlogClient.Clients
             XmlDocument xmlDoc = xmlRestRequestHelper.Get(ref metafeed, RequestFilter);
 
             ArrayList blogInfos = new ArrayList();
-            foreach (XmlElement entryEl in xmlDoc.SelectNodes(@"atom:feed/atom:entry", _nsMgr))
+            foreach (XmlElement entryEl in xmlDoc.SelectNodes(@"atom:feed/atom:entry", this.NamespaceManager))
             {
                 string feedUrl = string.Empty;
                 string title = string.Empty;
                 string homepageUrl = string.Empty;
 
-                XmlElement feedUrlEl = entryEl.SelectSingleNode(@"atom:link[@rel='http://schemas.google.com/g/2005#post' and @type='application/atom+xml']", _nsMgr) as XmlElement;
+                XmlElement feedUrlEl = entryEl.SelectSingleNode(@"atom:link[@rel='http://schemas.google.com/g/2005#post' and @type='application/atom+xml']", this.NamespaceManager) as XmlElement;
                 if (feedUrlEl != null)
                     feedUrl = XmlHelper.GetUrl(feedUrlEl, "@href", metafeed);
-                XmlElement titleEl = entryEl.SelectSingleNode(@"atom:title", _nsMgr) as XmlElement;
+                XmlElement titleEl = entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) as XmlElement;
                 if (titleEl != null)
-                    title = _atomVer.TextNodeToPlaintext(titleEl);
-                XmlElement linkEl = entryEl.SelectSingleNode(@"atom:link[@rel='alternate' and @type='text/html']", _nsMgr) as XmlElement;
+                    title = this.atomVersion.TextNodeToPlaintext(titleEl);
+                XmlElement linkEl = entryEl.SelectSingleNode(@"atom:link[@rel='alternate' and @type='text/html']", this.NamespaceManager) as XmlElement;
                 if (linkEl != null)
                     homepageUrl = linkEl.GetAttribute("href");
 
@@ -706,7 +706,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         public override BlogPost Parse(XmlElement entryNode, bool includeCategories, Uri documentUri)
         {
             BlogPost post = new BlogPost();
-            AtomEntry atomEntry = new AtomEntry(_atomVer, _atomNS, CategoryScheme, _nsMgr, documentUri, entryNode);
+            AtomEntry atomEntry = new AtomEntry(this.atomVersion, this.atomNamespace, CategoryScheme, this.NamespaceManager, documentUri, entryNode);
 
             post.Title = atomEntry.Title;
             post.Excerpt = atomEntry.Excerpt;

@@ -183,10 +183,10 @@ namespace OpenLiveWriter.BlogClient.Clients
             _nsMgr.AddNamespace(atomNS.Prefix, atomNS.Uri);
             _nsMgr.AddNamespace(pubNS.Prefix, pubNS.Uri);
             _nsMgr.AddNamespace(photoNS.Prefix, photoNS.Uri);
-            _nsMgr.AddNamespace(AtomClient.xhtmlNS.Prefix, AtomClient.xhtmlNS.Uri);
-            _nsMgr.AddNamespace(AtomClient.featuresNS.Prefix, AtomClient.featuresNS.Uri);
-            _nsMgr.AddNamespace(AtomClient.mediaNS.Prefix, AtomClient.mediaNS.Uri);
-            _nsMgr.AddNamespace(AtomClient.liveNS.Prefix, AtomClient.liveNS.Uri);
+            _nsMgr.AddNamespace(AtomClient.xhtmlNamespace.Prefix, AtomClient.xhtmlNamespace.Uri);
+            _nsMgr.AddNamespace(AtomClient.featuresNamespace.Prefix, AtomClient.featuresNamespace.Uri);
+            _nsMgr.AddNamespace(AtomClient.mediaNamespace.Prefix, AtomClient.mediaNamespace.Uri);
+            _nsMgr.AddNamespace(AtomClient.liveNamespace.Prefix, AtomClient.liveNamespace.Uri);
         }
 
         public IBlogClientOptions Options

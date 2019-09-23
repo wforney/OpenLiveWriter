@@ -140,9 +140,28 @@
     <Compile Include="BlogProviderButtonDescription.cs" />
     <Compile Include="BlogSettings.cs" />
     <Compile Include="Clients\AtomClient.cs" />
+    <Compile Include="Clients\AtomClient.DuplicateEntryIdException.cs">
+      <DependentUpon>AtomClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\AtomClient.NewPostRequest.cs">
+      <DependentUpon>AtomClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Clients\AtomContentValue.cs" />
+    <Compile Include="Clients\AtomContentValueType.cs" />
     <Compile Include="Clients\AtomEntry.cs" />
     <Compile Include="Clients\AtomMediaUploader.cs" />
+    <Compile Include="Clients\AtomProtocolVersion.Atom03ProtocolVersion.cs">
+      <DependentUpon>AtomProtocolVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\AtomProtocolVersion.Atom10DraftBloggerProtocolVersion.cs">
+      <DependentUpon>AtomProtocolVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\AtomProtocolVersion.Atom10DraftProtocolVersion.cs">
+      <DependentUpon>AtomProtocolVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\AtomProtocolVersion.Atom10ProtocolVersion.cs">
+      <DependentUpon>AtomProtocolVersion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Clients\AtomProtocolVersion.cs" />
     <Compile Include="Clients\BlogClientLoginControl.cs">
       <SubType>UserControl</SubType>
@@ -164,6 +183,8 @@
     <Compile Include="Clients\LiveJournalClient.cs" />
     <Compile Include="Clients\MetaweblogClient.cs" />
     <Compile Include="Clients\MovableTypeClient.cs" />
+    <Compile Include="Clients\MultipartMimeRequestHelper.cs" />
+    <Compile Include="Clients\Namespace.cs" />
     <Compile Include="Clients\RedirectHelper.cs" />
     <Compile Include="Clients\SharePointClient.cs" />
     <Compile Include="Clients\StaticSite\StaticSiteConfigDetector.cs" />
@@ -196,6 +217,11 @@
     <Compile Include="IBlogSettingsAccessor.cs" />
     <Compile Include="ICredentialsDomain.cs" />
     <Compile Include="ImageViewers\DhtmlImageViewers.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Providers\BlogProvider.cs" />
     <Compile Include="Providers\BlogProviderFromXml.cs" />
     <Compile Include="Providers\BlogProviderManager.cs" />
@@ -215,6 +241,10 @@
     <EmbeddedResource Include="Clients\PassportSettings.xml" />
     <EmbeddedResource Include="Clients\GoogleBloggerv3Secrets.json" />
     <EmbeddedResource Include="Images\WordPressFav.ico" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Providers\BlogProvidersB5.xml" />
     <Content Include="Detection\default.htm" />
     <Content Include="Detection\defaultstyle.css" />
