@@ -20,6 +20,8 @@ using OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl;
 
 namespace OpenLiveWriter.PostEditor.PostPropertyEditing
 {
+    using System.Linq;
+
     using Localization.Bidi;
 
     // TODO: Page Parent won't clear properly on switching blogs (does that even work? or do pages get converted to posts on switch?)
@@ -101,7 +103,9 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (commandManager.ProcessCmdKeyShortcut(keyData))
+            {
                 return true;
+            }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -165,20 +169,19 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                           post => textExcerpt.Text = post.Excerpt,
                           post => post.Excerpt = textExcerpt.Text);
 
-            RegisterField(PropertyType.Post, labelTrackbacks, textTrackbacks,
-                          opts => opts.SupportsTrackbacks,
-                          post =>
-                              textTrackbacks.Text = StringHelper.Join(ArrayHelper.Union(post.PingUrlsPending, post.PingUrlsSent), ", "),
-                          post =>
-                          {
-                              List<string> sent = new List<string>(post.PingUrlsSent);
-                              List<string> pending = new List<string>();
-                              string[] pingUrls = StringHelper.Split(textTrackbacks.Text.Trim(), ",");
-                              foreach (string url in pingUrls)
-                                  if (!sent.Contains(url))
-                                      pending.Add(url);
-                              post.PingUrlsPending = pending.ToArray();
-                          });
+            this.RegisterField(
+                PropertyType.Post,
+                this.labelTrackbacks,
+                this.textTrackbacks,
+                opts => opts.SupportsTrackbacks,
+                post => textTrackbacks.Text =
+                            StringHelper.Join(ArrayHelper.Union(post.PingUrlsPending, post.PingUrlsSent), ", "),
+                post =>
+                    {
+                        var sent = new List<string>(post.PingUrlsSent);
+                        var pingUrls = StringHelper.Split(textTrackbacks.Text.Trim(), ",");
+                        post.PingUrlsPending = pingUrls.Where(url => !sent.Contains(url)).ToArray();
+                    });
         }
 
         private void PostPropertiesForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -188,7 +191,9 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 e.Cancel = true;
                 Hide();
                 if (Owner != null && Owner.Visible)
+                {
                     Owner.Activate();
+                }
             }
         }
 
@@ -198,11 +203,15 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             // the MSDN article "How to: Anchor and Dock Child Controls in a FlowLayoutPanel Control" at
             // http://msdn.microsoft.com/en-us/library/ms171633(VS.80).aspx
             if (flowLayoutPanel.VerticalScroll.Visible)
+            {
                 // The DisplayHelper.ScaleX(12) call is used to add horizontal padding between the controls in the
                 // flowLayoutPanel and the vertical scroll bar.
                 panel1.Width = flowLayoutPanel.ClientSize.Width - Convert.ToInt32(DisplayHelper.ScaleX(12));
+            }
             else
+            {
                 panel1.Width = flowLayoutPanel.ClientSize.Width;
+            }
         }
 
         private void RegisterField(PropertyType type, Control label, Control editor, PropertyField.ShouldShow shouldShow, PropertyField.Populate populate, PropertyField.Save save)
@@ -217,9 +226,13 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             {
                 BlogAuthorFetcher authorFetcher = new BlogAuthorFetcher(_blogId, 10000);
                 if (!author.IsEmpty)
+                {
                     comboAuthor.Initialize(new object[] { new PostIdAndNameField(Res.Get(StringId.PropertiesDefault)), author }, author, authorFetcher);
+                }
                 else
+                {
                     comboAuthor.Initialize(new PostIdAndNameField(Res.Get(StringId.PropertiesDefault)), authorFetcher);
+                }
             }
         }
 
@@ -248,7 +261,10 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             {
                 List<PostIdAndNameField> authors = new List<PostIdAndNameField>();
                 foreach (AuthorInfo author in authorList)
+                {
                     authors.Add(new PostIdAndNameField(author.Id, author.Name));
+                }
+
                 return authors.ToArray();
             }
         }
@@ -275,14 +291,25 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 // Comment policy hackery
                 BlogCommentPolicy? commentPolicy = null;
                 if (comboComments.SelectedIndex >= 0)
+                {
                     commentPolicy = ((CommentComboItem)comboComments.SelectedItem).Value;
+                }
+
                 comboComments.Items.Remove(new CommentComboItem(BlogCommentPolicy.None));
                 if (!newBlog.ClientOptions.CommentPolicyAsBoolean)
+                {
                     comboComments.Items.Insert(1, new CommentComboItem(BlogCommentPolicy.None));
+                }
+
                 if (commentPolicy != null)
+                {
                     comboComments.SelectedItem = new CommentComboItem(commentPolicy.Value);
+                }
+
                 if (comboComments.SelectedIndex == -1) // In no case should there be no selection at all
+                {
                     comboComments.SelectedIndex = 0;
+                }
 
                 labelTags.Text = newBlog.ClientOptions.KeywordsAsTags
                                      ? Res.Get(StringId.PropertiesTags)
@@ -294,7 +321,9 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         {
             // preserve dirty state
             using (controller.SuspendLogic())
+            {
                 controller.OnBlogSettingsChanged(templateChanged);
+            }
         }
 
         bool IBlogPostEditor.IsDirty
@@ -389,10 +418,21 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
 
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return value.Equals(((EnumComboItem<TEnum>)obj).value);
         }
 

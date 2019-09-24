@@ -71,7 +71,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
             get
             {
                 Debug.Assert(IsLoggedIn, "Should not try to get Username, if user is not logged in.");
-                return _credentials.GetUserName(_username, _password, GDataCredentials.YOUTUBE_SERVICE_NAME); ;
+                return _credentials.GetUserName(_username, _password, GDataCredentials.YoutubeServiceName); ;
             }
         }
 
@@ -80,7 +80,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
             get
             {
                 Debug.Assert(IsLoggedIn, "Should not try to get AuthToken, if user is not logged in.");
-                return _credentials.GetCredentialsIfValid(_username, _password, GDataCredentials.YOUTUBE_SERVICE_NAME);
+                return _credentials.GetCredentialsIfValid(_username, _password, GDataCredentials.YoutubeServiceName);
             }
         }
 
@@ -103,7 +103,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
         {
             get
             {
-                return _credentials != null && _credentials.IsValid(_username, _password, GDataCredentials.YOUTUBE_SERVICE_NAME);
+                return _credentials != null && _credentials.IsValid(_username, _password, GDataCredentials.YoutubeServiceName);
             }
         }
 
@@ -122,7 +122,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
                     _password = password;
                     TransientCredentials creds = new TransientCredentials(username, password, null);
                     _credentials = GDataCredentials.FromCredentials(creds);
-                    _credentials.EnsureLoggedIn(username, password, GDataCredentials.YOUTUBE_SERVICE_NAME, true, GDataCredentials.YOUTUBE_CLIENT_LOGIN_URL);
+                    _credentials.EnsureLoggedIn(username, password, GDataCredentials.YoutubeServiceName, true, GDataCredentials.YoutubeClientLoginUrl);
                 }
                 catch (Exception)
                 {

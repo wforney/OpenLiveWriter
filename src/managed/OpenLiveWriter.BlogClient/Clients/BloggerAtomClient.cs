@@ -1,265 +1,529 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.BlogClient.Providers;
-using OpenLiveWriter.HtmlParser.Parser;
-using OpenLiveWriter.HtmlParser.Parser.FormAgent;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+    using System.Xml;
+
+    using OpenLiveWriter.BlogClient.Providers;
+    using OpenLiveWriter.Controls;
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.HtmlParser.Parser;
+    using OpenLiveWriter.Localization;
+
+    /// <summary>
+    /// The BloggerAtomClient class.
+    /// Implements the <see cref="OpenLiveWriter.BlogClient.Clients.AtomClient" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.BlogClient.Clients.AtomClient" />
     [BlogClient("BloggerAtom", "Atom")]
-    public class BloggerAtomClient : AtomClient
+    public partial class BloggerAtomClient : AtomClient
     {
+        /// <summary>
+        /// Used to guard against recursion when attempting delete post recovery.
+        /// </summary>
+        [ThreadStatic]
+        private static bool inDeletePostRecovery;
+
+        /// <summary>
+        /// Used to guard against recursion when attempting edit post recovery.
+        /// </summary>
+        [ThreadStatic]
+        private static bool inEditPostRecovery;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BloggerAtomClient"/> class.
+        /// </summary>
+        /// <param name="postApiUrl">The post API URL.</param>
+        /// <param name="credentials">The credentials.</param>
         public BloggerAtomClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
             : base(AtomProtocolVersion.V10DraftBlogger, postApiUrl, credentials)
         {
         }
 
-        public override bool IsSecure
+        /// <inheritdoc />
+        public override bool IsSecure => true;
+
+        /// <summary>
+        /// Gets the category scheme.
+        /// </summary>
+        /// <value>The category scheme.</value>
+        protected override string CategoryScheme => "http://www.blogger.com/atom/ns#";
+
+        /// <summary>
+        /// Gets the request filter.
+        /// </summary>
+        /// <value>The request filter.</value>
+        protected override HttpRequestFilter RequestFilter => this.BloggerAuthorizationFilter;
+
+        /// <summary>
+        /// Does the after publish upload work.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
+        public override void DoAfterPublishUploadWork(IFileUploadContext uploadContext)
         {
-            get { return true; }
         }
 
-        protected override TransientCredentials Login()
-        {
-            TransientCredentials tc = base.Login();
-            VerifyAndRefreshCredentials(tc);
-            return tc;
-        }
-
-        protected override void VerifyCredentials(TransientCredentials tc)
-        {
-            VerifyAndRefreshCredentials(tc);
-        }
-
-        private void VerifyAndRefreshCredentials(TransientCredentials tc)
-        {
-            GDataCredentials gc = GDataCredentials.FromCredentials(tc);
-
-            if (gc.IsValid(tc.Username, tc.Password, GDataCredentials.BLOGGER_SERVICE_NAME))
-                return;
-            else
-            {
-                bool showUI = !BlogClientUIContext.SilentModeForCurrentThread;
-                gc.EnsureLoggedIn(tc.Username, tc.Password, GDataCredentials.BLOGGER_SERVICE_NAME, showUI);
-                return;
-            }
-        }
-
-        protected override void ConfigureClientOptions(BlogClientOptions clientOptions)
-        {
-            clientOptions.SupportsCustomDate = true;
-            clientOptions.SupportsCategories = true;
-            clientOptions.SupportsMultipleCategories = true;
-            clientOptions.SupportsNewCategories = true;
-            clientOptions.SupportsNewCategoriesInline = true;
-            clientOptions.SupportsFileUpload = true;
-            clientOptions.SupportsExtendedEntries = true;
-        }
-
+        /// <summary>
+        /// Does the before publish upload work.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
+        /// <returns>The result.</returns>
         public override string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
         {
-            string albumName = ApplicationEnvironment.ProductName;
+            var albumName = ApplicationEnvironment.ProductName;
 
-            string path = uploadContext.GetContentsLocalFilePath();
+            var path = uploadContext.GetContentsLocalFilePath();
 
-            if (Options.FileUploadNameFormat != null && Options.FileUploadNameFormat.Length > 0)
+            if (!string.IsNullOrEmpty(this.Options.FileUploadNameFormat))
             {
-                string formattedFileName = uploadContext.FormatFileName(uploadContext.PreferredFileName);
-                string[] chunks = StringHelper.Reverse(formattedFileName).Split(new char[] { '/' }, 2);
+                var formattedFileName = uploadContext.FormatFileName(uploadContext.PreferredFileName);
+                var chunks = StringHelper.Reverse(formattedFileName).Split(new[] { '/' }, 2);
                 if (chunks.Length == 2)
+                {
                     albumName = StringHelper.Reverse(chunks[1]);
+                }
             }
 
-            string EDIT_MEDIA_LINK = "EditMediaLink";
+            const string EditMediaLink = "EditMediaLink";
             string srcUrl;
-            string editUri = uploadContext.Settings.GetString(EDIT_MEDIA_LINK, null);
-            if (editUri == null || editUri.Length == 0)
+            var editUri = uploadContext.Settings.GetString(EditMediaLink, null);
+            if (string.IsNullOrEmpty(editUri))
             {
-                PostNewImage(albumName, path, out srcUrl, out editUri);
+                this.PostNewImage(albumName, path, out srcUrl, out editUri);
             }
             else
             {
                 try
                 {
-                    UpdateImage(editUri, path, out srcUrl, out editUri);
+                    this.UpdateImage(editUri, path, out srcUrl, out editUri);
                 }
                 catch (Exception e)
                 {
                     Trace.Fail(e.ToString());
-                    if (e is WebException)
-                        HttpRequestHelper.LogException((WebException)e);
+                    if (e is WebException webException)
+                    {
+                        HttpRequestHelper.LogException(webException);
+                    }
 
-                    bool success = false;
+                    var success = false;
                     srcUrl = null; // compiler complains without this line
                     try
                     {
                         // couldn't update existing image? try posting a new one
-                        PostNewImage(albumName, path, out srcUrl, out editUri);
+                        this.PostNewImage(albumName, path, out srcUrl, out editUri);
                         success = true;
                     }
                     catch
                     {
+                        // ignored
                     }
+
                     if (!success)
-                        throw;  // rethrow the exception from the update, not the post
+                    {
+                        throw; // rethrow the exception from the update, not the post
+                    }
                 }
             }
-            uploadContext.Settings.SetString(EDIT_MEDIA_LINK, editUri);
 
-            PicasaRefererBlockingWorkaround(uploadContext.BlogId, uploadContext.Role, ref srcUrl);
+            uploadContext.Settings.SetString(EditMediaLink, editUri);
+
+            this.PicasaRefererBlockingWorkaround(uploadContext.BlogId, uploadContext.Role, ref srcUrl);
 
             return srcUrl;
         }
 
         /// <summary>
-        /// "It looks like the problem with the inline image is due to referrer checking.
-        /// The thumbnail image being used is protected for display only on certain domains.
-        /// These domains include *.blogspot.com and *.google.com.  This user is using a
-        /// feature in Blogger which allows him to display his blog directly on his own
-        /// domain, which will not pass the referrer checking.
-        ///
-        /// "The maximum size of a thumbnail image that can be displayed on non-*.blogspot.com
-        /// domains is 800px. (blogs don't actually appear at *.google.com).  However, if you
-        /// request a 800px thumbnail, and the image is less than 800px for the maximum
-        /// dimension, then the original image will be returned without the referrer
-        /// restrictions.  That sounds like it will work for you, so feel free to give it a
-        /// shot and let me know if you have any further questions or problems."
-        ///   -- Anonymous Google Employee
+        /// Gets the blog images album.
         /// </summary>
-        private void PicasaRefererBlockingWorkaround(string blogId, FileUploadRole role, ref string srcUrl)
+        /// <param name="albumName">Name of the album.</param>
+        /// <returns>The blog images album.</returns>
+        public string GetBlogImagesAlbum(string albumName)
         {
-            if (role == FileUploadRole.LinkedImage && Options.UsePicasaS1600h)
-            {
-                try
-                {
-                    int lastSlash = srcUrl.LastIndexOf('/');
-                    string srcUrl2 = srcUrl.Substring(0, lastSlash)
-                                     + "/s1600-h"
-                                     + srcUrl.Substring(lastSlash);
-                    HttpWebRequest req = HttpRequestHelper.CreateHttpWebRequest(srcUrl2, true);
-                    req.Method = "HEAD";
-                    req.GetResponse().Close();
-                    srcUrl = srcUrl2;
-                    return;
-                }
-                catch (WebException we)
-                {
-                    Debug.Fail("Picasa s1600-h hack failed: " + we.ToString());
-                }
-            }
+            const string FeedRelUriString = "http://schemas.google.com/g/2005#feed";
+            const string GooglePhotosNamespaceUriString = "http://schemas.google.com/photos/2007";
+
+            // TransientCredentials transientCredentials = Credentials.TransientCredentials as TransientCredentials;
+            // TODO: HACK: The deprecation-extension flag keeps the deprecated Picasa API alive.
+            var picasaUri = new Uri(
+                "https://picasaweb.google.com/data/feed/api/user/default?deprecation-extension=true");
 
             try
             {
-                if (!Options.UsePicasaImgMaxAlways)
+                var reqUri = picasaUri;
+                var albumListDoc = AtomClient.xmlRestRequestHelper.Get(
+                    ref reqUri,
+                    this.PicasaAuthorizationFilter,
+                    "kind",
+                    "album");
+                foreach (var entryEl in albumListDoc.SelectNodes(@"/atom:feed/atom:entry", this.NamespaceManager)
+                                                   ?.Cast<XmlElement>().ToList() ?? new List<XmlElement>())
                 {
-                    // This class doesn't have access to the homePageUrl, so this is a workaround to
-                    // to get the homePageUrl while minimizing the amount of code we have to change (we're at MShip/ZBB)
-                    foreach (string id in BlogSettings.GetBlogIds())
+                    if (!(entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) is XmlElement titleNode))
                     {
-                        using (BlogSettings settings = BlogSettings.ForBlogId(id))
+                        continue;
+                    }
+
+                    var titleText = this.atomVersion.TextNodeToPlaintext(titleNode);
+                    if (titleText != albumName)
+                    {
+                        continue;
+                    }
+
+                    var namespaceManager = new XmlNamespaceManager(new NameTable());
+                    namespaceManager.AddNamespace("gphoto", "http://schemas.google.com/photos/2007");
+                    var numPhotosRemainingNode = entryEl.SelectSingleNode(
+                        "gphoto:numphotosremaining/text()",
+                        namespaceManager);
+                    if (numPhotosRemainingNode != null)
+                    {
+                        if (int.TryParse(
+                            numPhotosRemainingNode.Value,
+                            NumberStyles.Integer,
+                            CultureInfo.InvariantCulture,
+                            out var numPhotosRemaining))
                         {
-                            if (settings.ClientType == "BloggerAtom" && settings.HostBlogId == blogId)
+                            if (numPhotosRemaining < 1)
                             {
-                                switch (UrlHelper.GetDomain(settings.HomepageUrl).ToUpperInvariant())
-                                {
-                                    case "BLOGSPOT.COM":
-                                    case "GOOGLE.COM":
-                                        return;
-                                }
+                                continue;
                             }
                         }
                     }
+
+                    var selfHref = AtomEntry.GetLink(
+                        entryEl,
+                        this.NamespaceManager,
+                        FeedRelUriString,
+                        "application/atom+xml",
+                        null,
+                        reqUri);
+                    if (selfHref.Length > 1)
+                    {
+                        return selfHref;
+                    }
                 }
-                srcUrl += ((srcUrl.IndexOf('?') >= 0) ? "&" : "?") + "imgmax=800";
             }
-            catch (Exception ex)
+            catch (WebException we)
             {
-                Trace.Fail("Unexpected error while doing Picasa upload: " + ex.ToString());
+                if (!(we.Response is HttpWebResponse httpWebResponse))
+                {
+                    throw;
+                }
+
+                HttpRequestHelper.DumpResponse(httpWebResponse);
+                if (httpWebResponse.StatusCode != HttpStatusCode.NotFound)
+                {
+                    throw;
+                }
+
+                BlogClientUIContext.ContextForCurrentThread.Invoke(
+                    new EventHandler(BloggerAtomClient.ShowPicasaSignupPrompt),
+                    null);
+                throw new BlogClientOperationCancelledException();
             }
+
+            var newDoc = new XmlDocument();
+            var newEntryEl = newDoc.CreateElement("atom", "entry", this.atomVersion.NamespaceUri);
+            newDoc.AppendChild(newEntryEl);
+
+            var newTitleEl = newDoc.CreateElement("atom", "title", this.atomVersion.NamespaceUri);
+            newTitleEl.SetAttribute("type", "text");
+            newTitleEl.InnerText = albumName;
+            newEntryEl.AppendChild(newTitleEl);
+
+            var newSummaryEl = newDoc.CreateElement("atom", "summary", this.atomVersion.NamespaceUri);
+            newSummaryEl.SetAttribute("type", "text");
+            newSummaryEl.InnerText = Res.Get(StringId.BloggerImageAlbumDescription);
+            newEntryEl.AppendChild(newSummaryEl);
+
+            var newAccessEl = newDoc.CreateElement("gphoto", "access", GooglePhotosNamespaceUriString);
+            newAccessEl.InnerText = "private";
+            newEntryEl.AppendChild(newAccessEl);
+
+            var newCategoryEl = newDoc.CreateElement("atom", "category", this.atomVersion.NamespaceUri);
+            newCategoryEl.SetAttribute("scheme", "http://schemas.google.com/g/2005#kind");
+            newCategoryEl.SetAttribute("term", "http://schemas.google.com/photos/2007#album");
+            newEntryEl.AppendChild(newCategoryEl);
+
+            var postUri = picasaUri;
+            var newAlbumResult = AtomClient.xmlRestRequestHelper.Post(
+                ref postUri,
+                this.PicasaAuthorizationFilter,
+                "application/atom+xml",
+                newDoc,
+                null);
+            var newAlbumResultEntryEl =
+                newAlbumResult.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement;
+            Debug.Assert(newAlbumResultEntryEl != null, "New album result entry element cannot be null.");
+            return AtomEntry.GetLink(
+                newAlbumResultEntryEl,
+                this.NamespaceManager,
+                FeedRelUriString,
+                "application/atom+xml",
+                null,
+                postUri);
         }
 
-        public override void DoAfterPublishUploadWork(IFileUploadContext uploadContext)
-        {
-        }
-
+        /// <summary>
+        /// Gets the categories.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <returns>A <see cref="Array{BlogPostCategory}"/>.</returns>
+        /// <exception cref="BlogClientInvalidServerResponseException">metafeed - The expected blog information was not returned by Blogger. - null</exception>
         public override BlogPostCategory[] GetCategories(string blogId)
         {
             // get metafeed
-            Login();
+            this.Login();
 
-            Uri metafeedUri = new Uri("http://www.blogger.com/feeds/default/blogs");
-            XmlDocument xmlDoc = xmlRestRequestHelper.Get(ref metafeedUri, RequestFilter);
+            var metafeedUri = new Uri("http://www.blogger.com/feeds/default/blogs");
+            var xmlDoc = AtomClient.xmlRestRequestHelper.Get(ref metafeedUri, this.RequestFilter);
 
-            XmlElement entryEl = xmlDoc.SelectSingleNode(@"atom:feed/atom:entry[atom:link[@rel='http://schemas.google.com/g/2005#post' and @href='" + blogId + "']]", this.NamespaceManager) as XmlElement;
+            var entryEl = xmlDoc.SelectSingleNode(
+                              $@"atom:feed/atom:entry[atom:link[@rel='http://schemas.google.com/g/2005#post' and @href='{blogId}']]",
+                              this.NamespaceManager) as XmlElement;
             Res.LOCME("Blogger error message");
             if (entryEl == null)
-                throw new BlogClientInvalidServerResponseException("metafeed",
+            {
+                throw new BlogClientInvalidServerResponseException(
+                    "metafeed",
                     "The expected blog information was not returned by Blogger.",
                     null);
+            }
 
-            ArrayList categoryList = new ArrayList();
-            foreach (XmlNode categoryNode in entryEl.SelectNodes("atom:category[@scheme='http://www.blogger.com/atom/ns#']", this.NamespaceManager))
+            var categoryList = new ArrayList();
+            foreach (var categoryNode in entryEl.SelectNodes(
+                                             "atom:category[@scheme='http://www.blogger.com/atom/ns#']",
+                                             this.NamespaceManager)?.Cast<XmlNode>().ToList()
+                                      ?? new List<XmlNode>())
             {
-                string categoryName = ((XmlElement)categoryNode).GetAttribute("term");
+                var categoryName = ((XmlElement)categoryNode).GetAttribute("term");
                 categoryList.Add(new BlogPostCategory(categoryName));
             }
+
             return (BlogPostCategory[])categoryList.ToArray(typeof(BlogPostCategory));
         }
 
-        protected override string CategoryScheme
+        /// <inheritdoc />
+        public override BlogPost[] GetRecentPosts(string blogId, int maxPosts, bool includeCategories, DateTime? now)
         {
-            get
+            // By default, New Blogger returns blog posts in last-updated order. We
+            // want them in last-published order, so they match up with how it looks
+            // on the blog.
+            var url = blogId;
+            url += $"{(url.IndexOf('?') < 0 ? '?' : '&')}orderby=published";
+
+            return this.GetRecentPostsInternal(url, maxPosts, includeCategories, now);
+        }
+
+        /// <summary>
+        /// Gets the users blogs.
+        /// </summary>
+        /// <returns>An <see cref="Array{BlogInfo}"/>.</returns>
+        public override BlogInfo[] GetUsersBlogs()
+        {
+            var metafeed = new Uri("http://www.blogger.com/feeds/default/blogs");
+            var xmlDoc = AtomClient.xmlRestRequestHelper.Get(ref metafeed, this.RequestFilter);
+
+            var blogInfos = new ArrayList();
+            foreach (var entryEl in xmlDoc.SelectNodes(@"atom:feed/atom:entry", this.NamespaceManager)
+                                         ?.Cast<XmlElement>().ToList() ?? new List<XmlElement>())
             {
-                return "http://www.blogger.com/atom/ns#";
+                var feedUrl = string.Empty;
+                var title = string.Empty;
+                var homepageUrl = string.Empty;
+
+                if (entryEl.SelectSingleNode(
+                        @"atom:link[@rel='http://schemas.google.com/g/2005#post' and @type='application/atom+xml']",
+                        this.NamespaceManager) is XmlElement feedUrlEl)
+                {
+                    feedUrl = XmlHelper.GetUrl(feedUrlEl, "@href", metafeed);
+                }
+
+                if (entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) is XmlElement titleEl)
+                {
+                    title = this.atomVersion.TextNodeToPlaintext(titleEl);
+                }
+
+                if (entryEl.SelectSingleNode(
+                        @"atom:link[@rel='alternate' and @type='text/html']",
+                        this.NamespaceManager) is XmlElement linkEl)
+                {
+                    homepageUrl = linkEl.GetAttribute("href");
+                }
+
+                blogInfos.Add(new BlogInfo(feedUrl, title, homepageUrl));
             }
+
+            return (BlogInfo[])blogInfos.ToArray(typeof(BlogInfo));
         }
 
-        protected override XmlDocument GetCategoryXml(ref string blogId)
+        /// <summary>
+        /// Parses the specified entry node.
+        /// </summary>
+        /// <param name="entryNode">The entry node.</param>
+        /// <param name="includeCategories">if set to <c>true</c> [include categories].</param>
+        /// <param name="documentUri">The document URI.</param>
+        /// <returns>A <see cref="BlogPost"/>.</returns>
+        public override BlogPost Parse(XmlElement entryNode, bool includeCategories, Uri documentUri)
         {
-            throw new NotImplementedException();
+            var post = new BlogPost();
+            var atomEntry = new AtomEntry(
+                this.atomVersion,
+                this.atomNamespace,
+                this.CategoryScheme,
+                this.NamespaceManager,
+                documentUri,
+                entryNode);
+
+            post.Title = atomEntry.Title;
+            post.Excerpt = atomEntry.Excerpt;
+            post.Id = this.PostUriToPostId(atomEntry.EditUri);
+            post.Permalink = atomEntry.Permalink;
+
+            var content = atomEntry.ContentHtml;
+            if (content.Trim() != string.Empty)
+            {
+                var ex = new HtmlExtractor(content);
+                if (this.Options.SupportsExtendedEntries && ex.Seek("<a name=\"more\">").Success)
+                {
+                    var start = ex.Element.Offset;
+                    var length = ex.Element.Length;
+                    post.SetContents(
+                        content.Substring(0, start),
+                        ex.Seek("</a>").Success
+                            ? content.Substring(ex.Element.Offset + ex.Element.Length)
+                            : content.Substring(start + length));
+                }
+                else
+                {
+                    post.Contents = content;
+                }
+            }
+
+            post.DatePublished = atomEntry.PublishDate;
+            if (this.Options.SupportsCategories && includeCategories)
+            {
+                post.Categories = atomEntry.Categories;
+            }
+
+            return post;
         }
 
-        // Used to guard against recursion when attempting delete post recovery.
-        [ThreadStatic]
-        private static bool inDeletePostRecovery;
+        /// <summary>
+        /// Attempts the alternate get recent post URL.
+        /// </summary>
+        /// <param name="e">The exception.</param>
+        /// <param name="uri">The URI.</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
+        protected override bool AttemptAlternateGetRecentPostUrl(Exception e, ref string uri)
+        {
+            var alternateUri = uri;
 
+            if (e is WebException webException)
+            {
+                if (webException.Response is HttpWebResponse response)
+                {
+                    switch (response.StatusCode)
+                    {
+                        /* We have two separate problems to deal with here.
+                         *
+                         * For New Blogger blogs, passing orderby=published to www.blogger.com
+                         * will currently result in a 400 (Bad Request). We need to do the same
+                         * request to www2.blogger.com.
+                         *
+                         * For Old Blogger blogs, passing orderby=published is going to fail no
+                         * matter what. However, we don't know in advance whether this blog is
+                         * Old Blogger or New Blogger. So we assume we are New Blogger, retry
+                         * the request with www2.blogger.com as above, and if we are Old Blogger
+                         * then that request will fail with a 401. When that happens we can try
+                         * again on www.blogger.com without orderby=published.
+                         */
+                        case HttpStatusCode.BadRequest
+                            when uri.StartsWith("http://www.blogger.com/", StringComparison.OrdinalIgnoreCase)
+                              && uri.IndexOf("orderby=published", StringComparison.OrdinalIgnoreCase) >= 0:
+                            // www.blogger.com still can't handle orderby=published. Switch to
+                            // www2.blogger.com and try the request again.
+                            alternateUri = Regex.Replace(
+                                uri,
+                                "^" + Regex.Escape("http://www.blogger.com/"),
+                                "http://www2.blogger.com/",
+                                RegexOptions.IgnoreCase);
+                            break;
+                        case HttpStatusCode.Unauthorized
+                            when uri.StartsWith("http://www2.blogger.com/", StringComparison.OrdinalIgnoreCase)
+                              && uri.IndexOf("orderby=published", StringComparison.OrdinalIgnoreCase) >= 0:
+                            // This is Old Blogger after all. Switch to www.blogger.com and remove the
+                            // orderby=published param.
+
+                            // Need to be very careful when removing orderby=published. Blogger freaks
+                            // out with a 400 when any little thing is wrong with the query string.
+                            // Examples of URLs that cause errors:
+                            // http://www2.blogger.com/feeds/7150790056788550577/posts/default?
+                            // http://www2.blogger.com/feeds/7150790056788550577/posts/default?&start-index=26
+                            // http://www2.blogger.com/feeds/7150790056788550577/posts/default?start-index=26&
+                            // http://www2.blogger.com/feeds/7150790056788550577/posts/default?&
+                            // http://www2.blogger.com/feeds/7150790056788550577/posts/default&
+                            var r1 = new Regex("^" + Regex.Escape("http://www2.blogger.com/"), RegexOptions.IgnoreCase);
+                            var r2 = new Regex(@"(\?|&)orderby=published\b(&?)");
+
+                            if (r1.IsMatch(uri) && r2.IsMatch(uri))
+                            {
+                                alternateUri = r1.Replace(uri, "http://www.blogger.com/");
+                                alternateUri = r2.Replace(alternateUri, BloggerAtomClient.OrderByClauseRemover);
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            if (alternateUri == uri)
+            {
+                return false;
+            }
+
+            uri = alternateUri;
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts the delete post recover.
+        /// </summary>
+        /// <param name="e">The exception.</param>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <param name="postId">The post identifier.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
         protected override bool AttemptDeletePostRecover(Exception e, string blogId, string postId, bool publish)
         {
             // There's a bug with Blogger Beta where their atom feeds are returning
             // edit URIs for entries that don't work for PUT and DELETE.  However, if you do a GET on the
             // edit URI, you can get a different edit URI that DOES work for PUT and DELETE.
-
-            if (inDeletePostRecovery)
+            if (BloggerAtomClient.inDeletePostRecovery)
+            {
                 return false;
+            }
 
-            inDeletePostRecovery = true;
+            BloggerAtomClient.inDeletePostRecovery = true;
             try
             {
-                if (IsBadRequestError(e))
+                if (BloggerAtomClient.IsBadRequestError(e))
                 {
-                    BlogPost post = GetPost(blogId, postId);
+                    var post = this.GetPost(blogId, postId);
                     if (post.Id != postId)
                     {
-                        DeletePost(blogId, post.Id, publish);
+                        this.DeletePost(blogId, post.Id, publish);
                         return true;
                     }
                 }
@@ -270,48 +534,62 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
             finally
             {
-                inDeletePostRecovery = false;
+                BloggerAtomClient.inDeletePostRecovery = false;
             }
 
             // it didn't work.
             return false;
         }
 
-        // Used to guard against recursion when attempting edit post recovery.
-        [ThreadStatic]
-        private static bool inEditPostRecovery;
-
-        protected override bool AttemptEditPostRecover(Exception e, string blogId, BlogPost post, INewCategoryContext newCategoryContext, bool publish, out string etag, out XmlDocument remotePost)
+        /// <summary>
+        /// Attempts the edit post recover.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <param name="post">The post.</param>
+        /// <param name="newCategoryContext">The new category context.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <param name="etag">The e-tag.</param>
+        /// <param name="remotePost">The remote post.</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
+        protected override bool AttemptEditPostRecover(
+            Exception e,
+            string blogId,
+            BlogPost post,
+            INewCategoryContext newCategoryContext,
+            bool publish,
+            out string etag,
+            out XmlDocument remotePost)
         {
             // There's a bug with Blogger Beta where their atom feeds are returning
             // edit URIs for entries that don't work for PUT and DELETE.  However, if you do a GET on the
             // edit URI, you can get a different edit URI that DOES work for PUT and DELETE.
-
-            if (inEditPostRecovery)
+            if (BloggerAtomClient.inEditPostRecovery)
             {
                 etag = null;
                 remotePost = null;
                 return false;
             }
 
-            inEditPostRecovery = true;
+            BloggerAtomClient.inEditPostRecovery = true;
             try
             {
-                if (IsBadRequestError(e))
+                if (BloggerAtomClient.IsBadRequestError(e))
                 {
-                    BlogPost oldPost = GetPost(blogId, post.Id);
+                    var oldPost = this.GetPost(blogId, post.Id);
                     if (post.Id != oldPost.Id)
                     {
                         // Temporarily change the ID to this alternate Edit URI.  In order to
                         // minimize the chance of unintended side effects, we revert the ID
                         // back to the original value once we're done trying to edit.
-
-                        string originalId = post.Id;
+                        var originalId = post.Id;
                         try
                         {
                             post.Id = oldPost.Id;
-                            if (EditPost(blogId, post, newCategoryContext, publish, out etag, out remotePost))
+                            if (this.EditPost(blogId, post, newCategoryContext, publish, out etag, out remotePost))
+                            {
                                 return true;
+                            }
                         }
                         finally
                         {
@@ -326,220 +604,75 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
             finally
             {
-                inEditPostRecovery = false;
+                BloggerAtomClient.inEditPostRecovery = false;
             }
+
             etag = null;
             remotePost = null;
             return false;
         }
 
-        public override BlogPost[] GetRecentPosts(string blogId, int maxPosts, bool includeCategories, DateTime? now)
+        /// <summary>
+        /// Configures the client options.
+        /// </summary>
+        /// <param name="clientOptions">The client options.</param>
+        protected override void ConfigureClientOptions(BlogClientOptions clientOptions)
         {
-            // By default, New Blogger returns blog posts in last-updated order. We
-            // want them in last-published order, so they match up with how it looks
-            // on the blog.
-
-            string url = blogId;
-            url += (url.IndexOf('?') < 0 ? '?' : '&') + "orderby=published";
-
-            return GetRecentPostsInternal(url, maxPosts, includeCategories, now);
+            clientOptions.SupportsCustomDate = true;
+            clientOptions.SupportsCategories = true;
+            clientOptions.SupportsMultipleCategories = true;
+            clientOptions.SupportsNewCategories = true;
+            clientOptions.SupportsNewCategoriesInline = true;
+            clientOptions.SupportsFileUpload = true;
+            clientOptions.SupportsExtendedEntries = true;
         }
 
-        protected override bool AttemptAlternateGetRecentPostUrl(Exception e, ref string uri)
+        /// <summary>
+        /// Gets the category XML.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <returns>The category XML.</returns>
+        protected override XmlDocument GetCategoryXml(ref string blogId) => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        protected override TransientCredentials Login()
         {
-            string alternateUri = uri;
-
-            if (e is WebException)
-            {
-                HttpWebResponse response = ((WebException)e).Response as HttpWebResponse;
-                if (response != null)
-                {
-                    /* We have two separate problems to deal with here.
-                     *
-                     * For New Blogger blogs, passing orderby=published to www.blogger.com
-                     * will currently result in a 400 (Bad Request). We need to do the same
-                     * request to www2.blogger.com.
-                     *
-                     * For Old Blogger blogs, passing orderby=published is going to fail no
-                     * matter what. However, we don't know in advance whether this blog is
-                     * Old Blogger or New Blogger. So we assume we are New Blogger, retry
-                     * the request with www2.blogger.com as above, and if we are Old Blogger
-                     * then that request will fail with a 401. When that happens we can try
-                     * again on www.blogger.com without orderby=published.
-                     */
-
-                    if (response.StatusCode == HttpStatusCode.BadRequest
-                        && uri.StartsWith("http://www.blogger.com/", StringComparison.OrdinalIgnoreCase)
-                        && uri.IndexOf("orderby=published", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        // www.blogger.com still can't handle orderby=published. Switch to
-                        // www2.blogger.com and try the request again.
-
-                        alternateUri = Regex.Replace(
-                            uri,
-                            "^" + Regex.Escape("http://www.blogger.com/"),
-                            "http://www2.blogger.com/",
-                            RegexOptions.IgnoreCase);
-                    }
-                    else if (response.StatusCode == HttpStatusCode.Unauthorized
-                        && uri.StartsWith("http://www2.blogger.com/", StringComparison.OrdinalIgnoreCase)
-                        && uri.IndexOf("orderby=published", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        // This is Old Blogger after all. Switch to www.blogger.com and remove the
-                        // orderby=published param.
-
-                        // Need to be very careful when removing orderby=published. Blogger freaks
-                        // out with a 400 when any little thing is wrong with the query string.
-                        // Examples of URLs that cause errors:
-                        // http://www2.blogger.com/feeds/7150790056788550577/posts/default?
-                        // http://www2.blogger.com/feeds/7150790056788550577/posts/default?&start-index=26
-                        // http://www2.blogger.com/feeds/7150790056788550577/posts/default?start-index=26&
-                        // http://www2.blogger.com/feeds/7150790056788550577/posts/default?&
-                        // http://www2.blogger.com/feeds/7150790056788550577/posts/default&
-
-                        Regex r1 = new Regex("^" + Regex.Escape("http://www2.blogger.com/"), RegexOptions.IgnoreCase);
-                        Regex r2 = new Regex(@"(\?|&)orderby=published\b(&?)");
-
-                        if (r1.IsMatch(uri) && r2.IsMatch(uri))
-                        {
-                            alternateUri = r1.Replace(uri, "http://www.blogger.com/");
-                            alternateUri = r2.Replace(alternateUri, new MatchEvaluator(OrderByClauseRemover));
-                        }
-                    }
-                }
-            }
-
-            if (alternateUri != uri)
-            {
-                uri = alternateUri;
-                return true;
-            }
-            return false;
+            var tc = base.Login();
+            BloggerAtomClient.VerifyAndRefreshCredentials(tc);
+            return tc;
         }
 
-        private string OrderByClauseRemover(Match match)
-        {
-            string prefix = match.Groups[1].Value;
-            bool hasSuffix = match.Groups[2].Success;
+        /// <inheritdoc />
+        protected override void VerifyCredentials(TransientCredentials tc) =>
+            BloggerAtomClient.VerifyAndRefreshCredentials(tc);
 
-            return hasSuffix ? prefix : "";
+        /// <summary>
+        /// Determines whether [is bad request error] [the specified e].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns><c>true</c> if [is bad request error] [the specified e]; otherwise, <c>false</c>.</returns>
+        private static bool IsBadRequestError(Exception e) =>
+            e is WebException we && we.Response is HttpWebResponse resp && resp.StatusCode == HttpStatusCode.BadRequest;
+
+        /// <summary>
+        /// Orders the by clause remover.
+        /// </summary>
+        /// <param name="match">The match.</param>
+        /// <returns>The result.</returns>
+        private static string OrderByClauseRemover(Match match)
+        {
+            var prefix = match.Groups[1].Value;
+            var hasSuffix = match.Groups[2].Success;
+
+            return hasSuffix ? prefix : string.Empty;
         }
 
-        private static bool IsBadRequestError(Exception e)
-        {
-            WebException we = e as WebException;
-            if (we == null)
-                return false;
-            HttpWebResponse resp = we.Response as HttpWebResponse;
-            return resp != null && resp.StatusCode == HttpStatusCode.BadRequest;
-        }
-
-        protected override HttpRequestFilter RequestFilter
-        {
-            get
-            {
-                return new HttpRequestFilter(BloggerAuthorizationFilter);
-            }
-        }
-
-        private void BloggerAuthorizationFilter(HttpWebRequest request)
-        {
-            AuthorizeRequest(request, GDataCredentials.BLOGGER_SERVICE_NAME);
-        }
-
-        #region Picasa image uploading
-
-        private void PicasaAuthorizationFilter(HttpWebRequest request)
-        {
-            AuthorizeRequest(request, GDataCredentials.PICASAWEB_SERVICE_NAME);
-        }
-
-        public string GetBlogImagesAlbum(string albumName)
-        {
-            const string FEED_REL = "http://schemas.google.com/g/2005#feed";
-            const string GPHOTO_NS_URI = "http://schemas.google.com/photos/2007";
-
-            //TransientCredentials transientCredentials = Credentials.TransientCredentials as TransientCredentials;
-            // TODO: HACK: The deprecation-extension flag keeps the deprecated Picasa API alive.
-            Uri picasaUri = new Uri("https://picasaweb.google.com/data/feed/api/user/default?deprecation-extension=true");
-
-            try
-            {
-                Uri reqUri = picasaUri;
-                XmlDocument albumListDoc = xmlRestRequestHelper.Get(ref reqUri, new HttpRequestFilter(PicasaAuthorizationFilter), "kind", "album");
-                foreach (XmlElement entryEl in albumListDoc.SelectNodes(@"/atom:feed/atom:entry", this.NamespaceManager))
-                {
-                    XmlElement titleNode = entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) as XmlElement;
-                    if (titleNode != null)
-                    {
-                        string titleText = this.atomVersion.TextNodeToPlaintext(titleNode);
-                        if (titleText == albumName)
-                        {
-                            XmlNamespaceManager nsMgr2 = new XmlNamespaceManager(new NameTable());
-                            nsMgr2.AddNamespace("gphoto", "http://schemas.google.com/photos/2007");
-                            XmlNode numPhotosRemainingNode = entryEl.SelectSingleNode("gphoto:numphotosremaining/text()", nsMgr2);
-                            if (numPhotosRemainingNode != null)
-                            {
-                                int numPhotosRemaining;
-                                if (int.TryParse(numPhotosRemainingNode.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out numPhotosRemaining))
-                                {
-                                    if (numPhotosRemaining < 1)
-                                        continue;
-                                }
-                            }
-                            string selfHref = AtomEntry.GetLink(entryEl, this.NamespaceManager, FEED_REL, "application/atom+xml", null, reqUri);
-                            if (selfHref.Length > 1)
-                                return selfHref;
-                        }
-                    }
-                }
-            }
-            catch (WebException we)
-            {
-                HttpWebResponse httpWebResponse = we.Response as HttpWebResponse;
-                if (httpWebResponse != null)
-                {
-                    HttpRequestHelper.DumpResponse(httpWebResponse);
-                    if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        BlogClientUIContext.ContextForCurrentThread.Invoke(new EventHandler(ShowPicasaSignupPrompt), null);
-                        throw new BlogClientOperationCancelledException();
-                    }
-                }
-                throw;
-            }
-
-            XmlDocument newDoc = new XmlDocument();
-            XmlElement newEntryEl = newDoc.CreateElement("atom", "entry", this.atomVersion.NamespaceUri);
-            newDoc.AppendChild(newEntryEl);
-
-            XmlElement newTitleEl = newDoc.CreateElement("atom", "title", this.atomVersion.NamespaceUri);
-            newTitleEl.SetAttribute("type", "text");
-            newTitleEl.InnerText = albumName;
-            newEntryEl.AppendChild(newTitleEl);
-
-            XmlElement newSummaryEl = newDoc.CreateElement("atom", "summary", this.atomVersion.NamespaceUri);
-            newSummaryEl.SetAttribute("type", "text");
-            newSummaryEl.InnerText = Res.Get(StringId.BloggerImageAlbumDescription);
-            newEntryEl.AppendChild(newSummaryEl);
-
-            XmlElement newAccessEl = newDoc.CreateElement("gphoto", "access", GPHOTO_NS_URI);
-            newAccessEl.InnerText = "private";
-            newEntryEl.AppendChild(newAccessEl);
-
-            XmlElement newCategoryEl = newDoc.CreateElement("atom", "category", this.atomVersion.NamespaceUri);
-            newCategoryEl.SetAttribute("scheme", "http://schemas.google.com/g/2005#kind");
-            newCategoryEl.SetAttribute("term", "http://schemas.google.com/photos/2007#album");
-            newEntryEl.AppendChild(newCategoryEl);
-
-            Uri postUri = picasaUri;
-            XmlDocument newAlbumResult = xmlRestRequestHelper.Post(ref postUri, new HttpRequestFilter(PicasaAuthorizationFilter), "application/atom+xml", newDoc, null);
-            XmlElement newAlbumResultEntryEl = newAlbumResult.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement;
-            Debug.Assert(newAlbumResultEntryEl != null);
-            return AtomEntry.GetLink(newAlbumResultEntryEl, this.NamespaceManager, FEED_REL, "application/atom+xml", null, postUri);
-        }
-
-        private void ShowPicasaSignupPrompt(object sender, EventArgs e)
+        /// <summary>
+        /// Shows the picasa signup prompt.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private static void ShowPicasaSignupPrompt(object sender, EventArgs e)
         {
             if (DisplayMessage.Show(MessageId.PicasawebSignup) == DialogResult.Yes)
             {
@@ -547,127 +680,38 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
         }
 
-        private void PostNewImage(string albumName, string filename, out string srcUrl, out string editUri)
+        /// <summary>
+        /// Verifies the and refresh credentials.
+        /// </summary>
+        /// <param name="tc">The transient credentials.</param>
+        private static void VerifyAndRefreshCredentials(TransientCredentials tc)
         {
-            TransientCredentials transientCredentials = Credentials.TransientCredentials as TransientCredentials;
-            GDataCredentials.FromCredentials(transientCredentials).EnsureLoggedIn(transientCredentials.Username, transientCredentials.Password, GDataCredentials.PICASAWEB_SERVICE_NAME, false);
+            var gc = GDataCredentials.FromCredentials(tc);
 
-            string albumUrl = GetBlogImagesAlbum(albumName);
-            HttpWebResponse response = RedirectHelper.GetResponse(albumUrl, new RedirectHelper.RequestFactory(new UploadFileRequestFactory(this, filename, "POST").Create));
-            using (Stream s = response.GetResponseStream())
-                ParseMediaEntry(s, out srcUrl, out editUri);
-        }
-
-        private void UpdateImage(string editUri, string filename, out string srcUrl, out string newEditUri)
-        {
-            for (int retry = 5; retry > 0; retry--)
+            if (gc.IsValid(tc.Username, tc.Password, GDataCredentials.BloggerServiceName))
             {
-                HttpWebResponse response;
-                bool conflict = false;
-                try
-                {
-                    response = RedirectHelper.GetResponse(editUri, new RedirectHelper.RequestFactory(new UploadFileRequestFactory(this, filename, "PUT").Create));
-                }
-                catch (WebException we)
-                {
-                    if (retry > 1
-                        && we.Response as HttpWebResponse != null
-                        && ((HttpWebResponse)we.Response).StatusCode == HttpStatusCode.Conflict)
-                    {
-                        response = (HttpWebResponse)we.Response;
-                        conflict = true;
-                    }
-                    else
-                        throw;
-                }
-                using (Stream s = response.GetResponseStream())
-                    ParseMediaEntry(s, out srcUrl, out newEditUri);
-                if (!conflict)
-                    return; // success!
-                editUri = newEditUri;
             }
-
-            Trace.Fail("Should never get here");
-            throw new ApplicationException("Should never get here");
-        }
-
-        private void ParseMediaEntry(Stream s, out string srcUrl, out string editUri)
-        {
-            srcUrl = null;
-
-            // First try <content src>
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(s);
-            XmlElement contentEl = xmlDoc.SelectSingleNode("/atom:entry/atom:content", this.NamespaceManager) as XmlElement;
-            if (contentEl != null)
-                srcUrl = XmlHelper.GetUrl(contentEl, "@src", this.NamespaceManager, null);
-
-            // Then try media RSS
-            if (srcUrl == null || srcUrl.Length == 0)
+            else
             {
-                contentEl = xmlDoc.SelectSingleNode("/atom:entry/media:group/media:content[@medium='image']", this.NamespaceManager) as XmlElement;
-                if (contentEl == null)
-                    throw new ArgumentException("Picasa photo entry was missing content element");
-                srcUrl = XmlHelper.GetUrl(contentEl, "@url", this.NamespaceManager, null);
-            }
-
-            editUri = AtomEntry.GetLink(xmlDoc.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement, this.NamespaceManager, "edit-media", null, null, null);
-        }
-
-        private class UploadFileRequestFactory
-        {
-            private readonly BloggerAtomClient _parent;
-            private readonly string _filename;
-            private readonly string _method;
-
-            public UploadFileRequestFactory(BloggerAtomClient parent, string filename, string method)
-            {
-                _parent = parent;
-                _filename = filename;
-                _method = method;
-            }
-
-            public HttpWebRequest Create(string uri)
-            {
-                // TODO: choose rational timeout values
-                HttpWebRequest request = HttpRequestHelper.CreateHttpWebRequest(uri, false);
-
-                _parent.PicasaAuthorizationFilter(request);
-
-                request.ContentType = MimeHelper.GetContentType(Path.GetExtension(_filename));
-                try
-                {
-                    request.Headers.Add("Slug", Path.GetFileNameWithoutExtension(_filename));
-                }
-                catch (ArgumentException)
-                {
-                    request.Headers.Add("Slug", "Image");
-                }
-
-                request.Method = _method;
-
-                using (Stream s = request.GetRequestStream())
-                {
-                    using (Stream inS = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        StreamHelper.Transfer(inS, s);
-                    }
-                }
-
-                return request;
+                var showUI = !BlogClientUIContext.SilentModeForCurrentThread;
+                gc.EnsureLoggedIn(tc.Username, tc.Password, GDataCredentials.BloggerServiceName, showUI);
             }
         }
 
-        #endregion
-
+        /// <summary>
+        /// Authorizes the request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
         private bool AuthorizeRequest(HttpWebRequest request, string serviceName)
         {
             // This line is required to avoid Error 500 from non-beta Blogger blogs.
             // According to Pete Hopkins it is "something with .NET".
             request.Accept = "*/*";
 
-            TransientCredentials transientCredentials = Login();
-            GDataCredentials cred = GDataCredentials.FromCredentials(transientCredentials);
+            var transientCredentials = this.Login();
+            var cred = GDataCredentials.FromCredentials(transientCredentials);
             return cred.AttachCredentialsIfValid(
                 request,
                 transientCredentials.Username,
@@ -675,471 +719,207 @@ namespace OpenLiveWriter.BlogClient.Clients
                 serviceName);
         }
 
-        public override BlogInfo[] GetUsersBlogs()
+        /// <summary>
+        /// Bloggers the authorization filter.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        private void BloggerAuthorizationFilter(HttpWebRequest request) =>
+            this.AuthorizeRequest(request, GDataCredentials.BloggerServiceName);
+
+        /// <summary>
+        /// Parses the media entry.
+        /// </summary>
+        /// <param name="s">The stream.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="editUri">The edit URI.</param>
+        /// <exception cref="ArgumentException">Picasa photo entry was missing content element</exception>
+        private void ParseMediaEntry(Stream s, out string srcUrl, out string editUri)
         {
-            Uri metafeed = new Uri("http://www.blogger.com/feeds/default/blogs");
-            XmlDocument xmlDoc = xmlRestRequestHelper.Get(ref metafeed, RequestFilter);
+            srcUrl = null;
 
-            ArrayList blogInfos = new ArrayList();
-            foreach (XmlElement entryEl in xmlDoc.SelectNodes(@"atom:feed/atom:entry", this.NamespaceManager))
+            // First try <content src>
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(s);
+            if (xmlDoc.SelectSingleNode("/atom:entry/atom:content", this.NamespaceManager) is XmlElement contentEl)
             {
-                string feedUrl = string.Empty;
-                string title = string.Empty;
-                string homepageUrl = string.Empty;
-
-                XmlElement feedUrlEl = entryEl.SelectSingleNode(@"atom:link[@rel='http://schemas.google.com/g/2005#post' and @type='application/atom+xml']", this.NamespaceManager) as XmlElement;
-                if (feedUrlEl != null)
-                    feedUrl = XmlHelper.GetUrl(feedUrlEl, "@href", metafeed);
-                XmlElement titleEl = entryEl.SelectSingleNode(@"atom:title", this.NamespaceManager) as XmlElement;
-                if (titleEl != null)
-                    title = this.atomVersion.TextNodeToPlaintext(titleEl);
-                XmlElement linkEl = entryEl.SelectSingleNode(@"atom:link[@rel='alternate' and @type='text/html']", this.NamespaceManager) as XmlElement;
-                if (linkEl != null)
-                    homepageUrl = linkEl.GetAttribute("href");
-
-                blogInfos.Add(new BlogInfo(feedUrl, title, homepageUrl));
+                srcUrl = XmlHelper.GetUrl(contentEl, "@src", this.NamespaceManager, null);
             }
 
-            return (BlogInfo[])blogInfos.ToArray(typeof(BlogInfo));
-        }
-
-        public override BlogPost Parse(XmlElement entryNode, bool includeCategories, Uri documentUri)
-        {
-            BlogPost post = new BlogPost();
-            AtomEntry atomEntry = new AtomEntry(this.atomVersion, this.atomNamespace, CategoryScheme, this.NamespaceManager, documentUri, entryNode);
-
-            post.Title = atomEntry.Title;
-            post.Excerpt = atomEntry.Excerpt;
-            post.Id = PostUriToPostId(atomEntry.EditUri);
-            post.Permalink = atomEntry.Permalink;
-
-            string content = atomEntry.ContentHtml;
-            if (content.Trim() != string.Empty)
+            // Then try media RSS
+            if (string.IsNullOrEmpty(srcUrl))
             {
-                HtmlExtractor ex = new HtmlExtractor(content);
-                int start, length;
-                if (Options.SupportsExtendedEntries && ex.Seek("<a name=\"more\">").Success)
+                contentEl = xmlDoc.SelectSingleNode(
+                                "/atom:entry/media:group/media:content[@medium='image']",
+                                this.NamespaceManager) as XmlElement;
+                if (contentEl == null)
                 {
-                    start = ex.Element.Offset;
-                    length = ex.Element.Length;
-                    if (ex.Seek("</a>").Success)
-                    {
-                        post.SetContents(content.Substring(0, start), content.Substring(ex.Element.Offset + ex.Element.Length));
-                    }
-                    else
-                    {
-                        post.SetContents(content.Substring(0, start), content.Substring(start + length));
-                    }
+                    throw new ArgumentException("Picasa photo entry was missing content element");
                 }
-                else
+
+                srcUrl = XmlHelper.GetUrl(contentEl, "@url", this.NamespaceManager, null);
+            }
+
+            editUri = AtomEntry.GetLink(
+                xmlDoc.SelectSingleNode("/atom:entry", this.NamespaceManager) as XmlElement,
+                this.NamespaceManager,
+                "edit-media",
+                null,
+                null,
+                null);
+        }
+
+        /// <summary>
+        /// Calls the Picasa authorization filter.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        private void PicasaAuthorizationFilter(HttpWebRequest request) =>
+            this.AuthorizeRequest(request, GDataCredentials.PicasaWebServiceName);
+
+        /// <summary>
+        /// "It looks like the problem with the inline image is due to referrer checking.
+        /// The thumbnail image being used is protected for display only on certain domains.
+        /// These domains include *.blogspot.com and *.google.com.  This user is using a
+        /// feature in Blogger which allows him to display his blog directly on his own
+        /// domain, which will not pass the referrer checking.
+        /// "The maximum size of a thumbnail image that can be displayed on non-*.blogspot.com
+        /// domains is 800px. (blogs don't actually appear at *.google.com).  However, if you
+        /// request a 800px thumbnail, and the image is less than 800px for the maximum
+        /// dimension, then the original image will be returned without the referrer
+        /// restrictions.  That sounds like it will work for you, so feel free to give it a
+        /// shot and let me know if you have any further questions or problems."
+        /// -- Anonymous Google Employee
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <param name="role">The role.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        private void PicasaRefererBlockingWorkaround(string blogId, FileUploadRole role, ref string srcUrl)
+        {
+            if (role == FileUploadRole.LinkedImage && this.Options.UsePicasaS1600h)
+            {
+                try
                 {
-                    post.Contents = content;
+                    var lastSlash = srcUrl.LastIndexOf('/');
+                    var srcUrl2 = $"{srcUrl.Substring(0, lastSlash)}/s1600-h{srcUrl.Substring(lastSlash)}";
+                    var req = HttpRequestHelper.CreateHttpWebRequest(srcUrl2, true);
+                    req.Method = "HEAD";
+                    req.GetResponse().Close();
+                    srcUrl = srcUrl2;
+                    return;
+                }
+                catch (WebException we)
+                {
+                    Debug.Fail($"Picasa s1600-h hack failed: {we}");
                 }
             }
 
-            post.DatePublished = atomEntry.PublishDate;
-            if (Options.SupportsCategories && includeCategories)
-                post.Categories = atomEntry.Categories;
-
-            return post;
-        }
-    }
-
-    public class GDataCredentials
-    {
-        public const string CLIENT_LOGIN_URL = "https://www.google.com/accounts/ClientLogin";
-        public const string YOUTUBE_CLIENT_LOGIN_URL = "https://www.google.com/youtube/accounts/ClientLogin";
-        public const string BLOGGER_SERVICE_NAME = "blogger";
-        public const string PICASAWEB_SERVICE_NAME = "lh2";
-        public const string YOUTUBE_SERVICE_NAME = "youtube";
-
-        private readonly Hashtable _auths = new Hashtable();
-
-        internal GDataCredentials()
-        {
-        }
-
-        public static GDataCredentials FromCredentials(TransientCredentials credentials)
-        {
-            GDataCredentials cred = credentials.Token as GDataCredentials;
-            if (cred == null)
-            {
-                credentials.Token = cred = new GDataCredentials();
-            }
-            return cred;
-        }
-
-        internal class AuthKey
-        {
-            private readonly string _username;
-            private readonly string _password;
-            private readonly string _service;
-
-            public AuthKey(string username, string password, string service)
-            {
-                this._username = username;
-                this._password = password;
-                this._service = service;
-            }
-
-            public override int GetHashCode()
-            {
-                int result = _username.GetHashCode();
-                result = 29 * result + _password.GetHashCode();
-                result = 29 * result + _service.GetHashCode();
-                return result;
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (this == obj) return true;
-                AuthKey authKey = obj as AuthKey;
-                if (authKey == null) return false;
-                if (!Equals(_username, authKey._username)) return false;
-                if (!Equals(_password, authKey._password)) return false;
-                if (!Equals(_service, authKey._service)) return false;
-                return true;
-            }
-        }
-
-        private class AuthValue
-        {
-            private readonly string _authString;
-            private readonly DateTime _dateCreatedUtc;
-            public readonly string ReturnedUsername; // YouTube only - null for all others
-
-            public AuthValue(string authString, string returnedUsername)
-            {
-                _authString = authString;
-                _dateCreatedUtc = DateTimeHelper.UtcNow;
-                ReturnedUsername = returnedUsername;
-            }
-
-            public string AuthString
-            {
-                get { return _authString; }
-            }
-
-            public DateTime DateCreatedUtc
-            {
-                get { return _dateCreatedUtc; }
-            }
-        }
-
-        public bool IsValid(string username, string password, string service)
-        {
-            AuthValue authValue = _auths[new AuthKey(username, password, service)] as AuthValue;
-            if (authValue == null)
-                return false;
-
-            TimeSpan age = DateTimeHelper.UtcNow - authValue.DateCreatedUtc;
-            if (age < TimeSpan.Zero || age > TimeSpan.FromHours(23))
-                return false;
-
-            return true;
-        }
-
-        public void EnsureLoggedIn(string username, string password, string service, bool showUi)
-        {
-            EnsureLoggedIn(username, password, service, showUi, CLIENT_LOGIN_URL);
-        }
-
-        public void EnsureLoggedIn(string username, string password, string service, bool showUi, string uri)
-        {
             try
             {
-                if (IsValid(username, password, service))
-                    return;
-
-                string captchaToken = null;
-                string captchaValue = null;
-
-                string source = string.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", ApplicationEnvironment.CompanyName, ApplicationEnvironment.ProductName, ApplicationEnvironment.ProductVersion);
-
-                while (true)
+                if (!this.Options.UsePicasaImgMaxAlways)
                 {
-                    GoogleLoginRequestFactory glrf = new GoogleLoginRequestFactory(username,
-                        password,
-                        service,
-                        source,
-                        captchaToken,
-                        captchaValue);
-                    if (captchaToken != null && captchaValue != null)
+                    // This class doesn't have access to the homePageUrl, so this is a workaround to
+                    // to get the homePageUrl while minimizing the amount of code we have to change (we're at MShip/ZBB)
+                    foreach (var id in BlogSettings.GetBlogIds())
                     {
-                        captchaToken = null;
-                        captchaValue = null;
-                    }
-
-                    HttpWebResponse response;
-                    try
-                    {
-                        response = RedirectHelper.GetResponse(uri, new RedirectHelper.RequestFactory(glrf.Create));
-                    }
-                    catch (WebException we)
-                    {
-                        response = (HttpWebResponse)we.Response;
-                        if (response == null)
+                        using (var settings = BlogSettings.ForBlogId(id))
                         {
-                            Trace.Fail(we.ToString());
-                            if (showUi)
+                            if (settings.ClientType != "BloggerAtom" || settings.HostBlogId != blogId)
                             {
-                                showUi = false;
-                                ShowError(MessageId.WeblogConnectionError, we.Message);
-                            }
-                            throw;
-                        }
-                    }
-
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        Hashtable ht = ParseAuthResponse(response.GetResponseStream());
-                        if (ht.ContainsKey("Auth"))
-                        {
-                            _auths[new AuthKey(username, password, service)] = new AuthValue((string)ht["Auth"], ht["YouTubeUser"] as string);
-                            return;
-                        }
-                        else
-                        {
-                            if (showUi)
-                            {
-                                showUi = false;
-                                ShowError(MessageId.GoogleAuthTokenNotFound);
-                            }
-                            throw new BlogClientInvalidServerResponseException(uri, "No Auth token was present in the response.", string.Empty);
-                        }
-                    }
-                    else if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        // login failed
-
-                        Hashtable ht = ParseAuthResponse(response.GetResponseStream());
-                        string error = ht["Error"] as string;
-                        if (error != null && error == "CaptchaRequired")
-                        {
-                            captchaToken = (string)ht["CaptchaToken"];
-                            string captchaUrl = (string)ht["CaptchaUrl"];
-
-                            GDataCaptchaHelper helper = new GDataCaptchaHelper(
-                                new Win32WindowImpl(BlogClientUIContext.ContextForCurrentThread.Handle),
-                                captchaUrl);
-
-                            BlogClientUIContext.ContextForCurrentThread.Invoke(new ThreadStart(helper.ShowCaptcha), null);
-
-                            if (helper.DialogResult == DialogResult.OK)
-                            {
-                                captchaValue = helper.Reply;
                                 continue;
                             }
-                            else
+
+                            switch (UrlHelper.GetDomain(settings.HomepageUrl).ToUpperInvariant())
                             {
-                                throw new BlogClientOperationCancelledException();
+                                case "BLOGSPOT.COM":
+                                case "GOOGLE.COM":
+                                    return;
                             }
                         }
+                    }
+                }
 
-                        if (showUi)
-                        {
-                            if (error == "NoLinkedYouTubeAccount")
-                            {
-                                if (DisplayMessage.Show(MessageId.YouTubeSignup, username) == DialogResult.Yes)
-                                {
-                                    ShellHelper.LaunchUrl(GLink.Instance.YouTubeRegister);
-                                }
-                                return;
-                            }
+                srcUrl += $"{(srcUrl.IndexOf('?') >= 0 ? "&" : "?")}imgmax=800";
+            }
+            catch (Exception ex)
+            {
+                Trace.Fail($"Unexpected error while doing Picasa upload: {ex}");
+            }
+        }
 
-                            showUi = false;
+        /// <summary>
+        /// Posts the new image.
+        /// </summary>
+        /// <param name="albumName">Name of the album.</param>
+        /// <param name="filename">The filename.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="editUri">The edit URI.</param>
+        private void PostNewImage(string albumName, string filename, out string srcUrl, out string editUri)
+        {
+            var transientCredentials = this.Credentials.TransientCredentials as TransientCredentials;
+            GDataCredentials.FromCredentials(transientCredentials).EnsureLoggedIn(
+                transientCredentials?.Username,
+                transientCredentials?.Password,
+                GDataCredentials.PicasaWebServiceName,
+                false);
 
-                            if (error == "BadAuthentication")
-                            {
-                                ShowError(MessageId.LoginFailed, ApplicationEnvironment.ProductNameQualified);
-                            }
-                            else
-                            {
-                                ShowError(MessageId.BloggerError, TranslateError(error));
-                            }
+            var albumUrl = this.GetBlogImagesAlbum(albumName);
+            var response = RedirectHelper.GetResponse(
+                albumUrl,
+                new UploadFileRequestFactory(this, filename, "POST").Create);
+            using (var s = response.GetResponseStream())
+            {
+                this.ParseMediaEntry(s, out srcUrl, out editUri);
+            }
+        }
 
-                        }
-                        throw new BlogClientAuthenticationException(error, TranslateError(error));
+        /// <summary>
+        /// Updates the image.
+        /// </summary>
+        /// <param name="editUri">The edit URI.</param>
+        /// <param name="filename">The filename.</param>
+        /// <param name="srcUrl">The source URL.</param>
+        /// <param name="newEditUri">The new edit URI.</param>
+        /// <exception cref="ApplicationException">Should never get here</exception>
+        private void UpdateImage(string editUri, string filename, out string srcUrl, out string newEditUri)
+        {
+            for (var retry = 5; retry > 0; retry--)
+            {
+                HttpWebResponse response;
+                var conflict = false;
+                try
+                {
+                    response = RedirectHelper.GetResponse(
+                        editUri,
+                        new UploadFileRequestFactory(this, filename, "PUT").Create);
+                }
+                catch (WebException we)
+                {
+                    if (retry > 1 && we.Response is HttpWebResponse httpWebResponse
+                                  && httpWebResponse.StatusCode == HttpStatusCode.Conflict)
+                    {
+                        response = httpWebResponse;
+                        conflict = true;
                     }
                     else
                     {
-                        if (showUi)
-                        {
-                            showUi = false;
-                            ShowError(MessageId.BloggerError, response.StatusCode + ": " + response.StatusDescription);
-                        }
-                        throw new BlogClientAuthenticationException(response.StatusCode + "", response.StatusDescription);
+                        throw;
                     }
                 }
-            }
-            catch (BlogClientOperationCancelledException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e.ToString());
-                if (showUi)
+
+                using (var s = response.GetResponseStream())
                 {
-                    ShowError(MessageId.UnexpectedErrorLogin, e.Message);
-                }
-                throw;
-            }
-        }
-
-        private class GoogleLoginRequestFactory
-        {
-            private readonly string _username;
-            private readonly string _password;
-            private readonly string _service;
-            private readonly string _source;
-            private readonly string _captchaToken;
-            private readonly string _captchaValue;
-
-            public GoogleLoginRequestFactory(string username, string password, string service, string source, string captchaToken, string captchaValue)
-            {
-                _username = username;
-                _password = password;
-                _service = service;
-                _source = source;
-                _captchaToken = captchaToken;
-                _captchaValue = captchaValue;
-            }
-
-            public HttpWebRequest Create(string uri)
-            {
-                FormData formData = new FormData(false,
-                    "Email", _username,
-                    "Passwd", _password,
-                    "service", _service,
-                    "source", _source);
-
-                if (_captchaToken != null && _captchaValue != null)
-                {
-                    formData.Add("logintoken", _captchaToken);
-                    formData.Add("logincaptcha", _captchaValue);
+                    this.ParseMediaEntry(s, out srcUrl, out newEditUri);
                 }
 
-                HttpWebRequest request = HttpRequestHelper.CreateHttpWebRequest(uri, true);
-                request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                using (Stream inStream = formData.ToStream())
-                using (Stream outStream = request.GetRequestStream())
-                    StreamHelper.Transfer(inStream, outStream);
-
-                return request;
-            }
-
-        }
-
-        private void ShowError(MessageId messageId, params object[] args)
-        {
-            ShowErrorHelper helper = new ShowErrorHelper(BlogClientUIContext.ContextForCurrentThread, messageId, args);
-            if (BlogClientUIContext.ContextForCurrentThread != null)
-                BlogClientUIContext.ContextForCurrentThread.Invoke(new ThreadStart(helper.Show), null);
-            else
-                helper.Show();
-        }
-
-        private class ShowErrorHelper
-        {
-            private readonly IWin32Window _owner;
-            private readonly MessageId _messageId;
-            private readonly object[] _args;
-
-            public ShowErrorHelper(IWin32Window owner, MessageId messageId, object[] args)
-            {
-                _owner = owner;
-                _messageId = messageId;
-                _args = args;
-            }
-
-            public void Show()
-            {
-                DisplayMessage.Show(_messageId, _owner, _args);
-            }
-        }
-
-        private string TranslateError(string error)
-        {
-            switch (error)
-            {
-                case "BadAuthentication":
-                    return Res.Get(StringId.BloggerBadAuthentication);
-                case "NotVerified":
-                    return Res.Get(StringId.BloggerNotVerified);
-                case "TermsNotAgreed":
-                    return Res.Get(StringId.BloggerTermsNotAgreed);
-                case "Unknown":
-                    return Res.Get(StringId.BloggerUnknown);
-                case "AccountDeleted":
-                    return Res.Get(StringId.BloggerAccountDeleted);
-                case "AccountDisabled":
-                    return Res.Get(StringId.BloggerAccountDisabled);
-                case "ServiceUnavailable":
-                    return Res.Get(StringId.BloggerServiceUnavailable);
-                case "NoLinkedYouTubeAccount":
-                    return Res.Get(StringId.YouTubeNoAccount);
-                default:
-                    return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.BloggerGenericError), error);
-            }
-        }
-
-        private static Hashtable ParseAuthResponse(Stream stream)
-        {
-            Hashtable ht = CollectionsUtil.CreateCaseInsensitiveHashtable();
-            using (StreamReader sr = new StreamReader(stream, Encoding.UTF8))
-            {
-                string line;
-                while (null != (line = sr.ReadLine()))
+                if (!conflict)
                 {
-                    string[] chunks = line.Split(new char[] { '=' }, 2);
-                    if (chunks.Length == 2)
-                        ht[chunks[0]] = chunks[1];
+                    return; // success!
                 }
-            }
-            return ht;
-        }
 
-        public bool AttachCredentialsIfValid(HttpWebRequest request, string username, string password, string service)
-        {
-            string auth = GetCredentialsIfValid(username, password, service);
-            if (auth != null)
-            {
-                request.Headers.Set("Authorization", auth);
-                return true;
+                editUri = newEditUri;
             }
-            else
-                return false;
-        }
 
-        public string GetCredentialsIfValid(string username, string password, string service)
-        {
-            if (IsValid(username, password, service))
-            {
-                AuthValue authValue = _auths[new AuthKey(username, password, service)] as AuthValue;
-                if (authValue != null)
-                {
-                    string auth = authValue.AuthString;
-                    if (auth != null)
-                    {
-                        return "GoogleLogin auth=" + auth;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public string GetUserName(string username, string password, string service)
-        {
-            AuthValue authValue = _auths[new AuthKey(username, password, service)] as AuthValue;
-            if (authValue != null && !string.IsNullOrEmpty(authValue.ReturnedUsername))
-            {
-                return authValue.ReturnedUsername;
-            }
-            return username;
-
+            Trace.Fail("Should never get here");
+            throw new ApplicationException("Should never get here");
         }
     }
 }

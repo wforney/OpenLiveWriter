@@ -1,26 +1,28 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+// <copyright file="GenericAtomClient.cs" company=".NET Foundation">
+//     Copyright © .NET Foundation. All rights reserved.
+// </copyright>
+// <summary>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-/*
- * TODO
- *
- * Make sure all required fields are filled out.
- * Remove the HTML title from the friendly error message
- * Test ETags where HEAD not supported
- * Test experience when no media collection configured
- * Add command line option for preferring Atom over RSD
- * See if blogproviders.xml can override Atom vs. RSD preference
- */
+// </summary>
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    /*
+     * TODO
+     *
+     * Make sure all required fields are filled out.
+     * Remove the HTML title from the friendly error message
+     * Test ETags where HEAD not supported
+     * Test experience when no media collection configured
+     * Add command line option for preferring Atom over RSD
+     * See if blogproviders.xml can override Atom vs. RSD preference
+     */
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Net;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Xml;
 
     using OpenLiveWriter.BlogClient.Detection;
@@ -29,182 +31,48 @@ namespace OpenLiveWriter.BlogClient.Clients
     using OpenLiveWriter.Extensibility.BlogClient;
     using OpenLiveWriter.Localization;
 
+    /// <summary>
+    /// The GenericAtomClient class.
+    /// Implements the <see cref="AtomClient" />
+    /// Implements the <see cref="ISelfConfiguringClient" />
+    /// Implements the <see cref="IBlogClientForCategorySchemeHack" />
+    /// </summary>
+    /// <seealso cref="AtomClient" />
+    /// <seealso cref="ISelfConfiguringClient" />
+    /// <seealso cref="IBlogClientForCategorySchemeHack" />
     [BlogClient("Atom", "Atom")]
     public class GenericAtomClient : AtomClient, ISelfConfiguringClient, IBlogClientForCategorySchemeHack
     {
-        static GenericAtomClient() => AuthenticationManager.Register(new GoogleLoginAuthenticationModule());
-
+        /// <summary>
+        /// The default category scheme hack
+        /// </summary>
         private string defaultCategoryScheme_HACK;
 
-        public GenericAtomClient(Uri postApiUrl, IBlogCredentialsAccessor credentials) : base(AtomProtocolVersion.V10, postApiUrl, credentials)
+        /// <summary>
+        /// Initializes static members of the <see cref="GenericAtomClient"/> class.
+        /// </summary>
+        static GenericAtomClient()
         {
-        }
-
-        protected override void ConfigureClientOptions(OpenLiveWriter.BlogClient.Providers.BlogClientOptions clientOptions)
-        {
-            base.ConfigureClientOptions(clientOptions);
-
-            clientOptions.SupportsCategories = true;
-            clientOptions.SupportsMultipleCategories = true;
-            clientOptions.SupportsNewCategories = true;
-            clientOptions.SupportsCustomDate = true;
-            clientOptions.SupportsExcerpt = true;
-            clientOptions.SupportsSlug = true;
-            clientOptions.SupportsFileUpload = true;
-        }
-
-        public virtual void DetectSettings(IBlogSettingsDetectionContext context, BlogSettingsDetector detector)
-        {
-            if (detector.IncludeOptionOverrides)
-            {
-                if (detector.IncludeCategoryScheme)
-                {
-                    Debug.Assert(!detector.UseManifestCache,
-                                 "This code will not run correctly under the manifest cache, due to option overrides not being set");
-
-                    var optionOverrides = context.OptionOverrides;
-                    if (optionOverrides == null)
-                    {
-                        optionOverrides = new Dictionary<string, string>();
-                    }
-
-                    var hasNewCategories = optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES);
-                    var hasScheme = optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME);
-                    if (!hasNewCategories || !hasScheme)
-                    {
-                        this.GetCategoryInfo(
-                            context.HostBlogId,
-                            optionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string, // may be null
-                            out var scheme,
-                            out var supportsNewCategories);
-
-                        if (scheme == null)
-                        {
-                            // no supported scheme was found or provided
-                            optionOverrides[BlogClientOptions.SUPPORTS_CATEGORIES] = false.ToString();
-                        }
-                        else
-                        {
-                            if (!optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES))
-                            {
-                                optionOverrides.Add(BlogClientOptions.SUPPORTS_NEW_CATEGORIES, supportsNewCategories.ToString());
-                            }
-
-                            if (!optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME))
-                            {
-                                optionOverrides.Add(BlogClientOptions.CATEGORY_SCHEME, scheme);
-                            }
-                        }
-
-                        context.OptionOverrides = optionOverrides;
-                    }
-                }
-
-                // GetFeaturesXml(context.HostBlogId);
-            }
-        }
-
-        private void GetFeaturesXml(string blogId)
-        {
-            var uri = this.FeedServiceUrl;
-            var serviceDoc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
-
-            foreach (XmlElement entryEl in serviceDoc.SelectNodes("app:service/app:workspace/app:collection", this.NamespaceManager))
-            {
-                var href = XmlHelper.GetUrl(entryEl, "@href", uri);
-                if (blogId == href)
-                {
-                    var results = new XmlDocument();
-                    var rootElement = results.CreateElement("featuresInfo");
-                    results.AppendChild(rootElement);
-                    foreach (XmlElement featuresNode in entryEl.SelectNodes("f:features", this.NamespaceManager))
-                    {
-                        this.AddFeaturesXml(featuresNode, rootElement, uri);
-                    }
-                    return;
-                }
-            }
-            Trace.Fail("Couldn't find collection in service document:\r\n" + serviceDoc.OuterXml);
-        }
-
-        private void AddFeaturesXml(XmlElement featuresNode, XmlElement containerNode, Uri baseUri)
-        {
-            if (featuresNode.HasAttribute("href"))
-            {
-                var href = XmlHelper.GetUrl(featuresNode, "@href", baseUri);
-                if (href != null && href.Length > 0)
-                {
-                    var uri = new Uri(href);
-                    if (baseUri == null || !uri.Equals(baseUri)) // detect simple cycles
-                    {
-                        var doc = xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
-                        var features = (XmlElement)doc.SelectSingleNode(@"f:features", this.NamespaceManager);
-                        if (features != null)
-                        {
-                            this.AddFeaturesXml(features, containerNode, uri);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (XmlElement featureEl in featuresNode.SelectNodes("f:feature"))
-                {
-                    containerNode.AppendChild(containerNode.OwnerDocument.ImportNode(featureEl, true));
-                }
-            }
-
-        }
-
-        string IBlogClientForCategorySchemeHack.DefaultCategoryScheme
-        {
-            set { this.defaultCategoryScheme_HACK = value; }
+            AuthenticationManager.Register(new GoogleLoginAuthenticationModule());
         }
 
         /// <summary>
-        ///
+        /// Initializes a new instance of the <see cref="GenericAtomClient"/> class.
         /// </summary>
-        /// <param name="blogId"></param>
-        /// <param name="inScheme">The scheme that should definitely be used (i.e. from wlwmanifest), or null.
-        /// If inScheme is non-null, then outScheme will equal inScheme.</param>
-        /// <param name="outScheme">The scheme that should be used, or null if categories are not supported.</param>
-        /// <param name="supportsNewCategories">Ignore this value if outScheme == null.</param>
-        private void GetCategoryInfo(string blogId, string inScheme, out string outScheme, out bool supportsNewCategories)
+        /// <param name="postApiUrl">The post API URL.</param>
+        /// <param name="credentials">The credentials.</param>
+        public GenericAtomClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
+            : base(AtomProtocolVersion.V10, postApiUrl, credentials)
         {
-            var xmlDoc = this.GetCategoryXml(ref blogId);
-            foreach (XmlElement categoriesNode in xmlDoc.DocumentElement.SelectNodes("app:categories", this.NamespaceManager))
-            {
-                var hasScheme = categoriesNode.HasAttribute("scheme");
-                var scheme = categoriesNode.GetAttribute("scheme");
-                var isFixed = categoriesNode.GetAttribute("fixed") == "yes";
+        }
 
-                // <categories fixed="no" />
-                if (!hasScheme && inScheme == null && !isFixed)
-                {
-                    outScheme = "";
-                    supportsNewCategories = true;
-                    return;
-                }
-
-                // <categories scheme="inScheme" fixed="yes|no" />
-                if (hasScheme && scheme == inScheme)
-                {
-                    outScheme = inScheme;
-                    supportsNewCategories = !isFixed;
-                    return;
-                }
-
-                // <categories scheme="" fixed="yes|no" />
-                if (hasScheme && inScheme == null && scheme == "")
-                {
-                    outScheme = "";
-                    supportsNewCategories = !isFixed;
-                    return;
-                }
-            }
-
-            outScheme = inScheme; // will be null if no scheme was externally specified
-            supportsNewCategories = false;
+        /// <summary>
+        /// Sets the default category scheme.
+        /// </summary>
+        /// <value>The default category scheme.</value>
+        string IBlogClientForCategorySchemeHack.DefaultCategoryScheme
+        {
+            set => this.defaultCategoryScheme_HACK = value;
         }
 
         /*
@@ -229,111 +97,206 @@ namespace OpenLiveWriter.BlogClient.Clients
                 }
         */
 
-        protected override string CategoryScheme
+        /// <summary>
+        /// Gets the category scheme.
+        /// </summary>
+        /// <value>The category scheme.</value>
+        protected override string CategoryScheme => this.Options.CategoryScheme ?? this.defaultCategoryScheme_HACK;
+
+        /// <summary>
+        /// Detects the settings.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="detector">The detector.</param>
+        public virtual void DetectSettings(IBlogSettingsDetectionContext context, BlogSettingsDetector detector)
         {
-            get
+            if (!detector.IncludeOptionOverrides || !detector.IncludeCategoryScheme)
             {
-                var scheme = this.Options.CategoryScheme;
-                if (scheme == null)
+                return;
+            }
+
+            Debug.Assert(
+                !detector.UseManifestCache,
+                "This code will not run correctly under the manifest cache, due to option overrides not being set");
+
+            var optionOverrides = context.OptionOverrides ?? new Dictionary<string, string>();
+
+            var hasNewCategories = optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES);
+            var hasScheme = optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME);
+            if (hasNewCategories && hasScheme)
+            {
+                return;
+            }
+
+            this.GetCategoryInfo(
+                context.HostBlogId,
+                optionOverrides[BlogClientOptions.CATEGORY_SCHEME], // may be null
+                out var scheme,
+                out var supportsNewCategories);
+
+            if (scheme == null)
+            {
+                // no supported scheme was found or provided
+                optionOverrides[BlogClientOptions.SUPPORTS_CATEGORIES] = false.ToString();
+            }
+            else
+            {
+                if (!optionOverrides.Keys.Contains(BlogClientOptions.SUPPORTS_NEW_CATEGORIES))
                 {
-                    scheme = this.defaultCategoryScheme_HACK;
+                    optionOverrides.Add(BlogClientOptions.SUPPORTS_NEW_CATEGORIES, supportsNewCategories.ToString());
                 }
 
-                return scheme;
+                if (!optionOverrides.Keys.Contains(BlogClientOptions.CATEGORY_SCHEME))
+                {
+                    optionOverrides.Add(BlogClientOptions.CATEGORY_SCHEME, scheme);
+                }
             }
+
+            context.OptionOverrides = optionOverrides;
+
+            // GetFeaturesXml(context.HostBlogId);
         }
 
-        protected override void VerifyCredentials(TransientCredentials tc)
-        {
-            // This sucks. We really want to authenticate against the actual feed,
-            // not just the service document.
-            var uri = this.FeedServiceUrl;
-            xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
-        }
-
-        protected void EnsureLoggedIn()
-        {
-
-        }
-
-        #region image upload support
-
+        /// <summary>
+        /// Does the after publish upload work.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
         public override void DoAfterPublishUploadWork(IFileUploadContext uploadContext)
         {
         }
 
+        /// <summary>
+        /// Does the before publish upload work.
+        /// </summary>
+        /// <param name="uploadContext">The upload context.</param>
+        /// <returns>The result.</returns>
         public override string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
         {
-            var uploader = new AtomMediaUploader(this.NamespaceManager, this.RequestFilter, this.Options.ImagePostingUrl, this.Options);
+            var uploader = new AtomMediaUploader(
+                this.NamespaceManager,
+                this.RequestFilter,
+                this.Options.ImagePostingUrl,
+                this.Options);
             return uploader.DoBeforePublishUploadWork(uploadContext);
         }
 
+        /// <summary>
+        /// Gets the image endpoints.
+        /// </summary>
+        /// <returns>An <see cref="Array{BlogInfo}"/>.</returns>
         public override BlogInfo[] GetImageEndpoints()
         {
             this.EnsureLoggedIn();
 
             var serviceDocUri = this.FeedServiceUrl;
-            var xmlDoc = xmlRestRequestHelper.Get(ref serviceDocUri, this.RequestFilter);
+            var xmlDoc = AtomClient.xmlRestRequestHelper.Get(ref serviceDocUri, this.RequestFilter);
 
-            var blogInfos = new ArrayList();
-            foreach (XmlElement coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", this.NamespaceManager))
+            var blogInfos = new List<BlogInfo>();
+            foreach (var coll in xmlDoc.SelectNodes("/app:service/app:workspace/app:collection", this.NamespaceManager)
+                                      ?.Cast<XmlElement>().ToList() ?? new List<XmlElement>())
             {
                 // does this collection accept entries?
                 var acceptNodes = coll.SelectNodes("app:accept", this.NamespaceManager);
+                if (acceptNodes == null)
+                {
+                    continue;
+                }
+
                 var acceptTypes = new string[acceptNodes.Count];
                 for (var i = 0; i < acceptTypes.Length; i++)
                 {
                     acceptTypes[i] = acceptNodes[i].InnerText;
                 }
 
-                if (AcceptsImages(acceptTypes))
+                if (!GenericAtomClient.AcceptsImages(acceptTypes))
                 {
-                    var feedUrl = XmlHelper.GetUrl(coll, "@href", serviceDocUri);
-                    if (feedUrl == null || feedUrl.Length == 0)
+                    continue;
+                }
+
+                var feedUrl = XmlHelper.GetUrl(coll, "@href", serviceDocUri);
+                if (string.IsNullOrEmpty(feedUrl))
+                {
+                    continue;
+                }
+
+                // form title
+                var titleBuilder = new StringBuilder();
+                foreach (var titleContainerNode in new[] { coll.ParentNode as XmlElement, coll })
+                {
+                    Debug.Assert(titleContainerNode != null, "title container node is not null");
+                    if (!(titleContainerNode?.SelectSingleNode("atom:title", this.NamespaceManager) is XmlElement
+                              titleNode))
                     {
                         continue;
                     }
 
-                    // form title
-                    var titleBuilder = new StringBuilder();
-                    foreach (var titleContainerNode in new XmlElement[] { coll.ParentNode as XmlElement, coll })
+                    var titlePart = this.atomVersion.TextNodeToPlaintext(titleNode);
+                    if (titlePart.Length == 0)
                     {
-                        Debug.Assert(titleContainerNode != null);
-                        if (titleContainerNode != null)
-                        {
-                            var titleNode = titleContainerNode.SelectSingleNode("atom:title", this.NamespaceManager) as XmlElement;
-                            if (titleNode != null)
-                            {
-                                var titlePart = this.atomVersion.TextNodeToPlaintext(titleNode);
-                                if (titlePart.Length != 0)
-                                {
-                                    Res.LOCME("loc the separator between parts of the blog name");
-                                    if (titleBuilder.Length != 0)
-                                    {
-                                        titleBuilder.Append(" - ");
-                                    }
-
-                                    titleBuilder.Append(titlePart);
-                                }
-                            }
-                        }
+                        continue;
                     }
 
-                    blogInfos.Add(new BlogInfo(feedUrl, titleBuilder.ToString().Trim(), ""));
+                    Res.LOCME("loc the separator between parts of the blog name");
+                    if (titleBuilder.Length != 0)
+                    {
+                        titleBuilder.Append(" - ");
+                    }
+
+                    titleBuilder.Append(titlePart);
                 }
+
+                blogInfos.Add(new BlogInfo(feedUrl, titleBuilder.ToString().Trim(), string.Empty));
             }
 
-            return (BlogInfo[])blogInfos.ToArray(typeof(BlogInfo));
+            return blogInfos.ToArray();
         }
 
-        private static bool AcceptsImages(string[] contentTypes)
+        /// <summary>
+        /// Configures the client options.
+        /// </summary>
+        /// <param name="clientOptions">The client options.</param>
+        protected override void ConfigureClientOptions(BlogClientOptions clientOptions)
+        {
+            base.ConfigureClientOptions(clientOptions);
+
+            clientOptions.SupportsCategories = true;
+            clientOptions.SupportsMultipleCategories = true;
+            clientOptions.SupportsNewCategories = true;
+            clientOptions.SupportsCustomDate = true;
+            clientOptions.SupportsExcerpt = true;
+            clientOptions.SupportsSlug = true;
+            clientOptions.SupportsFileUpload = true;
+        }
+
+        /// <summary>
+        /// Ensures the logged in.
+        /// </summary>
+        protected void EnsureLoggedIn()
+        {
+        }
+
+        /// <inheritdoc />
+        protected override void VerifyCredentials(TransientCredentials tc)
+        {
+            // This sucks. We really want to authenticate against the actual feed,
+            // not just the service document.
+            var uri = this.FeedServiceUrl;
+            AtomClient.xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
+        }
+
+        /// <summary>
+        /// Accepts the images.
+        /// </summary>
+        /// <param name="contentTypes">The content types.</param>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
+        private static bool AcceptsImages(IEnumerable<string> contentTypes)
         {
             bool acceptsPng = false, acceptsJpeg = false, acceptsGif = false;
 
             foreach (var contentType in contentTypes)
             {
                 var values = MimeHelper.ParseContentType(contentType, true);
-                var mainType = values[""] as string;
+                var mainType = values[string.Empty] as string;
 
                 switch (mainType)
                 {
@@ -355,81 +318,142 @@ namespace OpenLiveWriter.BlogClient.Clients
             return acceptsPng && acceptsJpeg && acceptsGif;
         }
 
-        #endregion
-    }
-
-    public class GoogleLoginAuthenticationModule : IAuthenticationModule
-    {
-        private static GDataCredentials _gdataCred = new GDataCredentials();
-
-        public Authorization Authenticate(string challenge, WebRequest request, ICredentials credentials)
+        /// <summary>
+        /// Adds the features XML.
+        /// </summary>
+        /// <param name="featuresNode">The features node.</param>
+        /// <param name="containerNode">The container node.</param>
+        /// <param name="baseUri">The base URI.</param>
+        private void AddFeaturesXml(XmlElement featuresNode, XmlElement containerNode, Uri baseUri)
         {
-            if (!challenge.StartsWith("GoogleLogin ", StringComparison.OrdinalIgnoreCase))
+            while (true)
             {
-                return null;
-            }
-
-            var httpRequest = (HttpWebRequest)request;
-
-            string service;
-            string realm;
-            this.ParseChallenge(challenge, out realm, out service);
-            if (realm != "http://www.google.com/accounts/ClientLogin")
-            {
-                return null;
-            }
-
-            var cred = credentials.GetCredential(request.RequestUri, this.AuthenticationType);
-
-            var auth = _gdataCred.GetCredentialsIfValid(cred.UserName, cred.Password, service);
-            if (auth != null)
-            {
-                return new Authorization(auth, true);
-            }
-            else
-            {
-                try
+                if (featuresNode.HasAttribute("href"))
                 {
-                    _gdataCred.EnsureLoggedIn(cred.UserName, cred.Password, service, !BlogClientUIContext.SilentModeForCurrentThread);
-                    auth = _gdataCred.GetCredentialsIfValid(cred.UserName, cred.Password, service);
-                    if (auth != null)
+                    var href = XmlHelper.GetUrl(featuresNode, "@href", baseUri);
+                    if (string.IsNullOrEmpty(href))
                     {
-                        return new Authorization(auth, true);
+                        return;
                     }
-                    else
+
+                    var uri = new Uri(href);
+                    if (baseUri != null && uri.Equals(baseUri))
                     {
-                        return null;
+                        return;
+                    }
+
+                    // detect simple cycles
+                    var doc = AtomClient.xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
+                    var features = (XmlElement)doc.SelectSingleNode(@"f:features", this.NamespaceManager);
+                    if (features != null)
+                    {
+                        featuresNode = features;
+                        baseUri = uri;
+                        continue;
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    Trace.Fail(e.ToString());
-                    return null;
+                    foreach (var featureEl in featuresNode.SelectNodes("f:feature")?.Cast<XmlElement>().ToList()
+                                           ?? new List<XmlElement>())
+                    {
+                        if (containerNode.OwnerDocument != null)
+                        {
+                            containerNode.AppendChild(containerNode.OwnerDocument.ImportNode(featureEl, true));
+                        }
+                    }
                 }
+
+                break;
             }
         }
 
-        private void ParseChallenge(string challenge, out string realm, out string service)
+        /// <summary>
+        /// Gets the category information.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// ReSharper disable once CommentTypo
+        /// <param name="inScheme">The scheme that should definitely be used (i.e. from wlwmanifest), or null.
+        /// If inScheme is non-null, then outScheme will equal inScheme.</param>
+        /// <param name="outScheme">The scheme that should be used, or null if categories are not supported.</param>
+        /// <param name="supportsNewCategories">Ignore this value if outScheme == null.</param>
+        /// ReSharper disable once StyleCop.SA1650
+        private void GetCategoryInfo(
+            string blogId,
+            string inScheme,
+            out string outScheme,
+            out bool supportsNewCategories)
         {
-            var m = Regex.Match(challenge, @"\brealm=""([^""]*)""");
-            realm = m.Groups[1].Value;
-            var m2 = Regex.Match(challenge, @"\bservice=""([^""]*)""");
-            service = m2.Groups[1].Value;
+            var xmlDoc = this.GetCategoryXml(ref blogId);
+            foreach (var categoriesNode in xmlDoc.DocumentElement?.SelectNodes("app:categories", this.NamespaceManager)
+                                                ?.Cast<XmlElement>().ToList() ?? new List<XmlElement>())
+            {
+                var hasScheme = categoriesNode.HasAttribute("scheme");
+                var scheme = categoriesNode.GetAttribute("scheme");
+                var isFixed = categoriesNode.GetAttribute("fixed") == "yes";
+
+                // <categories fixed="no" />
+                if (!hasScheme && inScheme == null && !isFixed)
+                {
+                    outScheme = string.Empty;
+                    supportsNewCategories = true;
+                    return;
+                }
+
+                // <categories scheme="inScheme" fixed="yes|no" />
+                if (hasScheme && scheme == inScheme)
+                {
+                    outScheme = inScheme;
+                    supportsNewCategories = !isFixed;
+                    return;
+                }
+
+                // <categories scheme="" fixed="yes|no" />
+                if (hasScheme && inScheme == null && scheme == string.Empty)
+                {
+                    outScheme = string.Empty;
+                    supportsNewCategories = !isFixed;
+                    return;
+                }
+            }
+
+            outScheme = inScheme; // will be null if no scheme was externally specified
+            supportsNewCategories = false;
         }
 
-        public Authorization PreAuthenticate(WebRequest request, ICredentials credentials)
+        /// <summary>
+        /// Gets the features XML.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        private void GetFeaturesXml(string blogId)
         {
-            throw new NotImplementedException();
-        }
+            var uri = this.FeedServiceUrl;
+            var serviceDoc = AtomClient.xmlRestRequestHelper.Get(ref uri, this.RequestFilter);
 
-        public bool CanPreAuthenticate
-        {
-            get { return false; }
-        }
+            foreach (var entryEl in serviceDoc.SelectNodes(
+                                        "app:service/app:workspace/app:collection",
+                                        this.NamespaceManager)?.Cast<XmlElement>().ToList()
+                                 ?? new List<XmlElement>())
+            {
+                var href = XmlHelper.GetUrl(entryEl, "@href", uri);
+                if (blogId != href)
+                {
+                    continue;
+                }
 
-        public string AuthenticationType
-        {
-            get { return "GoogleLogin"; }
+                var results = new XmlDocument();
+                var rootElement = results.CreateElement("featuresInfo");
+                results.AppendChild(rootElement);
+                foreach (var featuresNode in entryEl.SelectNodes("f:features", this.NamespaceManager)
+                                                   ?.Cast<XmlElement>().ToList() ?? new List<XmlElement>())
+                {
+                    this.AddFeaturesXml(featuresNode, rootElement, uri);
+                }
+
+                return;
+            }
+
+            Trace.Fail($"Couldn't find collection in service document:\r\n{serviceDoc.OuterXml}");
         }
     }
 }

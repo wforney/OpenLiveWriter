@@ -6,6 +6,7 @@ namespace OpenLiveWriter.ApplicationFramework
     using System;
     using System.Diagnostics;
     using System.Globalization;
+    using System.Linq;
     using System.Windows.Forms;
 
     using OpenLiveWriter.CoreServices;
@@ -74,7 +75,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Parse the menu path into an array of menu path entries.
-            var menuPathEntries = StringHelper.SplitWithEscape(menuPath, '/', '_'); //menuPath.Split(new char[] {'/'});
+            var menuPathEntries = StringHelper.SplitWithEscape(menuPath, '/', '_').ToArray(); //menuPath.Split(new char[] {'/'});
 
             //	Build the menu structure for this command from the array of menu path entries.  For
             //	example, &File@1/&Close@2 specifies that this command represents the Close command
@@ -127,7 +128,7 @@ namespace OpenLiveWriter.ApplicationFramework
         private static void ParseMenuPathEntry(string menuPathEntry, out string text, out int position)
         {
             //	Parse the menu path entry.
-            var values = StringHelper.SplitWithEscape(menuPathEntry, '@', '_'); //menuPathEntry.Split(new char[] {'@'});
+            var values = StringHelper.SplitWithEscape(menuPathEntry, '@', '_').ToArray(); //menuPathEntry.Split(new char[] {'@'});
             Debug.Assert(
                 values.Length == 2,
                 "Invalid menu path entry.",

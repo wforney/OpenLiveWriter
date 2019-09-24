@@ -169,7 +169,38 @@
     <Compile Include="Clients\BlogClientLoginDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Clients\BlogClientManager.ClientTypeDefinition.cs">
+      <DependentUpon>BlogClientManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Clients\BlogClientManager.cs" />
+    <Compile Include="Clients\BlogClientManager.OptionOverrideReader.cs">
+      <DependentUpon>BlogClientManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\BloggerAtomClient.UploadFileRequestFactory.cs">
+      <DependentUpon>BloggerAtomClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\BloggerCompatibleClient.ShowErrorHelper.cs">
+      <DependentUpon>BloggerCompatibleClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\BlogPostContentFilters.ContentFilterTypeDefinition.cs">
+      <DependentUpon>BlogPostContentFilters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\CredentialsHelper.PromptHelper.cs">
+      <DependentUpon>CredentialsHelper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\CredentialsPromptResult.cs" />
+    <Compile Include="Clients\GDataCaptchaHelper.cs" />
+    <Compile Include="Clients\GDataCredentials.AuthKey.cs" />
+    <Compile Include="Clients\GDataCredentials.AuthValue.cs" />
+    <Compile Include="Clients\GDataCredentials.cs" />
+    <Compile Include="Clients\GDataCredentials.GoogleLoginRequestFactory.cs" />
+    <Compile Include="Clients\GDataCredentials.ShowErrorHelper.cs" />
+    <Compile Include="Clients\GoogleBloggerv3Client.Category.cs">
+      <DependentUpon>GoogleBloggerv3Client.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\GoogleBloggerv3Client.CategoryResponse.cs">
+      <DependentUpon>GoogleBloggerv3Client.cs</DependentUpon>
+    </Compile>
     <Compile Include="Clients\GoogleBloggerv3Client.cs" />
     <Compile Include="Clients\BloggerAtomClient.cs" />
     <Compile Include="Clients\BloggerCompatibleClient.cs" />
@@ -179,8 +210,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Clients\GenericAtomClient.cs" />
-    <Compile Include="Clients\LineBreakInputFormatters.cs" />
+    <Compile Include="Clients\GoogleBloggerv3Client.Feed.cs">
+      <DependentUpon>GoogleBloggerv3Client.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clients\GoogleLoginAuthenticationModule.cs" />
+    <Compile Include="Clients\LineBreak2BRInputFormatter.cs" />
+    <Compile Include="Clients\LineBreak2PBRInputFormatter.cs" />
+    <Compile Include="Clients\WordPressInputFormatter.cs" />
     <Compile Include="Clients\LiveJournalClient.cs" />
+    <Compile Include="Clients\LiveJournalClient.FotobilderRequestManager.cs">
+      <DependentUpon>LiveJournalClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Clients\MetaweblogClient.cs" />
     <Compile Include="Clients\MovableTypeClient.cs" />
     <Compile Include="Clients\MultipartMimeRequestHelper.cs" />

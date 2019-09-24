@@ -61,6 +61,33 @@ namespace OpenLiveWriter.CoreServices {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command cannot be null.
+        /// </summary>
+        internal static string CommandCannotBeNull {
+            get {
+                return ResourceManager.GetString("CommandCannotBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command cannot be the empty string.
+        /// </summary>
+        internal static string CommandCannotBeTheEmptyString {
+            get {
+                return ResourceManager.GetString("CommandCannotBeTheEmptyString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Null input is not allowed here.
+        /// </summary>
+        internal static string NullInputIsNotAllowedHere {
+            get {
+                return ResourceManager.GetString("NullInputIsNotAllowedHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified path ({0}) is invalid.
         /// </summary>
         internal static string SiteStorageException_InvalidPath {

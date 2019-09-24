@@ -1,226 +1,218 @@
+// <copyright file="GDataCaptchaForm.cs" company=".NET Foundation">
 // Copyright (c) .NET Foundation. All rights reserved.
+// </copyright>
+// <summary>
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.IO;
-using System.Net;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization;
+// </summary>
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.CoreServices.Layout;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
-    /// Summary description for GDataCaptchaForm.
+    /// The Google data captcha form class.
+    /// Implements the <see cref="OpenLiveWriter.CoreServices.BaseForm" />
     /// </summary>
+    /// <seealso cref="OpenLiveWriter.CoreServices.BaseForm" />
     public class GDataCaptchaForm : BaseForm
     {
-        private System.Windows.Forms.TextBox txtCaptcha;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.PictureBox picCaptcha;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        /// <summary>
+        /// The BTN cancel
+        /// </summary>
+        private Button btnCancel;
+
+        /// <summary>
+        /// The BTN ok
+        /// </summary>
+        private Button btnOk;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly Container components = null;
 
+        /// <summary>
+        /// The label1
+        /// </summary>
+        private Label label1;
+
+        /// <summary>
+        /// The link label1
+        /// </summary>
+        private LinkLabel linkLabel1;
+
+        /// <summary>
+        /// The pic captcha
+        /// </summary>
+        private PictureBox picCaptcha;
+
+        /// <summary>
+        /// The text captcha
+        /// </summary>
+        private TextBox txtCaptcha;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GDataCaptchaForm"/> class.
+        /// </summary>
         public GDataCaptchaForm()
         {
-            //
             // Required for Windows Form Designer support
-            //
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.label1.Text = Res.Get(StringId.GDataCaptchaPrompt);
             this.btnCancel.Text = Res.Get(StringId.CancelButton);
-            this.btnOK.Text = Res.Get(StringId.OKButtonText);
+            this.btnOk.Text = Res.Get(StringId.OKButtonText);
             this.linkLabel1.Text = Res.Get(StringId.GDataCaptchaAlternate);
             this.Text = Res.Get(StringId.GDataCaptchaTitle);
-
         }
 
+        /// <summary>
+        /// Gets the reply.
+        /// </summary>
+        /// <value>The reply.</value>
+        public string Reply => this.txtCaptcha.Text;
+
+        /// <summary>
+        /// Sets the image.
+        /// </summary>
+        /// <param name="img">The image.</param>
+        public void SetImage(Image img) => this.picCaptcha.Image = img;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.components?.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        /// <inheritdoc />
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             using (new AutoGrow(this, AnchorStyles.Bottom, true))
             {
-                LayoutHelper.NaturalizeHeightAndDistribute(4, label1, linkLabel1);
-                LayoutHelper.DistributeVertically(12, false, linkLabel1, picCaptcha);
-                LayoutHelper.DistributeVertically(4, picCaptcha, txtCaptcha);
-                LayoutHelper.DistributeVertically(12, false, txtCaptcha, new ControlGroup(btnOK, btnCancel));
-                LayoutHelper.FixupOKCancel(btnOK, btnCancel);
+                LayoutHelper.NaturalizeHeightAndDistribute(4, this.label1, this.linkLabel1);
+                LayoutHelper.DistributeVertically(12, false, this.linkLabel1, this.picCaptcha);
+                LayoutHelper.DistributeVertically(4, this.picCaptcha, this.txtCaptcha);
+                LayoutHelper.DistributeVertically(
+                    12,
+                    false,
+                    this.txtCaptcha,
+                    new ControlGroup(this.btnOk, this.btnCancel));
+                LayoutHelper.FixupOKCancel(this.btnOk, this.btnCancel);
             }
         }
 
-        public string Reply { get { return txtCaptcha.Text; } }
-
-        public void SetImage(Image img)
-        {
-            picCaptcha.Image = img;
-        }
-
         /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
-
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.picCaptcha = new System.Windows.Forms.PictureBox();
-            this.txtCaptcha = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.picCaptcha)).BeginInit();
+            this.picCaptcha = new PictureBox();
+            this.txtCaptcha = new TextBox();
+            this.label1 = new Label();
+            this.btnCancel = new Button();
+            this.btnOk = new Button();
+            this.linkLabel1 = new LinkLabel();
+            ((ISupportInitialize)this.picCaptcha).BeginInit();
             this.SuspendLayout();
-            //
+
             // picCaptcha
-            //
-            this.picCaptcha.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.picCaptcha.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picCaptcha.Location = new System.Drawing.Point(10, 91);
+            this.picCaptcha.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            this.picCaptcha.BorderStyle = BorderStyle.Fixed3D;
+            this.picCaptcha.Location = new Point(10, 91);
             this.picCaptcha.Name = "picCaptcha";
-            this.picCaptcha.Size = new System.Drawing.Size(197, 80);
+            this.picCaptcha.Size = new Size(197, 80);
             this.picCaptcha.TabIndex = 0;
             this.picCaptcha.TabStop = false;
-            //
+
             // txtCaptcha
-            //
-            this.txtCaptcha.Location = new System.Drawing.Point(10, 178);
+            this.txtCaptcha.Location = new Point(10, 178);
             this.txtCaptcha.Name = "txtCaptcha";
-            this.txtCaptcha.Size = new System.Drawing.Size(197, 23);
+            this.txtCaptcha.Size = new Size(197, 23);
             this.txtCaptcha.TabIndex = 0;
-            //
+
             // label1
-            //
-            this.label1.Location = new System.Drawing.Point(10, 9);
+            this.label1.Location = new Point(10, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(194, 37);
+            this.label1.Size = new Size(194, 37);
             this.label1.TabIndex = 3;
             this.label1.Text = "Type the characters you see in the picture below.";
-            //
+
             // btnCancel
-            //
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(130, 190);
+            this.btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            this.btnCancel.DialogResult = DialogResult.Cancel;
+            this.btnCancel.Location = new Point(130, 190);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(77, 26);
+            this.btnCancel.Size = new Size(77, 26);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
-            //
+
             // btnOK
-            //
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.DialogResult = DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(43, 190);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(77, 26);
-            this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "OK";
-            //
+            this.btnOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            this.btnOk.DialogResult = DialogResult.OK;
+            this.btnOk.Location = new Point(43, 190);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new Size(77, 26);
+            this.btnOk.TabIndex = 1;
+            this.btnOk.Text = "OK";
+
             // linkLabel1
-            //
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkLabel1.Location = new System.Drawing.Point(10, 46);
+            this.linkLabel1.LinkBehavior = LinkBehavior.HoverUnderline;
+            this.linkLabel1.LinkColor = SystemColors.HotTrack;
+            this.linkLabel1.Location = new Point(10, 46);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(197, 36);
+            this.linkLabel1.Size = new Size(197, 36);
             this.linkLabel1.TabIndex = 4;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Visually impaired users can access an audio version of the test here.";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            //
+            this.linkLabel1.LinkClicked += this.linkLabel1_LinkClicked;
+
             // GDataCaptchaForm
-            //
-            this.AcceptButton = this.btnOK;
+            this.AcceptButton = this.btnOk;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(216, 224);
+            this.ClientSize = new Size(216, 224);
             this.ControlBox = false;
             this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.txtCaptcha);
             this.Controls.Add(this.picCaptcha);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.Name = "GDataCaptchaForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = FormStartPosition.CenterParent;
             this.Text = "Unlock Google Account";
-            ((System.ComponentModel.ISupportInitialize)(this.picCaptcha)).EndInit();
+            ((ISupportInitialize)this.picCaptcha).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-        #endregion
 
-        private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        /// <summary>
+        /// Handles the LinkClicked event of the linkLabel1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="LinkLabelLinkClickedEventArgs"/> instance containing the event data.</param>
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://www.google.com/accounts/DisplayUnlockCaptcha?service=blogger");
-            DialogResult = DialogResult.Cancel;
-        }
-    }
-
-    internal class GDataCaptchaHelper
-    {
-        private readonly IWin32Window _owner;
-        private readonly string _imageUrl;
-        private DialogResult _dialogResult;
-        private string _reply;
-
-        public GDataCaptchaHelper(IWin32Window owner, string imageUrl)
-        {
-            _owner = owner;
-            _imageUrl = UrlHelper.UrlCombineIfRelative("http://www.google.com/accounts/", imageUrl);
-        }
-
-        public DialogResult DialogResult { get { return _dialogResult; } }
-        public string Reply { get { return _reply; } }
-
-        public void ShowCaptcha()
-        {
-            HttpWebResponse response = HttpRequestHelper.SendRequest(_imageUrl);
-            Image image;
-            using (Stream s = response.GetResponseStream())
-            {
-                image = Bitmap.FromStream(new MemoryStream(StreamHelper.AsBytes(s)));
-            }
-
-            using (image)
-            {
-                using (GDataCaptchaForm form = new GDataCaptchaForm())
-                {
-                    form.SetImage(image);
-                    _dialogResult = form.ShowDialog(_owner);
-                    if (_dialogResult == DialogResult.OK)
-                        _reply = form.Reply;
-                }
-            }
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }

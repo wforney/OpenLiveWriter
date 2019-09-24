@@ -181,6 +181,7 @@
     <Compile Include="HTML\LightWeightHTMLUrlToAbsolute.cs" />
     <Compile Include="HTML\ParagraphDefaultBlockElement.cs" />
     <Compile Include="HTML\UnsafeHtmlFragmentHelper.cs" />
+    <Compile Include="IconHandle.cs" />
     <Compile Include="ImageCache.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageHelper2.cs" />
@@ -245,8 +246,15 @@
     <Compile Include="Settings\RegistryCodec.cs" />
     <Compile Include="Settings\RegistrySettingsPersister.cs" />
     <Compile Include="Settings\SettingsPersisterHelper.cs" />
+    <Compile Include="Settings\XmlChildSettingsPersister.cs" />
+    <Compile Include="Settings\XmlFileSettingsPersister.BatchUpdateHelper.cs" />
+    <Compile Include="Settings\XmlFileSettingsPersister.cs" />
+    <Compile Include="Settings\XmlFileSettingsPersister.ValueType.cs" />
     <Compile Include="Settings\XmlSettingsPersister.cs" />
     <Compile Include="ShellHelper.cs" />
+    <Compile Include="ShellHelper.ExecuteFileResult.cs">
+      <DependentUpon>ShellHelper.cs</DependentUpon>
+    </Compile>
     <Compile Include="SimpleHeap.cs" />
     <Compile Include="SingleInstanceApplicationManager.cs" />
     <Compile Include="SiteStorage\FileBasedSiteStorage.cs" />

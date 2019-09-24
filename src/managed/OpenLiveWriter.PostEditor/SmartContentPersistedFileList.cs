@@ -105,22 +105,28 @@ namespace OpenLiveWriter.PostEditor
             smartContent.Properties.SetString(listId, result.ToString());
         }
 
-        private List<PersistedFile> GetPersistedFileList()
+        /// <summary>
+        /// Gets the persisted file list.
+        /// </summary>
+        /// <returns>The persisted file list.</returns>
+        private IEnumerable<PersistedFile> GetPersistedFileList()
         {
-            string str = smartContent.Properties.GetString(listId, null);
+            var str = this.smartContent.Properties.GetString(this.listId, null);
             if (string.IsNullOrEmpty(str))
-                return new List<PersistedFile>();
-
-            List<PersistedFile> results = new List<PersistedFile>();
-
-            string[] files = StringHelper.Split(str, FILE_SEPARATOR);
-            foreach (string file in files)
             {
-                string[] chunks = file.Split(INTERNAL_EXTERNAL_SEPARATOR);
+                return new List<PersistedFile>();
+            }
+
+            var results = new List<PersistedFile>();
+
+            var files = StringHelper.Split(str, SmartContentPersistedFileList.FILE_SEPARATOR);
+            foreach (var file in files)
+            {
+                var chunks = file.Split(SmartContentPersistedFileList.INTERNAL_EXTERNAL_SEPARATOR);
                 switch (chunks[0])
                 {
                     case "I":
-                        PersistedFile persistedFile = new PersistedFile(true, chunks[2]);
+                        var persistedFile = new PersistedFile(true, chunks[2]);
                         persistedFile.SmartContentName = chunks[1];
                         results.Add(persistedFile);
                         break;

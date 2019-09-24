@@ -1,76 +1,98 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
-    using System;
     using System.Windows.Forms;
 
-    using OpenLiveWriter.CoreServices;
-
-    /// <summary>
-    /// The CredentialsHelper class.
-    /// </summary>
     public partial class CredentialsHelper
     {
         /// <summary>
-        /// Prompts for credentials.
+        /// The PromptHelper class.
         /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
-        /// <param name="domain">The domain.</param>
-        /// <returns>A <see cref="CredentialsPromptResult"/>.</returns>
-        public static CredentialsPromptResult PromptForCredentials(
-            ref string username,
-            ref string password,
-            ICredentialsDomain domain)
+        private class PromptHelper
         {
-            CredentialsPromptResult result;
+            /// <summary>
+            /// The domain
+            /// </summary>
+            private readonly ICredentialsDomain domain;
 
-            if (BlogClientUIContext.SilentModeForCurrentThread)
+            /// <summary>
+            /// The owner
+            /// </summary>
+            private readonly IWin32Window owner;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PromptHelper"/> class.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
+            /// <param name="username">The username.</param>
+            /// <param name="password">The password.</param>
+            /// <param name="domain">The domain.</param>
+            public PromptHelper(IWin32Window owner, string username, string password, ICredentialsDomain domain)
             {
-                return CredentialsPromptResult.Abort;
+                this.owner = owner;
+                this.Username = username;
+                this.Password = password;
+                this.domain = domain;
             }
 
-            var uiContext = BlogClientUIContext.ContextForCurrentThread;
-            if (uiContext != null)
+            /// <summary>
+            /// Gets the password.
+            /// </summary>
+            /// <value>The password.</value>
+            public string Password { get; private set; }
+
+            /// <summary>
+            /// Gets the result.
+            /// </summary>
+            /// <value>The result.</value>
+            public CredentialsPromptResult Result { get; private set; }
+
+            /// <summary>
+            /// Gets the username.
+            /// </summary>
+            /// <value>The username.</value>
+            public string Username { get; private set; }
+
+            /// <summary>
+            /// Shows the prompt.
+            /// </summary>
+            public void ShowPrompt()
             {
-                var promptHelper = new PromptHelper(uiContext, username, password, domain);
-                if (uiContext.InvokeRequired)
+                using (var form = new BlogClientLoginDialog())
                 {
-                    uiContext.Invoke(new InvokeInUIThreadDelegate(promptHelper.ShowPrompt), new object[0]);
-                }
-                else
-                {
-                    promptHelper.ShowPrompt();
+                    if (this.Username != null)
+                    {
+                        form.UserName = this.Username;
+                    }
 
-                    // force a UI loop so that the dialog closes without hanging while post-dialog logic executes
-                    Application.DoEvents();
-                }
+                    if (this.Password != null)
+                    {
+                        form.Password = this.Password;
+                    }
 
-                result = promptHelper.Result;
-                if (result != CredentialsPromptResult.Cancel)
-                {
-                    username = promptHelper.Username;
-                    password = promptHelper.Password;
+                    if (this.domain != null)
+                    {
+                        form.Domain = this.domain;
+                        form.Text = $"{form.Text} - {this.domain.Name}";
+                    }
+
+                    var dialogResult = form.ShowDialog(this.owner);
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        this.Username = form.UserName;
+                        this.Password = form.Password;
+                        this.Result = form.SavePassword
+                                           ? CredentialsPromptResult.SaveUsernameAndPassword
+                                           : CredentialsPromptResult.SaveUsername;
+                    }
+                    else
+                    {
+                        this.Result = CredentialsPromptResult.Cancel;
+                    }
                 }
             }
-            else
-            {
-                result = CredentialsPromptResult.Abort;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Shows the wait cursor.
-        /// </summary>
-        /// <returns>An <see cref="IDisposable"/>.</returns>
-        public static IDisposable ShowWaitCursor()
-        {
-            var uiContext = BlogClientUIContext.ContextForCurrentThread;
-            return uiContext == null || uiContext.InvokeRequired ? null : new WaitCursor();
         }
     }
 

@@ -14,6 +14,8 @@ using OpenLiveWriter.CoreServices.Layout;
 
 namespace OpenLiveWriter.FileDestinations
 {
+    using System.Linq;
+
     public delegate void ErrorHandler(Exception e);
 
     public class PublishFolderPicker : ApplicationDialog
@@ -67,7 +69,9 @@ namespace OpenLiveWriter.FileDestinations
                 try
                 {
                     using (new WaitCursor())
+                    {
                         destination.Connect();
+                    }
 
                     folderPicker.Destination = destination;
 
@@ -84,7 +88,10 @@ namespace OpenLiveWriter.FileDestinations
                     {
                         string currDirectory = destination.HomeDir;
                         if (!currDirectory.StartsWith("/", StringComparison.OrdinalIgnoreCase))
+                        {
                             currDirectory = "/" + currDirectory;
+                        }
+
                         folderPicker.SelectedPath = currDirectory;
                     }
 
@@ -96,7 +103,9 @@ namespace OpenLiveWriter.FileDestinations
                 catch (Exception ex)
                 {
                     if (errorHandler != null)
+                    {
                         errorHandler(ex);
+                    }
                 }
                 finally
                 {
@@ -271,13 +280,19 @@ namespace OpenLiveWriter.FileDestinations
                 string rootPath = RootNode.Tag.ToString();
                 int rootPathLength = rootPath.Length;
                 if (!(rootPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase) || rootPath.EndsWith("/", StringComparison.OrdinalIgnoreCase)))
+                {
                     rootPathLength++;
+                }
 
                 string fullPath = destinationTree.SelectedNode.Tag.ToString();
                 if (rootPathLength < fullPath.Length)
+                {
                     return fullPath.Substring(rootPathLength);
+                }
                 else
+                {
                     return String.Empty;
+                }
             }
 
             set
@@ -382,7 +397,10 @@ namespace OpenLiveWriter.FileDestinations
             if (ParentNode.Nodes.Count == 0)
             {
                 if (!DirectoryPath.EndsWith(destination.PathDelimiter, StringComparison.OrdinalIgnoreCase))
+                {
                     DirectoryPath += destination.PathDelimiter;
+                }
+
                 try
                 {
                     using (new WaitCursor())
@@ -400,7 +418,10 @@ namespace OpenLiveWriter.FileDestinations
                                 {
                                     int nextChunkLen = restOfPath.IndexOf(destination.PathDelimiter, StringComparison.OrdinalIgnoreCase);
                                     if (nextChunkLen == -1)
+                                    {
                                         nextChunkLen = restOfPath.Length;
+                                    }
+
                                     string nextChunk = restOfPath.Substring(0, nextChunkLen);
 
                                     TreeNode newNode = createFolderNode(ParentNode, nextChunk);
@@ -428,23 +449,28 @@ namespace OpenLiveWriter.FileDestinations
             }
         }
 
+        /// <summary>
+        /// Determines whether [is parent path] [the specified parent].
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <param name="child">The child.</param>
+        /// <returns><c>true</c> if [is parent path] [the specified parent]; otherwise, <c>false</c>.</returns>
         private bool IsParentPath(string parent, string child)
         {
             if (parent.Length == 0)
+            {
                 return false;
+            }
 
             if (!child.StartsWith(parent, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            string[] parentElements = StringHelper.Split(parent, Destination.PathDelimiter);
-            string[] childElements = StringHelper.Split(child, Destination.PathDelimiter);
-
-            for (int i = 0; i < parentElements.Length; i++)
             {
-                if (childElements[i] != parentElements[i])
-                    return false;
+                return false;
             }
-            return true;
+
+            var parentElements = StringHelper.Split(parent, Destination.PathDelimiter).ToArray();
+            var childElements = StringHelper.Split(child, Destination.PathDelimiter).ToArray();
+
+            return !parentElements.Where((t, i) => childElements[i] != t).Any();
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -483,9 +509,13 @@ namespace OpenLiveWriter.FileDestinations
                         catch (Exception ex)
                         {
                             if (errorHandler != null)
+                            {
                                 errorHandler(ex);
+                            }
                             else
+                            {
                                 throw ex;
+                            }
                         }
                     }
                 }
@@ -518,7 +548,9 @@ namespace OpenLiveWriter.FileDestinations
             {
                 TreeNode node = destinationTree.GetNodeAt(e.X, e.Y);
                 if (node != null)
+                {
                     destinationTree.SelectedNode = node;
+                }
             }
         }
 

@@ -10,6 +10,8 @@ using OpenLiveWriter.Interop.Windows;
 
 namespace OpenLiveWriter.CoreServices
 {
+    using System.Linq;
+
     /// <summary>
     /// Color helper.
     /// </summary>
@@ -327,7 +329,7 @@ namespace OpenLiveWriter.CoreServices
 
         public static Color[] StringToColors(string strColors)
         {
-            string[] astrColors = StringHelper.Split(strColors, ",");
+            string[] astrColors = StringHelper.Split(strColors, ",").ToArray();
             Color[] colors = new Color[astrColors.Length];
             for (int i = 0; i < colors.Length; i++)
             {

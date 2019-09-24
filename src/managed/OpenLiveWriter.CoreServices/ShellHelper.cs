@@ -1,93 +1,184 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.Win32;
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Interop.Windows;
-
 namespace OpenLiveWriter.CoreServices
 {
+    using System;
+    using System.Collections;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Text;
+
+    using Microsoft.Win32;
+
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Windows;
+
     /// <summary>
-    /// Summary description for ShellHelper.
+    /// The shell helper class.
     /// </summary>
-    public class ShellHelper
+    public partial class ShellHelper
     {
+        /// <summary>
+        /// Extension used for shortcuts
+        /// </summary>
+        public static string ShortcutExtension = ".lnk";
+
+        /// <inheritdoc />
         private ShellHelper()
         {
         }
 
-        public static string GetAbsolutePath(string path)
+        /// <summary>
+        /// Gets the path extensions.
+        /// </summary>
+        /// <value>The path extensions.</value>
+        public static string[] PathExtensions
         {
-            if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
-                return path;
-            else
-                return Path.GetFullPath((path));
+            get
+            {
+                var pathExtension = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD";
 
+                var pathExtensions = StringHelper.Split(pathExtension, ";").ToArray();
+                for (var i = 0; i < pathExtensions.Length; i++)
+                {
+                    pathExtensions[i] = pathExtensions[i].ToLower(CultureInfo.CurrentCulture).Trim();
+                }
+
+                return pathExtensions;
+            }
         }
 
         /// <summary>
-        /// Sets the window's application id by its window handle.
+        /// Shell-executes a file with a specific verb, then returns either the exact
+        /// process that was launched, or if nothing was launched (i.e. a process was
+        /// reused), returns a set of processes that might be handling the file.
         /// </summary>
-        /// <param name="hwnd">The window handle.</param>
-        /// <param name="appId">The application id.</param>
-        public static void SetWindowAppId(IntPtr hwnd, string appId)
+        /// <param name="filePath">The file path.</param>
+        /// <param name="verb">The verb.</param>
+        /// <returns>An <see cref="ExecuteFileResult"/>.</returns>
+        public static ExecuteFileResult ExecuteFile(string filePath, string verb)
         {
-            SetWindowProperty(hwnd, SystemProperties.System.AppUserModel.ID, appId);
+            // Execute the document using the shell.
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = filePath,
+                Verb = verb
+            };
+
+            using (var p = Process.Start(startInfo))
+            {
+                if (p != null)
+                {
+                    var processName = ProcessHelper.GetProcessName(p.Handle);
+                    if (processName != null)
+                    {
+                        return new ExecuteFileResult(true, p.Id, processName);
+                    }
+                }
+            }
+
+            var command = ShellHelper.GetExecutablePath(Path.GetExtension(filePath), verb);
+
+            // A process was reused.  Need to find all the possible processes
+            // that could have been reused and return them all.
+            int[] processIds;
+            string[] processNames;
+
+            if (command == null)
+            {
+                // The extension/verb combination has no registered application.
+                // We can't even guess at what process could be editing the file.
+                processIds = new int[0];
+                processNames = new string[0];
+            }
+            else
+            {
+                // A registered app was found.  We assume that a process with the
+                // same name is editing the file.
+                var imageName = Path.GetFileName(command);
+                processIds = ProcessHelper.GetProcessIdsByName(imageName);
+                processNames = new string[processIds.Length];
+                for (var i = 0; i < processIds.Length; i++)
+                {
+                    processNames[i] = imageName;
+                }
+            }
+
+            return new ExecuteFileResult(false, processIds, processNames);
         }
 
-        internal static void SetWindowProperty(IntPtr hwnd, PropertyKey propkey, string value)
+        /// <summary>
+        /// Executes the file with executable.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="executable">The executable.</param>
+        /// <returns>An <see cref="ExecuteFileResult"/>.</returns>
+        public static ExecuteFileResult ExecuteFileWithExecutable(string filePath, string executable)
         {
-            // Get the IPropertyStore for the given window handle
-            IPropertyStore propStore = GetWindowPropertyStore(hwnd);
+            var startInfo = new ProcessStartInfo(executable)
+            {
+                Arguments = $"\"{filePath}\""
+            };
 
-            // Set the value
-            PropVariant pv = new PropVariant();
-            propStore.SetValue(ref propkey, ref pv);
+            using (var p = Process.Start(startInfo))
+            {
+                if (p != null)
+                {
+                    return new ExecuteFileResult(true, p.Id, ProcessHelper.GetProcessName(p.Handle));
+                }
+            }
 
-            // Dispose the IPropertyStore and PropVariant
-            Marshal.ReleaseComObject(propStore);
-            pv.Clear();
+            var imageName = Path.GetFileName(executable);
+            var processIds = ProcessHelper.GetProcessIdsByName(imageName);
+            var processNames = new string[processIds.Length];
+            for (var i = 0; i < processIds.Length; i++)
+            {
+                processNames[i] = imageName;
+            }
+
+            return new ExecuteFileResult(false, processIds, processNames);
         }
 
-        internal static IPropertyStore GetWindowPropertyStore(IntPtr hwnd)
-        {
-            IPropertyStore propStore;
-            Guid guid = new Guid(Shell32.IPropertyStore);
-            int rc = Shell32.SHGetPropertyStoreForWindow(
-                hwnd,
-                ref guid,
-                out propStore);
-            if (rc != 0)
-                throw Marshal.GetExceptionForHR(rc);
-            return propStore;
-        }
+        /// <summary>
+        /// Gets the absolute path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>The absolute path.</returns>
+        public static string GetAbsolutePath(string path) =>
+            Uri.IsWellFormedUriString(path, UriKind.Absolute) ? path : Path.GetFullPath(path);
 
         /// <summary>
         /// For a file extension (with leading period) and a verb (or null for default
         /// verb), returns the (full?) path to the executable file that is assigned to
         /// that extension/verb.  Returns null if an error occurs.
         /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <param name="verb">The verb.</param>
+        /// <returns>The executable path.</returns>
         public static string GetExecutablePath(string extension, string verb)
         {
-            int capacity = 270;
+            var capacity = 270;
 
-        attempt:  // we may need to retry with a different (larger) value for "capacity"
-            StringBuilder buffer = new StringBuilder(capacity);  // the buffer that will hold the result
-            int hresult = Shlwapi.AssocQueryString(ASSOCF.NOTRUNCATE, ASSOCSTR.EXECUTABLE, extension, verb, buffer, ref capacity);
+            attempt: // we may need to retry with a different (larger) value for "capacity"
+            var buffer = new StringBuilder(capacity); // the buffer that will hold the result
+            var hresult = Shlwapi.AssocQueryString(
+                ASSOCF.NOTRUNCATE,
+                ASSOCSTR.EXECUTABLE,
+                extension,
+                verb,
+                buffer,
+                ref capacity);
 
             switch (hresult)
             {
                 case HRESULT.S_OK:
-                    return buffer.ToString();  // success; return the path
+                    return buffer.ToString(); // success; return the path
 
                 // failure; buffer was too small
                 case HRESULT.E_POINTER:
@@ -107,18 +198,83 @@ namespace OpenLiveWriter.CoreServices
         }
 
         /// <summary>
+        /// Get the large icon for the specified file extension
+        /// </summary>
+        /// <param name="extension">file extension (including leading .)</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        public static IconHandle GetLargeIconForExtension(string extension) =>
+            ShellHelper.GetIconForExtension(extension, SHGFI.LARGEICON);
+
+        /// <summary>
+        /// Get the large icon for the specified file
+        /// </summary>
+        /// <param name="filePath">path to file</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        public static IconHandle GetLargeIconForFile(string filePath) =>
+            ShellHelper.GetIconForFile(filePath, SHGFI.LARGEICON);
+
+        /// <summary>
+        /// Gets the large shortcut icon for extension.
+        /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <returns>An <see cref="IconHandle"/>.</returns>
+        public static IconHandle GetLargeShortcutIconForExtension(string extension) =>
+            ShellHelper.GetIconForExtension(extension, SHGFI.LARGEICON | SHGFI.LINKOVERLAY);
+
+        /// <summary>
+        /// Get the small icon for the specified file extension
+        /// </summary>
+        /// <param name="extension">file extension (including leading .)</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        public static IconHandle GetSmallIconForExtension(string extension) =>
+            ShellHelper.GetIconForExtension(extension, SHGFI.SMALLICON);
+
+        /// <summary>
+        /// Get the small icon for the specified file
+        /// </summary>
+        /// <param name="filePath">path to file</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        public static IconHandle GetSmallIconForFile(string filePath) =>
+            ShellHelper.GetIconForFile(filePath, SHGFI.SMALLICON);
+
+        /// <summary>
+        /// Get the small icon for the specified file extension
+        /// </summary>
+        /// <param name="extension">file extension (including leading .)</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        public static IconHandle GetSmallShortcutIconForExtension(string extension) =>
+            ShellHelper.GetIconForExtension(extension, SHGFI.SMALLICON | SHGFI.LINKOVERLAY);
+
+        /// <summary>
         /// Gets the friendly type string for an extension.
         /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <returns>The type name for the specified extension.</returns>
         public static string GetTypeNameForExtension(string extension)
         {
-            if (extension != null)
-                extension = extension.Trim();
+            extension = extension?.Trim();
 
-            int capacity = 270;
+            var capacity = 270;
 
-        attempt:
-            StringBuilder builder = new StringBuilder(capacity);
-            int hresult = Shlwapi.AssocQueryString(ASSOCF.NOTRUNCATE, ASSOCSTR.FRIENDLYDOCNAME, extension, null, builder, ref capacity);
+            attempt:
+            var builder = new StringBuilder(capacity);
+            var hresult = Shlwapi.AssocQueryString(
+                ASSOCF.NOTRUNCATE,
+                ASSOCSTR.FRIENDLYDOCNAME,
+                extension,
+                null,
+                builder,
+                ref capacity);
 
             switch (hresult)
             {
@@ -134,122 +290,127 @@ namespace OpenLiveWriter.CoreServices
                     break;
             }
 
-            if (extension == null || extension == string.Empty)
-                return "Unknown";
-            else
-                return extension.TrimStart('.').ToUpper(CultureInfo.InvariantCulture) + " File";
-        }
-
-        public struct ExecuteFileResult
-        {
-            public ExecuteFileResult(bool newProcessCreated, int processId, string processName)
-                : this(newProcessCreated, new int[] { processId }, new string[] { processName })
-            {
-            }
-
-            public ExecuteFileResult(bool newProcessCreated, int[] processIdList, string[] processNameList)
-            {
-                this.NewProcessCreated = newProcessCreated;
-                this.ProcessIdList = processIdList;
-                this.ProcessNameList = processNameList;
-            }
-
-            public bool NewProcessCreated;
-            public int[] ProcessIdList;
-            public string[] ProcessNameList;
+            return string.IsNullOrEmpty(extension)
+                       ? "Unknown"
+                       : $"{extension.TrimStart('.').ToUpper(CultureInfo.InvariantCulture)} File";
         }
 
         /// <summary>
-        /// Shell-executes a file with a specific verb, then returns either the exact
-        /// process that was launched, or if nothing was launched (i.e. a process was
-        /// reused), returns a set of processes that might be handling the file.
+        /// Determine if there is a custom icon handler for the specified file extension
         /// </summary>
-        public static ExecuteFileResult ExecuteFile(string filePath, string verb)
+        /// <param name="fileExtension">file extension (including ".")</param>
+        /// <returns>true if it has a custom icon handler, otherwise false</returns>
+        public static bool HasCustomIconHandler(string fileExtension)
         {
-            // Execute the document using the shell.
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.UseShellExecute = true;
-            startInfo.FileName = filePath;
-            startInfo.Verb = verb;
-
-            using (Process p = Process.Start(startInfo))
+            using (var key = Registry.ClassesRoot.OpenSubKey(fileExtension))
             {
-                if (p != null)
+                if (key == null)
                 {
-                    string processName = ProcessHelper.GetProcessName(p.Handle);
-                    if (processName != null)
-                        return new ExecuteFileResult(true, p.Id, processName);
+                    return false;
+                }
+
+                using (var classKey = Registry.ClassesRoot.OpenSubKey(
+                    key.GetValue(null, string.Empty) + @"\ShellEx\IconHandler"))
+                {
+                    return classKey != null;
                 }
             }
-
-            // A process was reused.  Need to find all the possible processes
-            // that could've been reused and return them all.
-            int[] processIds;
-            string[] processNames;
-
-            string command = GetExecutablePath(Path.GetExtension(filePath), verb);
-            if (command == null)
-            {
-                // The extension/verb combination has no registered application.
-                // We can't even guess at what process could be editing the file.
-                processIds = new int[0];
-                processNames = new string[0];
-            }
-            else
-            {
-                // A registered app was found.  We assume that a process with the
-                // same name is editing the file.
-                string imageName = Path.GetFileName(command);
-                processIds = ProcessHelper.GetProcessIdsByName(imageName);
-                processNames = new string[processIds.Length];
-                for (int i = 0; i < processIds.Length; i++)
-                    processNames[i] = imageName;
-            }
-            return new ExecuteFileResult(false, processIds, processNames);
         }
 
-        public static ExecuteFileResult ExecuteFileWithExecutable(string filePath, string executable)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo(executable);
-            startInfo.Arguments = "\"" + filePath + "\"";
-
-            using (Process p = Process.Start(startInfo))
-            {
-                if (p != null)
-                    return new ExecuteFileResult(true, p.Id, ProcessHelper.GetProcessName(p.Handle));
-            }
-
-            string imageName = Path.GetFileName(executable);
-            int[] processIds = ProcessHelper.GetProcessIdsByName(imageName);
-            string[] processNames = new string[processIds.Length];
-            for (int i = 0; i < processIds.Length; i++)
-                processNames[i] = imageName;
-            return new ExecuteFileResult(false, processIds, processNames);
-        }
+        /// <summary>
+        /// Determines whether [is path extension] [the specified extension].
+        /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <returns><c>true</c> if [is path extension] [the specified extension]; otherwise, <c>false</c>.</returns>
+        public static bool IsPathExtension(string extension) =>
+            Array.IndexOf(ShellHelper.PathExtensions, extension) >= 0;
 
         /// <summary>
         /// This should be used as the default URL launching method, instead of Process.Start.
         /// </summary>
+        /// <param name="url">The URL.</param>
         public static void LaunchUrl(string url)
         {
             try
             {
                 Process.Start(url);
             }
-            catch (Win32Exception w32e)
+            catch (Win32Exception w32E)
             {
                 // Benign but common error due to Firefox and/or Windows stupidity
                 // http://kb.mozillazine.org/Windows_error_opening_Internet_shortcut_or_local_HTML_file_-_Firefox
                 // The unchecked cast is necessary to make the uint wrap around to the proper int error code.
-                if (w32e.ErrorCode == unchecked((int)0x80004005))
+                if (w32E.ErrorCode == unchecked((int)0x80004005))
+                {
                     return;
+                }
 
                 throw;
             }
         }
 
         /// <summary>
-        /// Parse a "shell" file list (space delimited list with filenames that contain spaces
+        /// Parses the command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="executable">The executable.</param>
+        /// <param name="arguments">The arguments.</param>
+        /// <exception cref="ArgumentNullException">command - Command cannot be null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">command - Command cannot be the empty string</exception>
+        public static void ParseCommand(string command, out string executable, out string arguments)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command), Exceptions.CommandCannotBeNull);
+            }
+
+            if (command.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(command), Exceptions.CommandCannotBeTheEmptyString);
+            }
+
+            command = command.TrimStart();
+
+            if (command[0] == '"')
+            {
+                var split = command.IndexOf('"', 1);
+                if (split != -1)
+                {
+                    executable = command.Substring(1, split - 1);
+                    arguments = string.Empty;
+                    if (command.Length > split + 2)
+                    {
+                        arguments = command.Substring(split + 2);
+                    }
+                }
+                else
+                {
+                    executable = command;
+                    arguments = string.Empty;
+                }
+            }
+            else
+            {
+                var split = command.IndexOf(' ');
+                if (split != -1)
+                {
+                    executable = command.Substring(0, split);
+                    arguments = string.Empty;
+                    if (command.Length > split + 1)
+                    {
+                        arguments = command.Substring(split + 1);
+                    }
+                }
+                else
+                {
+                    executable = command;
+                    arguments = string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parse a "shell" file list (space delimited list with file names that contain spaces
         /// being contained in quotes
         /// </summary>
         /// <param name="fileList">shell file list</param>
@@ -258,8 +419,8 @@ namespace OpenLiveWriter.CoreServices
         {
             // otherwise check for a "shell format" list
             fileList = fileList.Trim();
-            ArrayList fileListArray = new ArrayList();
-            int currentLoc = 0;
+            var fileListArray = new ArrayList();
+            var currentLoc = 0;
 
             // scan for file entries
             while (currentLoc < fileList.Length)
@@ -268,47 +429,61 @@ namespace OpenLiveWriter.CoreServices
                 string file = null;
 
                 // skip leading white-space
-                while (currentLoc < fileList.Length && Char.IsWhiteSpace(fileList[currentLoc]))
+                while (currentLoc < fileList.Length && char.IsWhiteSpace(fileList[currentLoc]))
+                {
                     currentLoc++;
+                }
 
                 // account for quoted entries
                 if (fileList[currentLoc] == '"')
                 {
                     // find next quote
-                    int nextQuote = fileList.IndexOf('"', currentLoc + 1);
+                    var nextQuote = fileList.IndexOf('"', currentLoc + 1);
                     if (nextQuote != -1)
                     {
                         file = fileList.Substring(currentLoc + 1, nextQuote - currentLoc - 1);
                         currentLoc = nextQuote + 1;
                     }
                     else
+                    {
                         break; // no end quote!
+                    }
                 }
 
                 // if we didn't have a quoted entry then find next space delimited entry
                 if (file == null)
                 {
                     // skip leading white-space
-                    while (currentLoc < fileList.Length && Char.IsWhiteSpace(fileList[currentLoc]))
+                    while (currentLoc < fileList.Length && char.IsWhiteSpace(fileList[currentLoc]))
+                    {
                         currentLoc++;
+                    }
 
                     // if we aren't at the end then get the next entry
                     if (currentLoc < fileList.Length)
                     {
                         // find the end of the entry
-                        int endEntry = currentLoc;
+                        var endEntry = currentLoc;
                         while (endEntry < fileList.Length)
-                            if (!Char.IsWhiteSpace(fileList[endEntry]))
+                        {
+                            if (!char.IsWhiteSpace(fileList[endEntry]))
+                            {
                                 endEntry++;
+                            }
                             else
+                            {
                                 break;
+                            }
+                        }
 
                         // get the value for the entry
                         file = fileList.Substring(currentLoc, endEntry - currentLoc);
                         currentLoc = endEntry;
                     }
                     else
+                    {
                         break; // at the end
+                    }
                 }
 
                 // add the file to our list
@@ -320,148 +495,48 @@ namespace OpenLiveWriter.CoreServices
         }
 
         /// <summary>
-        /// Determine if there is a custom icon handler for the specified file extension
+        /// Sets the window's application id by its window handle.
         /// </summary>
-        /// <param name="fileExtension">file extension (including ".")</param>
-        /// <returns>true if it has a custom icon handler, otherwise false</returns>
-        public static bool HasCustomIconHandler(string fileExtension)
+        /// <param name="hwnd">The window handle.</param>
+        /// <param name="appId">The application id.</param>
+        public static void SetWindowAppId(IntPtr hwnd, string appId) =>
+            ShellHelper.SetWindowProperty(hwnd, SystemProperties.System.AppUserModel.ID, appId);
+
+        /// <summary>
+        /// Gets the window property store.
+        /// </summary>
+        /// <param name="hwnd">The HWND.</param>
+        /// <returns>IPropertyStore.</returns>
+        internal static IPropertyStore GetWindowPropertyStore(IntPtr hwnd)
         {
-            using (RegistryKey key = Registry.ClassesRoot.OpenSubKey(fileExtension))
+            var guid = new Guid(Shell32.IPropertyStore);
+            var rc = Shell32.SHGetPropertyStoreForWindow(hwnd, ref guid, out var propStore);
+            if (rc != 0)
             {
-                if (key != null)
-                {
-                    using (RegistryKey classKey = Registry.ClassesRoot.OpenSubKey(
-                                key.GetValue(null, String.Empty) + @"\ShellEx\IconHandler"))
-                    {
-                        if (classKey != null)
-                            return true;
-                        else
-                            return false;
-                    }
-                }
-                else
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Get the small icon for the specified file
-        /// </summary>
-        /// <param name="filePath">path to file</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetSmallIconForFile(string filePath)
-        {
-            return GetIconForFile(filePath, SHGFI.SMALLICON);
-        }
-
-        /// <summary>
-        /// Get the large icon for the specified file
-        /// </summary>
-        /// <param name="filePath">path to file</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetLargeIconForFile(string filePath)
-        {
-            return GetIconForFile(filePath, SHGFI.LARGEICON);
-        }
-
-        /// <summary>
-        /// Get the icon for the specified file
-        /// </summary>
-        /// <param name="filePath">path to file</param>
-        /// <param name="iconType">icon type (small or large)</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        private static IconHandle GetIconForFile(string filePath, uint iconType)
-        {
-            // allocate SHFILEINFO for holding results
-            SHFILEINFO fileInfo = new SHFILEINFO();
-
-            // get icon info
-            IntPtr result = Shell32.SHGetFileInfo(filePath, 0, ref fileInfo,
-                (uint)Marshal.SizeOf(fileInfo), SHGFI.ICON | iconType);
-            if (result == IntPtr.Zero)
-            {
-                Debug.Fail("Error getting icon for file: " + Marshal.GetLastWin32Error());
-                return null;
-
+                throw Marshal.GetExceptionForHR(rc);
             }
 
-            // return IconHandle
-            return new IconHandle(fileInfo.hIcon);
+            return propStore;
         }
 
         /// <summary>
-        /// Get the small icon for the specified file extension
+        /// Sets the window property.
         /// </summary>
-        /// <param name="extension">file extension (including leading .)</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetSmallShortcutIconForExtension(string extension)
+        /// <param name="hwnd">The HWND.</param>
+        /// <param name="propkey">The propkey.</param>
+        /// <param name="value">The value.</param>
+        internal static void SetWindowProperty(IntPtr hwnd, PropertyKey propkey, string value)
         {
-            return GetIconForExtension(extension, SHGFI.SMALLICON | SHGFI.LINKOVERLAY);
-        }
+            // Get the IPropertyStore for the given window handle
+            var propStore = ShellHelper.GetWindowPropertyStore(hwnd);
 
-        /// <summary>
-        /// Get the small icon for the specified file extension
-        /// </summary
-        /// <param name="extension">file extension (including leading .)</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetLargeShortcutIconForExtension(string extension)
-        {
-            return GetIconForExtension(extension, SHGFI.LARGEICON | SHGFI.LINKOVERLAY);
-        }
+            // Set the value
+            var pv = new PropVariant();
+            propStore.SetValue(ref propkey, ref pv);
 
-        /// <summary>
-        /// Get the small icon for the specified file extension
-        /// </summary>
-        /// <param name="extension">file extension (including leading .)</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetSmallIconForExtension(string extension)
-        {
-            return GetIconForExtension(extension, SHGFI.SMALLICON);
-        }
-
-        /// <summary>
-        /// Get the large icon for the specified file extension
-        /// </summary>
-        /// <param name="extension">file extension (including leading .)</param>
-        /// <returns>IconHandle (or null if none found). IconHandle represents
-        /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
-        public static IconHandle GetLargeIconForExtension(string extension)
-        {
-            return GetIconForExtension(extension, SHGFI.LARGEICON);
-        }
-
-        public static string[] PathExtensions
-        {
-            get
-            {
-                string pathext = Environment.GetEnvironmentVariable("PATHEXT");
-                if (pathext == null)
-                    pathext = ".COM;.EXE;.BAT;.CMD";
-
-                string[] pathexts = StringHelper.Split(pathext, ";");
-                for (int i = 0; i < pathexts.Length; i++)
-                    pathexts[i] = pathexts[i].ToLower(CultureInfo.CurrentCulture).Trim();
-
-                return pathexts;
-            }
-        }
-
-        public static bool IsPathExtension(string extension)
-        {
-            return Array.IndexOf(PathExtensions, extension) >= 0;
+            // Dispose the IPropertyStore and PropVariant
+            Marshal.ReleaseComObject(propStore);
+            pv.Clear();
         }
 
         /// <summary>
@@ -471,18 +546,22 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="flags">icon type (small or large)</param>
         /// <returns>IconHandle (or null if none found). IconHandle represents
         /// a Win32 HICON. It must be Disposed when the caller is finished with
-        /// it to free the underlying resources used by the Icon. </returns>
+        /// it to free the underlying resources used by the Icon.</returns>
         private static IconHandle GetIconForExtension(string extension, uint flags)
         {
             // allocate SHFILEINFO for holding results
-            SHFILEINFO fileInfo = new SHFILEINFO();
+            var fileInfo = new SHFILEINFO();
 
             // get icon info for file extension
-            IntPtr result = Shell32.SHGetFileInfo(extension, FILE_ATTRIBUTE.NORMAL, ref fileInfo,
-                (uint)Marshal.SizeOf(fileInfo), SHGFI.ICON | flags | SHGFI.USEFILEATTRIBUTES);
+            var result = Shell32.SHGetFileInfo(
+                extension,
+                FILE_ATTRIBUTE.NORMAL,
+                ref fileInfo,
+                (uint)Marshal.SizeOf(fileInfo),
+                SHGFI.ICON | flags | SHGFI.USEFILEATTRIBUTES);
             if (result == IntPtr.Zero)
             {
-                Debug.Fail("Error getting icon for file: " + Marshal.GetLastWin32Error());
+                Debug.Fail($"Error getting icon for file: {Marshal.GetLastWin32Error()}");
                 return null;
             }
 
@@ -491,114 +570,33 @@ namespace OpenLiveWriter.CoreServices
         }
 
         /// <summary>
-        /// Extension used for shortcuts
+        /// Get the icon for the specified file
         /// </summary>
-        public static string ShortcutExtension = ".lnk";
-
-        public static void ParseCommand(string command, out string executable, out string arguments)
+        /// <param name="filePath">path to file</param>
+        /// <param name="iconType">icon type (small or large)</param>
+        /// <returns>IconHandle (or null if none found). IconHandle represents
+        /// a Win32 HICON. It must be Disposed when the caller is finished with
+        /// it to free the underlying resources used by the Icon.</returns>
+        private static IconHandle GetIconForFile(string filePath, uint iconType)
         {
-            if (command == null)
-                throw new ArgumentNullException("command", "Command cannot be null");
-            if (command.Length == 0)
-                throw new ArgumentOutOfRangeException("command", "Command cannot be the empty string");
+            // allocate SHFILEINFO for holding results
+            var fileInfo = new SHFILEINFO();
 
-            command = command.TrimStart();
-
-            if (command[0] == '"')
+            // get icon info
+            var result = Shell32.SHGetFileInfo(
+                filePath,
+                0,
+                ref fileInfo,
+                (uint)Marshal.SizeOf(fileInfo),
+                SHGFI.ICON | iconType);
+            if (result == IntPtr.Zero)
             {
-                int split = command.IndexOf('"', 1);
-                if (split != -1)
-                {
-                    executable = command.Substring(1, split - 1);
-                    arguments = string.Empty;
-                    if (command.Length > split + 2)
-                        arguments = command.Substring(split + 2);
-                }
-                else
-                {
-                    executable = command;
-                    arguments = string.Empty;
-                }
-            }
-            else
-            {
-                int split = command.IndexOf(' ');
-                if (split != -1)
-                {
-                    executable = command.Substring(0, split);
-                    arguments = string.Empty;
-                    if (command.Length > split + 1)
-                        arguments = command.Substring(split + 1);
-                }
-                else
-                {
-                    executable = command;
-                    arguments = string.Empty;
-                }
+                Debug.Fail($"Error getting icon for file: {Marshal.GetLastWin32Error()}");
+                return null;
             }
 
+            // return IconHandle
+            return new IconHandle(fileInfo.hIcon);
         }
-
     }
-
-    /// <summary>
-    /// Class that encapsulates a Win32 Icon Handle. The class can be implicitly
-    /// converted to a .NET Icon. The class must be disposed when the caller
-    /// is finished with using the Icon (this frees the HANDLE via DestroyIcon
-    /// </summary>
-    public class IconHandle : IDisposable
-    {
-        /// <summary>
-        /// Initialize from an HICON
-        /// </summary>
-        /// <param name="hIcon"></param>
-        public IconHandle(IntPtr hIcon)
-        {
-            this.hIcon = hIcon;
-        }
-
-        /// <summary>
-        /// Underlying HICON
-        /// </summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return hIcon;
-            }
-        }
-
-        /// <summary>
-        /// .NET Icon for HICON (tied to underlying HICON)
-        /// </summary>
-        public Icon Icon
-        {
-            get
-            {
-                if (icon == null)
-                    icon = System.Drawing.Icon.FromHandle(hIcon);
-                return icon;
-            }
-        }
-
-        /// <summary>
-        /// Dispose by destroying underlying HICON (makes all .NET icons returned
-        /// from the Icon property invalid)
-        /// </summary>
-        public void Dispose()
-        {
-            User32.DestroyIcon(hIcon);
-        }
-
-        /// <summary>
-        /// Underlying HICON
-        /// </summary>
-        private IntPtr hIcon = IntPtr.Zero;
-
-        /// <summary>
-        /// .NET Icon for HICON
-        /// </summary>
-        private Icon icon = null;
-    }
-
 }

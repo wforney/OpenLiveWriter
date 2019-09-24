@@ -1,38 +1,84 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Threading;
-using System.Windows.Forms;
-using System.Xml;
-using System.Web;
-using System.Net;
-using OpenLiveWriter.Api;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+    using System.Web;
+    using System.Xml;
+
+    using OpenLiveWriter.CoreServices;
+    using OpenLiveWriter.Extensibility.BlogClient;
+    using OpenLiveWriter.Localization;
+
     /// <summary>
-    /// Summary description for BloggerCompatibleClient.
+    /// The BloggerCompatibleClient class.
+    /// Implements the <see cref="OpenLiveWriter.BlogClient.Clients.XmlRpcBlogClient" />
     /// </summary>
-    public abstract class BloggerCompatibleClient : XmlRpcBlogClient
+    /// <seealso cref="OpenLiveWriter.BlogClient.Clients.XmlRpcBlogClient" />
+    public abstract partial class BloggerCompatibleClient : XmlRpcBlogClient
     {
-        public BloggerCompatibleClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
+        /// <summary>
+        /// The application key
+        /// </summary>
+        protected const string APP_KEY = "0123456789ABCDEF";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BloggerCompatibleClient"/> class.
+        /// </summary>
+        /// <param name="postApiUrl">The post API URL.</param>
+        /// <param name="credentials">The credentials.</param>
+        protected BloggerCompatibleClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
             : base(postApiUrl, credentials)
         {
         }
 
+        /// <summary>
+        /// Deletes the post.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <param name="postId">The post identifier.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        public override void DeletePost(string blogId, string postId, bool publish)
+        {
+            var tc = this.Login();
+
+            this.CallMethod(
+                "blogger.deletePost",
+                new XmlRpcString(BloggerCompatibleClient.APP_KEY),
+                new XmlRpcString(postId),
+                new XmlRpcString(tc.Username),
+                new XmlRpcString(tc.Password, true),
+                new XmlRpcBoolean(publish));
+        }
+
+        /// <summary>
+        /// Gets the users blogs.
+        /// </summary>
+        /// <returns>An <see cref="Array{BlogInfo}"/>.</returns>
+        public override BlogInfo[] GetUsersBlogs()
+        {
+            var tc = this.Login();
+            return this.GetUsersBlogs(tc.Username, tc.Password);
+        }
+
+        /// <summary>
+        /// Nodes to text.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <returns>The text.</returns>
+        protected virtual string NodeToText(XmlNode node) => node.InnerText;
+
+        /// <inheritdoc />
         protected override void VerifyCredentials(TransientCredentials tc)
         {
             try
             {
-                GetUsersBlogs(tc.Username, tc.Password);
-                return;
+                this.GetUsersBlogs(tc.Username, tc.Password);
             }
             catch (BlogClientAuthenticationException)
             {
@@ -41,98 +87,89 @@ namespace OpenLiveWriter.BlogClient.Clients
             catch (Exception e)
             {
                 if (!BlogClientUIContext.SilentModeForCurrentThread)
-                    ShowError(e.Message);
+                {
+                    BloggerCompatibleClient.ShowError(e.Message);
+                }
+
                 throw;
             }
         }
 
-        private void ShowError(string error)
+        /// <summary>
+        /// Shows the error.
+        /// </summary>
+        /// <param name="error">The error.</param>
+        private static void ShowError(string error)
         {
-            ShowErrorHelper helper =
-                new ShowErrorHelper(BlogClientUIContext.ContextForCurrentThread, MessageId.UnexpectedErrorLogin,
-                                    new object[] { error });
-            if (BlogClientUIContext.ContextForCurrentThread != null)
-                BlogClientUIContext.ContextForCurrentThread.Invoke(new ThreadStart(helper.Show), null);
-            else
+            var helper = new ShowErrorHelper(
+                BlogClientUIContext.ContextForCurrentThread,
+                MessageId.UnexpectedErrorLogin,
+                new object[] { error });
+            if (BlogClientUIContext.ContextForCurrentThread == null)
+            {
                 helper.Show();
-        }
-
-        private class ShowErrorHelper
-        {
-            private readonly IWin32Window _owner;
-            private readonly MessageId _messageId;
-            private readonly object[] _args;
-
-            public ShowErrorHelper(IWin32Window owner, MessageId messageId, object[] args)
-            {
-                _owner = owner;
-                _messageId = messageId;
-                _args = args;
             }
-
-            public void Show()
+            else
             {
-                DisplayMessage.Show(_messageId, _owner, _args);
+                BlogClientUIContext.ContextForCurrentThread.Invoke(new ThreadStart(helper.Show), null);
             }
         }
 
-        public override BlogInfo[] GetUsersBlogs()
-        {
-            TransientCredentials tc = Login();
-            return GetUsersBlogs(tc.Username, tc.Password);
-        }
-
+        /// <summary>
+        /// Gets the users blogs.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>An <see cref="Array{BlogInfo}"/>.</returns>
         private BlogInfo[] GetUsersBlogs(string username, string password)
         {
             // call method
-            XmlNode result = CallMethod("blogger.getUsersBlogs",
-                new XmlRpcString(APP_KEY),
+            var result = this.CallMethod(
+                "blogger.getUsersBlogs",
+                new XmlRpcString(BloggerCompatibleClient.APP_KEY),
                 new XmlRpcString(username),
                 new XmlRpcString(password, true));
 
             try
             {
                 // parse results
-                ArrayList blogs = new ArrayList();
-                XmlNodeList blogNodes = result.SelectNodes("array/data/value/struct");
-                foreach (XmlNode blogNode in blogNodes)
-                {
-                    // get node values
-                    XmlNode idNode = blogNode.SelectSingleNode("member[name='blogid']/value");
-                    XmlNode nameNode = blogNode.SelectSingleNode("member[name='blogName']/value");
-                    XmlNode urlNode = blogNode.SelectSingleNode("member[name='url']/value");
+                var blogNodes = result.SelectNodes("array/data/value/struct")?.Cast<XmlElement>().ToList()
+                             ?? new List<XmlElement>();
 
-                    // add to our list of blogs
-                    blogs.Add(new BlogInfo(idNode.InnerText, HttpUtility.HtmlDecode(NodeToText(nameNode)), urlNode.InnerText));
-                }
+                // get node values
+                // add to our list of blogs
+                var blogs = blogNodes
+                           .Select(
+                                blogNode => new
+                                                {
+                                                    blogNode,
+                                                    idNode = blogNode.SelectSingleNode("member[name='blogid']/value")
+                                                }).Select(
+                                arg => new
+                                           {
+                                               nodeAndId = arg,
+                                               nameNode = arg.blogNode.SelectSingleNode("member[name='blogName']/value")
+                                           }).Select(
+                                arg => new
+                                           {
+                                               nodeAndIdAndName = arg,
+                                               urlNode = arg.nodeAndId.blogNode.SelectSingleNode(
+                                                   "member[name='url']/value")
+                                           }).Select(
+                                arg => new BlogInfo(
+                                    arg.nodeAndIdAndName.nodeAndId.idNode.InnerText,
+                                    HttpUtility.HtmlDecode(this.NodeToText(arg.nodeAndIdAndName.nameNode)),
+                                    arg.urlNode.InnerText)).ToList();
 
                 // return list of blogs
-                return (BlogInfo[])blogs.ToArray(typeof(BlogInfo));
+                return blogs.ToArray();
             }
             catch (Exception ex)
             {
-                string response = result != null ? result.OuterXml : "(empty response)";
-                Trace.Fail("Exception occurred while parsing GetUsersBlogs response: " + response + "\r\n" + ex.ToString());
+                var response = result != null ? result.OuterXml : "(empty response)";
+                Trace.Fail($"Exception occurred while parsing GetUsersBlogs response: {response}\r\n{ex}");
                 throw new BlogClientInvalidServerResponseException("blogger.getUsersBlogs", ex.Message, response);
             }
         }
-
-        protected virtual string NodeToText(XmlNode node)
-        {
-            return node.InnerText;
-        }
-
-        public override void DeletePost(string blogId, string postId, bool publish)
-        {
-            TransientCredentials tc = Login();
-            XmlNode result = CallMethod("blogger.deletePost",
-                new XmlRpcString(APP_KEY),
-                new XmlRpcString(postId),
-                new XmlRpcString(tc.Username),
-                new XmlRpcString(tc.Password, true),
-                new XmlRpcBoolean(publish));
-        }
-
-        protected const string APP_KEY = "0123456789ABCDEF";
     }
 }

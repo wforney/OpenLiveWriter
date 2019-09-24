@@ -12,6 +12,8 @@ using OpenLiveWriter.Localization;
 
 namespace OpenLiveWriter.PostEditor.Tagging
 {
+    using System.Linq;
+
     public class TagEditor : UserControl
     {
         public TagEditor()
@@ -21,14 +23,14 @@ namespace OpenLiveWriter.PostEditor.Tagging
             labelTechTags.Text = Res.Get(StringId.TagsTagsLabel);
             labelTag.Text = Res.Get(StringId.TagsTagProviderLabel);
 
-            textBoxTags.AutoCompleteSeparator = "";
+            textBoxTags.AutoCompleteSeparator = string.Empty;
             SinkEvents();
         }
 
         public void SuppressMnemonics()
         {
-            labelTag.Text = labelTag.Text.Replace("&", "");
-            labelTechTags.Text = labelTechTags.Text.Replace("&", "");
+            labelTag.Text = labelTag.Text.Replace("&", string.Empty);
+            labelTechTags.Text = labelTechTags.Text.Replace("&", string.Empty);
         }
 
         public void NaturalizeLayout()
@@ -47,24 +49,29 @@ namespace OpenLiveWriter.PostEditor.Tagging
             }
         }
 
+        /// <summary>
+        /// Gets or sets the tags.
+        /// </summary>
+        /// <value>The tags.</value>
         public string[] Tags
         {
             get
             {
-                if (textBoxTags.Text != null && textBoxTags.Text != string.Empty)
+                if (string.IsNullOrEmpty(textBoxTags.Text))
                 {
-                    string normalizedList = ListHelper.NormalizeList(textBoxTags.Text.Trim(), Res.Comma + "");
-                    return StringHelper.Split(normalizedList, Res.Comma + "");
-
-                }
-                else
                     return new string[0];
+                }
+
+                var normalizedList = ListHelper.NormalizeList(this.textBoxTags.Text.Trim(), Res.Comma + string.Empty);
+                return StringHelper.Split(normalizedList, Res.Comma + string.Empty).ToArray();
+
             }
+
             set
             {
                 using (new SuppressChangeEvent(this))
                 {
-                    textBoxTags.Text = StringHelper.Join(value, Res.ListSeparator);
+                    this.textBoxTags.Text = StringHelper.Join(value, Res.ListSeparator);
                 }
             }
         }
@@ -106,7 +113,9 @@ namespace OpenLiveWriter.PostEditor.Tagging
             // force the list that is displayed to be normalized
             using (new SuppressChangeEvent(this))
             {
-                Tags = StringHelper.Split(ListHelper.NormalizeList(textBoxTags.Text.Trim(), Res.Comma + ""), Res.Comma + "");
+                this.Tags = StringHelper.Split(
+                    ListHelper.NormalizeList(textBoxTags.Text.Trim(), Res.Comma + string.Empty),
+                    Res.Comma + string.Empty).ToArray();
             }
         }
 

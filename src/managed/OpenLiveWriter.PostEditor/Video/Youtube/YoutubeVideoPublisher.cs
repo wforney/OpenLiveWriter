@@ -19,6 +19,8 @@ using OpenLiveWriter.PostEditor.ContentSources.Common;
 
 namespace OpenLiveWriter.PostEditor.Video.YouTube
 {
+    using System.Linq;
+
     internal class YouTubeVideoPublisher : IVideoPublisher
     {
         public const string CLIENT_CODE = "";
@@ -126,8 +128,8 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
             {
                 // There was a typo in the file filter where it was ,*.mov instead of ;*.mov, so we replace it at runtime
                 // This should be removed after we branch for M2
-                string filter = Res.Get(StringId.Plugin_Video_YouTube_Publish_Video_File_Open_Filter_Ext);
-                string[] parts = StringHelper.Split(filter, "|");
+                var filter = Res.Get(StringId.Plugin_Video_YouTube_Publish_Video_File_Open_Filter_Ext);
+                var parts = StringHelper.Split(filter, "|").ToArray();
                 parts[1] = "*.avi;*.wmv;*.mpg;*.mpeg;*.mp4;*.mpeg4;*.mov;";
                 return StringHelper.Join(parts, "|");
             }

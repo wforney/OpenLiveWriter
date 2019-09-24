@@ -72,4 +72,13 @@
 	<data name="SiteStorageException.InvalidPath">
 		<value>The specified path ({0}) is invalid</value>
 	</data>
+    <data name="CommandCannotBeNull" xml:space="preserve">
+        <value>Command cannot be null</value>
+    </data>
+    <data name="CommandCannotBeTheEmptyString" xml:space="preserve">
+        <value>Command cannot be the empty string</value>
+    </data>
+    <data name="NullInputIsNotAllowedHere" xml:space="preserve">
+        <value>Null input is not allowed here</value>
+    </data>
 </root>

@@ -14,6 +14,7 @@ using OpenLiveWriter.HtmlParser.Parser;
 
 namespace OpenLiveWriter.BlogClient.Clients
 {
+    using System.Linq;
 
     [BlogClient("Metaweblog", "MetaWeblog")]
     public class MetaweblogClient : BloggerCompatibleClient
@@ -1081,7 +1082,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             delimiter = " ";
                         else if (Options.TrackbackDelimiter == TrackbackDelimiter.Comma)
                             delimiter = ",";
-                        sentPingUrls.AddRange(StringHelper.Split(pingUrlsNode.InnerText, delimiter));
+                        sentPingUrls.AddRange(StringHelper.Split(pingUrlsNode.InnerText, delimiter).ToArray());
                     }
 
                     blogPost.PingUrlsSent = sentPingUrls.ToArray(typeof(string)) as string[];
