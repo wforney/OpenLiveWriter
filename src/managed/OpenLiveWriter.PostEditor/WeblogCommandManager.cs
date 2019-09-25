@@ -1,179 +1,224 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.Diagnostics;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-using OpenLiveWriter.BlogClient;
-using OpenLiveWriter.Interop.Com.Ribbon;
-using OpenLiveWriter.Localization;
-using OpenLiveWriter.PostEditor.Commands;
-using OpenLiveWriter.ApplicationFramework;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.PostEditor.Configuration.Settings;
-
 // @RIBBON TODO: Cleanly remove obsolete code.
 
 namespace OpenLiveWriter.PostEditor
 {
-    public class SelectBlogGalleryCommand : SelectGalleryCommand<string>
+    using System;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows.Forms;
+    using ApplicationFramework;
+    using BlogClient;
+    using Commands;
+    using Configuration.Settings;
+    using Localization;
+
+    /// <summary>
+    /// The WeblogCommandManager class.
+    /// Implements the <see cref="OpenLiveWriter.ApplicationFramework.IDynamicCommandMenuContext" />
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.ApplicationFramework.IDynamicCommandMenuContext" />
+    /// <seealso cref="System.IDisposable" />
+    internal partial class WeblogCommandManager : IDynamicCommandMenuContext, IDisposable
     {
-        private readonly IBlogPostEditingManager _editingManager;
-        public SelectBlogGalleryCommand(IBlogPostEditingManager editingManager) : base(CommandId.SelectBlog)
-        {
-            _invalidateGalleryRepresentation = true;
-            _editingManager = editingManager;
-        }
+        /// <summary>
+        /// The components
+        /// </summary>
+        private readonly IContainer components = new Container();
 
-        public override void LoadItems()
-        {
-            items.Clear();
+        /// <summary>
+        /// The editing site
+        /// </summary>
+        private readonly IBlogPostEditingSite editingSite;
 
-            int i = 0;
-            string currentBlogId = _editingManager.CurrentBlog();
-            foreach (BlogDescriptor blogDescriptor in BlogSettings.GetBlogs(true))
-            {
-                using (Blog blog = new Blog(blogDescriptor.Id))
-                {
-                    string blogName = GetShortenedBlogName(blog.Name);
+        /// <summary>
+        /// The command add weblog
+        /// </summary>
+        private Command commandAddWeblog;
 
-                    if (blog.Image == null)
-                    {
-                        Bitmap defaultIcon = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.BlogAccount.png");
-                        items.Add(new GalleryItem(blogName, defaultIcon.Clone() as Bitmap, blog.Id));
-                    }
-                    else
-                    {
-                        items.Add(new GalleryItem(blogName, new Bitmap(blog.Image), blog.Id));
-                    }
+        /// <summary>
+        /// The command configure weblog
+        /// </summary>
+        private Command commandConfigureWeblog;
 
-                    if (currentBlogId == blog.Id)
-                        selectedIndex = i;
-                }
-                i++;
-            }
-            base.LoadItems();
-        }
+        /// <summary>
+        /// The command select blog
+        /// </summary>
+        private SelectBlogGalleryCommand commandSelectBlog;
 
-        public override void Invalidate()
-        {
-            if (items.Count == 0)
-            {
-                LoadItems();
-                UpdateInvalidationState(PropertyKeys.ItemsSource, InvalidationState.Pending);
-                UpdateInvalidationState(PropertyKeys.Categories, InvalidationState.Pending);
-                UpdateInvalidationState(PropertyKeys.SelectedItem, InvalidationState.Pending);
-                UpdateInvalidationState(PropertyKeys.StringValue, InvalidationState.Pending);
-                UpdateInvalidationState(PropertyKeys.Label, InvalidationState.Pending);
-                OnStateChanged(EventArgs.Empty);
-            }
-            else
-            {
-                UpdateSelectedIndex();
-            }
-        }
+        /// <summary>
+        /// The command weblog picker
+        /// </summary>
+        private CommandWeblogPicker commandWeblogPicker;
 
-        internal void ReloadAndInvalidate()
-        {
-            items.Clear();
-            Invalidate();
-        }
+        /// <summary>
+        /// The editing manager
+        /// </summary>
+        private BlogPostEditingManager editingManager;
 
-        private void UpdateSelectedIndex()
-        {
-            selectedIndex = INVALID_INDEX;
-            SetSelectedItem(_editingManager.CurrentBlog());
-        }
+        /// <summary>
+        /// The options
+        /// </summary>
+        private DynamicCommandMenuOptions options;
 
-        public static string GetShortenedBlogName(string blogName)
-        {
-            return TextHelper.GetTitleFromText(blogName, 100, TextHelper.Units.Characters);
-        }
-    }
+        /// <summary>
+        /// The switch weblog command menu
+        /// </summary>
+        private DynamicCommandMenu switchWeblogCommandMenu;
 
-    internal class WeblogCommandManager : IDynamicCommandMenuContext, IDisposable
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeblogCommandManager"/> class.
+        /// </summary>
+        /// <param name="editingManager">The editing manager.</param>
+        /// <param name="editingSite">The editing site.</param>
         public WeblogCommandManager(BlogPostEditingManager editingManager, IBlogPostEditingSite editingSite)
         {
             // save reference to editing context and subscribe to blog-changed event
-            _editingManager = editingManager;
-            _editingManager.BlogChanged += new EventHandler(_editingManager_BlogChanged);
-            _editingManager.BlogSettingsChanged += new WeblogSettingsChangedHandler(_editingManager_BlogSettingsChanged);
-            
-            _editingSite = editingSite;
+            this.editingManager = editingManager;
+            this.editingManager.BlogChanged += this._editingManager_BlogChanged;
+            this.editingManager.BlogSettingsChanged += this._editingManager_BlogSettingsChanged;
 
-            BlogSettings.BlogSettingsDeleted += new BlogSettings.BlogSettingsListener(BlogSettings_BlogSettingsDeleted);
+            this.editingSite = editingSite;
+
+            BlogSettings.BlogSettingsDeleted += this.BlogSettings_BlogSettingsDeleted;
 
             // initialize commands
-            InitializeCommands();
+            this.InitializeCommands();
 
             // initialize UI
-            InitializeUI();
+            this.InitializeUI();
         }
 
-        private void EditingSiteOnWeblogListChanged(object sender, EventArgs eventArgs)
+        /// <inheritdoc />
+        public void Dispose()
         {
-            commandSelectBlog?.ReloadAndInvalidate();
+            if (this.editingManager != null)
+            {
+                this.editingManager.BlogChanged -= this._editingManager_BlogChanged;
+                this.editingManager = null;
+
+                BlogSettings.BlogSettingsDeleted -= this.BlogSettings_BlogSettingsDeleted;
+            }
+
+            this.switchWeblogCommandMenu.Dispose();
+
+            this.components?.Dispose();
         }
 
-        void BlogSettings_BlogSettingsDeleted(string blogId)
+        /// <inheritdoc />
+        public CommandManager CommandManager => this.editingSite.CommandManager;
+
+        /// <inheritdoc />
+        DynamicCommandMenuOptions IDynamicCommandMenuContext.Options =>
+            this.options ?? (this.options = new DynamicCommandMenuOptions(
+                                 new Command(CommandId.ViewWeblog).MainMenuPath.Split('/')[0],
+                                 100,
+                                 Res.Get(StringId.MoreWeblogs),
+                                 Res.Get(StringId.SwitchWeblogs))
+                             {
+                                 UseNumericMnemonics = false,
+                                 MaxCommandsShownOnMenu = 25,
+                                 SeparatorBegin = true
+                             });
+
+        /// <inheritdoc />
+        IMenuCommandObject[] IDynamicCommandMenuContext.GetMenuCommandObjects() =>
+
+            // generate an array of command objects for the current list of weblogs
+            BlogSettings.GetBlogs(true)
+                        .Select(blog => new SwitchWeblogMenuCommand(blog.Id, blog.Id == this.editingManager.BlogId))
+                        .Cast<IMenuCommandObject>()
+                        .ToArray();
+
+        /// <inheritdoc />
+        void IDynamicCommandMenuContext.CommandExecuted(IMenuCommandObject menuCommandObject)
         {
-            commandSelectBlog.ReloadAndInvalidate();
+            // get reference to underlying command object
+            if (menuCommandObject is SwitchWeblogMenuCommand menuCommand)
+            {
+                // fire notification to listeners
+                this.WeblogSelected?.Invoke(menuCommand.BlogId);
+            }
         }
+
+        /// <summary>
+        /// Editings the site on weblog list changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void EditingSiteOnWeblogListChanged(object sender, EventArgs eventArgs) =>
+            this.commandSelectBlog?.ReloadAndInvalidate();
+
+        /// <summary>
+        /// Blogs the settings blog settings deleted.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        private void BlogSettings_BlogSettingsDeleted(string blogId) => this.commandSelectBlog.ReloadAndInvalidate();
 
         /// <summary>
         /// Notification that the user has selected a weblog menu
         /// </summary>
         public event WeblogHandler WeblogSelected;
 
+        /// <summary>
+        /// Initializes the commands.
+        /// </summary>
         private void InitializeCommands()
         {
-            CommandManager.BeginUpdate();
+            this.CommandManager.BeginUpdate();
 
-            commandWeblogPicker = new CommandWeblogPicker();
-            _editingSite.CommandManager.Add(commandWeblogPicker);
-            _editingSite.WeblogListChanged -= EditingSiteOnWeblogListChanged;
-            _editingSite.WeblogListChanged += EditingSiteOnWeblogListChanged;
+            this.commandWeblogPicker = new CommandWeblogPicker();
+            this.editingSite.CommandManager.Add(this.commandWeblogPicker);
+            this.editingSite.WeblogListChanged -= this.EditingSiteOnWeblogListChanged;
+            this.editingSite.WeblogListChanged += this.EditingSiteOnWeblogListChanged;
 
-            commandAddWeblog = new Command(CommandId.AddWeblog);
-            commandAddWeblog.Execute += new EventHandler(commandAddWeblog_Execute);
-            CommandManager.Add(commandAddWeblog);
+            this.commandAddWeblog = new Command(CommandId.AddWeblog);
+            this.commandAddWeblog.Execute += this.commandAddWeblog_Execute;
+            this.CommandManager.Add(this.commandAddWeblog);
 
-            commandConfigureWeblog = new Command(CommandId.ConfigureWeblog);
-            commandConfigureWeblog.Execute += new EventHandler(commandConfigureWeblog_Execute);
-            CommandManager.Add(commandConfigureWeblog);
+            this.commandConfigureWeblog = new Command(CommandId.ConfigureWeblog);
+            this.commandConfigureWeblog.Execute += this.commandConfigureWeblog_Execute;
+            this.CommandManager.Add(this.commandConfigureWeblog);
 
-            commandSelectBlog = new SelectBlogGalleryCommand(_editingManager);
-            commandSelectBlog.ExecuteWithArgs += new ExecuteEventHandler(commandSelectBlog_ExecuteWithArgs);
-            commandSelectBlog.Invalidate();
-            CommandManager.Add(commandSelectBlog);
+            this.commandSelectBlog = new SelectBlogGalleryCommand(this.editingManager);
+            this.commandSelectBlog.ExecuteWithArgs += this.commandSelectBlog_ExecuteWithArgs;
+            this.commandSelectBlog.Invalidate();
+            this.CommandManager.Add(this.commandSelectBlog);
 
-            CommandManager.EndUpdate();
+            this.CommandManager.EndUpdate();
 
             // create the dynamic menu items that correspond to the available weblogs
-            _switchWeblogCommandMenu = new DynamicCommandMenu(this);
+            this.switchWeblogCommandMenu = new DynamicCommandMenu(this);
         }
 
-        void commandSelectBlog_ExecuteWithArgs(object sender, ExecuteEventHandlerArgs args)
-        {
-            if (WeblogSelected != null)
-                WeblogSelected(BlogSettings.GetBlogs(true)[commandSelectBlog.SelectedIndex].Id);
-        }
+        /// <summary>
+        /// Commands the select blog execute with arguments.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The arguments.</param>
+        private void commandSelectBlog_ExecuteWithArgs(object sender, ExecuteEventHandlerArgs args) =>
+            this.WeblogSelected?.Invoke(BlogSettings.GetBlogs(true)[this.commandSelectBlog.SelectedIndex].Id);
 
-        private void InitializeUI()
-        {
+        /// <summary>
+        /// Initializes the UI.
+        /// </summary>
+        private void InitializeUI() =>
+
             // hookup menu definition to command bar button
-            commandWeblogPicker.CommandBarButtonContextMenuDefinition = GetWeblogContextMenuDefinition(false);
-        }
+            this.commandWeblogPicker.CommandBarButtonContextMenuDefinition = this.GetWeblogContextMenuDefinition(false);
 
+        /// <summary>
+        /// Gets the weblog context menu definition.
+        /// </summary>
+        /// <param name="includeAllCommands">if set to <c>true</c> [include all commands].</param>
+        /// <returns>CommandContextMenuDefinition.</returns>
         private CommandContextMenuDefinition GetWeblogContextMenuDefinition(bool includeAllCommands)
         {
             // initialize context-menu definition
-            CommandContextMenuDefinition weblogContextMenuDefinition = new CommandContextMenuDefinition(this.components);
-            weblogContextMenuDefinition.CommandBar = true;
+            var weblogContextMenuDefinition = new CommandContextMenuDefinition(this.components) {CommandBar = true};
 
             if (includeAllCommands)
             {
@@ -183,166 +228,85 @@ namespace OpenLiveWriter.PostEditor
             }
 
             // weblog switching commands
-            foreach (string commandIdentifier in _switchWeblogCommandMenu.CommandIdentifiers)
+            foreach (var commandIdentifier in this.switchWeblogCommandMenu.CommandIdentifiers)
+            {
                 weblogContextMenuDefinition.Entries.Add(commandIdentifier, false, false);
+            }
 
             weblogContextMenuDefinition.Entries.Add(CommandId.AddWeblog, true, false);
             return weblogContextMenuDefinition;
         }
 
+        /// <summary>
+        /// Handles the BlogChanged event of the _editingManager control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void _editingManager_BlogChanged(object sender, EventArgs e)
         {
-            commandSelectBlog.Invalidate();
-            UpdateWeblogPicker();
+            this.commandSelectBlog.Invalidate();
+            this.UpdateWeblogPicker();
         }
 
+        /// <summary>
+        /// Editings the manager blog settings changed.
+        /// </summary>
+        /// <param name="blogId">The blog identifier.</param>
+        /// <param name="templateChanged">if set to <c>true</c> [template changed].</param>
         private void _editingManager_BlogSettingsChanged(string blogId, bool templateChanged)
         {
-            using (Blog blog = new Blog(blogId))
+            using (var blog = new Blog(blogId))
             {
                 // Find the item that is changing.
-                var blogItem = commandSelectBlog.Items.Find(item => item.Cookie.Equals(blogId, StringComparison.Ordinal));
+                var blogItem =
+                    this.commandSelectBlog.Items.Find(item => item.Cookie.Equals(blogId, StringComparison.Ordinal));
 
-                if (blogItem != null &&
-                    !blogItem.Label.Equals(SelectBlogGalleryCommand.GetShortenedBlogName(blog.Name), StringComparison.Ordinal))
-                {
-                    // The blog name has changed so we need to do a full reload to refresh the UI.
-                    commandSelectBlog.ReloadAndInvalidate();
-                }
-                else
+                if (blogItem == null || blogItem.Label.Equals(SelectBlogGalleryCommand.GetShortenedBlogName(blog.Name),
+                                                              StringComparison.Ordinal))
                 {
                     // WinLive 43696: The blog settings have changed, but the UI doesn't need to be refreshed. In
                     // order to avoid "Windows 8 Bugs" 43242, we don't want to do a full reload.
-                    commandSelectBlog.Invalidate();
+                    this.commandSelectBlog.Invalidate();
+                }
+                else
+                {
+                    // The blog name has changed so we need to do a full reload to refresh the UI.
+                    this.commandSelectBlog.ReloadAndInvalidate();
                 }
             }
 
-            UpdateWeblogPicker();
+            this.UpdateWeblogPicker();
         }
 
+        /// <summary>
+        /// Updates the weblog picker.
+        /// </summary>
         private void UpdateWeblogPicker()
         {
-            Control c = (Control)_editingSite;
-            CommandWeblogPicker.WeblogPicker wpbc = new CommandWeblogPicker.WeblogPicker(
-                Res.DefaultFont,
-                _editingManager.BlogImage,
-                _editingManager.BlogIcon,
-                _editingManager.BlogServiceDisplayName,
-                _editingManager.BlogName);
-            using (Graphics g = c.CreateGraphics())
+            var c = (Control) this.editingSite;
+            var wpbc = new CommandWeblogPicker.WeblogPicker(
+                Res.DefaultFont, this.editingManager.BlogImage, this.editingManager.BlogIcon,
+                this.editingManager.BlogServiceDisplayName, this.editingManager.BlogName);
+            using (var g = c.CreateGraphics())
             {
                 wpbc.Layout(g);
-                commandWeblogPicker.WeblogPickerHelper = wpbc;
+                this.commandWeblogPicker.WeblogPickerHelper = wpbc;
             }
         }
 
-        private void commandConfigureWeblog_Execute(object sender, EventArgs e)
-        {
-            _editingSite.ConfigureWeblog(_editingManager.BlogId, typeof(AccountPanel));
-        }
+        /// <summary>
+        /// Handles the Execute event of the commandConfigureWeblog control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void commandConfigureWeblog_Execute(object sender, EventArgs e) =>
+            this.editingSite.ConfigureWeblog(this.editingManager.BlogId, typeof(AccountPanel));
 
-        private void commandAddWeblog_Execute(object sender, EventArgs e)
-        {
-            _editingSite.AddWeblog();
-        }
-
-        public void Dispose()
-        {
-            if (_editingManager != null)
-            {
-                _editingManager.BlogChanged -= new EventHandler(_editingManager_BlogChanged);
-                _editingManager = null;
-
-                BlogSettings.BlogSettingsDeleted -= new BlogSettings.BlogSettingsListener(BlogSettings_BlogSettingsDeleted);
-            }
-
-            _switchWeblogCommandMenu.Dispose();
-
-            if (components != null)
-                components.Dispose();
-        }
-
-        public CommandManager CommandManager
-        {
-            get
-            {
-                return _editingSite.CommandManager;
-            }
-        }
-
-        DynamicCommandMenuOptions IDynamicCommandMenuContext.Options
-        {
-            get
-            {
-                if (_options == null)
-                {
-                    _options = new DynamicCommandMenuOptions(
-                        new Command(CommandId.ViewWeblog).MainMenuPath.Split('/')[0], 100, Res.Get(StringId.MoreWeblogs), Res.Get(StringId.SwitchWeblogs));
-                    _options.UseNumericMnemonics = false;
-                    _options.MaxCommandsShownOnMenu = 25;
-                    _options.SeparatorBegin = true;
-                }
-                return _options;
-            }
-        }
-        private DynamicCommandMenuOptions _options;
-
-
-        IMenuCommandObject[] IDynamicCommandMenuContext.GetMenuCommandObjects()
-        {
-            // generate an array of command objects for the current list of weblogs
-            ArrayList menuCommands = new ArrayList();
-            foreach (BlogDescriptor blog in BlogSettings.GetBlogs(true))
-                menuCommands.Add(new SwitchWeblogMenuCommand(blog.Id, blog.Id == _editingManager.BlogId));
-            return (IMenuCommandObject[])menuCommands.ToArray(typeof(IMenuCommandObject));
-        }
-
-        void IDynamicCommandMenuContext.CommandExecuted(IMenuCommandObject menuCommandObject)
-        {
-            // get reference to underlying command object
-            SwitchWeblogMenuCommand menuCommand = menuCommandObject as SwitchWeblogMenuCommand;
-
-            // fire notification to listeners
-            if (WeblogSelected != null)
-                WeblogSelected(menuCommand.BlogId);
-        }
-
-        private DynamicCommandMenu _switchWeblogCommandMenu;
-
-        private BlogPostEditingManager _editingManager;
-        private IBlogPostEditingSite _editingSite;
-
-        private CommandWeblogPicker commandWeblogPicker;
-        private Command commandConfigureWeblog;
-        private SelectBlogGalleryCommand commandSelectBlog;
-        private Command commandAddWeblog;
-
-        private IContainer components = new Container();
-
-        private class SwitchWeblogMenuCommand : IMenuCommandObject
-        {
-            public SwitchWeblogMenuCommand(string blogId, bool latched)
-            {
-                _blogId = blogId;
-                using (BlogSettings settings = BlogSettings.ForBlogId(_blogId))
-                    _caption = StringHelper.Ellipsis(settings.BlogName + "", 65);
-                _latched = latched;
-            }
-
-            public string BlogId { get { return _blogId; } }
-            private string _blogId;
-
-            Bitmap IMenuCommandObject.Image { get { return null; } }
-
-            string IMenuCommandObject.Caption { get { return _caption; } }
-            string IMenuCommandObject.CaptionNoMnemonic { get { return _caption; } }
-            private string _caption;
-
-            bool IMenuCommandObject.Latched { get { return _latched; } }
-            private bool _latched;
-
-            bool IMenuCommandObject.Enabled { get { return true; } }
-        }
-
+        /// <summary>
+        /// Handles the Execute event of the commandAddWeblog control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void commandAddWeblog_Execute(object sender, EventArgs e) => this.editingSite.AddWeblog();
     }
 }

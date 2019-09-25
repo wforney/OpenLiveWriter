@@ -4,12 +4,13 @@
 namespace OpenLiveWriter.PostEditor
 {
     using System.Drawing;
+    using System.Linq;
     using System.Windows.Forms;
 
     /// <summary>
     /// Class WindowCascadeHelper. This class cannot be inherited.
     /// </summary>
-    public sealed class WindowCascadeHelper
+    public static class WindowCascadeHelper
     {
         /// <summary>
         /// The reference location
@@ -17,17 +18,10 @@ namespace OpenLiveWriter.PostEditor
         private static Point referenceLocation;
 
         /// <summary>
-        /// Cannot be instantiated or subclassed
-        /// </summary>
-        private WindowCascadeHelper()
-        {
-        }
-
-        /// <summary>
         /// Sets the next opened location.
         /// </summary>
         /// <param name="location">The location.</param>
-        public static void SetNextOpenedLocation(Point location) => referenceLocation = location;
+        public static void SetNextOpenedLocation(Point location) => WindowCascadeHelper.referenceLocation = location;
 
         /// <summary>
         /// Gets the new post location.
@@ -38,12 +32,12 @@ namespace OpenLiveWriter.PostEditor
         public static Point GetNewPostLocation(Size formSize, int offset)
         {
             // case 1: opened through new post, so there is a window to cascade against
-            if (!referenceLocation.IsEmpty)
+            if (!WindowCascadeHelper.referenceLocation.IsEmpty)
             {
-                var openerLocation = referenceLocation;
+                var openerLocation = WindowCascadeHelper.referenceLocation;
 
                 // make sure that we will cascade against a visible window
-                var targetScreen = FindTitlebarVisibleScreen(openerLocation, formSize, offset);
+                var targetScreen = WindowCascadeHelper.FindTitlebarVisibleScreen(openerLocation, formSize, offset);
                 if (null != targetScreen)
                 {
                     // cascade our location, and check that it doesn't go off screen
@@ -54,21 +48,28 @@ namespace OpenLiveWriter.PostEditor
                     }
 
                     // roll window over
-                    return FixUpLocation(targetScreen, newLocation, formSize);
+                    return WindowCascadeHelper.FixUpLocation(targetScreen, newLocation, formSize);
                 }
             }
 
             // else, we are going to try the setting from last closed post
             var lastClosedLocation = PostEditorSettings.PostEditorWindowLocation;
-            if (null != FindTitlebarVisibleScreen(lastClosedLocation, formSize, offset))
+            if (WindowCascadeHelper.FindTitlebarVisibleScreen(lastClosedLocation, formSize, offset) == null)
             {
-                return lastClosedLocation;
+                // nothing works, return empty point
+                return Point.Empty;
             }
 
-            // nothing works, return empty point
-            return Point.Empty;
+            return lastClosedLocation;
         }
 
+        /// <summary>
+        /// Fixes up location.
+        /// </summary>
+        /// <param name="ourScreen">Our screen.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="recSize">Size of the record.</param>
+        /// <returns>Point.</returns>
         private static Point FixUpLocation(Screen ourScreen, Point location, Size recSize)
         {
             var topRight = new Point(location.X + recSize.Width, location.Y);
@@ -88,27 +89,25 @@ namespace OpenLiveWriter.PostEditor
             return new Point(newLeft, newTop);
         }
 
-        private static Screen FindVisibleScreen(Point location, Size recSize)
-        {
-            var allScreens = Screen.AllScreens;
-            var rect = new Rectangle(location, recSize);
-            foreach (var screen in allScreens)
-            {
-                if (screen.WorkingArea.IntersectsWith(rect))
-                {
-                    return screen;
-                }
-            }
+        /// <summary>
+        /// Finds the visible screen.
+        /// </summary>
+        /// <param name="location">The location.</param>
+        /// <param name="recSize">Size of the record.</param>
+        /// <returns>Screen.</returns>
+        private static Screen FindVisibleScreen(Point location, Size recSize) =>
+            Screen.AllScreens.FirstOrDefault(
+                screen => screen.WorkingArea.IntersectsWith(new Rectangle(location, recSize)));
 
-            return null;
-        }
-
-        // verifies that if the form is at this location at least the toolbar will be visible
-        // helps in cases where screens have been disabled, resolution changed, etc.
-        private static Screen FindTitlebarVisibleScreen(Point location, Size formSize, int offset)
-        {
-            var topbarSize = new Size(formSize.Width, offset);
-            return FindVisibleScreen(location, topbarSize);
-        }
+        /// <summary>
+        /// verifies that if the form is at this location at least the toolbar will be visible
+        /// helps in cases where screens have been disabled, resolution changed, etc.
+        /// </summary>
+        /// <param name="location">The location.</param>
+        /// <param name="formSize">Size of the form.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>Screen.</returns>
+        private static Screen FindTitlebarVisibleScreen(Point location, Size formSize, int offset) =>
+            WindowCascadeHelper.FindVisibleScreen(location, new Size(formSize.Width, offset));
     }
 }

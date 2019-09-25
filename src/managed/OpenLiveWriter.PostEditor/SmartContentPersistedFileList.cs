@@ -1,49 +1,67 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using OpenLiveWriter.Api;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.PostEditor.ContentSources;
-
 namespace OpenLiveWriter.PostEditor
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
+    using Api;
+    using CoreServices;
+
     /// <summary>
     /// This class helps store an ordered list of files in a SmartContent object.
     /// The file contents can optionally be stored in the SmartContent.
     /// </summary>
-    class SmartContentPersistedFileList
+    internal class SmartContentPersistedFileList
     {
-        private readonly ISmartContent smartContent;
+        /// <summary>
+        /// The internal external separator
+        /// </summary>
+        private const char InternalExternalSeparator = '|';
+
+        /// <summary>
+        /// The file separator
+        /// </summary>
+        private const string FileSeparator = "?";
+
+        /// <summary>
+        /// The list identifier
+        /// </summary>
         private readonly string listId;
 
-        private const char INTERNAL_EXTERNAL_SEPARATOR = '|';
-        private const string FILE_SEPARATOR = "?";
+        /// <summary>
+        /// The smart content
+        /// </summary>
+        private readonly ISmartContent smartContent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SmartContentPersistedFileList"/> class.
+        /// </summary>
+        /// <param name="smartContent">Content of the smart.</param>
+        /// <param name="listId">The list identifier.</param>
         public SmartContentPersistedFileList(ISmartContent smartContent, string listId)
         {
             this.smartContent = smartContent;
             this.listId = listId;
         }
 
+        /// <summary>
+        /// Gets the files.
+        /// </summary>
+        /// <value>The files.</value>
         public List<string> Files
         {
             get
             {
-                LazyLoader<string> tempDir = new LazyLoader<string>(
-                    delegate
-                    {
-                        return TempFileManager.Instance.CreateTempDir();
-                    });
+                var tempDir = new LazyLoader<string>(
+                    () => TempFileManager.Instance.CreateTempDir());
 
-                List<string> results = new List<string>();
+                var results = new List<string>();
 
-                foreach (PersistedFile pf in GetPersistedFileList())
+                foreach (var pf in this.GetPersistedFileList())
                 {
                     // If the file was not persisted in the wpost, or the
                     // file still exists at the original path, use that.
@@ -54,16 +72,24 @@ namespace OpenLiveWriter.PostEditor
                     }
                     else if (pf.PersistToPostFile)
                     {
-                        using (Stream inStream = smartContent.Files.Open(pf.SmartContentName, false))
+                        using (var inStream = this.smartContent.Files.Open(pf.SmartContentName, false))
                         {
-                            Trace.WriteLineIf(inStream == null, string.Format(CultureInfo.InvariantCulture, "Failed to find smartcontent persisted file, {0}", pf.SmartContentName));
-                            if (inStream != null)
+                            Trace.WriteLineIf(inStream == null,
+                                              string.Format(CultureInfo.InvariantCulture,
+                                                            "Failed to find smartcontent persisted file, {0}",
+                                                            pf.SmartContentName));
+                            if (inStream == null)
                             {
-                                string filePath = TempFileManager.CreateNewFile(tempDir, pf.SmartContentName, false);
-                                using (Stream outStream = File.OpenWrite(filePath))
-                                    StreamHelper.Transfer(inStream, outStream);
-                                results.Add(filePath);
+                                continue;
                             }
+
+                            var filePath = TempFileManager.CreateNewFile(tempDir, pf.SmartContentName, false);
+                            using (Stream outStream = File.OpenWrite(filePath))
+                            {
+                                StreamHelper.Transfer(inStream, outStream);
+                            }
+
+                            results.Add(filePath);
                         }
                     }
                 }
@@ -72,37 +98,50 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
+        /// <summary>
+        /// Clears the files.
+        /// </summary>
         public void ClearFiles()
         {
-            foreach (PersistedFile pf in GetPersistedFileList())
+            foreach (var pf in this.GetPersistedFileList())
             {
                 if (pf.PersistToPostFile)
-                    smartContent.Files.Remove(pf.SmartContentName);
+                {
+                    this.smartContent.Files.Remove(pf.SmartContentName);
+                }
             }
-            smartContent.Properties.Remove(listId);
+
+            this.smartContent.Properties.Remove(this.listId);
         }
 
+        /// <summary>
+        /// Sets the files.
+        /// </summary>
+        /// <param name="files">The files.</param>
         public void SetFiles(IEnumerable<PersistedFile> files)
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
-            ClearFiles();
-            int i = 0;
-            foreach (PersistedFile file in files)
+            this.ClearFiles();
+            var i = 0;
+            foreach (var file in files)
             {
                 if (file.PersistToPostFile)
                 {
-                    string name = (i++).ToString(CultureInfo.InvariantCulture) + Path.GetExtension(file.Path);
-                    smartContent.Files.Add(name, file.Path);
-                    result.AppendFormat(CultureInfo.InvariantCulture, "I" + INTERNAL_EXTERNAL_SEPARATOR + "{0}" + INTERNAL_EXTERNAL_SEPARATOR + "{1}" + FILE_SEPARATOR, name, file.Path);
+                    var name = (i++).ToString(CultureInfo.InvariantCulture) + Path.GetExtension(file.Path);
+                    this.smartContent.Files.Add(name, file.Path);
+                    result.AppendFormat(
+                        CultureInfo.InvariantCulture,
+                        $"I{SmartContentPersistedFileList.InternalExternalSeparator}{{0}}{SmartContentPersistedFileList.InternalExternalSeparator}{{1}}{SmartContentPersistedFileList.FileSeparator}", name, file.Path);
                 }
                 else
                 {
-                    result.Append("E" + INTERNAL_EXTERNAL_SEPARATOR + file.Path + FILE_SEPARATOR);
+                    result.Append(
+                        $"E{SmartContentPersistedFileList.InternalExternalSeparator}{file.Path}{SmartContentPersistedFileList.FileSeparator}");
                 }
             }
 
-            smartContent.Properties.SetString(listId, result.ToString());
+            this.smartContent.Properties.SetString(this.listId, result.ToString());
         }
 
         /// <summary>
@@ -119,15 +158,17 @@ namespace OpenLiveWriter.PostEditor
 
             var results = new List<PersistedFile>();
 
-            var files = StringHelper.Split(str, SmartContentPersistedFileList.FILE_SEPARATOR);
+            var files = StringHelper.Split(str, SmartContentPersistedFileList.FileSeparator);
             foreach (var file in files)
             {
-                var chunks = file.Split(SmartContentPersistedFileList.INTERNAL_EXTERNAL_SEPARATOR);
+                var chunks = file.Split(SmartContentPersistedFileList.InternalExternalSeparator);
                 switch (chunks[0])
                 {
                     case "I":
-                        var persistedFile = new PersistedFile(true, chunks[2]);
-                        persistedFile.SmartContentName = chunks[1];
+                        var persistedFile = new PersistedFile(true, chunks[2])
+                        {
+                            SmartContentName = chunks[1]
+                        };
                         results.Add(persistedFile);
                         break;
                     case "E":
@@ -137,23 +178,6 @@ namespace OpenLiveWriter.PostEditor
             }
 
             return results;
-        }
-    }
-
-    internal class PersistedFile
-    {
-        /// <summary>
-        /// If true, save the file to the smart content and
-        /// recreate when necessary.
-        /// </summary>
-        public readonly bool PersistToPostFile;
-        public readonly string Path;
-        internal string SmartContentName;
-
-        public PersistedFile(bool shouldPersistToPostFile, string path)
-        {
-            PersistToPostFile = shouldPersistToPostFile;
-            Path = path;
         }
     }
 }

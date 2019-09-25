@@ -1,71 +1,140 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using mshtml;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.Mshtml;
-using OpenLiveWriter.PostEditor.Autoreplace;
-using OpenLiveWriter.PostEditor.Emoticons;
-using OpenLiveWriter.PostEditor.PostHtmlEditing;
-
 namespace OpenLiveWriter.PostEditor
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+
+    using Autoreplace;
+
+    using CoreServices;
+
+    using Emoticons;
+
+    using mshtml;
+
+    using Mshtml;
+
+    using PostHtmlEditing;
+
+    /// <summary>
+    /// Delegate InsertHtml
+    /// </summary>
+    /// <param name="start">The start.</param>
+    /// <param name="end">The end.</param>
+    /// <param name="html">The HTML.</param>
     public delegate void InsertHtml(MarkupPointer start, MarkupPointer end, string html);
 
-    class TypographicCharacterHandler
+    /// <summary>
+    /// The TypographicCharacterHandler class.
+    /// </summary>
+    internal class TypographicCharacterHandler
     {
-        public TypographicCharacterHandler(MarkupRange currentSelection, InsertHtml insertHtml, IBlogPostImageEditingContext imageEditingContext, IHTMLElement postBodyElement, char c, string htmlText, MarkupPointer blockBoundary)
+        /// <summary>
+        /// The special characters
+        /// </summary>
+        public static readonly List<string> SpecialCharacters = new List<string> {"...", "(c)", "(r)", "(tm)"};
+
+        /// <summary>
+        /// The current selection
+        /// </summary>
+        private readonly MarkupRange currentSelection;
+
+        /// <summary>
+        /// The image editing context
+        /// </summary>
+        private readonly IBlogPostImageEditingContext imageEditingContext;
+
+        /// <summary>
+        /// The insert HTML
+        /// </summary>
+        private readonly InsertHtml insertHtml;
+
+        /// <summary>
+        /// The post body element
+        /// </summary>
+        private readonly IHTMLElement postBodyElement;
+
+        /// <summary>
+        /// The block boundary
+        /// </summary>
+        private readonly MarkupPointer blockBoundary;
+
+        /// <summary>
+        /// The character
+        /// </summary>
+        private readonly char c;
+
+        /// <summary>
+        /// The HTML text
+        /// </summary>
+        private readonly string htmlText;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypographicCharacterHandler"/> class.
+        /// </summary>
+        /// <param name="currentSelection">The current selection.</param>
+        /// <param name="insertHtml">The insert HTML.</param>
+        /// <param name="imageEditingContext">The image editing context.</param>
+        /// <param name="postBodyElement">The post body element.</param>
+        /// <param name="c">The c.</param>
+        /// <param name="htmlText">The HTML text.</param>
+        /// <param name="blockBoundary">The block boundary.</param>
+        public TypographicCharacterHandler(MarkupRange currentSelection, InsertHtml insertHtml,
+                                           IBlogPostImageEditingContext imageEditingContext,
+                                           IHTMLElement postBodyElement, char c, string htmlText,
+                                           MarkupPointer blockBoundary)
         {
-            _currentSelection = currentSelection.Clone();
-            _currentSelection.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
-            _currentSelection.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Left;
-            _insertHtml = insertHtml;
-            _imageEditingContext = imageEditingContext;
-            _postBodyElement = postBodyElement;
+            this.currentSelection = currentSelection.Clone();
+            this.currentSelection.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
+            this.currentSelection.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Left;
+            this.insertHtml = insertHtml;
+            this.imageEditingContext = imageEditingContext;
+            this.postBodyElement = postBodyElement;
 
             this.c = c;
             this.htmlText = htmlText;
             this.blockBoundary = blockBoundary;
         }
 
-        private char c;
-        private string htmlText;
-        private MarkupPointer blockBoundary;
+        /// <summary>
+        /// Gets the maximum length hint.
+        /// </summary>
+        /// <value>The maximum length hint.</value>
+        public static int MaxLengthHint => 3;
 
-        public static readonly List<string> SpecialCharacters = new List<string> { "...", "(c)", "(r)", "(tm)", };
-
+        /// <summary>
+        /// Handles the typographic replace.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool HandleTypographicReplace()
         {
             // We're doing typographic replacement _after_ MSHTML has handled the key event.
             // There may by formatting tags that were added, e.g. <font>.
             // We only want the text, so we exclude any surrounding tags from the selection.
-            _currentSelection.SelectInner();
+            this.currentSelection.SelectInner();
 
-            ReplaceDashes(blockBoundary);
-            return ReplaceTypographic(c, htmlText);
+            this.ReplaceDashes(this.blockBoundary);
+            return this.ReplaceTypographic(this.c, this.htmlText);
         }
 
-        public static int MaxLengthHint
+        /// <summary>
+        /// Replaces the typographic.
+        /// </summary>
+        /// <param name="character">The character.</param>
+        /// <param name="theHtmlText">The HTML text.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        private bool ReplaceTypographic(char character, string theHtmlText)
         {
-            get
+            if ((character == '\"' || character == '\'') && AutoreplaceSettings.EnableSmartQuotes) // Handle smart quotes
             {
-                return 3;
-            }
-        }
-
-        private bool ReplaceTypographic(char c, string htmlText)
-        {
-            if ((c == '\"' || c == '\'') && AutoreplaceSettings.EnableSmartQuotes) // Handle smart quotes
-            {
-                bool isOpenQuote = true;
-                if (htmlText.Length > 0)
+                var isOpenQuote = true;
+                if (theHtmlText.Length > 0)
                 {
-                    switch (htmlText[htmlText.Length - 1])
+                    switch (theHtmlText[theHtmlText.Length - 1])
                     {
                         case '-':
                         case '{':
@@ -74,191 +143,238 @@ namespace OpenLiveWriter.PostEditor
                             isOpenQuote = true;
                             break;
                         default:
-                            if (!char.IsWhiteSpace(htmlText[htmlText.Length - 1]))
+                            if (!char.IsWhiteSpace(theHtmlText[theHtmlText.Length - 1]))
+                            {
                                 isOpenQuote = false;
+                            }
+
                             break;
                     }
                 }
 
-                switch (c)
+                switch (character)
                 {
-                    case ('\''):
-                        ReplaceValue(c, "'", (isOpenQuote ? "&#8216;" : "&#8217;"));
+                    case '\'':
+                        this.ReplaceValue("'", isOpenQuote ? "&#8216;" : "&#8217;");
                         break;
-                    case ('\"'):
-                        ReplaceValue(c, "\"", (isOpenQuote ? "&#8220;" : "&#8221;"));
+                    case '\"':
+                        this.ReplaceValue("\"", isOpenQuote ? "&#8220;" : "&#8221;");
                         break;
                 }
 
                 return true;
             }
-            else if ((c == ')' || c == '.') && AutoreplaceSettings.EnableSpecialCharacterReplacement) // Handling for (c), (r), ...
+
+            if ((character != ')' && character != '.') || !AutoreplaceSettings.EnableSpecialCharacterReplacement)
             {
-                string replaceValue = null;
-                string originalHtml = null;
-
-                if (c == ')' && htmlText.EndsWith("(c", true, CultureInfo.InvariantCulture))
-                {
-                    replaceValue = "&#0169;";
-                    originalHtml = "(c)";
-                }
-                else if (c == ')' && htmlText.EndsWith("(r", true, CultureInfo.InvariantCulture))
-                {
-                    replaceValue = "&#0174;";
-                    originalHtml = "(r)";
-                }
-                else if (c == ')' && htmlText.EndsWith("(tm", true, CultureInfo.InvariantCulture))
-                {
-                    replaceValue = "&#x2122;";
-                    originalHtml = "(tm)";
-                }
-                else if (c == '.' && htmlText.EndsWith("..", true, CultureInfo.InvariantCulture) && GlobalEditorOptions.SupportsFeature(ContentEditorFeature.UnicodeEllipsis))
-                {
-                    replaceValue = "&#8230;";
-                    originalHtml = "...";
-                }
-
-                if (replaceValue != null)
-                {
-                    ReplaceValue(c, originalHtml, replaceValue);
-                    return true;
-                }
-
+                return this.ReplaceEmoticon(character, theHtmlText);
             }
 
-            return ReplaceEmoticon(c, htmlText);
+            // Handling for (c), (r), ...
+            string replaceValue = null;
+            string originalHtml = null;
+
+            if (character == ')' && theHtmlText.EndsWith("(c", true, CultureInfo.InvariantCulture))
+            {
+                replaceValue = "&#0169;";
+                originalHtml = "(c)";
+            }
+            else if (character == ')' && theHtmlText.EndsWith("(r", true, CultureInfo.InvariantCulture))
+            {
+                replaceValue = "&#0174;";
+                originalHtml = "(r)";
+            }
+            else if (character == ')' && theHtmlText.EndsWith("(tm", true, CultureInfo.InvariantCulture))
+            {
+                replaceValue = "&#x2122;";
+                originalHtml = "(tm)";
+            }
+            else if (character == '.' && theHtmlText.EndsWith("..", true, CultureInfo.InvariantCulture) &&
+                     GlobalEditorOptions.SupportsFeature(ContentEditorFeature.UnicodeEllipsis))
+            {
+                replaceValue = "&#8230;";
+                originalHtml = "...";
+            }
+
+            if (replaceValue == null)
+            {
+                return this.ReplaceEmoticon(character, theHtmlText);
+            }
+
+            this.ReplaceValue(originalHtml, replaceValue);
+            return true;
+
         }
 
+        /// <summary>
+        /// Replaces the emoticon.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        /// <param name="htmlText">The HTML text.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool ReplaceEmoticon(char c, string htmlText)
         {
-            if (_imageEditingContext.EmoticonsManager.CanInsertEmoticonImage && AutoreplaceSettings.EnableEmoticonsReplacement && EmoticonsManager.IsAutoReplaceEndingCharacter(c))
+            if (!this.imageEditingContext.EmoticonsManager.CanInsertEmoticonImage ||
+                !AutoreplaceSettings.EnableEmoticonsReplacement || !EmoticonsManager.IsAutoReplaceEndingCharacter(c))
             {
-                string lastChar = c.ToString();
-                foreach (Emoticon emoticon in _imageEditingContext.EmoticonsManager.PopularEmoticons)
-                {
-                    foreach (string autoReplaceText in emoticon.AutoReplaceText)
-                    {
-                        if (autoReplaceText.EndsWith(lastChar))
-                        {
-                            string remainingAutoReplaceText = autoReplaceText.Remove(autoReplaceText.Length - 1);
-                            if (htmlText.EndsWith(remainingAutoReplaceText))
-                            {
-                                // Emoticons generally start with a colon, and therefore might interfere with a user attempting to type a URL.
-                                string url = StringHelper.GetLastWord(htmlText);
-                                if (UrlHelper.StartsWithKnownScheme(url) || !IsValidEmoticonInsertionPoint())
-                                    return false;
+                return false;
+            }
 
-                                ReplaceValue(c, autoReplaceText, _imageEditingContext.EmoticonsManager.GetHtml(emoticon));
-                                return true;
-                            }
-                        }
+            var lastChar = c.ToString();
+            foreach (var emoticon in this.imageEditingContext.EmoticonsManager.PopularEmoticons)
+            {
+                foreach (var autoReplaceText in emoticon.AutoReplaceText)
+                {
+                    if (!autoReplaceText.EndsWith(lastChar))
+                    {
+                        continue;
                     }
+
+                    var remainingAutoReplaceText = autoReplaceText.Remove(autoReplaceText.Length - 1);
+                    if (!htmlText.EndsWith(remainingAutoReplaceText))
+                    {
+                        continue;
+                    }
+
+                    // Emoticons generally start with a colon, and therefore might interfere with a user attempting to type a URL.
+                    var url = StringHelper.GetLastWord(htmlText);
+                    if (UrlHelper.StartsWithKnownScheme(url) || !this.IsValidEmoticonInsertionPoint())
+                    {
+                        return false;
+                    }
+
+                    this.ReplaceValue(autoReplaceText,
+                                      this.imageEditingContext.EmoticonsManager.GetHtml(emoticon));
+                    return true;
                 }
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Determines whether [is valid emoticon insertion point].
+        /// </summary>
+        /// <returns><c>true</c> if [is valid emoticon insertion point]; otherwise, <c>false</c>.</returns>
         private bool IsValidEmoticonInsertionPoint()
         {
-            MarkupRange selection = _currentSelection.Clone();
+            var selection = this.currentSelection.Clone();
 
             // Check to make sure the target is not in an edit field
             if (InlineEditField.IsWithinEditField(selection.ParentElement()))
+            {
                 return false;
+            }
 
             // Check to make sure the target is in the body of the post
-            selection.MoveToElement(_postBodyElement, false);
-            if (!selection.InRange(_currentSelection))
-                return false;
-
-            return true;
+            selection.MoveToElement(this.postBodyElement, false);
+            return selection.InRange(this.currentSelection);
         }
 
-        private void ReplaceValue(char currentCharacter, string undoValue, string replacementValue)
+        /// <summary>
+        /// Replaces the value.
+        /// </summary>
+        /// <param name="undoValue">The undo value.</param>
+        /// <param name="replacementValue">The replacement value.</param>
+        private void ReplaceValue(string undoValue, string replacementValue)
         {
-            _currentSelection.Collapse(false);
-            for (int i = 0; i < undoValue.Length; i++)
-                _currentSelection.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR);
+            this.currentSelection.Collapse(false);
+            for (var i = 0; i < undoValue.Length; i++)
+            {
+                this.currentSelection.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR);
+            }
 
-            _insertHtml(_currentSelection.Start, _currentSelection.End, replacementValue);
+            this.insertHtml(this.currentSelection.Start, this.currentSelection.End, replacementValue);
         }
 
+        /// <summary>
+        /// Replaces the dashes.
+        /// </summary>
+        /// <param name="blockBoundary">The block boundary.</param>
         private void ReplaceDashes(MarkupPointer blockBoundary)
         {
             if (!AutoreplaceSettings.EnableHyphenReplacement)
-                return;
-
-            MarkupRange emRange = _currentSelection.Clone();
-            for (int i = 0; i < 3 && emRange.Start.IsRightOf(blockBoundary); i++)
-                emRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
-            string emText = emRange.Text ?? "";
-
-            if (emText.Contains("-"))
             {
-                // \u00A0 = non breaking space
-                Regex regex = new Regex(@"[^\s\u00A0\-]([ \u00A0]?(?>--?)[ \u00A0]?)[^\s\u00A0\-]");
-                Match match = regex.Match(emText);
-                if (match.Success)
-                {
-                    Debug.Assert(match.Groups.Count == 2, "Matched more than one set of dashes. Expecting only one match.");
-                    string matchValue = match.Groups[1].Value.Replace((char)160, ' ');
-                    MarkupRange findRange = _currentSelection.Clone();
+                return;
+            }
 
-                    // Since we're now doing this matching AFTER a character has been added, we need to jump back.
-                    findRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
-                    findRange.Collapse(false);
-                    for (int i = 0; i < matchValue.Length; i++)
+            var emRange = this.currentSelection.Clone();
+            for (var i = 0; i < 3 && emRange.Start.IsRightOf(blockBoundary); i++)
+            {
+                emRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
+            }
+
+            var emText = emRange.Text ?? "";
+
+            if (!emText.Contains("-"))
+            {
+                return;
+            }
+
+            // \u00A0 = non breaking space
+            var regex = new Regex(@"[^\s\u00A0\-]([ \u00A0]?(?>--?)[ \u00A0]?)[^\s\u00A0\-]");
+            var match = regex.Match(emText);
+            if (!match.Success)
+            {
+                return;
+            }
+
+            Debug.Assert(match.Groups.Count == 2,
+                         "Matched more than one set of dashes. Expecting only one match.");
+            var matchValue = match.Groups[1].Value.Replace((char) 160, ' ');
+            var findRange = this.currentSelection.Clone();
+
+            // Since we're now doing this matching AFTER a character has been added, we need to jump back.
+            findRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
+            findRange.Collapse(false);
+            for (var i = 0; i < matchValue.Length; i++)
+            {
+                findRange.Start.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
+            }
+
+            for (var i = 0; i < emText.Length; i++)
+            {
+                if (findRange.Text == matchValue)
+                {
+                    string replaceText = null;
+                    switch (matchValue)
                     {
-                        findRange.Start.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
+                        case "--":
+                        case "-- ":
+                            replaceText = "&#8212;";
+                            break;
+                        case " --":
+                        case " -":
+                            replaceText = "&#160;&#8211;";
+                            break;
+                        case " -- ":
+                        case " - ":
+                            replaceText = "&#160;&#8211; ";
+                            break;
+                        case "-":
+                        case "- ":
+                            break;
                     }
 
-                    for (int i = 0; i < emText.Length; i++)
+                    if (replaceText != null)
                     {
-                        if (findRange.Text == matchValue)
-                        {
-                            string replaceText = null;
-                            switch (matchValue)
-                            {
-                                case ("--"):
-                                case ("-- "):
-                                    replaceText = "&#8212;";
-                                    break;
-                                case (" --"):
-                                case (" -"):
-                                    replaceText = "&#160;&#8211;";
-                                    break;
-                                case (" -- "):
-                                case (" - "):
-                                    replaceText = "&#160;&#8211; ";
-                                    break;
-                                case ("-"):
-                                case ("- "):
-                                    break;
-                            }
-
-                            if (replaceText != null)
-                            {
-                                _insertHtml(findRange.Start, findRange.End, replaceText);
-                                break;
-                            }
-                        }
-                        findRange.Start.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
-                        findRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
+                        this.insertHtml(findRange.Start, findRange.End, replaceText);
+                        break;
                     }
                 }
+
+                findRange.Start.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
+                findRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
             }
         }
 
-        private readonly MarkupRange _currentSelection;
-        private readonly InsertHtml _insertHtml;
-        private readonly IBlogPostImageEditingContext _imageEditingContext;
-        private readonly IHTMLElement _postBodyElement;
-
+        /// <summary>
+        /// Sets the gravity right.
+        /// </summary>
         public void SetGravityRight()
         {
-            _currentSelection.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
-            _currentSelection.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
+            this.currentSelection.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
+            this.currentSelection.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
         }
     }
 }

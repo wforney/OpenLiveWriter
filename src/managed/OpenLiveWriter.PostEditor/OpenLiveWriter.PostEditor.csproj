@@ -238,6 +238,10 @@
     <Compile Include="BlogPostEditingManager.cs" />
     <Compile Include="BlogPostExtensionDataList.cs" />
     <Compile Include="BlogPostImageData.cs" />
+    <Compile Include="BlogPostReferenceFixer.cs" />
+    <Compile Include="BlogPostReferenceFixer.FileUploadWorker.cs" />
+    <Compile Include="BlogPostReferenceFixer.FileUploadWorker.FileUploadContext.cs" />
+    <Compile Include="BlogPostReferenceFixer.LocalFileTransformer.cs" />
     <Compile Include="BlogPostSettingsBag.cs" />
     <Compile Include="BlogPostSupportingFileStorage.cs" />
     <Compile Include="BlogProviderButtons\BlogProviderButton.cs" />
@@ -451,6 +455,7 @@
     <Compile Include="IBlogPostContentEditor.cs" />
     <Compile Include="IBlogPostEditingContext.cs" />
     <Compile Include="IBlogPostEditingSite.cs" />
+    <Compile Include="IBlogPostEditingSitePreferences.cs" />
     <Compile Include="IBlogPostEditor.cs" />
     <Compile Include="IBlogPostPublishingContext.cs" />
     <Compile Include="IBlogSettingsEditor.cs" />
@@ -508,11 +513,27 @@
     </Compile>
     <Compile Include="ContentSources\IPublishTimeWorker.cs" />
     <Compile Include="ContentSources\SmartContentWorker.cs" />
+    <Compile Include="PersistedFile.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RecentPostSynchronizer.ContextImageReferenceFixer.cs">
+      <DependentUpon>RecentPostSynchronizer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecentPostSynchronizer.GetRecentPostOperation.cs">
+      <DependentUpon>RecentPostSynchronizer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecentPostSynchronizer.ImageReferenceFixer.cs">
+      <DependentUpon>RecentPostSynchronizer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectBlogGalleryCommand.cs" />
+    <Compile Include="ServiceUpdateSettingsDetectionContext.cs" />
+    <Compile Include="ServiceUpdateSettingsDetectionContext.SortButtonsComparer.cs" />
+    <Compile Include="ServiceUpdateSettingsDetectionContext.SortCategoriesComparer.cs" />
+    <Compile Include="ServiceUpdateSettingsDetectionContext.SortOptionOverridesComparer.cs" />
+    <Compile Include="ServiceUpdateSettingsDetectionContext.SortOptionOverridesComparer1.cs" />
     <Compile Include="SmartContentPersistedFileList.cs" />
     <Compile Include="PingPreferencesPanel.cs">
       <SubType>UserControl</SubType>
@@ -915,7 +936,145 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Tagging\Utility.cs" />
+    <Compile Include="TextEditingCommandDispatcher.AddToGlossaryCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.AlignCenterCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.AlignCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.AlignJustifyCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.AlignLeftCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.AlignRightCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.BlockquoteCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.BoldCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.BulletsCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.CheckSpellingCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.ClearCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.ClearFormattingCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.CopyCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="TextEditingCommandDispatcher.cs" />
+    <Compile Include="TextEditingCommandDispatcher.CutCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.DontPromptUserCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.EditLinkCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.FindCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.FontColorPickerCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.FontFamilyCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.FontHighlightColorPickerCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.FontSizeCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.IndentCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.InsertLinkCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.ItalicCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.LatchedTextEditingCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.LetterCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.LTRTextBlockCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.NumbersCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.OpenLinkCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.OutdentCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.PasteCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.PasteSpecialCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.PrintCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.PrintPreviewCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.RedoCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.RemoveLinkAndClearFormattingCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.RemoveLinkCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.RTLTextBlockCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.SelectAllCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.StrikethroughCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.StyleCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.SubscriptCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.SuperscriptCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.TextEditingCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.UnderlineCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditingCommandDispatcher.UndoCommand.cs">
+      <DependentUpon>TextEditingCommandDispatcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="TitleReminderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -923,9 +1082,24 @@
     <Compile Include="Updates\UpdateManager.cs" />
     <Compile Include="Updates\UpdateSettings.cs" />
     <Compile Include="UpdateWeblogAsyncOperation.cs" />
+    <Compile Include="UpdateWeblogAsyncOperation.LocalSupportingFileUploader.cs">
+      <DependentUpon>UpdateWeblogAsyncOperation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateWeblogAsyncOperation.PingHelper.cs">
+      <DependentUpon>UpdateWeblogAsyncOperation.cs</DependentUpon>
+    </Compile>
     <Compile Include="UpdateWeblogProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="UpdateWeblogProgressForm.PublishEventArgs.cs">
+      <DependentUpon>UpdateWeblogProgressForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateWeblogProgressForm.PublishingEventArgs.cs">
+      <DependentUpon>UpdateWeblogProgressForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateWeblogResult.cs" />
     <Compile Include="Video\CategoryItem.cs" />
     <Compile Include="Video\IVideoPublisher.cs" />
     <Compile Include="Video\Video.cs" />
@@ -989,6 +1163,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WeblogCommandManager.cs" />
+    <Compile Include="WeblogCommandManager.SwitchWeblogMenuCommand.cs">
+      <DependentUpon>WeblogCommandManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="WindowCascadeHelper.cs" />
     <Compile Include="OpenLiveWriterContentTarget.cs" />
     <Compile Include="WordCount\WordCountPreferences.cs" />

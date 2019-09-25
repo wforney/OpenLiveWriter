@@ -1,39 +1,65 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.Windows.Forms;
-using OpenLiveWriter.Controls;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Layout;
-using OpenLiveWriter.Localization;
-
 namespace OpenLiveWriter.PostEditor
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Globalization;
+    using System.Windows.Forms;
+    using Controls;
+    using CoreServices;
+    using CoreServices.Layout;
+    using Localization;
+
     /// <summary>
-    /// Summary description for RecentPostNotSynchronizedWarningForm.
+    /// The RecentPostNotSynchronizedWarningForm class.
+    /// Implements the <see cref="OpenLiveWriter.Controls.ApplicationDialog" />
     /// </summary>
+    /// <seealso cref="OpenLiveWriter.Controls.ApplicationDialog" />
     public class RecentPostNotSynchronizedWarningForm : ApplicationDialog
     {
-        private PictureBox pictureBoxWarning;
-        private Label labelUnableToRetrieve;
-        private Label labelTitle;
-        private Label labelCanStillEditLocally;
+        /// <summary>
+        /// The button ok
+        /// </summary>
         private Button buttonOK;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
+        /// <summary>
+        /// The label can still edit locally
+        /// </summary>
+        private Label labelCanStillEditLocally;
+
+        /// <summary>
+        /// The label title
+        /// </summary>
+        private Label labelTitle;
+
+        /// <summary>
+        /// The label unable to retrieve
+        /// </summary>
+        private Label labelUnableToRetrieve;
+
+        /// <summary>
+        /// The picture box warning
+        /// </summary>
+        private PictureBox pictureBoxWarning;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecentPostNotSynchronizedWarningForm"/> class.
+        /// </summary>
+        /// <param name="entityName">Name of the entity.</param>
         public RecentPostNotSynchronizedWarningForm(string entityName)
         {
             //
             // Required for Windows Form Designer support
             //
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.labelUnableToRetrieve.Text = Res.Get(StringId.RecentPostNotSyncText);
             this.labelTitle.Text = Res.Get(StringId.RecentPostNotSyncCaption);
@@ -42,63 +68,71 @@ namespace OpenLiveWriter.PostEditor
             this.Text = Res.Get(StringId.RecentPostNotSyncTitle);
 
             this.labelTitle.Font = Res.GetFont(FontSize.XLarge, FontStyle.Bold);
-            Text = String.Format(CultureInfo.CurrentCulture, this.Text, entityName);
-            labelTitle.Text = String.Format(CultureInfo.CurrentCulture, labelTitle.Text, entityName);
-            labelUnableToRetrieve.Text = String.Format(CultureInfo.CurrentCulture, labelUnableToRetrieve.Text, ApplicationEnvironment.ProductNameQualified, entityName.ToLower(CultureInfo.CurrentCulture));
-            labelCanStillEditLocally.Text = String.Format(CultureInfo.CurrentCulture, labelCanStillEditLocally.Text, entityName.ToLower(CultureInfo.CurrentCulture));
-
+            this.Text = string.Format(CultureInfo.CurrentCulture, this.Text, entityName);
+            this.labelTitle.Text = string.Format(CultureInfo.CurrentCulture, this.labelTitle.Text, entityName);
+            this.labelUnableToRetrieve.Text = string.Format(CultureInfo.CurrentCulture, this.labelUnableToRetrieve.Text,
+                                                            ApplicationEnvironment.ProductNameQualified,
+                                                            entityName.ToLower(CultureInfo.CurrentCulture));
+            this.labelCanStillEditLocally.Text = string.Format(CultureInfo.CurrentCulture,
+                                                               this.labelCanStillEditLocally.Text,
+                                                               entityName.ToLower(CultureInfo.CurrentCulture));
         }
 
+        /// <inheritdoc />
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             using (new AutoGrow(this, AnchorStyles.Bottom, true))
             {
-                LayoutHelper.NaturalizeHeightAndDistribute(8, labelTitle, labelUnableToRetrieve, labelCanStillEditLocally);
-                LayoutHelper.DistributeVertically(12, false, labelCanStillEditLocally, buttonOK);
+                LayoutHelper.NaturalizeHeightAndDistribute(8, this.labelTitle, this.labelUnableToRetrieve,
+                                                           this.labelCanStillEditLocally);
+                LayoutHelper.DistributeVertically(12, false, this.labelCanStillEditLocally, this.buttonOK);
             }
         }
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
+                this.components?.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
+
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(RecentPostNotSynchronizedWarningForm));
+            System.Resources.ResourceManager resources =
+                new System.Resources.ResourceManager(typeof(RecentPostNotSynchronizedWarningForm));
             this.pictureBoxWarning = new System.Windows.Forms.PictureBox();
             this.labelUnableToRetrieve = new System.Windows.Forms.Label();
             this.labelTitle = new System.Windows.Forms.Label();
             this.labelCanStillEditLocally = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
+
             //
             // pictureBoxWarning
             //
-            this.pictureBoxWarning.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxWarning.Image")));
+            this.pictureBoxWarning.Image = ((System.Drawing.Image) (resources.GetObject("pictureBoxWarning.Image")));
             this.pictureBoxWarning.Location = new System.Drawing.Point(10, 10);
             this.pictureBoxWarning.Name = "pictureBoxWarning";
             this.pictureBoxWarning.Size = new System.Drawing.Size(39, 40);
             this.pictureBoxWarning.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBoxWarning.TabIndex = 0;
             this.pictureBoxWarning.TabStop = false;
+
             //
             // labelUnableToRetrieve
             //
@@ -107,8 +141,10 @@ namespace OpenLiveWriter.PostEditor
             this.labelUnableToRetrieve.Name = "labelUnableToRetrieve";
             this.labelUnableToRetrieve.Size = new System.Drawing.Size(260, 46);
             this.labelUnableToRetrieve.TabIndex = 1;
-            this.labelUnableToRetrieve.Text = "{0} was unable to retrieve an up to date copy of the {1} from the weblog server (" +
+            this.labelUnableToRetrieve.Text =
+                "{0} was unable to retrieve an up to date copy of the {1} from the weblog server (" +
                 "an error occurred or the retrieve was cancelled).";
+
             //
             // labelTitle
             //
@@ -119,6 +155,7 @@ namespace OpenLiveWriter.PostEditor
             this.labelTitle.Size = new System.Drawing.Size(237, 23);
             this.labelTitle.TabIndex = 2;
             this.labelTitle.Text = "Unable to Retrieve {0} from Server";
+
             //
             // labelCanStillEditLocally
             //
@@ -127,8 +164,10 @@ namespace OpenLiveWriter.PostEditor
             this.labelCanStillEditLocally.Name = "labelCanStillEditLocally";
             this.labelCanStillEditLocally.Size = new System.Drawing.Size(260, 46);
             this.labelCanStillEditLocally.TabIndex = 3;
-            this.labelCanStillEditLocally.Text = "You may still edit the {0} using the local copy stored on this computer. However " +
+            this.labelCanStillEditLocally.Text =
+                "You may still edit the {0} using the local copy stored on this computer. However " +
                 "if you have changed the {0} online the copy you are editing is out of date.";
+
             //
             // buttonOK
             //
@@ -138,6 +177,7 @@ namespace OpenLiveWriter.PostEditor
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
+
             //
             // RecentPostNotSynchronizedWarningForm
             //
@@ -156,8 +196,8 @@ namespace OpenLiveWriter.PostEditor
             this.Name = "RecentPostNotSynchronizedWarningForm";
             this.Text = "Unable to Retrieve {0} from Server";
             this.ResumeLayout(false);
-
         }
+
         #endregion
     }
 }
