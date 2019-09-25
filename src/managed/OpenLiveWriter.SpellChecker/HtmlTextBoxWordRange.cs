@@ -1,18 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.HtmlParser.Parser;
-using OpenLiveWriter.Mshtml;
-
 namespace OpenLiveWriter.SpellChecker
 {
+    using System.Windows.Forms;
+
+    using HtmlParser.Parser;
+
     /// <summary>
     /// Some test cases:
-    ///
     /// [empty string]
     /// all correct words
     /// mzispalled wordz
@@ -21,278 +17,136 @@ namespace OpenLiveWriter.SpellChecker
     /// 'Apostrophe's'
     /// numb3rs
     /// 1312
-    /// &#x47;ood
-    ///
+    /// Good
     /// Limitations:
     /// Doesn't handle mid-word markup (e.g. t<i>e</i>st)
     /// Doesn't correct ALT attributes
     /// Doesn't know to ignore http:// and e-mail addresses
+    /// Implements the <see cref="OpenLiveWriter.SpellChecker.IWordRange" />
     /// </summary>
-    public class HtmlTextBoxWordRange : IWordRange
+    /// <seealso cref="OpenLiveWriter.SpellChecker.IWordRange" />
+    public partial class HtmlTextBoxWordRange : IWordRange
     {
-        private readonly TextBox _textBox;
-        private readonly WordSource _src;
-        private readonly int _startAt;
-        private readonly int _endAt;
+        /// <summary>
+        /// The end at
+        /// </summary>
+        private readonly int endAt;
 
-        private int _drift = 0;
-        private TextWithOffsetAndLen _currentWord = null;
-        private TextWithOffsetAndLen _nextWord;
+        /// <summary>
+        /// The source
+        /// </summary>
+        private readonly WordSource src;
 
+        /// <summary>
+        /// The start at
+        /// </summary>
+        private readonly int startAt;
+
+        /// <summary>
+        /// The text box
+        /// </summary>
+        private readonly TextBox textBox;
+
+        /// <summary>
+        /// The current word
+        /// </summary>
+        private TextWithOffsetAndLen currentWord;
+
+        /// <summary>
+        /// The drift
+        /// </summary>
+        private int drift;
+
+        /// <summary>
+        /// The next word
+        /// </summary>
+        private TextWithOffsetAndLen nextWord;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlTextBoxWordRange"/> class.
+        /// </summary>
+        /// <param name="textBox">The text box.</param>
         public HtmlTextBoxWordRange(TextBox textBox)
         {
-            _textBox = textBox;
-            _src = new WordSource(new HtmlTextSource(new SimpleHtmlParser(_textBox.Text)));
+            this.textBox = textBox;
+            this.src = new WordSource(new HtmlTextSource(new SimpleHtmlParser(this.textBox.Text)));
 
-            if (_textBox.SelectionLength > 0)
+            if (this.textBox.SelectionLength > 0)
             {
-                _startAt = _textBox.SelectionStart;
-                _endAt = _startAt + _textBox.SelectionLength;
+                this.startAt = this.textBox.SelectionStart;
+                this.endAt = this.startAt + this.textBox.SelectionLength;
             }
             else
             {
-                _startAt = 0;
-                _endAt = _textBox.TextLength;
+                this.startAt = 0;
+                this.endAt = this.textBox.TextLength;
             }
 
-            AdvanceToStart();
+            this.AdvanceToStart();
         }
 
-        private void AdvanceToStart()
-        {
-            while (null != (_nextWord = _src.Next())   // not at EOD
-                && (_nextWord.Offset + _nextWord.Len <= _startAt))   // word is entirely before startAt
-            {
-            }
+        /// <inheritdoc />
+        public bool HasNext() => this.nextWord != null;
 
-            CheckForNextWordPastEnd();
-        }
-
-        private void CheckForNextWordPastEnd()
-        {
-            if (_nextWord != null && _nextWord.Offset >= _endAt)
-                _nextWord = null;
-        }
-
-        public bool HasNext()
-        {
-            return _nextWord != null;
-        }
-
+        /// <inheritdoc />
         public void Next()
         {
-            _currentWord = _nextWord;
-            _nextWord = _src.Next();
-            CheckForNextWordPastEnd();
+            this.currentWord = this.nextWord;
+            this.nextWord = this.src.Next();
+            this.CheckForNextWordPastEnd();
         }
 
-        public string CurrentWord
-        {
-            get
-            {
-                return _currentWord.Text;
-            }
-        }
+        /// <inheritdoc />
+        public string CurrentWord => this.currentWord.Text;
 
-        public void PlaceCursor()
-        {
-            _textBox.Select(_currentWord.Offset - _drift + _currentWord.Len, 0);
-        }
+        /// <inheritdoc />
+        public void PlaceCursor() => this.textBox.Select(this.currentWord.Offset - this.drift + this.currentWord.Len, 0);
 
-        public void Highlight(int offset, int length)
-        {
-            _textBox.Select(_currentWord.Offset - _drift + offset, length);
-        }
+        /// <inheritdoc />
+        public void Highlight(int offset, int length) => this.textBox.Select(this.currentWord.Offset - this.drift + offset, length);
 
-        public void RemoveHighlight()
-        {
-            _textBox.Select(_textBox.SelectionStart, 0);
-        }
+        /// <inheritdoc />
+        public void RemoveHighlight() => this.textBox.Select(this.textBox.SelectionStart, 0);
 
+        /// <inheritdoc />
         public void Replace(int offset, int length, string newText)
         {
             newText = HtmlUtils.EscapeEntities(newText);
-            Highlight(offset, length);
-            _textBox.SelectedText = newText;
-            _drift += _currentWord.Len - newText.Length;
+            this.Highlight(offset, length);
+            this.textBox.SelectedText = newText;
+            this.drift += this.currentWord.Len - newText.Length;
         }
 
-        public bool IsCurrentWordUrlPart()
+        /// <inheritdoc />
+        public bool IsCurrentWordUrlPart() => false;
+
+        /// <inheritdoc />
+        public bool FilterApplies() => false;
+
+        /// <inheritdoc />
+        public bool FilterAppliesRanged(int offset, int length) => false;
+
+        /// <summary>
+        /// Advances to start.
+        /// </summary>
+        private void AdvanceToStart()
         {
-            return false;
+            while ((this.nextWord = this.src.Next()) != null // not at EOD
+                && this.nextWord.Offset + this.nextWord.Len <= this.startAt) // word is entirely before startAt
+            {
+            }
+
+            this.CheckForNextWordPastEnd();
         }
 
-        public bool FilterApplies()
+        /// <summary>
+        /// Checks for next word past end.
+        /// </summary>
+        private void CheckForNextWordPastEnd()
         {
-            return false;
-        }
-        public bool FilterAppliesRanged(int offset, int length)
-        {
-            return false;
-        }
-
-        private class TextWithOffsetAndLen
-        {
-            public readonly string Text;
-            public readonly int Offset;
-            public readonly int Len;
-
-            public TextWithOffsetAndLen(string text, int offset, int len)
+            if (this.nextWord != null && this.nextWord.Offset >= this.endAt)
             {
-                this.Text = text;
-                this.Offset = offset;
-                this.Len = len;
-            }
-        }
-
-        private class WordSource
-        {
-            [Flags]
-            private enum CharClass
-            {
-                Break = 1,
-                BoundaryBreak = 2, // only counts as break if at start or end of word
-                LetterOrNumber = 4,
-                Letter = LetterOrNumber | 8,
-                Number = LetterOrNumber | 0x10,
-                IncludedBreakChar = 0x20 // counts as a break, but is also included in the word
-            }
-
-            private HtmlTextSource _src;
-
-            private TextWithOffsetAndLen _curr;
-            private int _offset = 0;
-
-            public WordSource(HtmlTextSource src)
-            {
-                this._src = src;
-                this._curr = src.Next();
-            }
-
-            public TextWithOffsetAndLen Next()
-            {
-                while (true)
-                {
-                    // No chunks left.
-                    if (_curr == null)
-                        return null;
-
-                    // Advance until we get to the next potential start of word.
-                    // Note that this may not turn out to be an actual word, e.g.
-                    // if it is all numbers.
-                    AdvanceUntilWordStart();
-
-                    if (EOS())  // Reached end of this chunk
-                    {
-                        _offset = 0;
-                        _curr = _src.Next();
-                        continue;  // Try again with new chunk (or null, in which case we exit)
-                    }
-
-                    // Move to the end of the word.  Note that BoundaryWordBreak
-                    // characters may not end the word.  For example, for the
-                    // string "'that's'" (including single quotes), the word is
-                    // "that's" (note outer single quotes dropped).
-                    int start = _offset;
-                    int endOfWord = _offset;
-                    do
-                    {
-                        int charsToConsume;
-                        CharClass charClass = ClassifyChar(_curr.Text, _offset, out charsToConsume);
-                        if (Test(charClass, CharClass.Break))
-                            break;
-                        _offset += charsToConsume;
-                        if (Test(charClass, CharClass.IncludedBreakChar))
-                        {
-                            endOfWord = _offset;
-                            break;
-                        }
-                        if (Test(charClass, CharClass.LetterOrNumber))
-                            endOfWord = _offset;
-                    } while (!EOS());
-
-                    string substring = _curr.Text.Substring(start, endOfWord - start);
-                    if (substring.Length > 0)
-                    {
-                        return new TextWithOffsetAndLen(
-                            HtmlUtils.UnEscapeEntities(substring, HtmlUtils.UnEscapeMode.NonMarkupText),
-                            _curr.Offset + start,
-                            substring.Length
-                            );
-                    }
-                }
-            }
-
-            private void AdvanceUntilWordStart()
-            {
-                int charsToConsume;
-                while (!EOS() && !Test(ClassifyChar(_curr.Text, _offset, out charsToConsume), CharClass.LetterOrNumber))
-                    _offset += charsToConsume;
-            }
-
-            private bool Test(CharClass val, CharClass comparand)
-            {
-                return (val & comparand) == comparand;
-            }
-
-            /// <summary>
-            /// Determines the type of character that is currently pointed to by _offset,
-            /// </summary>
-            /// <param name="charsToConsume"></param>
-            /// <returns></returns>
-            private CharClass ClassifyChar(string strval, int offset, out int charsToConsume)
-            {
-                charsToConsume = 1;
-                char currChar = strval[offset];
-
-                if (currChar == '&')
-                {
-                    int nextSemi = strval.IndexOf(';', offset + 1);
-                    if (nextSemi != -1)
-                    {
-                        int code = HtmlUtils.DecodeEntityReference(strval.Substring(offset + 1, nextSemi - offset - 1));
-                        if (code != -1)
-                        {
-                            charsToConsume = nextSemi - offset + 1;
-                            currChar = (char)code;
-                        }
-                    }
-                }
-
-                return
-                    !WordRangeHelper.IsNonSymbolChar(currChar) ? CharClass.Break :
-                    char.IsLetter(currChar)		? CharClass.Letter :
-                    char.IsNumber(currChar)		? CharClass.Number :
-                    currChar == '\''			? CharClass.BoundaryBreak :
-                    currChar == '’'				? CharClass.BoundaryBreak :
-                    currChar == '.'				? CharClass.IncludedBreakChar :
-                    CharClass.Break;
-            }
-
-            private bool EOS()
-            {
-                return _offset >= _curr.Text.Length;
-            }
-        }
-
-        private class HtmlTextSource
-        {
-            private SimpleHtmlParser _parser;
-
-            public HtmlTextSource(SimpleHtmlParser parser)
-            {
-                this._parser = parser;
-            }
-
-            public TextWithOffsetAndLen Next()
-            {
-                Element e;
-                while (null != (e = _parser.Next()))
-                {
-                    if (e is Text)
-                        return new TextWithOffsetAndLen(e.RawText, e.Offset, e.Length);
-                }
-                return null;
+                this.nextWord = null;
             }
         }
     }

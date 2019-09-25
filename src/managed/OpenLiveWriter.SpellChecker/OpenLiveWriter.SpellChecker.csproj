@@ -64,8 +64,25 @@
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs" />
     <Compile Include="HighlightSegmentTracker.cs" />
+    <Compile Include="HighlightSegmentTracker.MatchingSegment.cs">
+      <DependentUpon>HighlightSegmentTracker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HighlightSegmentTracker.SegmentDef.cs">
+      <DependentUpon>HighlightSegmentTracker.cs</DependentUpon>
+    </Compile>
     <Compile Include="HtmlTextBoxWordRange.cs" />
+    <Compile Include="HtmlTextBoxWordRange.HtmlTextSource.cs">
+      <DependentUpon>HtmlTextBoxWordRange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HtmlTextBoxWordRange.TextWithOffsetAndLen.cs">
+      <DependentUpon>HtmlTextBoxWordRange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HtmlTextBoxWordRange.WordSource.CharClass.cs" />
+    <Compile Include="HtmlTextBoxWordRange.WordSource.cs">
+      <DependentUpon>HtmlTextBoxWordRange.cs</DependentUpon>
+    </Compile>
     <Compile Include="IBlogPostSpellCheckingContext.cs" />
+    <Compile Include="MarkupPointerComparer.cs" />
     <Compile Include="SortedMarkupRangeList.cs" />
     <Compile Include="ISpellingChecker.cs" />
     <Compile Include="IWordRange.cs" />
@@ -78,6 +95,8 @@
     <Compile Include="SpellCheckingContextMenuDefinition.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SpellCheckResult.cs" />
+    <Compile Include="SpellingCheckerException.cs" />
     <Compile Include="SpellingHighlighter.cs" />
     <Compile Include="SpellingLanguageEntry.cs" />
     <Compile Include="SpellingManager.cs" />
@@ -85,12 +104,18 @@
     <Compile Include="SpellingPreferencesPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="SpellingPreferencesPanel.SentryLanguageEntryComparer.cs">
+      <DependentUpon>SpellingPreferencesPanel.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="SpellingSettings.cs" />
+    <Compile Include="SpellingSuggestion.cs" />
     <Compile Include="SpellingTimer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TextBoxWordRange.cs" />
     <Compile Include="WinSpellingChecker.cs" />
+    <Compile Include="WordRangeHelper.cs" />
     <EmbeddedResource Include="Images\SpellingDictionaries.png" />
     <EmbeddedResource Include="Images\SpellingGeneral.png" />
     <EmbeddedResource Include="Images\SpellingPanelBitmap.png" />

@@ -1,41 +1,60 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenLiveWriter.SpellChecker
 {
+    using System;
+    using System.Linq;
+    using PlatformSpellCheck;
+
+    /// <summary>
+    /// The WinSpellingChecker class.
+    /// Implements the <see cref="OpenLiveWriter.SpellChecker.ISpellingChecker" />
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="OpenLiveWriter.SpellChecker.ISpellingChecker" />
+    /// <seealso cref="System.IDisposable" />
     public class WinSpellingChecker : ISpellingChecker, IDisposable
     {
-        private PlatformSpellCheck.SpellChecker _speller;
-        private string _bcp47Code;
+        /// <summary>
+        /// The BCP47 code
+        /// </summary>
+        private string bcp47Code;
 
-        public bool IsInitialized
-        {
-            get
-            {
-                return _speller != null;
-            }
-        }
+        /// <summary>
+        /// The speller
+        /// </summary>
+        private SpellChecker speller;
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        public bool IsInitialized => this.speller != null;
+
+        /// <summary>
+        /// Occurs when [word added].
+        /// </summary>
         public event EventHandler WordAdded;
+
+        /// <summary>
+        /// Occurs when [word ignored].
+        /// </summary>
         public event EventHandler WordIgnored;
 
+        /// <inheritdoc />
         public void AddToUserDictionary(string word)
         {
-            CheckInitialized();
-            _speller.Add(word);
+            this.CheckInitialized();
+            this.speller.Add(word);
 
-            if (WordAdded == null)
-                return;
-            WordAdded(word, EventArgs.Empty);
+            this.WordAdded?.Invoke(word, EventArgs.Empty);
         }
 
+        /// <inheritdoc />
         public SpellCheckResult CheckWord(string word, out string otherWord, out int offset, out int length)
         {
-            CheckInitialized();
+            this.CheckInitialized();
             otherWord = null;
 
             if (string.IsNullOrEmpty(word))
@@ -45,7 +64,7 @@ namespace OpenLiveWriter.SpellChecker
                 return SpellCheckResult.Correct;
             }
 
-            PlatformSpellCheck.SpellingError spellerStatus = _speller.Check(word).FirstOrDefault();
+            var spellerStatus = this.speller.Check(word).FirstOrDefault();
 
             if (spellerStatus == null)
             {
@@ -53,115 +72,111 @@ namespace OpenLiveWriter.SpellChecker
                 length = word.Length;
                 return SpellCheckResult.Correct;
             }
-            else
-            {
-                offset = (int)spellerStatus.StartIndex;
-                length = (int)spellerStatus.Length;
 
-                switch (spellerStatus.RecommendedAction)
-                {
-                    case PlatformSpellCheck.RecommendedAction.Delete:
-                        otherWord = "";
-                        return SpellCheckResult.AutoReplace;
-                    case PlatformSpellCheck.RecommendedAction.Replace:
-                        otherWord = spellerStatus.RecommendedReplacement;
-                        return SpellCheckResult.AutoReplace;
-                    case PlatformSpellCheck.RecommendedAction.GetSuggestions:
-                        return SpellCheckResult.Misspelled;
-                    default:
-                        return SpellCheckResult.Correct;
-                }
+            offset = (int) spellerStatus.StartIndex;
+            length = (int) spellerStatus.Length;
+
+            switch (spellerStatus.RecommendedAction)
+            {
+                case RecommendedAction.Delete:
+                    otherWord = "";
+                    return SpellCheckResult.AutoReplace;
+
+                case RecommendedAction.Replace:
+                    otherWord = spellerStatus.RecommendedReplacement;
+                    return SpellCheckResult.AutoReplace;
+
+                case RecommendedAction.GetSuggestions:
+                    return SpellCheckResult.Misspelled;
+
+                case RecommendedAction.None:
+                default:
+                    return SpellCheckResult.Correct;
             }
         }
 
-        public void Dispose()
-        {
-            StopChecking();
-        }
+        /// <inheritdoc />
+        public void Dispose() => this.StopChecking();
 
+        /// <inheritdoc />
         public void IgnoreAll(string word)
         {
-            CheckInitialized();
-            _speller.Ignore(word);
+            this.CheckInitialized();
+            this.speller.Ignore(word);
 
-            if (WordIgnored == null)
-                return;
-            WordIgnored(word, EventArgs.Empty);
+            this.WordIgnored?.Invoke(word, EventArgs.Empty);
         }
 
+        /// <inheritdoc />
         public void ReplaceAll(string word, string replaceWith)
         {
-            CheckInitialized();
-            _speller.AutoCorrect(word, replaceWith);
+            this.CheckInitialized();
+            this.speller.AutoCorrect(word, replaceWith);
         }
 
+        /// <inheritdoc />
         public void StartChecking()
         {
-            if (!PlatformSpellCheck.SpellChecker.IsPlatformSupported() ||
-                string.IsNullOrEmpty(_bcp47Code))
+            if (!SpellChecker.IsPlatformSupported() ||
+                string.IsNullOrEmpty(this.bcp47Code))
             {
-                StopChecking();
+                this.StopChecking();
                 return;
             }
 
-            _speller = new PlatformSpellCheck.SpellChecker(_bcp47Code);
+            this.speller = new SpellChecker(this.bcp47Code);
         }
 
+        /// <inheritdoc />
         public void StopChecking()
         {
-            if (_speller != null)
-                _speller.Dispose();
-
-            _speller = null;
+            this.speller?.Dispose();
+            this.speller = null;
         }
 
+        /// <inheritdoc />
         public SpellingSuggestion[] Suggest(string word, short maxSuggestions, short depth)
         {
-            CheckInitialized();
-            List<SpellingSuggestion> list = new List<SpellingSuggestion>();
+            this.CheckInitialized();
 
-            foreach (string suggestion in _speller.Suggestions(word).Take(maxSuggestions))
-            {
-                list.Add(new SpellingSuggestion(suggestion, 1));
-            }
-
-            return list.ToArray();
+            return this.speller.Suggestions(word)
+                       .Take(maxSuggestions)
+                       .Select(suggestion => new SpellingSuggestion(suggestion, 1))
+                       .ToArray();
         }
 
-        public void SetOptions(string bcp47Code)
-        {
-            _bcp47Code = bcp47Code;
-        }
+        /// <summary>
+        /// Sets the options.
+        /// </summary>
+        /// <param name="bcp47Code">The BCP47 code.</param>
+        public void SetOptions(string bcp47Code) => this.bcp47Code = bcp47Code;
 
-        public static string[] GetInstalledLanguages()
-        {
-            if (PlatformSpellCheck.SpellChecker.IsPlatformSupported())
-            {
-                return PlatformSpellCheck.SpellChecker.SupportedLanguages.ToArray();
-            }
+        /// <summary>
+        /// Gets the installed languages.
+        /// </summary>
+        /// <returns>System.String[].</returns>
+        public static string[] GetInstalledLanguages() =>
+            SpellChecker.IsPlatformSupported() ? SpellChecker.SupportedLanguages.ToArray() : new string[0];
 
-            return new string[0];
-        }
+        /// <summary>
+        /// Determines whether [is language supported] [the specified BCP47 code].
+        /// </summary>
+        /// <param name="bcp47Code">The BCP47 code.</param>
+        /// <returns><c>true</c> if [is language supported] [the specified BCP47 code]; otherwise, <c>false</c>.</returns>
+        public static bool IsLanguageSupported(string bcp47Code) =>
+            !string.IsNullOrEmpty(bcp47Code) &&
+            (SpellChecker.IsPlatformSupported() && SpellChecker.IsLanguageSupported(bcp47Code));
 
-        public static bool IsLanguageSupported(string bcp47Code)
-        {
-            if (string.IsNullOrEmpty(bcp47Code))
-            {
-                return false;
-            }
-
-            if (PlatformSpellCheck.SpellChecker.IsPlatformSupported())
-            {
-                return PlatformSpellCheck.SpellChecker.IsLanguageSupported(bcp47Code);
-            }
-
-            return false;
-        }
-
+        /// <summary>
+        /// Checks the initialized.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Operation attempted on an uninitialized WinSpellingChecker</exception>
         private void CheckInitialized()
         {
-            if (!IsInitialized)
+            if (!this.IsInitialized)
+            {
                 throw new InvalidOperationException("Operation attempted on an uninitialized WinSpellingChecker");
+            }
         }
     }
 }

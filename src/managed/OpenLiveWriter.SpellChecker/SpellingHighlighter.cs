@@ -1,319 +1,426 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using mshtml;
-using OpenLiveWriter.CoreServices;
-using OpenLiveWriter.CoreServices.Diagnostics;
-using OpenLiveWriter.Mshtml;
-
 namespace OpenLiveWriter.SpellChecker
 {
+    using System;
+    using System.Collections;
+    using System.Runtime.InteropServices;
+    using CoreServices;
+    using CoreServices.Diagnostics;
+    using mshtml;
+    using Mshtml;
+
+    /// <summary>
+    /// The SpellingHighlighter class.
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public class SpellingHighlighter : IDisposable
     {
-
-        static int TIMER_INTERVAL = 10;
-        static int NUMBER_OF_WORDS_TO_CHECK = 30;
-
-        private ISpellingChecker _spellingChecker ;
-
-        private IHighlightRenderingServicesRaw _highlightRenderingServices;
-
-        private IDisplayServicesRaw _displayServices;
-
-        private IMarkupServicesRaw _markupServicesRaw;
-
-        private MshtmlMarkupServices _markupServices;
-
-        private IHTMLDocument4 _htmlDocument;
-
-        private HighlightSegmentTracker _tracker;
-
-        private Queue _workerQueue;
-
-        private SpellingTimer _timer;
-
-        private bool _fatalSpellingError = false ;
-
-        public SpellingHighlighter(ISpellingChecker spellingChecker, IHighlightRenderingServicesRaw highlightRenderingServices,
-                                   IDisplayServicesRaw displayServices, IMarkupServicesRaw markupServices, IHTMLDocument4 htmlDocument)
-        {
-            _spellingChecker = spellingChecker;
-            _highlightRenderingServices = highlightRenderingServices;
-            _displayServices = displayServices;
-            _markupServicesRaw = markupServices;
-            _markupServices = new MshtmlMarkupServices(_markupServicesRaw);
-            _htmlDocument = htmlDocument;
-            _tracker = new HighlightSegmentTracker();
-            //the timer to handle interleaving of spell checking
-            _timer = new SpellingTimer(TIMER_INTERVAL);
-            _timer.Start();
-            _timer.Tick += new EventHandler(_timer_Tick);
-            _workerQueue = new Queue();
-        }
+        /// <summary>
+        /// The timer interval
+        /// </summary>
+        private static readonly int TimerInterval = 10;
 
         /// <summary>
-        /// Check spelling--called by the damage handler
+        /// The number of words to check
         /// </summary>
-        public void CheckSpelling(MshtmlWordRange range)
-        {
-            if ( !_fatalSpellingError )
-            {
-                _timer.Enabled = true;
-                _workerQueue.Enqueue(range);
-                if (_workerQueue.Count == 1)
-                {
-                    //if the queue had been empty, process this range right away
-                    DoWork();
-                }
-            }
-        }
+        private static readonly int NumberOfWordsToCheck = 30;
+
+        /// <summary>
+        /// The display services
+        /// </summary>
+        private readonly IDisplayServicesRaw displayServices;
+
+        /// <summary>
+        /// The fatal spelling error
+        /// </summary>
+        private bool fatalSpellingError;
+
+        /// <summary>
+        /// The highlight rendering services
+        /// </summary>
+        private readonly IHighlightRenderingServicesRaw highlightRenderingServices;
+
+        /// <summary>
+        /// Highlight the current word range
+        /// </summary>
+        private IHTMLRenderStyle highlightWordStyle;
+
+        /// <summary>
+        /// The HTML document
+        /// </summary>
+        private readonly IHTMLDocument4 htmlDocument;
+
+        /// <summary>
+        /// The markup services
+        /// </summary>
+        private readonly MshtmlMarkupServices markupServices;
+
+        /// <summary>
+        /// The markup services raw
+        /// </summary>
+        private readonly IMarkupServicesRaw markupServicesRaw;
+
+        /// <summary>
+        /// The spelling checker
+        /// </summary>
+        private readonly ISpellingChecker spellingChecker;
+
+        /// <summary>
+        /// The timer
+        /// </summary>
+        private readonly SpellingTimer timer;
+
+        /// <summary>
+        /// The tracker
+        /// </summary>
+        private HighlightSegmentTracker tracker;
+
+        /// <summary>
+        /// The worker queue
+        /// </summary>
+        private Queue workerQueue;
 
         /// <summary>
         /// Prevents asserts that happen within _timer_Tick from going bonkers; since
         /// they can happen reentrantly, you can end up with hundreds of assert windows.
         /// </summary>
-        private bool reentrant = false;
+        private bool reentrant;
 
+        /// <summary>
+        /// The staging text range
+        /// </summary>
+        private IHTMLTxtRange stagingTextRange;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpellingHighlighter"/> class.
+        /// </summary>
+        /// <param name="spellingChecker">The spelling checker.</param>
+        /// <param name="highlightRenderingServices">The highlight rendering services.</param>
+        /// <param name="displayServices">The display services.</param>
+        /// <param name="markupServices">The markup services.</param>
+        /// <param name="htmlDocument">The HTML document.</param>
+        public SpellingHighlighter(ISpellingChecker spellingChecker,
+                                   IHighlightRenderingServicesRaw highlightRenderingServices,
+                                   IDisplayServicesRaw displayServices, IMarkupServicesRaw markupServices,
+                                   IHTMLDocument4 htmlDocument)
+        {
+            this.spellingChecker = spellingChecker;
+            this.highlightRenderingServices = highlightRenderingServices;
+            this.displayServices = displayServices;
+            this.markupServicesRaw = markupServices;
+            this.markupServices = new MshtmlMarkupServices(this.markupServicesRaw);
+            this.htmlDocument = htmlDocument;
+            this.tracker = new HighlightSegmentTracker();
+
+            //the timer to handle interleaving of spell checking
+            this.timer = new SpellingTimer(SpellingHighlighter.TimerInterval);
+            this.timer.Start();
+            this.timer.Tick += this._timer_Tick;
+            this.workerQueue = new Queue();
+        }
+
+        /// <summary>
+        /// Gets the highlight word style.
+        /// </summary>
+        /// <value>The highlight word style.</value>
+        private IHTMLRenderStyle HighlightWordStyle
+        {
+            get
+            {
+                if (this.highlightWordStyle == null)
+                {
+                    this.highlightWordStyle = this.htmlDocument.createRenderStyle(null);
+                    this.highlightWordStyle.defaultTextSelection = "false";
+                    this.highlightWordStyle.textDecoration = "underline";
+                    this.highlightWordStyle.textUnderlineStyle = "wave";
+                    this.highlightWordStyle.textDecorationColor = "red";
+                    this.highlightWordStyle.textBackgroundColor = "transparent";
+                    this.highlightWordStyle.textColor = "transparent";
+                }
+
+                return this.highlightWordStyle;
+            }
+        }
+
+        #region IDisposable Members
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            this.timer.Stop();
+            if (this.tracker != null)
+            {
+                this.tracker = null;
+            }
+
+            if (this.workerQueue != null)
+            {
+                this.workerQueue = null;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Check spelling--called by the damage handler
+        /// </summary>
+        /// <param name="range">The range.</param>
+        public void CheckSpelling(MshtmlWordRange range)
+        {
+            if (this.fatalSpellingError)
+            {
+                return;
+            }
+
+            this.timer.Enabled = true;
+            this.workerQueue.Enqueue(range);
+            if (this.workerQueue.Count == 1)
+            {
+                //if the queue had been empty, process this range right away
+                this.DoWork();
+            }
+        }
+
+        /// <summary>
+        /// Handles the Tick event of the _timer control.
+        /// </summary>
+        /// <param name="o">The source of the event.</param>
+        /// <param name="args">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void _timer_Tick(object o, EventArgs args)
         {
-            if (reentrant)
+            if (this.reentrant)
+            {
                 return;
-            reentrant = true;
+            }
+
+            this.reentrant = true;
 
             try
             {
-                if (_workerQueue.Count > 0)
+                if (this.workerQueue.Count > 0)
                 {
-                    DoWork();
+                    this.DoWork();
                 }
                 else
-                    _timer.Enabled = false;
+                {
+                    this.timer.Enabled = false;
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                UnexpectedErrorMessage.Show(Win32WindowImpl.ForegroundWin32Window, ex, "Unexpected Error Spell Checking");
+                UnexpectedErrorMessage.Show(
+                    Win32WindowImpl.ForegroundWin32Window,
+                    ex,
+                    "Unexpected Error Spell Checking");
 
-                Reset() ;
+                this.Reset();
 
-                _fatalSpellingError = true ;
+                this.fatalSpellingError = true;
             }
             finally
             {
-                reentrant = false;
+                this.reentrant = false;
             }
         }
 
-        //manages the queue during work
+        /// <summary>
+        /// manages the queue during work
+        /// </summary>
         private void DoWork()
         {
+            // start processing the first word range, and pop it if we get to the end
+            if (this.ProcessWordRange((MshtmlWordRange) this.workerQueue.Peek()))
             {
-                //start processing the first word range, and pop it if we get to the end
-                if (ProcessWordRange((MshtmlWordRange)_workerQueue.Peek()))
-                    _workerQueue.Dequeue();
+                this.workerQueue.Dequeue();
             }
         }
 
-        //iterates through a word range checking for spelling errors
-        //return: whether the word range is finished (true) or not
+        /// <summary>
+        /// iterates through a word range checking for spelling errors
+        /// </summary>
+        /// <param name="wordRange">The word range.</param>
+        /// <returns><c>true</c> if the word range is finished, <c>false</c> otherwise.</returns>
         private bool ProcessWordRange(MshtmlWordRange wordRange)
         {
-            if (wordRange.CurrentWordRange.Positioned)
+            if (!wordRange.CurrentWordRange.Positioned)
             {
-                //track where we will need to clear;
-                MarkupPointer start = _markupServices.CreateMarkupPointer();
-                start.MoveToPointer(wordRange.CurrentWordRange.End);
-                ArrayList highlightwords = new ArrayList(NUMBER_OF_WORDS_TO_CHECK);
-
-                int i = 0;
-                //to do....the word range is losing its place when it stays in the queue
-                while (wordRange.HasNext() && i < NUMBER_OF_WORDS_TO_CHECK )
-                {
-                    // advance to the next word
-                    wordRange.Next() ;
-                    // check the spelling
-                    int offset, length;
-                    if (ProcessWord(wordRange, out offset, out length))
-                    {
-                        MarkupRange highlightRange = wordRange.CurrentWordRange.Clone();
-                        MarkupHelpers.AdjustMarkupRange(ref stagingTextRange, highlightRange, offset, length);
-
-                        //note: cannot just push the current word range here, as it moves before we get to the highlighting step
-                        highlightwords.Add(highlightRange);
-                    }
-                    i++;
-                }
-                MarkupPointer end = wordRange.CurrentWordRange.End;
-
-                //got our words, clear the checked range and then add the misspellings
-                ClearRange(start, end);
-                foreach (MarkupRange word in highlightwords)
-                {
-                    HighlightWordRange(word);
-                }
-
-                return !wordRange.HasNext();
-            }
-            else
                 return true;
+            }
+
+            // track where we will need to clear;
+            var start = this.markupServices.CreateMarkupPointer();
+            start.MoveToPointer(wordRange.CurrentWordRange.End);
+            var highlightWords = new ArrayList(SpellingHighlighter.NumberOfWordsToCheck);
+
+            var i = 0;
+
+            // to do....the word range is losing its place when it stays in the queue
+            while (wordRange.HasNext() && i < SpellingHighlighter.NumberOfWordsToCheck)
+            {
+                // advance to the next word
+                wordRange.Next();
+
+                // check the spelling
+                if (this.ProcessWord(wordRange, out var offset, out var length))
+                {
+                    var highlightRange = wordRange.CurrentWordRange.Clone();
+                    MarkupHelpers.AdjustMarkupRange(ref this.stagingTextRange, highlightRange, offset, length);
+
+                    //note: cannot just push the current word range here, as it moves before we get to the highlighting step
+                    highlightWords.Add(highlightRange);
+                }
+
+                i++;
+            }
+
+            var end = wordRange.CurrentWordRange.End;
+
+            // got our words, clear the checked range and then add the misspellings
+            this.ClearRange(start, end);
+            foreach (MarkupRange word in highlightWords)
+            {
+                this.HighlightWordRange(word);
+            }
+
+            return !wordRange.HasNext();
         }
 
-        //takes one the first word on the range, and checks it for spelling errors
-        //***returns true if word is misspelled***
+        /// <summary>
+        /// takes one the first word on the range, and checks it for spelling errors
+        /// </summary>
+        /// <param name="word">The word.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="length">The length.</param>
+        /// <returns><c>true</c> if word is misspelled, <c>false</c> otherwise.</returns>
         private bool ProcessWord(MshtmlWordRange word, out int offset, out int length)
         {
             offset = 0;
             length = 0;
 
-            string otherWord = null;
-            SpellCheckResult result;
-            string currentWord = word.CurrentWord;
-            if (!word.IsCurrentWordUrlPart() && !WordRangeHelper.ContainsOnlySymbols(currentWord))
-                result = _spellingChecker.CheckWord( currentWord, out otherWord, out offset, out length ) ;
-            else
-                result = SpellCheckResult.Correct;
+            var currentWord = word.CurrentWord;
+            var result = word.IsCurrentWordUrlPart() || WordRangeHelper.ContainsOnlySymbols(currentWord)
+                             ? SpellCheckResult.Correct
+                             : this.spellingChecker.CheckWord(currentWord, out _, out offset, out length);
 
-            if (result != SpellCheckResult.Correct)
-            {
-                //note: currently using this to not show any errors in smart content, since the fix isn't
-                // propagated to the underlying data structure
-                if (!word.FilterApplies())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool ProcessWord(string word)
-        {
-            int offset, length;
-            string otherWord ;
-            SpellCheckResult result;
-            result = _spellingChecker.CheckWord( word, out otherWord, out offset, out length ) ;
             if (result == SpellCheckResult.Correct)
             {
                 return false;
             }
-            return true;
+
+            // note: currently using this to not show any errors in smart content, since the fix isn't
+            // propagated to the underlying data structure
+            return !word.FilterApplies();
         }
 
         /// <summary>
-        /// Highlight the current word range
+        /// Processes the word.
         /// </summary>
-        ///
-        private IHTMLRenderStyle _highlightWordStyle;
-        IHTMLRenderStyle HighlightWordStyle
+        /// <param name="word">The word.</param>
+        /// <returns><c>true</c> if word is misspelled, <c>false</c> otherwise.</returns>
+        private bool ProcessWord(string word)
         {
-            get
-            {
-                if(_highlightWordStyle == null)
-                {
-                    _highlightWordStyle = _htmlDocument.createRenderStyle(null);
-                    _highlightWordStyle.defaultTextSelection = "false";
-                    _highlightWordStyle.textDecoration = "underline";
-                    _highlightWordStyle.textUnderlineStyle = "wave";
-                    _highlightWordStyle.textDecorationColor = "red";
-                    _highlightWordStyle.textBackgroundColor = "transparent";
-                    _highlightWordStyle.textColor = "transparent";
-                }
-                return _highlightWordStyle;
-            }
+            var result = this.spellingChecker.CheckWord(word, out _, out _, out _);
+            return result != SpellCheckResult.Correct;
         }
 
+        /// <summary>
+        /// Highlights the word range.
+        /// </summary>
+        /// <param name="word">The word.</param>
         private void HighlightWordRange(MarkupRange word)
         {
             try
             {
-                IHighlightSegmentRaw segment;
-                IDisplayPointerRaw start;
-                IDisplayPointerRaw end;
-                _displayServices.CreateDisplayPointer(out start);
-                _displayServices.CreateDisplayPointer(out end);
+                this.displayServices.CreateDisplayPointer(out var start);
+                this.displayServices.CreateDisplayPointer(out var end);
                 DisplayServices.TraceMoveToMarkupPointer(start, word.Start);
                 DisplayServices.TraceMoveToMarkupPointer(end, word.End);
 
-                _highlightRenderingServices.AddSegment(start, end, HighlightWordStyle, out segment);
-                _tracker.AddSegment(segment,
-                    MarkupHelpers.UseStagingTextRange(ref stagingTextRange, word, rng => rng.text),
-                    _markupServicesRaw);
+                this.highlightRenderingServices.AddSegment(start, end, this.HighlightWordStyle, out var segment);
+                this.tracker.AddSegment(
+                    segment,
+                    MarkupHelpers.UseStagingTextRange(
+                        ref this.stagingTextRange, word, rng => rng.text),
+                    this.markupServicesRaw);
             }
             catch (COMException ce)
             {
-                if (ce.ErrorCode == unchecked((int)0x800A025E))
+                if (ce.ErrorCode == unchecked((int) 0x800A025E))
+                {
                     return;
+                }
+
                 throw;
             }
         }
 
-        private IHTMLTxtRange stagingTextRange;
-
-        //remove any covered segments from the tracker and clear their highlights
+        /// <summary>
+        /// remove any covered segments from the tracker and clear their highlights
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
         public void ClearRange(MarkupPointer start, MarkupPointer end)
         {
-            IHighlightSegmentRaw[] segments =
-                _tracker.GetSegments(start.PointerRaw, end.PointerRaw);
-            if (segments != null)
+            var segments = this.tracker.GetSegments(start.PointerRaw, end.PointerRaw);
+            if (segments == null)
             {
-                for (int i = 0; i < segments.Length; i++)
-                {
-                    _highlightRenderingServices.RemoveSegment(segments[i]);
-                }
+                return;
+            }
+
+            foreach (var segment in segments)
+            {
+                this.highlightRenderingServices.RemoveSegment(segment);
             }
         }
 
-        //remove all misspellings from tracker and clear their highlights
-        //used when turning spell checking on and off
+        /// <summary>
+        /// remove all misspellings from tracker and clear their highlights
+        /// used when turning spell checking on and off
+        /// </summary>
         public void Reset()
         {
-            _timer.Enabled = false;
-            stagingTextRange = null;
-            _workerQueue.Clear();
-            IHighlightSegmentRaw[] allWords = _tracker.ClearAllSegments();
-            for (int i = 0; i < allWords.Length; i++)
+            this.timer.Enabled = false;
+            this.stagingTextRange = null;
+            this.workerQueue.Clear();
+            var allWords = this.tracker.ClearAllSegments();
+            foreach (var word in allWords)
             {
-                _highlightRenderingServices.RemoveSegment(allWords[i]);
+                this.highlightRenderingServices.RemoveSegment(word);
             }
         }
 
-        //used for ignore all, add to dictionary to remove highlights from new word
+        /// <summary>
+        /// used for ignore all, add to dictionary to remove highlights from new word
+        /// </summary>
+        /// <param name="word">The word.</param>
         public void UnhighlightWord(string word)
         {
-            HighlightSegmentTracker.MatchingSegment[] relevantHighlights = _tracker.GetSegments(word, new HighlightSegmentTracker.CheckWordSpelling(ProcessWord));
-            for (int i = 0; i < relevantHighlights.Length; i++)
+            var relevantHighlights = this.tracker.GetSegments(word, this.ProcessWord);
+            foreach (var segment in relevantHighlights)
             {
-                HighlightSegmentTracker.MatchingSegment segment = relevantHighlights[i];
-                _highlightRenderingServices.RemoveSegment(segment._segment);
-                _tracker.RemoveSegment(segment._pointer);
+                this.highlightRenderingServices.RemoveSegment(segment.Segment);
+                this.tracker.RemoveSegment(segment.Pointer);
             }
         }
 
-        public MisspelledWordInfo FindMisspelling(MarkupPointer markupPointer)
-        {
-            return _tracker.FindSegment(_markupServices, markupPointer.PointerRaw);
-        }
+        /// <summary>
+        /// Finds the misspelling.
+        /// </summary>
+        /// <param name="markupPointer">The markup pointer.</param>
+        /// <returns>MisspelledWordInfo.</returns>
+        public MisspelledWordInfo FindMisspelling(MarkupPointer markupPointer) =>
+            this.tracker.FindSegment(this.markupServices, markupPointer.PointerRaw);
 
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            _timer.Stop();
-            if (_tracker != null)
-                _tracker = null;
-            if (_workerQueue != null)
-                _workerQueue = null;
-        }
-
-        #endregion
-
+        /// <summary>
+        /// Removes the highlight on the range.
+        /// </summary>
+        /// <param name="range">The range.</param>
         public void UnhighlightRange(MarkupRange range)
         {
-            IHighlightSegmentRaw[] segments = _tracker.GetSegments(range.Start.PointerRaw, range.End.PointerRaw);
+            var segments = this.tracker.GetSegments(range.Start.PointerRaw, range.End.PointerRaw);
 
             if (segments == null)
             {
@@ -321,8 +428,10 @@ namespace OpenLiveWriter.SpellChecker
                 return;
             }
 
-            foreach (IHighlightSegmentRaw segment in segments)
-                _highlightRenderingServices.RemoveSegment(segment);
+            foreach (var segment in segments)
+            {
+                this.highlightRenderingServices.RemoveSegment(segment);
+            }
         }
     }
 }

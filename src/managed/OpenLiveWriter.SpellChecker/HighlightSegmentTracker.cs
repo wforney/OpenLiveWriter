@@ -1,217 +1,234 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using mshtml;
-using OpenLiveWriter.Mshtml;
-
 namespace OpenLiveWriter.SpellChecker
 {
+    using System;
+    using System.Collections;
+    using System.Globalization;
+
+    using Mshtml;
+
     //used to store the highlight segments in a post for tracking spelling changes
-    public class HighlightSegmentTracker
+    /// <summary>
+    /// The HighlightSegmentTracker class.
+    /// </summary>
+    public partial class HighlightSegmentTracker
     {
-        SortedList list;
+        /// <summary>
+        /// Delegate CheckWordSpelling
+        /// </summary>
+        /// <param name="word">The word.</param>
+        /// <returns><c>true</c> if word is spelled correctly, <c>false</c> otherwise.</returns>
+        public delegate bool CheckWordSpelling(string word);
 
-        private class SegmentDef
-        {
-            public IHighlightSegmentRaw segment;
-            public IMarkupPointerRaw endPtr;
-            public IMarkupPointerRaw startPtr;
-            public string word;
-            public SegmentDef(IHighlightSegmentRaw seg, IMarkupPointerRaw start, IMarkupPointerRaw end, string wd)
-            {
-                segment = seg;
-                startPtr = start;
-                endPtr = end;
-                word = wd;
-            }
+        /// <summary>
+        /// The list
+        /// </summary>
+        private readonly SortedList list;
 
-        }
+        /// <inheritdoc />
+        /// <remarks>
+        /// this needs to be on a post by post basis
+        /// </remarks>
+        public HighlightSegmentTracker() => this.list = new SortedList(new MarkupPointerComparer());
 
-        public class MatchingSegment
-        {
-            public IHighlightSegmentRaw _segment;
-            public IMarkupPointerRaw _pointer;
-            public MatchingSegment(IHighlightSegmentRaw seg, IMarkupPointerRaw pointer)
-            {
-                _segment = seg;
-                _pointer = pointer;
-            }
-        }
-
-        //this needs to be on a post by post basis
-        public HighlightSegmentTracker()
-        {
-            list = new SortedList(new MarkupPointerComparer());
-        }
-
-        //adds a segment to the list
-        //used when a misspelled word is found
+        /// <summary>
+        /// adds a segment to the list
+        /// used when a misspelled word is found
+        /// </summary>
+        /// <param name="segment">The segment.</param>
+        /// <param name="wordHere">The word here.</param>
+        /// <param name="markupServices">The markup services.</param>
         public void AddSegment(IHighlightSegmentRaw segment, string wordHere, IMarkupServicesRaw markupServices)
         {
-            IMarkupPointerRaw start, end;
-            markupServices.CreateMarkupPointer(out start);
-            markupServices.CreateMarkupPointer(out end);
+            markupServices.CreateMarkupPointer(out var start);
+            markupServices.CreateMarkupPointer(out var end);
             segment.GetPointers(start, end);
-            if (!list.ContainsKey(start))
-                list.Add(start, new SegmentDef(segment, start, end, wordHere));
+            if (!this.list.ContainsKey(start))
+            {
+                this.list.Add(start, new SegmentDef(segment, start, end, wordHere));
+            }
         }
 
         //find all the segments in a specific range
         //used to clear out a section when it is getting rechecked
         //need to expand selection from these bounds out around full words
+        /// <summary>
+        /// Gets the segments.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <returns>IHighlightSegmentRaw[].</returns>
         public IHighlightSegmentRaw[] GetSegments(IMarkupPointerRaw start, IMarkupPointerRaw end)
         {
-            if (list.Count == 0)
+            if (this.list.Count == 0)
+            {
                 return null;
-            int firstSegmentInd = -1;
-            int lastSegmentInd = list.Count;
+            }
+
+            var firstSegmentInd = -1;
+            var lastSegmentInd = this.list.Count;
             bool test;
+
             //find the first segment after the start pointer
             do
             {
                 firstSegmentInd++;
+
                 //check if we have gone through the whole selection
                 if (firstSegmentInd >= lastSegmentInd)
+                {
                     return null;
-                SegmentDef x = (SegmentDef) list.GetByIndex(firstSegmentInd);
-                start.IsRightOf(x.startPtr, out test);
+                }
+
+                var x = (SegmentDef)this.list.GetByIndex(firstSegmentInd);
+                start.IsRightOf(x.StartPointer, out test);
             } while (test);
+
             do
             {
                 lastSegmentInd--;
+
                 //check if we have gone through the whole selection
                 if (lastSegmentInd < firstSegmentInd)
+                {
                     return null;
-                SegmentDef x = (SegmentDef) list.GetByIndex(lastSegmentInd);
-                end.IsLeftOf(x.startPtr, out test);
+                }
+
+                var x = (SegmentDef)this.list.GetByIndex(lastSegmentInd);
+                end.IsLeftOf(x.StartPointer, out test);
             } while (test);
-            return Subarray(firstSegmentInd, lastSegmentInd);
+
+            return this.Subarray(firstSegmentInd, lastSegmentInd);
         }
 
-        public IHighlightSegmentRaw[] ClearAllSegments()
-        {
-            return Subarray(0, list.Count - 1);
-        }
-
-        public delegate bool CheckWordSpelling(string word);
+        /// <summary>
+        /// Clears all segments.
+        /// </summary>
+        /// <returns>IHighlightSegmentRaw[].</returns>
+        public IHighlightSegmentRaw[] ClearAllSegments() => this.Subarray(0, this.list.Count - 1);
 
         //find all the segments with a specific misspelled word
         //used to clear for ignore all, add to dictionary
+        /// <summary>
+        /// Gets the segments.
+        /// </summary>
+        /// <param name="word">The word.</param>
+        /// <param name="checkSpelling">The check spelling.</param>
+        /// <returns>MatchingSegment[].</returns>
         public MatchingSegment[] GetSegments(string word, CheckWordSpelling checkSpelling)
         {
-            ArrayList segments = new ArrayList();
-            for (int i = 0; i < list.Count; i++)
+            var segments = new ArrayList();
+            for (var i = 0; i < this.list.Count; i++)
             {
-                SegmentDef x = (SegmentDef) list.GetByIndex(i);
+                var x = (SegmentDef)this.list.GetByIndex(i);
+
                 //TODO: Change with new cultures added!!!
-                if (0 == String.Compare(word, x.word, true, CultureInfo.InvariantCulture))
+                if (string.Compare(word, x.Word, true, CultureInfo.InvariantCulture) != 0)
                 {
-                    //check spelling--capitalized word may be ok, but not mixed case, etc.
-                    if (!checkSpelling(x.word))
-                    {
-                        segments.Add(new MatchingSegment(x.segment, x.startPtr));
-                    }
+                    continue;
+                }
+
+                //check spelling--capitalized word may be ok, but not mixed case, etc.
+                if (!checkSpelling(x.Word))
+                {
+                    segments.Add(new MatchingSegment(x.Segment, x.StartPointer));
                 }
             }
-            return (MatchingSegment[])segments.ToArray(typeof (MatchingSegment));
+
+            return (MatchingSegment[])segments.ToArray(typeof(MatchingSegment));
         }
 
-        public void RemoveSegment(IMarkupPointerRaw pointer)
-        {
-            list.Remove(pointer);
-        }
+        /// <summary>
+        /// Removes the segment.
+        /// </summary>
+        /// <param name="pointer">The pointer.</param>
+        public void RemoveSegment(IMarkupPointerRaw pointer) => this.list.Remove(pointer);
 
+        /// <summary>
+        /// Finds the segment.
+        /// </summary>
+        /// <param name="markupServices">The markup services.</param>
+        /// <param name="current">The current.</param>
+        /// <returns>MisspelledWordInfo.</returns>
         public MisspelledWordInfo FindSegment(MshtmlMarkupServices markupServices, IMarkupPointerRaw current)
         {
-            //binary search
-            int start = 0;
-            int end = list.Count - 1;
-            int i = Middle(start, end);
+            // binary search
+            var start = 0;
+            var end = this.list.Count - 1;
+            var i = HighlightSegmentTracker.Middle(start, end);
             while (-1 != i)
             {
-                SegmentDef x = (SegmentDef)list.GetByIndex(i);
-                bool startTest;
-                current.IsRightOfOrEqualTo(x.startPtr, out startTest);
+                var x = (SegmentDef)this.list.GetByIndex(i);
+                current.IsRightOfOrEqualTo(x.StartPointer, out var startTest);
                 if (startTest)
                 {
-                    bool endTest;
-                    current.IsLeftOfOrEqualTo(x.endPtr, out endTest);
+                    current.IsLeftOfOrEqualTo(x.EndPointer, out var endTest);
                     if (endTest)
                     {
-                        MarkupPointer pStart = markupServices.CreateMarkupPointer(x.startPtr);
-                        MarkupPointer pEnd = markupServices.CreateMarkupPointer(x.endPtr);
-                        MarkupRange range = markupServices.CreateMarkupRange(pStart, pEnd);
+                        var pStart = markupServices.CreateMarkupPointer(x.StartPointer);
+                        var pEnd = markupServices.CreateMarkupPointer(x.EndPointer);
+                        var range = markupServices.CreateMarkupRange(pStart, pEnd);
+
                         //this could be a "phantom" range...no more content due to uncommitted damage or other reasons
                         //if it is phantom, remove it from the tracker and return null
                         if (range.Text == null)
                         {
-                            list.RemoveAt(i);
+                            this.list.RemoveAt(i);
                             return null;
                         }
-                        return new MisspelledWordInfo(range, x.word);
+
+                        return new MisspelledWordInfo(range, x.Word);
                     }
+
                     start = i + 1;
                 }
                 else
                 {
                     end = i - 1;
                 }
-                i = Middle(start, end);
+
+                i = HighlightSegmentTracker.Middle(start, end);
             }
+
             return null;
         }
 
-        private int Middle(int start, int end)
-        {
-            if (start <= end)
-            {
-                return (int)Math.Floor(Convert.ToDouble((start + end)/2));
-            }
-            return -1;
-        }
+        /// <summary>
+        /// Middles the specified start.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <returns>System.Int32.</returns>
+        private static int Middle(int start, int end) =>
+            start <= end ? (int)Math.Floor(Convert.ToDouble((start + end) / 2)) : -1;
 
+        /// <summary>
+        /// Subarrays the specified start.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <returns>IHighlightSegmentRaw[].</returns>
         private IHighlightSegmentRaw[] Subarray(int start, int end)
         {
-            int count = end - start + 1;
-            IHighlightSegmentRaw[] segments = new IHighlightSegmentRaw[count];
+            var count = end - start + 1;
+            var segments = new IHighlightSegmentRaw[count];
+
             //fill in array by removing from the list starting at the end, so that
             // deleting from the list doesn't change the other indices
-            for (int i = end; i >= start; i--)
+            for (var i = end; i >= start; i--)
             {
-                segments[--count] = ((SegmentDef) list.GetByIndex(i)).segment;
-                list.RemoveAt(i);
+                segments[--count] = ((SegmentDef)this.list.GetByIndex(i)).Segment;
+                this.list.RemoveAt(i);
             }
+
             return segments;
         }
 
-        public void Clear()
-        {
-            list.Clear();
-        }
-    }
-
-    internal class MarkupPointerComparer : IComparer, System.Collections.Generic.IComparer<IMarkupPointerRaw>
-    {
-        public int Compare(object x, object y)
-        {
-            IMarkupPointerRaw a = (IMarkupPointerRaw) x;
-            IMarkupPointerRaw b = (IMarkupPointerRaw) y;
-            return Compare(a, b);
-        }
-
-        public int Compare(IMarkupPointerRaw a, IMarkupPointerRaw b)
-        {
-            bool test;
-            a.IsEqualTo(b, out test);
-            if (test) return 0;
-            a.IsLeftOf(b, out test);
-            if (test) return -1;
-            return 1;
-        }
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        public void Clear() => this.list.Clear();
     }
 }
