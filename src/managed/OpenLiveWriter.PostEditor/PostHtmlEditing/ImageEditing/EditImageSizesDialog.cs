@@ -193,12 +193,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericSmallWidth
             //
             this.numericSmallWidth.Location = new System.Drawing.Point(115, 28);
-            this.numericSmallWidth.Maximum = new System.Decimal(new int[] {
+            this.numericSmallWidth.Maximum = new decimal(new int[] {
                                                                               4096,
                                                                               0,
                                                                               0,
                                                                               0});
-            this.numericSmallWidth.Minimum = new System.Decimal(new int[] {
+            this.numericSmallWidth.Minimum = new decimal(new int[] {
                                                                               16,
                                                                               0,
                                                                               0,
@@ -206,7 +206,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericSmallWidth.Name = "numericSmallWidth";
             this.numericSmallWidth.Size = new System.Drawing.Size(56, 21);
             this.numericSmallWidth.TabIndex = 2;
-            this.numericSmallWidth.Value = new System.Decimal(new int[] {
+            this.numericSmallWidth.Value = new decimal(new int[] {
                                                                             16,
                                                                             0,
                                                                             0,
@@ -242,12 +242,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericSmallHeight
             //
             this.numericSmallHeight.Location = new System.Drawing.Point(115, 52);
-            this.numericSmallHeight.Maximum = new System.Decimal(new int[] {
+            this.numericSmallHeight.Maximum = new decimal(new int[] {
                                                                                3072,
                                                                                0,
                                                                                0,
                                                                                0});
-            this.numericSmallHeight.Minimum = new System.Decimal(new int[] {
+            this.numericSmallHeight.Minimum = new decimal(new int[] {
                                                                                16,
                                                                                0,
                                                                                0,
@@ -255,7 +255,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericSmallHeight.Name = "numericSmallHeight";
             this.numericSmallHeight.Size = new System.Drawing.Size(56, 21);
             this.numericSmallHeight.TabIndex = 4;
-            this.numericSmallHeight.Value = new System.Decimal(new int[] {
+            this.numericSmallHeight.Value = new decimal(new int[] {
                                                                              16,
                                                                              0,
                                                                              0,
@@ -300,12 +300,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericMediumHeight
             //
             this.numericMediumHeight.Location = new System.Drawing.Point(115, 128);
-            this.numericMediumHeight.Maximum = new System.Decimal(new int[] {
+            this.numericMediumHeight.Maximum = new decimal(new int[] {
                                                                                 3072,
                                                                                 0,
                                                                                 0,
                                                                                 0});
-            this.numericMediumHeight.Minimum = new System.Decimal(new int[] {
+            this.numericMediumHeight.Minimum = new decimal(new int[] {
                                                                                 16,
                                                                                 0,
                                                                                 0,
@@ -313,7 +313,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericMediumHeight.Name = "numericMediumHeight";
             this.numericMediumHeight.Size = new System.Drawing.Size(56, 21);
             this.numericMediumHeight.TabIndex = 8;
-            this.numericMediumHeight.Value = new System.Decimal(new int[] {
+            this.numericMediumHeight.Value = new decimal(new int[] {
                                                                               16,
                                                                               0,
                                                                               0,
@@ -331,12 +331,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericMediumWidth
             //
             this.numericMediumWidth.Location = new System.Drawing.Point(115, 104);
-            this.numericMediumWidth.Maximum = new System.Decimal(new int[] {
+            this.numericMediumWidth.Maximum = new decimal(new int[] {
                                                                                4096,
                                                                                0,
                                                                                0,
                                                                                0});
-            this.numericMediumWidth.Minimum = new System.Decimal(new int[] {
+            this.numericMediumWidth.Minimum = new decimal(new int[] {
                                                                                16,
                                                                                0,
                                                                                0,
@@ -344,7 +344,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericMediumWidth.Name = "numericMediumWidth";
             this.numericMediumWidth.Size = new System.Drawing.Size(56, 21);
             this.numericMediumWidth.TabIndex = 6;
-            this.numericMediumWidth.Value = new System.Decimal(new int[] {
+            this.numericMediumWidth.Value = new decimal(new int[] {
                                                                              16,
                                                                              0,
                                                                              0,
@@ -380,12 +380,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericLargeHeight
             //
             this.numericLargeHeight.Location = new System.Drawing.Point(115, 200);
-            this.numericLargeHeight.Maximum = new System.Decimal(new int[] {
+            this.numericLargeHeight.Maximum = new decimal(new int[] {
                                                                                3072,
                                                                                0,
                                                                                0,
                                                                                0});
-            this.numericLargeHeight.Minimum = new System.Decimal(new int[] {
+            this.numericLargeHeight.Minimum = new decimal(new int[] {
                                                                                16,
                                                                                0,
                                                                                0,
@@ -393,7 +393,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericLargeHeight.Name = "numericLargeHeight";
             this.numericLargeHeight.Size = new System.Drawing.Size(56, 21);
             this.numericLargeHeight.TabIndex = 12;
-            this.numericLargeHeight.Value = new System.Decimal(new int[] {
+            this.numericLargeHeight.Value = new decimal(new int[] {
                                                                              16,
                                                                              0,
                                                                              0,
@@ -411,12 +411,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // numericLargeWidth
             //
             this.numericLargeWidth.Location = new System.Drawing.Point(115, 176);
-            this.numericLargeWidth.Maximum = new System.Decimal(new int[] {
+            this.numericLargeWidth.Maximum = new decimal(new int[] {
                                                                               4096,
                                                                               0,
                                                                               0,
                                                                               0});
-            this.numericLargeWidth.Minimum = new System.Decimal(new int[] {
+            this.numericLargeWidth.Minimum = new decimal(new int[] {
                                                                               16,
                                                                               0,
                                                                               0,
@@ -424,7 +424,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.numericLargeWidth.Name = "numericLargeWidth";
             this.numericLargeWidth.Size = new System.Drawing.Size(56, 21);
             this.numericLargeWidth.TabIndex = 10;
-            this.numericLargeWidth.Value = new System.Decimal(new int[] {
+            this.numericLargeWidth.Value = new decimal(new int[] {
                                                                             16,
                                                                             0,
                                                                             0,

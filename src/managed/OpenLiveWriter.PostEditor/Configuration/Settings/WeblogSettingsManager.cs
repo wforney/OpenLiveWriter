@@ -45,7 +45,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 using (BlogClientUIContextScope uiContextScope = new BlogClientUIContextScope(preferencesForm))
                 {
                     // customize form title and behavior
-                    preferencesForm.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WeblogSettings), blogSettings.BlogName);
+                    preferencesForm.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WeblogSettings), blogSettings.BlogName);
                     preferencesForm.HideApplyButton();
 
                     // panels

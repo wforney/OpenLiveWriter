@@ -745,7 +745,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         private void handleLocationSearch()
         {
-            if (Address.Trim() != String.Empty)
+            if (Address.Trim() != string.Empty)
                 mapControl.LoadMap(Address);
             else
             {

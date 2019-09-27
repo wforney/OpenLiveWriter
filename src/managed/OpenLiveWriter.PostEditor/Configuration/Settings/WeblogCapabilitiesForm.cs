@@ -45,7 +45,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             this.Text = Res.Get(StringId.WeblogCapabilitiesTitle);
 
             // captions
-            labelCapabilities.Text = String.Format(CultureInfo.CurrentCulture, labelCapabilities.Text, ApplicationEnvironment.ProductNameQualified);
+            labelCapabilities.Text = string.Format(CultureInfo.CurrentCulture, labelCapabilities.Text, ApplicationEnvironment.ProductNameQualified);
             ListViewOptionWriter listViewOptionWriter = new ListViewOptionWriter(listViewCapabilities);
             listViewOptionWriter.Write(clientOptions);
         }

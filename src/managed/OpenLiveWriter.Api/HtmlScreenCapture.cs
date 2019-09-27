@@ -20,8 +20,8 @@ namespace OpenLiveWriter.Api
         /// <param name="contentWidth">Width of content.</param>
         public HtmlScreenCapture(Uri url, int contentWidth)
         {
-            _htmlScreenCapture = new HtmlScreenCaptureCore(url, contentWidth);
-            SubscribeToEvents();
+            this._htmlScreenCapture = new HtmlScreenCaptureCore(url, contentWidth);
+            this.SubscribeToEvents();
         }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace OpenLiveWriter.Api
         /// <param name="contentWidth">Width of content.</param>
         public HtmlScreenCapture(string htmlContent, int contentWidth)
         {
-            _htmlScreenCapture = new HtmlScreenCaptureCore(htmlContent, contentWidth);
-            SubscribeToEvents();
+            this._htmlScreenCapture = new HtmlScreenCaptureCore(htmlContent, contentWidth);
+            this.SubscribeToEvents();
         }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public int MaximumHeight
         {
-            get { return _htmlScreenCapture.MaximumHeight; }
-            set { _htmlScreenCapture.MaximumHeight = value; }
+            get => this._htmlScreenCapture.MaximumHeight;
+            set => this._htmlScreenCapture.MaximumHeight = value;
         }
 
         /// <summary>
@@ -66,13 +66,13 @@ namespace OpenLiveWriter.Api
         /// <returns>Bitmap containing captured HTML (or null if a timeout occurred).</returns>
         public Bitmap CaptureHtml(int timeoutMs)
         {
-            return _htmlScreenCapture.CaptureHtml(timeoutMs);
+            return this._htmlScreenCapture.CaptureHtml(timeoutMs);
         }
 
         private void SubscribeToEvents()
         {
-            _htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(_htmlScreenCapture_HtmlDocumentAvailable);
-            _htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(_htmlScreenCapture_HtmlScreenCaptureAvailable);
+            this._htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(this._htmlScreenCapture_HtmlDocumentAvailable);
+            this._htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(this._htmlScreenCapture_HtmlScreenCaptureAvailable);
         }
 
         private void _htmlScreenCapture_HtmlDocumentAvailable(object sender, HtmlDocumentAvailableEventArgsCore e)
@@ -109,7 +109,7 @@ namespace OpenLiveWriter.Api
         /// <param name="bitmap">Currently available HTML screen shot.</param>
         public HtmlScreenCaptureAvailableEventArgs(Bitmap bitmap)
         {
-            _bitmap = bitmap;
+            this._bitmap = bitmap;
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public Bitmap Bitmap
         {
-            get { return _bitmap; }
+            get { return this._bitmap; }
         }
         private Bitmap _bitmap;
 
@@ -129,8 +129,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public bool CaptureCompleted
         {
-            get { return _captureCompleted; }
-            set { _captureCompleted = value; }
+            get => this._captureCompleted;
+            set => this._captureCompleted = value;
         }
         private bool _captureCompleted = true;
     }
@@ -146,7 +146,7 @@ namespace OpenLiveWriter.Api
         /// <param name="document">HTML document (guaranteed to be castable to an IHTMLDocument2)</param>
         public HtmlDocumentAvailableEventArgs(object document)
         {
-            _document = document;
+            this._document = document;
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public object Document
         {
-            get { return _document; }
+            get { return this._document; }
         }
         private object _document;
 
@@ -166,8 +166,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public bool DocumentReady
         {
-            get { return _documentReady; }
-            set { _documentReady = value; }
+            get => this._documentReady;
+            set => this._documentReady = value;
         }
         private bool _documentReady = true;
 

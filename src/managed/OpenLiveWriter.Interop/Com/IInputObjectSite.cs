@@ -26,7 +26,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <returns>HRESULT indicating error status</returns>
         [PreserveSig]
         [return: MarshalAs(UnmanagedType.Error)]
-        Int32 OnFocusChangeIS(
-            [MarshalAs(UnmanagedType.IUnknown)] Object punkObj, Int32 fSetFocus);
+        int OnFocusChangeIS(
+            [MarshalAs(UnmanagedType.IUnknown)] object punkObj, int fSetFocus);
     }
 }

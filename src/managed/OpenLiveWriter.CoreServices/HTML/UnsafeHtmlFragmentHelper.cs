@@ -174,7 +174,7 @@ namespace OpenLiveWriter.CoreServices
                     string tagName = _tagStack[i];
                     if (IsRegexMatch(requiresEndTag, tagName))
                     {
-                        Emit(String.Format(CultureInfo.InvariantCulture, "</{0}>", tagName));
+                        Emit(string.Format(CultureInfo.InvariantCulture, "</{0}>", tagName));
                     }
                 }
             }
@@ -306,10 +306,10 @@ namespace OpenLiveWriter.CoreServices
 
         private Regex CreateStringListRegex(string list)
         {
-            if (list == null || list.Trim() == String.Empty)
+            if (list == null || list.Trim() == string.Empty)
                 return null;
 
-            string regexString = String.Format(CultureInfo.InvariantCulture, @"\b({0})\b", list);
+            string regexString = string.Format(CultureInfo.InvariantCulture, @"\b({0})\b", list);
             Regex regex = new Regex(regexString, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
             return regex;
         }

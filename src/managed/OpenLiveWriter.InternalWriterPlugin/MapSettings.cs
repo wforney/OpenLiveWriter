@@ -184,7 +184,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         {
             get
             {
-                return _settings.GetString(MAP_CAPTION, String.Empty);
+                return _settings.GetString(MAP_CAPTION, string.Empty);
             }
             set
             {
@@ -196,7 +196,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         {
             get
             {
-                return _settings.GetString(PUBLISH_TARGET, String.Empty);
+                return _settings.GetString(PUBLISH_TARGET, string.Empty);
             }
             set
             {

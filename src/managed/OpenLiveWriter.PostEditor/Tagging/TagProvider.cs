@@ -24,7 +24,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 string tag = tags[i];
 
                 string encodedTags;
-                if (String.IsNullOrEmpty(EncodingName))
+                if (string.IsNullOrEmpty(EncodingName))
                     encodedTags = HttpUtility.UrlEncode(tag);
                 else
                     encodedTags = HttpUtility.UrlEncode(tag, Encoding.GetEncoding(EncodingName));

@@ -819,7 +819,7 @@ namespace OpenLiveWriter.HtmlEditor
                     if (MarkupServices.CreateMarkupRange(firstTd, false).IsEmptyOfContent())
                     {
                         // The table behavior leaves an empty space in the table, so make sure we remove it before inserting.
-                        firstTd.innerHTML = String.Empty;
+                        firstTd.innerHTML = string.Empty;
                     }
 
                     // Move the content at the cursor into the <td>.
@@ -994,7 +994,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private IHTMLElementFilter _fontTagWithFontSizeFilter = ElementFilters.CreateCompoundElementFilter(
             ElementFilters.CreateTagIdFilter("font"),
-            e => !String.IsNullOrEmpty(((IHTMLElement2)e).currentStyle.fontSize as string)
+            e => !string.IsNullOrEmpty(((IHTMLElement2)e).currentStyle.fontSize as string)
         );
 
         public virtual bool IsRTLTemplate
@@ -1022,7 +1022,7 @@ namespace OpenLiveWriter.HtmlEditor
             if (output == DBNull.Value)
                 return null;
 
-            UInt32 zoneInt = (UInt32)output;
+            UInt32 zoneInt = (uint)output;
             InternetSecurityZone zone = (InternetSecurityZone)zoneInt;
             return zone;
         }
@@ -1054,8 +1054,8 @@ namespace OpenLiveWriter.HtmlEditor
         protected RECT GetBodyBoundingBox(IHTMLElement element)
         {
             RECT elementRect = new RECT();
-            elementRect.top = Int32.MaxValue;
-            elementRect.left = Int32.MaxValue;
+            elementRect.top = int.MaxValue;
+            elementRect.left = int.MaxValue;
 
             bool foundChild = false;
 
@@ -2051,7 +2051,7 @@ namespace OpenLiveWriter.HtmlEditor
         private string GetUndoUnitDescription(IOleUndoUnit undoUnit)
         {
             // get the description
-            String description;
+            string description;
             undoUnit.GetDescription(out description);
             return description;
         }
@@ -2149,7 +2149,7 @@ namespace OpenLiveWriter.HtmlEditor
         private MshtmlOptions _mshtmlOptions;
         private IMainFrameWindow _mainFrameWindow;
         private IStatusBar _statusBar;
-        private String _originalText;
+        private string _originalText;
 
         [ThreadStatic]
         private static CachedEditorAndSecurityManager _editorCache;
@@ -2315,7 +2315,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             IHTMLElement[] editableElements = EditableElements;
             IHTMLElement nearestElement = null;
-            int nearestElementDistance = Int32.MaxValue;
+            int nearestElementDistance = int.MaxValue;
 
             foreach (IHTMLElement element in editableElements)
             {
@@ -2560,7 +2560,7 @@ namespace OpenLiveWriter.HtmlEditor
                     // We only need to insert the ending new line if there was a div or image added
                     bool allowNewLineInsert = ShouldAllowNewLineInsert(html);
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document is not ready. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document is not ready. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     try
                     {
@@ -2581,7 +2581,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                     catch (COMException ex)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "RemoveBlockOrTableElement Failed ({0},{1},{2},{4}): {3}", stagingRange.Start.Positioned, stagingRange.End.Positioned, end.Positioned, ex, start.Positioned));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "RemoveBlockOrTableElement Failed ({0},{1},{2},{4}): {3}", stagingRange.Start.Positioned, stagingRange.End.Positioned, end.Positioned, ex, start.Positioned));
                         throw;
                     }
 
@@ -2593,7 +2593,7 @@ namespace OpenLiveWriter.HtmlEditor
                         ForceTablesToInheritFontColor(stagingRange);
                     }
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after RemoveBlockOrTableElement. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after RemoveBlockOrTableElement. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     IDisposable damageTracker = null;
                     try
@@ -2602,11 +2602,11 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                     catch (COMException ex)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "CreateDamageTracking Failed ({0}): {1}", end.Positioned, ex));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "CreateDamageTracking Failed ({0}): {1}", end.Positioned, ex));
                         throw;
                     }
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after CreateDamageTracking. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after CreateDamageTracking. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     using (damageTracker)
                     {
@@ -2620,7 +2620,7 @@ namespace OpenLiveWriter.HtmlEditor
                             start.PushGravity(_POINTER_GRAVITY.POINTER_GRAVITY_Left);
                             end.PushGravity(_POINTER_GRAVITY.POINTER_GRAVITY_Right);
 
-                            Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after applying gravity. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                            Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after applying gravity. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                             try
                             {
@@ -2629,7 +2629,7 @@ namespace OpenLiveWriter.HtmlEditor
                             catch (COMException ex)
                             {
                                 Trace.WriteLine(
-                                    String.Format(CultureInfo.InvariantCulture, "MarkupServices.Move Failed ({0},{1},{2}): {3}",
+                                    string.Format(CultureInfo.InvariantCulture, "MarkupServices.Move Failed ({0},{1},{2}): {3}",
                                                   stagingRange.Start.Positioned, stagingRange.End.Positioned,
                                                   end.Positioned, ex));
                                 throw;
@@ -2684,7 +2684,7 @@ namespace OpenLiveWriter.HtmlEditor
                     // Covers the case of <p>&nbsp;</p>.
                     paragraphIsEmpty = true;
                 }
-                else if (String.IsNullOrEmpty(paragraphElement.innerText))
+                else if (string.IsNullOrEmpty(paragraphElement.innerText))
                 {
                     IHTMLElementCollection children = (IHTMLElementCollection)paragraphElement.children;
                     if (children != null && children.length == 1)
@@ -3614,7 +3614,7 @@ namespace OpenLiveWriter.HtmlEditor
             get
             {
                 string fontFamily = GetMshtmlCommand(IDM.FONTNAME).GetValue() as string;
-                return fontFamily ?? String.Empty;
+                return fontFamily ?? string.Empty;
             }
         }
 
@@ -3681,7 +3681,7 @@ namespace OpenLiveWriter.HtmlEditor
                         // If the selection contains no text, the control displays the font size of the start of the
                         // selection.
                         string selectionText = selection.Text ?? string.Empty;
-                        if (String.IsNullOrEmpty(selectionText.Trim()))
+                        if (string.IsNullOrEmpty(selectionText.Trim()))
                         {
                             return GetFontSizeAt(selection.Start);
                         }
@@ -3691,7 +3691,7 @@ namespace OpenLiveWriter.HtmlEditor
                             delegate (MarkupRange currentRange, MarkupContext context, string text)
                             {
                                 text = text ?? string.Empty;
-                                if (String.IsNullOrEmpty(text.Trim()))
+                                if (string.IsNullOrEmpty(text.Trim()))
                                 {
                                     // Continue walking the range.
                                     return true;
@@ -3770,7 +3770,7 @@ namespace OpenLiveWriter.HtmlEditor
                         if (currentElement != null && context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_EnterScope)
                         {
                             if (MarkupServices.GetElementTagId(currentElement) == _ELEMENT_TAG_ID.TAGID_FONT &&
-                               !String.IsNullOrEmpty(currentElement.style.fontSize as string))
+                               !string.IsNullOrEmpty(currentElement.style.fontSize as string))
                             {
                                 currentElement.style.fontSize = string.Empty;
                             }
@@ -4290,7 +4290,7 @@ namespace OpenLiveWriter.HtmlEditor
                         // If the element is empty, MSHTML won't render the cursor on the correct side of the canvas
                         // until the the users starts typing. We can force the empty element to render correctly by
                         // setting the inflateBlock property.
-                        if (String.IsNullOrEmpty(element.innerHTML))
+                        if (string.IsNullOrEmpty(element.innerHTML))
                         {
                             ((IHTMLElement3)element).inflateBlock = true;
                         }
@@ -4561,10 +4561,10 @@ namespace OpenLiveWriter.HtmlEditor
 
         LinkInfo IHtmlEditorCommandSource.DiscoverCurrentLink()
         {
-            String hyperlink = null;
-            String text = null;
-            String title = null;
-            String rel = null;
+            string hyperlink = null;
+            string text = null;
+            string title = null;
+            string rel = null;
             bool newWindow = false;
 
             IHTMLElement anchor = GetCurrentEditableAnchorElement();
@@ -4650,8 +4650,8 @@ namespace OpenLiveWriter.HtmlEditor
                             GlossaryLinkItem item = GlossaryManager.Instance.FindEntry(info.AnchorText.Trim());
                             if (item != null)
                             {
-                                if (item.Url != String.Empty) hyperlinkForm.Hyperlink = item.Url;
-                                if (item.Title != String.Empty) hyperlinkForm.LinkTitle = item.Title;
+                                if (item.Url != string.Empty) hyperlinkForm.Hyperlink = item.Url;
+                                if (item.Title != string.Empty) hyperlinkForm.LinkTitle = item.Title;
                                 hyperlinkForm.IsInGlossary = true;
                             }
                         }
@@ -4690,7 +4690,7 @@ namespace OpenLiveWriter.HtmlEditor
                                 }
                                 else
                                 {
-                                    InsertImageLink(String.Empty, String.Empty, false, String.Empty);
+                                    InsertImageLink(string.Empty, string.Empty, false, string.Empty);
                                 }
                             }
                             else
@@ -4744,7 +4744,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         void IHtmlEditorCommandSource.OpenLink()
         {
-            string href = String.Empty;
+            string href = string.Empty;
             try
             {
                 // get href
@@ -5056,7 +5056,7 @@ namespace OpenLiveWriter.HtmlEditor
             // Make local copy of _originalText
             string originalText = _originalText;
 
-            if (String.IsNullOrEmpty(originalText))
+            if (string.IsNullOrEmpty(originalText))
                 return;
 
             // Setup pointers
@@ -5071,7 +5071,7 @@ namespace OpenLiveWriter.HtmlEditor
                 delegate (MarkupRange currentRange, MarkupContext context, string text)
                 {
                     if (context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_Text &&
-                        !String.IsNullOrEmpty(text))
+                        !string.IsNullOrEmpty(text))
                     {
                         idx = originalText.IndexOf(text);
                         if (idx == 0)
@@ -5111,7 +5111,7 @@ namespace OpenLiveWriter.HtmlEditor
                     delegate (MarkupRange currentRange, MarkupContext context, string text)
                     {
                         if (context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_Text &&
-                        !String.IsNullOrEmpty(text))
+                        !string.IsNullOrEmpty(text))
                         {
                             idx = originalText.LastIndexOf(text);
                             // If the text falls at the end of the expected text string
@@ -5375,7 +5375,7 @@ namespace OpenLiveWriter.HtmlEditor
                                     {
                                         using (IUndoUnit undo = CreateUndoUnit())
                                         {
-                                            html = HtmlCleaner.PreserveFormatting(html, String.Empty);
+                                            html = HtmlCleaner.PreserveFormatting(html, string.Empty);
                                             InsertHtml(html, true);
                                             undo.Commit();
                                         }

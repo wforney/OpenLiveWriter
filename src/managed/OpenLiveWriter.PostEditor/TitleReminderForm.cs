@@ -45,8 +45,8 @@ namespace OpenLiveWriter.PostEditor
             this.Text = Res.Get(StringId.TitleRemindTitle);
 
             this.labelError.Font = Res.GetFont(FontSize.XLarge, FontStyle.Bold);
-            labelError.Text = String.Format(CultureInfo.CurrentCulture, labelError.Text, isPage ? Res.Get(StringId.Page) : Res.Get(StringId.Post));
-            labelExplanation.Text = String.Format(CultureInfo.CurrentCulture, labelExplanation.Text, isPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower));
+            labelError.Text = string.Format(CultureInfo.CurrentCulture, labelError.Text, isPage ? Res.Get(StringId.Page) : Res.Get(StringId.Post));
+            labelExplanation.Text = string.Format(CultureInfo.CurrentCulture, labelExplanation.Text, isPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower));
         }
 
         protected override void OnLoad(EventArgs e)

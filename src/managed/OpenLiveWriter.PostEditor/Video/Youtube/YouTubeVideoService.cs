@@ -178,14 +178,14 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
             if (requestType is MyFavoritesRequestType)
             {
                 // format the url for downloading
-                baseUrl = String.Format(
+                baseUrl = string.Format(
                     CultureInfo.InvariantCulture,
                     "http://gdata.youtube.com/feeds/api/users/{0}/favorites",
                     _videoAuth.Username);
             }
             else if (requestType is MyVideosRequestType)
             {
-                baseUrl = String.Format(
+                baseUrl = string.Format(
                     CultureInfo.InvariantCulture,
                     "http://gdata.youtube.com/feeds/api/users/{0}/uploads",
                     _videoAuth.Username);
@@ -454,19 +454,19 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 return 0.0F;
             }
         }
-        private string _author = String.Empty;
-        private string _id = String.Empty;
-        private string _title = String.Empty;
+        private string _author = string.Empty;
+        private string _id = string.Empty;
+        private string _title = string.Empty;
         private int _lengthSeconds = 0;
         private float _ratingAvg = 0.0F;
         private int _ratingCount = 0;
-        private string _description = String.Empty;
+        private string _description = string.Empty;
         private int _viewCount = 0;
         private DateTime _uploadTime = DateTime.MinValue;
         private int _commentCount = 0;
         private string[] _tags = new string[] { };
-        private string _url = String.Empty;
-        private string _thumbnailUrl = String.Empty;
+        private string _url = string.Empty;
+        private string _thumbnailUrl = string.Empty;
         private bool _isPublished = true;
 
     }

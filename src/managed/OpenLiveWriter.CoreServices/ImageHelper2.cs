@@ -607,7 +607,7 @@ namespace OpenLiveWriter.CoreServices
                 bitmap.Save(stream, jpegCodecInfo, encoderParams);
             }
 
-            ImageCodecInfo GetEncoderInfo(String mimeType)
+            ImageCodecInfo GetEncoderInfo(string mimeType)
             {
                 int j;
                 ImageCodecInfo[] encoders;
@@ -676,7 +676,7 @@ namespace OpenLiveWriter.CoreServices
                 scaledBitmap.Save(stream, jpegCodecInfo, encoderParams);
             }
 
-            ImageCodecInfo GetEncoderInfo(String mimeType)
+            ImageCodecInfo GetEncoderInfo(string mimeType)
             {
                 int j;
                 ImageCodecInfo[] encoders;

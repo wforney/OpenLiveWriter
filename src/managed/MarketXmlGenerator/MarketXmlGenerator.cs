@@ -35,7 +35,7 @@ namespace MarketXmlGenerator
 
             //2. generate blank xml root
             XmlDocument marketsXml = new XmlDocument();
-            XmlDeclaration declaration = marketsXml.CreateXmlDeclaration("1.0", "utf-8", String.Empty);
+            XmlDeclaration declaration = marketsXml.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
             XmlElement entryNode = marketsXml.CreateElement(FEATURES);
             marketsXml.AppendChild(entryNode);
             marketsXml.InsertBefore(declaration, entryNode);

@@ -18,7 +18,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
         public override void Apply(MshtmlMarkupServices markupServices, MarkupRange markupRange, MshtmlCoreCommandSet commands)
         {
-            ElementFactory factory = () => markupServices.CreateElement(_ELEMENT_TAG_ID.TAGID_SUB, String.Empty);
+            ElementFactory factory = () => markupServices.CreateElement(_ELEMENT_TAG_ID.TAGID_SUB, string.Empty);
             WrapInElement(factory, markupServices, markupRange);
         }
 

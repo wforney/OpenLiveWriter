@@ -88,10 +88,10 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             //the no proxy address is set, then disable the proxy settings.
             if (proxyEnabled.Checked)
             {
-                if (proxyServer.Text == String.Empty)
+                if (proxyServer.Text == string.Empty)
                     proxyEnabled.Checked = false;
             }
-            if (proxyServer.Text == String.Empty)
+            if (proxyServer.Text == string.Empty)
                 proxyEnabled.Checked = false;
 
             if (_webProxyPreferences.IsModified())
@@ -130,7 +130,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         {
             try
             {
-                int portValue = Int32.Parse(proxyPort.Text, CultureInfo.CurrentCulture);
+                int portValue = int.Parse(proxyPort.Text, CultureInfo.CurrentCulture);
                 if (_webProxyPreferences.Port != portValue)
                     _webProxyPreferences.Port = portValue;
             }

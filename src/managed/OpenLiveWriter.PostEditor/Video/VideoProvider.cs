@@ -31,14 +31,14 @@ namespace OpenLiveWriter.PostEditor.Video
         private int _height;
         private string _useBackgroundColor;
         private string _appId;
-        private String[] _publishPingUrls;
+        private string[] _publishPingUrls;
         private string _editorFormat;
         private bool _urlConvertError;
         private string _urlAtomPattern;
         private string _urlAtomFormat;
 
         public VideoProvider(string serviceName, string serviceId, string embedFormat, string editorFormat, string urlFormat, EmbedPattern[] embedPatterns,
-            string urlPattern, bool urlConvertError, int width, int height, string useBackgroundColor, string appId, String[] publishPingUrls, string urlAtomPattern, string urlAtomFormat)
+            string urlPattern, bool urlConvertError, int width, int height, string useBackgroundColor, string appId, string[] publishPingUrls, string urlAtomPattern, string urlAtomFormat)
         {
             _serviceName = serviceName;
             _serviceId = serviceId;
@@ -56,7 +56,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
             _urlConvertError = urlConvertError;
 
-            if (!String.IsNullOrEmpty(editorFormat))
+            if (!string.IsNullOrEmpty(editorFormat))
                 _editorFormat = editorFormat;
             else
                 _editorFormat = embedFormat;
@@ -86,14 +86,14 @@ namespace OpenLiveWriter.PostEditor.Video
         public string EditorFormat
         { get { return _editorFormat; } }
 
-        public String[] PublishPingUrls
+        public string[] PublishPingUrls
         { get { return _publishPingUrls; } }
 
         public bool IsSoapbox
         {
             get
             {
-                return String.Compare(_serviceId, "A64F0391-DC63-46cc-B106-D1E6B4EFA9EB", true, CultureInfo.CurrentCulture) == 0;
+                return string.Compare(_serviceId, "A64F0391-DC63-46cc-B106-D1E6B4EFA9EB", true, CultureInfo.CurrentCulture) == 0;
             }
         }
 
@@ -101,7 +101,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return String.Compare(_serviceId, "56744E0A-1892-4b56-B7FF-3A2568EE2D27", true, CultureInfo.CurrentCulture) == 0;
+                return string.Compare(_serviceId, "56744E0A-1892-4b56-B7FF-3A2568EE2D27", true, CultureInfo.CurrentCulture) == 0;
             }
         }
 
@@ -122,7 +122,7 @@ namespace OpenLiveWriter.PostEditor.Video
             {
                 return m.Groups["id"].Value;
             }
-            return String.Empty;
+            return string.Empty;
         }
 
         public bool MatchesEmbed(string input)
@@ -152,7 +152,7 @@ namespace OpenLiveWriter.PostEditor.Video
         public static string GenerateEmbedHtml(string embedFormat, string id, Size size)
         {
             string pattern = embedFormat.Replace(VIDEOID, id).Replace(VideoProviderManager.WIDTH, "{0}").Replace(VideoProviderManager.HEIGHT, "{1}");
-            return String.Format(CultureInfo.InvariantCulture, pattern, size.Width, size.Height);
+            return string.Format(CultureInfo.InvariantCulture, pattern, size.Width, size.Height);
         }
 
         private string IdFromEmbed(string input)
@@ -173,13 +173,13 @@ namespace OpenLiveWriter.PostEditor.Video
                     }
                 }
             }
-            return String.Empty;
+            return string.Empty;
         }
 
         public Video VideoFromUrl(string input)
         {
             string id = IdFromUrl(input);
-            if (id == String.Empty)
+            if (id == string.Empty)
                 return null;
             return new Video(id,
                              input,
@@ -194,7 +194,7 @@ namespace OpenLiveWriter.PostEditor.Video
         public Video VideoFromEmbed(string input)
         {
             string id = IdFromEmbed(input);
-            if (id == String.Empty)
+            if (id == string.Empty)
                 return null;
             string url = MakeUrl(id);
 
@@ -239,7 +239,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
         public Video VideoFromId(string id)
         {
-            if (id == String.Empty)
+            if (id == string.Empty)
                 return null;
             string url = MakeUrl(id);
             return new Video(id,

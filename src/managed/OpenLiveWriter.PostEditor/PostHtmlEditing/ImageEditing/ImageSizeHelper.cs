@@ -32,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 case ImageSizeName.Small:
                     return ImageEditingSettings.DefaultImageSizeSmall;
                 case ImageSizeName.Full:
-                    return new Size(Int32.MaxValue, Int32.MaxValue);
+                    return new Size(int.MaxValue, int.MaxValue);
                 default:
                     Debug.Fail("Unsupported image size: " + sizeName);
                     return ImageEditingSettings.DefaultImageSizeMedium;

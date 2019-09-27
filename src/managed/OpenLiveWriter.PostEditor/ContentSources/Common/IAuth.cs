@@ -139,7 +139,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
             if (!showUI) return false;
 
             BlogClientLoginDialog d = new BlogClientLoginDialog();
-            d.Domain = new CredentialsDomain(Res.Get(StringId.Plugin_Video_Youtube_Publish_Name), String.Empty, null, ImageHelper.GetBitmapBytes(ResourceHelper.LoadAssemblyResourceBitmap("Video.YouTube.Images.YouTubeTab.png")), false);
+            d.Domain = new CredentialsDomain(Res.Get(StringId.Plugin_Video_Youtube_Publish_Name), string.Empty, null, ImageHelper.GetBitmapBytes(ResourceHelper.LoadAssemblyResourceBitmap("Video.YouTube.Images.YouTubeTab.png")), false);
             d.Closing += delegate (object sender, CancelEventArgs e)
                              {
                                  if (d.DialogResult == DialogResult.OK)

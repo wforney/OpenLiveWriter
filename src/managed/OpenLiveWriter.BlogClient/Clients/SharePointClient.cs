@@ -43,13 +43,13 @@ namespace OpenLiveWriter.BlogClient.Clients
         public override bool? DoesFileNeedUpload(IFileUploadContext uploadContext)
         {
             // This is a new post, we want to upload it
-            if (String.IsNullOrEmpty(uploadContext.PostId))
+            if (string.IsNullOrEmpty(uploadContext.PostId))
             {
                 return true;
             }
 
             // Check to see if we have uploaded this file to this blog with this post id
-            string value = uploadContext.Settings.GetString(uploadContext.PostId, String.Empty);
+            string value = uploadContext.Settings.GetString(uploadContext.PostId, string.Empty);
 
             // We have uploaded this file to this blog with this post id so we should not upload it
             if (value == FILE_ALREADY_UPLOADED)
@@ -226,7 +226,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 //the attachment first (if it exists).  To delete the attachment, we must construct the attachment URL
                 //that is typically generated internally by the server.
                 //Sample URL: http://sharepoint/sites/writer/b2/blog/Lists/Posts/Attachments/13/Sunset_thumb1.jpg
-                string attachDeleteUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}/Lists/Posts/Attachments/{2}/{3}", attachSettings.BaseUrl, attachSettings.BlogUrlPart, uploadContext.PostId, attachSettings.AttachmentFileName);
+                string attachDeleteUrl = string.Format(CultureInfo.InvariantCulture, "{0}{1}/Lists/Posts/Attachments/{2}/{3}", attachSettings.BaseUrl, attachSettings.BlogUrlPart, uploadContext.PostId, attachSettings.AttachmentFileName);
                 try
                 {
                     listsServicesharePointLists.DeleteAttachment(listGuid, uploadContext.PostId, attachDeleteUrl);
@@ -264,7 +264,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 if (match.Success && match.Groups[1].Success)
                 {
                     attachSettings.BaseUrl = match.Groups[1].Value;
-                    attachSettings.BlogUrlPart = String.Empty;
+                    attachSettings.BlogUrlPart = string.Empty;
                 }
             }
 
@@ -274,9 +274,9 @@ namespace OpenLiveWriter.BlogClient.Clients
             else
                 attachSettings.AttachmentFileName = fileName;
 
-            attachSettings.AttachmentUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}/_attach/{2}", attachSettings.BaseUrl, attachSettings.BlogUrlPart, attachSettings.AttachmentFileName);
+            attachSettings.AttachmentUrl = string.Format(CultureInfo.InvariantCulture, "{0}{1}/_attach/{2}", attachSettings.BaseUrl, attachSettings.BlogUrlPart, attachSettings.AttachmentFileName);
 
-            string uploadUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}/_vti_bin/lists.asmx", attachSettings.BaseUrl, attachSettings.BlogUrlPart);
+            string uploadUrl = string.Format(CultureInfo.InvariantCulture, "{0}{1}/_vti_bin/lists.asmx", attachSettings.BaseUrl, attachSettings.BlogUrlPart);
             attachSettings.UploadServiceUrl = uploadUrl;
             return;
         }
@@ -344,7 +344,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 _blogCredentials = blogCredentials;
 
                 string baseUrl = UrlHelper.GetBaseUrl(_postApiUrl);
-                if ((username != null && username != String.Empty) || (password != null && password != String.Empty))
+                if ((username != null && username != string.Empty) || (password != null && password != string.Empty))
                 {
                     _credentials = HttpRequestHelper.CreateHttpCredentials(username, password, baseUrl);
                 }

@@ -231,7 +231,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                         return label;
                 }
 
-                return String.Empty;
+                return string.Empty;
             }
         }
 

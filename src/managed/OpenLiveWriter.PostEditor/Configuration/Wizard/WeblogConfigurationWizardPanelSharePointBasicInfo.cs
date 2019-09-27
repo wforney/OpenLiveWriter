@@ -126,7 +126,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         public override bool ValidatePanel()
         {
-            if (HomepageUrl == String.Empty)
+            if (HomepageUrl == string.Empty)
             {
                 ShowValidationError(textBoxHomepageUrl, MessageId.HomepageUrlRequired);
                 return false;

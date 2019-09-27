@@ -156,7 +156,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         public override bool ValidatePanel()
         {
-            if (WeblogName == String.Empty)
+            if (WeblogName == string.Empty)
             {
                 DisplayMessage.Show(MessageId.RequiredFieldOmitted, FindForm(), Res.Get(StringId.CWConfirmWeblogName));
                 textBoxWeblogName.Focus();

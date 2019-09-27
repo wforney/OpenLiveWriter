@@ -69,7 +69,7 @@ namespace OpenLiveWriter.ApplicationFramework
             public void Add(Command command)
             {
                 //	Ensure that the command instance has not already been added.
-                Debug.Assert(!commandInstanceCollection.Contains(command), String.Format(CultureInfo.InvariantCulture, "Command instance {0} already added.", command.Identifier));
+                Debug.Assert(!commandInstanceCollection.Contains(command), string.Format(CultureInfo.InvariantCulture, "Command instance {0} already added.", command.Identifier));
 
                 //	Add the command instance.
                 if (!commandInstanceCollection.Contains(command))
@@ -83,7 +83,7 @@ namespace OpenLiveWriter.ApplicationFramework
             public void Remove(Command command)
             {
                 //	Ensure that the command instance has been added and is not active.
-                Debug.Assert(commandInstanceCollection.Contains(command), String.Format(CultureInfo.InvariantCulture, "Command instance {0} not found.", command.Identifier));
+                Debug.Assert(commandInstanceCollection.Contains(command), string.Format(CultureInfo.InvariantCulture, "Command instance {0} not found.", command.Identifier));
 
                 //	Remove the command instance.
                 if (commandInstanceCollection.Contains(command))

@@ -22,7 +22,7 @@ namespace OpenLiveWriter.Interop.Com
         /// otherwise, it is zero</param>
         /// <param name="msg">This is a pointer to a MSG structure that contains the message
         /// that caused the change in activation states</param>
-        void UIActivateIO(Int32 fActivate, ref MSG msg);
+        void UIActivateIO(int fActivate, ref MSG msg);
 
         /// <summary>
         /// Determines if one of the object's windows has the keyboard focus. Note: PreserveSig
@@ -33,7 +33,7 @@ namespace OpenLiveWriter.Interop.Com
         /// otherwise S_FALSE</returns>
         [PreserveSig]
         [return: MarshalAs(UnmanagedType.Error)]
-        Int32 HasFocusIO();
+        int HasFocusIO();
 
         /// <summary>
         /// Passes keyboard accelerators to the object. Note: PreserveSig attribute is used to
@@ -43,6 +43,6 @@ namespace OpenLiveWriter.Interop.Com
         /// <returns>S_OK if the accelerator was translated; otherwise S_FALSE</returns>
         [PreserveSig]
         [return: MarshalAs(UnmanagedType.Error)]
-        Int32 TranslateAcceleratorIO(ref MSG msg);
+        int TranslateAcceleratorIO(ref MSG msg);
     }
 }

@@ -56,7 +56,7 @@ namespace OpenLiveWriter.BlogClient.Providers
             {
                 string rsdClientType = NodeText(mappingNode.SelectSingleNode("@rsdClientType"));
                 string writerClientType = NodeText(mappingNode.SelectSingleNode("@clientType"));
-                if (rsdClientType != String.Empty && writerClientType != String.Empty)
+                if (rsdClientType != string.Empty && writerClientType != string.Empty)
                     rsdClientTypeMappings.Add(new RsdClientTypeMapping(rsdClientType, writerClientType));
             }
 
@@ -68,7 +68,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                 string codePattern = NodeText(faultNode.SelectSingleNode("codePattern"));
                 string stringPattern = NodeText(faultNode.SelectSingleNode("stringPattern"));
                 string messageId = NodeText(faultNode.SelectSingleNode("messageId"));
-                if (messageId != String.Empty)
+                if (messageId != string.Empty)
                     providerFaults.Add(new ProviderFault(codePattern, stringPattern, messageId));
             }
 
@@ -130,7 +130,7 @@ namespace OpenLiveWriter.BlogClient.Providers
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
     }

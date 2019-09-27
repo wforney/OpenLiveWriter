@@ -111,7 +111,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 else
                 {
                     radioButtonSizeToContent.Checked = true;
-                    textBoxHeight.Text = String.Empty;
+                    textBoxHeight.Text = string.Empty;
                 }
                 ManageUIState();
             }

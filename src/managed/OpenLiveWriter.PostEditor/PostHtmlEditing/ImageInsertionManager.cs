@@ -94,15 +94,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         }
 
                         string applyDefaultMargins = imgElement.getAttribute("wlApplyDefaultMargins", 2) as string;
-                        if (!String.IsNullOrEmpty(applyDefaultMargins))
+                        if (!string.IsNullOrEmpty(applyDefaultMargins))
                         {
                             DefaultImageSettings defaultImageSettings = new DefaultImageSettings(editorAccount.Id, editor.DecoratorsManager);
                             MarginStyle defaultMargin = defaultImageSettings.GetDefaultImageMargin();
                             // Now apply it to the image
-                            imgElement.style.marginTop = String.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Top);
-                            imgElement.style.marginLeft = String.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Left);
-                            imgElement.style.marginBottom = String.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Bottom);
-                            imgElement.style.marginRight = String.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Right);
+                            imgElement.style.marginTop = string.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Top);
+                            imgElement.style.marginLeft = string.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Left);
+                            imgElement.style.marginBottom = string.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Bottom);
+                            imgElement.style.marginRight = string.Format(CultureInfo.InvariantCulture, "{0} px", defaultMargin.Right);
                             imgElement.removeAttribute("wlApplyDefaultMargins", 0);
                         }
 
@@ -194,7 +194,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                     {
                                         imageInfo.LinkTarget = LinkTargetType.IMAGE;
                                     }
-                                    else if (!String.IsNullOrEmpty(linkTargetUrl) && !UrlHelper.IsFileUrl(linkTargetUrl))
+                                    else if (!string.IsNullOrEmpty(linkTargetUrl) && !UrlHelper.IsFileUrl(linkTargetUrl))
                                     {
                                         imageInfo.LinkTarget = LinkTargetType.URL;
                                     }
@@ -434,7 +434,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                         imageSize = ImageUtils.GetScaledImageSize(defaultImageSize.Width, defaultImageSize.Height, imageSize);
                         //insert the default image html
-                        String imageElementAttrs = String.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", imageSize.Width, imageSize.Height);
+                        String imageElementAttrs = string.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", imageSize.Width, imageSize.Height);
 
                         htmlBuilder.AppendFormat(CultureInfo.InvariantCulture, "<img src=\"{0}\" srcDelay=\"{1}\" {2} />", HtmlUtils.EscapeEntities(UrlHelper.SafeToAbsoluteUri(imageFileEmbeddedThumbnail.FileUri)), HtmlUtils.EscapeEntities(imgUri.ToString()), imageElementAttrs);
                     }
@@ -447,7 +447,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     {
                         imageSize = ImageUtils.GetScaledImageSize(defaultImageSize.Width, defaultImageSize.Height, imageSize);
                         //insert the default image html
-                        String imageElementAttrs = imgUri.IsFile ? String.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", imageSize.Width, imageSize.Height) : String.Empty;
+                        String imageElementAttrs = imgUri.IsFile ? string.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", imageSize.Width, imageSize.Height) : string.Empty;
 
                         htmlBuilder.AppendFormat(CultureInfo.InvariantCulture, "<img src=\"{0}\" {1} />", HtmlUtils.EscapeEntities(UrlHelper.SafeToAbsoluteUri(imgUri)), imageElementAttrs);
                     }
@@ -489,7 +489,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public static string MakeHtmlForImageSourceDelay(string path)
         {
             return
-                String.Format(CultureInfo.InvariantCulture, "<img src=\"{1}\" srcDelay=\"{0}\" />", HtmlUtils.EscapeEntities(path), HtmlUtils.EscapeEntities(UrlHelper.SafeToAbsoluteUri(LoadingImagePath)));
+                string.Format(CultureInfo.InvariantCulture, "<img src=\"{1}\" srcDelay=\"{0}\" />", HtmlUtils.EscapeEntities(path), HtmlUtils.EscapeEntities(UrlHelper.SafeToAbsoluteUri(LoadingImagePath)));
         }
 
         internal static string ReferenceFixer(BeginTag tag, string reference, ISupportingFileService _fileService, OpenLiveWriter.PostEditor.ContentEditor editor)

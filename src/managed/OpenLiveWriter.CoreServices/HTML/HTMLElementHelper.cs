@@ -62,7 +62,7 @@ namespace OpenLiveWriter.CoreServices
         public static string GetFontFamily(IHTMLElement2 element2)
         {
             string fontFamily = element2.currentStyle.fontFamily;
-            if (!String.IsNullOrEmpty(fontFamily))
+            if (!string.IsNullOrEmpty(fontFamily))
                 return fontFamily.Replace('\"', '\'');
 
             return fontFamily;
@@ -106,7 +106,7 @@ namespace OpenLiveWriter.CoreServices
             int g = Convert.ToInt32(colorTableString[1].ToString(), 16);
             int b = Convert.ToInt32(colorTableString[2].ToString(), 16);
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
+            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
                 r << 4 | r,
                 g << 4 | g,
                 b << 4 | b);
@@ -125,7 +125,7 @@ namespace OpenLiveWriter.CoreServices
             int b1 = Convert.ToInt32(colorTableString[4].ToString(), 16);
             int b2 = Convert.ToInt32(colorTableString[5].ToString(), 16);
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
+            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
                 r1 << 4 | r2,
                 g1 << 4 | g2,
                 b1 << 4 | b2);
@@ -138,7 +138,7 @@ namespace OpenLiveWriter.CoreServices
                 return;
 
             colorTable = new Dictionary<string, string>(147);
-            colorTable.Add("transparent", String.Empty);
+            colorTable.Add("transparent", string.Empty);
 
             // 16 HTML 4.01 standard colors
             colorTable.Add("black", "0.0.0");
@@ -343,10 +343,10 @@ namespace OpenLiveWriter.CoreServices
                         if (rgb.Length == 3)
                         {
 
-                            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
-                                                 MathHelper.Clip(Int32.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 255),
-                                                 MathHelper.Clip(Int32.Parse(rgb[1], CultureInfo.InvariantCulture), 0, 255),
-                                                 MathHelper.Clip(Int32.Parse(rgb[2], CultureInfo.InvariantCulture), 0, 255));
+                            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
+                                                 MathHelper.Clip(int.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 255),
+                                                 MathHelper.Clip(int.Parse(rgb[1], CultureInfo.InvariantCulture), 0, 255),
+                                                 MathHelper.Clip(int.Parse(rgb[2], CultureInfo.InvariantCulture), 0, 255));
                         }
 
                         // color: rgb(100%, 0%, 0%)
@@ -354,10 +354,10 @@ namespace OpenLiveWriter.CoreServices
                                                                   StringSplitOptions.RemoveEmptyEntries);
                         if (rgb.Length == 3)
                         {
-                            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
-                                                 Convert.ToInt32(255.0 * MathHelper.Clip(Int32.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0),
-                                                 Convert.ToInt32(255.0 * MathHelper.Clip(Int32.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0),
-                                                 Convert.ToInt32(255.0 * MathHelper.Clip(Int32.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0));
+                            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
+                                                 Convert.ToInt32(255.0 * MathHelper.Clip(int.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0),
+                                                 Convert.ToInt32(255.0 * MathHelper.Clip(int.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0),
+                                                 Convert.ToInt32(255.0 * MathHelper.Clip(int.Parse(rgb[0], CultureInfo.InvariantCulture), 0, 100) / 100.0));
                         }
                     }
                     catch (Exception ex)
@@ -389,14 +389,14 @@ namespace OpenLiveWriter.CoreServices
             else if (obj is int)
             {
                 int colorTableInt = (int)obj;
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
+                return string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}",
                                      (colorTableInt >> 16) % 256,
                                      (colorTableInt >> 8) % 256,
                                      colorTableInt % 256);
             }
 
             Debug.Fail("Failed to get formatted color string.");
-            return String.Empty;
+            return string.Empty;
         }
 
         public static bool IsRTLElement(IHTMLElement e)
@@ -408,7 +408,7 @@ namespace OpenLiveWriter.CoreServices
         {
             string dir = e.getAttribute("dir", 2) as string;
             if (null != dir)
-                return String.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
+                return string.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
 
             return false;
         }
@@ -711,9 +711,9 @@ namespace OpenLiveWriter.CoreServices
 
             // MSHTML doesn't copy over the "id" attribute, so we manually copy it over.
             string sourceId = sourceElement.id;
-            if (!String.IsNullOrEmpty(sourceId))
+            if (!string.IsNullOrEmpty(sourceId))
             {
-                sourceElement.id = String.Empty;
+                sourceElement.id = string.Empty;
                 targetElement.id = sourceId;
             }
         }
@@ -724,14 +724,14 @@ namespace OpenLiveWriter.CoreServices
             foreach (IHTMLDOMAttribute attribute in attributeCollection)
             {
                 // For our purposes here anything but size is considered meaningful.
-                if (attribute.specified && String.Compare(attribute.nodeName, "size", StringComparison.OrdinalIgnoreCase) != 0)
+                if (attribute.specified && string.Compare(attribute.nodeName, "size", StringComparison.OrdinalIgnoreCase) != 0)
                     return true;
             }
 
             // If we get here then, size is the only attribute which could have been specified.
             // Note that size="+0" is not a meaningful attribute
             string sizeAttribute = element.getAttribute("size", 2) as string;
-            if (sizeAttribute == null || String.Compare(sizeAttribute, "+0", StringComparison.OrdinalIgnoreCase) == 0)
+            if (sizeAttribute == null || string.Compare(sizeAttribute, "+0", StringComparison.OrdinalIgnoreCase) == 0)
                 return false;
 
             return true;
@@ -800,7 +800,7 @@ namespace OpenLiveWriter.CoreServices
 
         public static float LastChanceLineHeightPointSize(string cssUnits, IHTMLElement element, bool vertical)
         {
-            if (String.Compare(cssUnits, "normal", StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(cssUnits, "normal", StringComparison.OrdinalIgnoreCase) == 0)
                 return CSSUnitStringToPointSize(CSSUnitStringFontSize, element, LastChanceFontPointSize, vertical);
 
             return 0;
@@ -838,7 +838,7 @@ namespace OpenLiveWriter.CoreServices
 
             string cssUnits = cssUnitStringDelegate(element);
 
-            if (String.IsNullOrEmpty(cssUnits) ||
+            if (string.IsNullOrEmpty(cssUnits) ||
                 cssUnits == "auto")
                 return 0;
 
@@ -954,7 +954,7 @@ namespace OpenLiveWriter.CoreServices
                 }
 
                 double number;
-                if (Double.TryParse(cssUnits, NumberStyles.Float, CultureInfo.InvariantCulture, out number))
+                if (double.TryParse(cssUnits, NumberStyles.Float, CultureInfo.InvariantCulture, out number))
                 {
                     // The line-height property supports numbers with no units.
                     if (cssUnitStringDelegate == CSSUnitStringLineHeight)
@@ -1140,7 +1140,7 @@ namespace OpenLiveWriter.CoreServices
             if (style != null)
             {
                 string spacing = style.borderSpacing;
-                if (!String.IsNullOrEmpty(spacing))
+                if (!string.IsNullOrEmpty(spacing))
                 {
                     spacing = spacing.Trim();
 

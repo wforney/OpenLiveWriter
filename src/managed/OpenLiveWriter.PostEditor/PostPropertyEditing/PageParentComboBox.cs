@@ -31,7 +31,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 {
                     if (e.Bounds.Width >= Width)
                     {
-                        text = new String(' ', (comboItem as ParentPageComboItem).IndentLevel * 3) + text;
+                        text = new string(' ', (comboItem as ParentPageComboItem).IndentLevel * 3) + text;
                     }
                 }
 
@@ -118,12 +118,12 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             {
                 string parent = page.ParentId;
                 if (!availableParents.ContainsKey(page.ParentId))
-                    parent = String.Empty;
+                    parent = string.Empty;
                 sourcePages.Add(new PageInfo(page.Id, page.Title, page.DatePublished, parent));
             }
 
             // get a tree of child items
-            ArrayList pageListItems = ExtractChildItemsOfParent(sourcePages, String.Empty, 0);
+            ArrayList pageListItems = ExtractChildItemsOfParent(sourcePages, string.Empty, 0);
 
             // flatten list  and return
             return FlattenList(pageListItems).ToArray();

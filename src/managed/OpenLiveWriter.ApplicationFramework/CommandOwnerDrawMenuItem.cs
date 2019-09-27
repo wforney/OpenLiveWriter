@@ -136,9 +136,9 @@ namespace OpenLiveWriter.ApplicationFramework
 
                 //	Format the text, using default arguments if necessary.
                 if (formatArgs == null)
-                    return String.Format(CultureInfo.CurrentCulture, text, new object[] { string.Empty, string.Empty, string.Empty });
+                    return string.Format(CultureInfo.CurrentCulture, text, new object[] { string.Empty, string.Empty, string.Empty });
                 else
-                    return String.Format(CultureInfo.CurrentCulture, text, formatArgs);
+                    return string.Format(CultureInfo.CurrentCulture, text, formatArgs);
             }
         }
 

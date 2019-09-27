@@ -212,7 +212,7 @@ namespace OpenLiveWriter.CoreServices
             if (username != null || password != null)
             {
                 CredentialCache credentialCache = new CredentialCache();
-                string userDomain = String.Empty;
+                string userDomain = string.Empty;
 
                 if (username != null)
                 {
@@ -290,10 +290,10 @@ namespace OpenLiveWriter.CoreServices
             StringBuilder sb = new StringBuilder();
             using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
             {
-                sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}/{1} {2} {3}", "HTTP", resp.ProtocolVersion, (int)resp.StatusCode, resp.StatusDescription));
+                sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0}/{1} {2} {3}", "HTTP", resp.ProtocolVersion, (int)resp.StatusCode, resp.StatusDescription));
                 foreach (string key in resp.Headers.AllKeys)
                 {
-                    sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, resp.Headers[key]));
+                    sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, resp.Headers[key]));
                 }
                 sw.WriteLine("");
                 sw.WriteLine(DecodeBody(resp));
@@ -306,10 +306,10 @@ namespace OpenLiveWriter.CoreServices
             StringBuilder sb = new StringBuilder();
             using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
             {
-                sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0} {1} HTTP/{2}", req.Method, UrlHelper.SafeToAbsoluteUri(req.RequestUri), req.ProtocolVersion));
+                sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} HTTP/{2}", req.Method, UrlHelper.SafeToAbsoluteUri(req.RequestUri), req.ProtocolVersion));
                 foreach (string key in req.Headers.AllKeys)
                 {
-                    sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, req.Headers[key]));
+                    sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, req.Headers[key]));
                 }
             }
             return sb.ToString();
@@ -318,7 +318,7 @@ namespace OpenLiveWriter.CoreServices
         public static DateTime GetExpiresHeader(HttpWebResponse response)
         {
             string expires = response.GetResponseHeader("Expires");
-            if (expires != null && expires != String.Empty && expires.Trim() != "-1")
+            if (expires != null && expires != string.Empty && expires.Trim() != "-1")
             {
                 try
                 {
@@ -359,7 +359,7 @@ namespace OpenLiveWriter.CoreServices
             if (headerValue != null)
                 return headerValue;
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         public static void LogException(WebException ex)
@@ -382,7 +382,7 @@ namespace OpenLiveWriter.CoreServices
                 int statusCode = (int)response.StatusCode;
                 string statusDesc = response.StatusDescription;
 
-                return String.Format(CultureInfo.CurrentCulture,
+                return string.Format(CultureInfo.CurrentCulture,
                     "{0} {1}\r\n\r\n{2}",
                     statusCode, statusDesc,
                     bodyText);

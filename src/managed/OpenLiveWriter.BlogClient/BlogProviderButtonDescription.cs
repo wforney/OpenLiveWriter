@@ -117,7 +117,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                return ClickUrl != null && ClickUrl != String.Empty;
+                return ClickUrl != null && ClickUrl != string.Empty;
             }
         }
 
@@ -125,7 +125,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                return ContentUrl != null && ContentUrl != String.Empty;
+                return ContentUrl != null && ContentUrl != string.Empty;
             }
         }
 
@@ -133,7 +133,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                return NotificationUrl != null && NotificationUrl != String.Empty;
+                return NotificationUrl != null && NotificationUrl != string.Empty;
             }
         }
 
@@ -167,10 +167,10 @@ namespace OpenLiveWriter.BlogClient
         public BlogProviderButtonDescriptionFromSettings(SettingsPersisterHelper settingsKey)
         {
             // id
-            string id = settingsKey.GetString(ID, String.Empty);
+            string id = settingsKey.GetString(ID, string.Empty);
 
             // image (required)
-            string imageUrl = settingsKey.GetString(IMAGE_URL, String.Empty);
+            string imageUrl = settingsKey.GetString(IMAGE_URL, string.Empty);
             byte[] imageData = settingsKey.GetByteArray(IMAGE, null);
             Bitmap image = null;
             if (imageData != null)
@@ -186,17 +186,17 @@ namespace OpenLiveWriter.BlogClient
             }
 
             // tool-tip text
-            string description = settingsKey.GetString(DESCRIPTION, String.Empty);
+            string description = settingsKey.GetString(DESCRIPTION, string.Empty);
 
             // click-url
-            string clickUrl = settingsKey.GetString(CLICK_URL, String.Empty);
+            string clickUrl = settingsKey.GetString(CLICK_URL, string.Empty);
 
             // has content
-            string contentUrl = settingsKey.GetString(CONTENT_URL, String.Empty);
+            string contentUrl = settingsKey.GetString(CONTENT_URL, string.Empty);
             Size contentDisplaySize = settingsKey.GetSize(CONTENT_DISPLAY_SIZE, Size.Empty);
 
             // has notification image
-            string notificationUrl = settingsKey.GetString(NOTIFICATION_URL, String.Empty);
+            string notificationUrl = settingsKey.GetString(NOTIFICATION_URL, string.Empty);
 
             // initialize
             Init(id, imageUrl, image, description, clickUrl, contentUrl, contentDisplaySize, notificationUrl);

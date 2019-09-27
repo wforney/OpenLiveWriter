@@ -28,7 +28,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                 if (selectedIndex != INVALID_INDEX)
                     return TextHelper.GetTitleFromText(items[selectedIndex].Label, RibbonHelper.GalleryItemTextMaxChars, TextHelper.Units.Characters);
 
-                return String.Empty;
+                return string.Empty;
             }
         }
 

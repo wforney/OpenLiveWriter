@@ -161,7 +161,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             //if there is any text between the caret and the beginning of the post,
             //then ShiftTab focus changing is not allowed.
             string text = range.Text;
-            if (text != null && range.Text.Trim() != String.Empty)
+            if (text != null && range.Text.Trim() != string.Empty)
                 return false;
 
             MarkupContext context = new MarkupContext();
@@ -203,7 +203,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 //replace the EXTENDED_ENTRY_ID behavior div with the <!--more--> comment
                 StringBuilder output = new StringBuilder(html.Length);
                 SimpleHtmlParser parser = new SimpleHtmlParser(html);
-                SmartPredicate splitDiv = new SmartPredicate(String.Format(CultureInfo.InvariantCulture, "<div id='{0}'>", EXTENDED_ENTRY_ID));
+                SmartPredicate splitDiv = new SmartPredicate(string.Format(CultureInfo.InvariantCulture, "<div id='{0}'>", EXTENDED_ENTRY_ID));
                 for (Element el; null != (el = parser.Next());)
                 {
                     if (splitDiv.IsMatch(el))
@@ -296,7 +296,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             return entryBreakDiv;
         }
-        private static string EXTENDED_ENTRY_HTML = String.Format(CultureInfo.InvariantCulture, "<div id='{0}' name='{0}'></div>", EXTENDED_ENTRY_ID);
+        private static string EXTENDED_ENTRY_HTML = string.Format(CultureInfo.InvariantCulture, "<div id='{0}' name='{0}'></div>", EXTENDED_ENTRY_ID);
         public const string EXTENDED_ENTRY_ID = "extendedEntryBreak";
 
         private void DeleteInsertionTargetBlockIfEmpty(MarkupPointer insertionPoint)

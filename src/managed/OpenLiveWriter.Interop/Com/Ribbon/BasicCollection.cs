@@ -37,7 +37,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         //
         // IEnumUnknown implementation
 
-        Int32 IEnumUnknown.Next(uint celt, object[] rgelt, IntPtr pceltFetched)
+        int IEnumUnknown.Next(uint celt, object[] rgelt, IntPtr pceltFetched)
         {
             // Check rgelt pointer.
             if (rgelt == null)
@@ -72,7 +72,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
             return 0;//ok
         }
 
-        Int32 IEnumUnknown.Skip(uint celt)
+        int IEnumUnknown.Skip(uint celt)
         {
             _enumIndex += (int)celt;
 

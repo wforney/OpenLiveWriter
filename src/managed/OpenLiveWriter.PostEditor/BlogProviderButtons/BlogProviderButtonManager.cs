@@ -68,7 +68,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                 for (int i = 0; i < _commands.Length; i++)
                 {
                     _commands[i] = new Command();
-                    _commands[i].Identifier = String.Format(CultureInfo.InvariantCulture, BlogProviderButtonCommandBarInfo.ProviderCommandFormat, i);
+                    _commands[i].Identifier = string.Format(CultureInfo.InvariantCulture, BlogProviderButtonCommandBarInfo.ProviderCommandFormat, i);
                     _commands[i].Execute += new EventHandler(BlogProviderButton_Execute);
                     _commands[i].CommandBarButtonStyle = CommandBarButtonStyle.Provider;
                     _commands[i].On = false;
@@ -124,7 +124,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             _editingManager.BlogSettingsChanged += new WeblogSettingsChangedHandler(_editingManager_BlogSettingsChanged);
 
             // connect to the current weblog
-            if (editingManager.BlogId != String.Empty)
+            if (editingManager.BlogId != string.Empty)
                 ConnectToBlog(editingManager.BlogId);
         }
 
@@ -167,15 +167,15 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             // Add the homepage link
             commandsOffset = 1;
             string homepageLinkText = _editingManager.Blog.ClientOptions.HomepageLinkText;
-            items.Add(new GalleryItem(!String.IsNullOrEmpty(homepageLinkText) ? homepageLinkText : Res.Get(StringId.ViewWeblog), Images.BlogWebPreview_SmallImage, commandViewWeblog));
+            items.Add(new GalleryItem(!string.IsNullOrEmpty(homepageLinkText) ? homepageLinkText : Res.Get(StringId.ViewWeblog), Images.BlogWebPreview_SmallImage, commandViewWeblog));
 
             // Add the admin link, if we've got one.
-            if (blogAdminUrl != String.Empty)
+            if (blogAdminUrl != string.Empty)
             {
                 commandsOffset++;
                 // @RIBBON TODO: Add an icon for the admin link item
                 string adminLinkText = _editingManager.Blog.ClientOptions.AdminLinkText;
-                items.Add(new GalleryItem(!String.IsNullOrEmpty(adminLinkText) ? adminLinkText : Res.Get(StringId.ManageWeblog), Images.BlogAccount_SmallImage, commandViewWeblogAdmin));
+                items.Add(new GalleryItem(!string.IsNullOrEmpty(adminLinkText) ? adminLinkText : Res.Get(StringId.ManageWeblog), Images.BlogAccount_SmallImage, commandViewWeblogAdmin));
             }
 
             if (PostEditorSettings.AllowProviderButtons)
@@ -263,7 +263,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                 command.Tag = null;
             }
             command.CommandBarButtonBitmapEnabled = null;
-            command.Text = String.Empty;
+            command.Text = string.Empty;
             RemoveDropDownMenu(command);
         }
 
@@ -299,9 +299,9 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                 blogProviderButton.RecordButtonClicked();
 
                 // launch the browser
-                if (!String.IsNullOrEmpty(blogProviderButton.ClickUrl))
+                if (!string.IsNullOrEmpty(blogProviderButton.ClickUrl))
                     ShellHelper.LaunchUrl(blogProviderButton.ClickUrl);
-                else if (!String.IsNullOrEmpty(blogProviderButton.ContentUrl))
+                else if (!string.IsNullOrEmpty(blogProviderButton.ContentUrl))
                     ShellHelper.LaunchUrl(blogProviderButton.ContentUrl);
             }
         }

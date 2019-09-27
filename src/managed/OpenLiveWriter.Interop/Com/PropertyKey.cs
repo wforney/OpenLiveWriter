@@ -15,7 +15,7 @@ namespace OpenLiveWriter.Interop.Com
         #region Private Fields
 
         private Guid formatId;
-        private Int32 propertyId;
+        private int propertyId;
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <summary>
         ///  Property identifier (PID)
         /// </summary>
-        public Int32 PropertyId
+        public int PropertyId
         {
             get
             {
@@ -51,7 +51,7 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         /// <param name="formatId">A unique GUID for the property</param>
         /// <param name="propertyId">Property identifier (PID)</param>
-        public PropertyKey(Guid formatId, Int32 propertyId)
+        public PropertyKey(Guid formatId, int propertyId)
         {
             this.formatId = formatId;
             this.propertyId = propertyId;
@@ -62,14 +62,14 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         /// <param name="formatId">A string represenstion of a GUID for the property</param>
         /// <param name="propertyId">Property identifier (PID)</param>
-        public PropertyKey(string formatId, Int32 propertyId)
+        public PropertyKey(string formatId, int propertyId)
         {
             this.formatId = new Guid(formatId);
             this.propertyId = propertyId;
         }
 
         // Convenience ctor to initialize Windows Ribbon framework property key.
-        public PropertyKey(Int32 index, VarEnum id)
+        public PropertyKey(int index, VarEnum id)
         {
             this.formatId = new Guid(index, 0x7363, 0x696e, new byte[] { 0x84, 0x41, 0x79, 0x8a, 0xcf, 0x5a, 0xeb, 0xb7 });
             this.propertyId = Convert.ToInt32(id);
@@ -150,7 +150,7 @@ namespace OpenLiveWriter.Interop.Com
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object)")]
         public override string ToString()
         {
-            return String.Format("{0}, {1}", formatId.ToString("B"), propertyId);
+            return string.Format("{0}, {1}", formatId.ToString("B"), propertyId);
         }
 
         #endregion

@@ -24,16 +24,16 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return _id; }
             set { _id = value; }
         }
-        private string _id = String.Empty;
+        private string _id = string.Empty;
 
         public bool IsNew
         {
-            get { return Id == String.Empty; }
+            get { return Id == string.Empty; }
         }
 
         public void ResetPostForNewBlog(IBlogClientOptions options)
         {
-            Id = String.Empty;
+            Id = string.Empty;
             DatePublished = DateTime.MinValue;
 
             // if the current blog doesn't support pages then force
@@ -66,7 +66,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
                 if (!_isPage)
                 {
                     PageParent = PostIdAndNameField.Empty;
-                    PageOrder = String.Empty;
+                    PageOrder = string.Empty;
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return XmlCharacterHelper.RemoveInvalidXmlChars(_title); }
             set { _title = XmlCharacterHelper.RemoveInvalidXmlChars(value); }
         }
-        private string _title = String.Empty;
+        private string _title = string.Empty;
 
         public string Contents
         {
@@ -85,7 +85,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             {
                 string contents;
                 if (ExtendedContents.Length > 0)
-                    contents = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", MainContents, ExtendedEntryBreak, ExtendedContents);
+                    contents = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", MainContents, ExtendedEntryBreak, ExtendedContents);
                 else
                     contents = MainContents;
 
@@ -101,13 +101,13 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         {
             get { return _mainContents; }
         }
-        private string _mainContents = String.Empty;
+        private string _mainContents = string.Empty;
 
         public string ExtendedContents
         {
             get { return _extendedContents; }
         }
-        private string _extendedContents = String.Empty;
+        private string _extendedContents = string.Empty;
 
         public string Permalink
         {
@@ -118,10 +118,10 @@ namespace OpenLiveWriter.Extensibility.BlogClient
                 if (value != null)
                     _permaLink = value;
                 else
-                    _permaLink = String.Empty;
+                    _permaLink = string.Empty;
             }
         }
-        private string _permaLink = String.Empty;
+        private string _permaLink = string.Empty;
 
         public BlogPostCategory[] Categories
         {
@@ -244,14 +244,14 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return XmlCharacterHelper.RemoveInvalidXmlChars(_keywords); }
             set { XmlCharacterHelper.RemoveInvalidXmlChars(_keywords = value); }
         }
-        private string _keywords = String.Empty;
+        private string _keywords = string.Empty;
 
         public string Excerpt
         {
             get { return XmlCharacterHelper.RemoveInvalidXmlChars(_excerpt); }
             set { _excerpt = XmlCharacterHelper.RemoveInvalidXmlChars(value); }
         }
-        private string _excerpt = String.Empty;
+        private string _excerpt = string.Empty;
 
         public string[] PingUrlsPending
         {
@@ -284,14 +284,14 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return _slug; }
             set { _slug = value; }
         }
-        private string _slug = String.Empty;
+        private string _slug = string.Empty;
 
         public string Password
         {
             get { return _password; }
             set { _password = value; }
         }
-        private string _password = String.Empty;
+        private string _password = string.Empty;
 
         public PostIdAndNameField Author
         {
@@ -312,7 +312,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return _pageOrder; }
             set { _pageOrder = value; }
         }
-        private string _pageOrder = String.Empty;
+        private string _pageOrder = string.Empty;
 
         /// <summary>
         /// True if the post is a temporary style detection post.
@@ -341,7 +341,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return _etag; }
             set { _etag = value; }
         }
-        private string _etag = String.Empty;
+        private string _etag = string.Empty;
 
         public XmlDocument AtomRemotePost
         {
@@ -390,7 +390,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             else
             {
                 _mainContents = contents;
-                _extendedContents = String.Empty;
+                _extendedContents = string.Empty;
             }
         }
 
@@ -491,12 +491,12 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         private static readonly PostIdAndNameField _empty = new PostIdAndNameField();
 
         public PostIdAndNameField()
-            : this(String.Empty)
+            : this(string.Empty)
         {
         }
 
         public PostIdAndNameField(string emptyFieldText)
-            : this(String.Empty, String.Empty)
+            : this(string.Empty, string.Empty)
         {
             _emptyFieldText = emptyFieldText;
         }
@@ -504,7 +504,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         public PostIdAndNameField(string id, string name)
         {
             _id = id;
-            if (name != String.Empty)
+            if (name != string.Empty)
                 _name = name;
             else
                 _name = _id;
@@ -512,7 +512,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
         public bool IsEmpty
         {
-            get { return Id == String.Empty; }
+            get { return Id == string.Empty; }
         }
 
         public string Id
@@ -544,7 +544,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
         public override string ToString()
         {
-            if (_id != String.Empty)
+            if (_id != string.Empty)
             {
                 return Name;
             }
@@ -559,9 +559,9 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             return new PostIdAndNameField(_id, _name);
         }
 
-        private string _id = String.Empty;
-        private string _name = String.Empty;
-        private string _emptyFieldText = String.Empty;
+        private string _id = string.Empty;
+        private string _name = string.Empty;
+        private string _emptyFieldText = string.Empty;
     }
 }
 

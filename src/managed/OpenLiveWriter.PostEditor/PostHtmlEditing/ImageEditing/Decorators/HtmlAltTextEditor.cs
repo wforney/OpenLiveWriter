@@ -203,7 +203,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             base.LoadEditor();
             HtmlAltTextSettings = new HtmlAltTextDecoratorSettings(EditorContext.ImgElement);
             labelFilename.Text = HttpUtility.UrlDecode(UrlHelper.GetFileNameForUrl(UrlHelper.SafeToAbsoluteUri(EditorContext.SourceImageUri)));
-            labelSize.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.DimensionsFormat), EditorContext.SourceImageSize.Width, EditorContext.SourceImageSize.Height);
+            labelSize.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.DimensionsFormat), EditorContext.SourceImageSize.Width, EditorContext.SourceImageSize.Height);
             textBoxAltText.Text = HtmlAltTextSettings.AltText;
             textBoxTitle.Text = HtmlAltTextSettings.Title;
         }

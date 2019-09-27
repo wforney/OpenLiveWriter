@@ -50,6 +50,7 @@
     <Compile Include="HeaderFooterSource.cs" />
     <Compile Include="HtmlScreenCapture.cs" />
     <Compile Include="HtmlServices.cs" />
+    <Compile Include="HtmlType.cs" />
     <Compile Include="IPostInfo.cs" />
     <Compile Include="InsertableContentSourceAttribute.cs" />
     <Compile Include="IProperties.cs" />

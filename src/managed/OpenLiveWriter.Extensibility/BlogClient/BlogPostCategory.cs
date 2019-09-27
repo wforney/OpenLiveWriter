@@ -16,7 +16,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         }
 
         public BlogPostCategory(string id, string name)
-            : this(id, name, String.Empty)
+            : this(id, name, string.Empty)
         {
         }
 
@@ -106,7 +106,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             if (otherIsCategoryNone)
                 return 1;
 
-            return String.Compare(Name, category.Name, StringComparison.Ordinal);
+            return string.Compare(Name, category.Name, StringComparison.Ordinal);
         }
 
         public object Clone()

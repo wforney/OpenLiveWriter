@@ -19,22 +19,22 @@ namespace OpenLiveWriter.Api
         /// <param name="title">Title of exception (used as the caption of the error dialog).</param>
         /// <param name="description">Description of exception (used to provide additional details within the error dialog).</param>
         public ContentCreationException(string title, string description)
-            : base(String.Format(CultureInfo.CurrentCulture, "{0}: {1}", title, description))
+            : base(string.Format(CultureInfo.CurrentCulture, "{0}: {1}", title, description))
         {
-            _title = title;
-            _description = description;
+            this._title = title;
+            this._description = description;
         }
 
         /// <summary>
         /// Title of exception (used as the caption of the error dialog)
         /// </summary>
-        public string Title { get { return _title; } }
+        public string Title { get { return this._title; } }
         private string _title;
 
         /// <summary>
         /// Description of exception (used to provide additional details within the error dialog).
         /// </summary>
-        public string Description { get { return _description; } }
+        public string Description { get { return this._description; } }
         private string _description;
     }
 }

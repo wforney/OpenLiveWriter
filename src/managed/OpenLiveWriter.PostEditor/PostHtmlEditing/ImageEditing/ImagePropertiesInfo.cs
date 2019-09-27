@@ -107,7 +107,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 }
             }
         }
-        Size _size = new Size(Int32.MaxValue, Int32.MaxValue);
+        Size _size = new Size(int.MaxValue, int.MaxValue);
 
         /// <summary>
         /// If true, forces any change in the width or height of the inline image to maintain the inline image aspect

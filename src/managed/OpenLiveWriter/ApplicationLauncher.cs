@@ -296,7 +296,7 @@ namespace OpenLiveWriter
         {
             get
             {
-                return BlogSettings.DefaultBlogId != String.Empty;
+                return BlogSettings.DefaultBlogId != string.Empty;
             }
         }
     }

@@ -26,9 +26,9 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion.WebImages
         {
             using (WebImageForm form = new WebImageForm())
             {
-                if (form.ShowDialog() == DialogResult.OK && !String.IsNullOrEmpty(form.ImageUrl))
+                if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.ImageUrl))
                 {
-                    content = String.Format(CultureInfo.InvariantCulture, @"<img wlApplyDefaultMargins=""true"" src=""{0}"" />", HttpUtility.HtmlEncode(form.ImageUrl));
+                    content = string.Format(CultureInfo.InvariantCulture, @"<img wlApplyDefaultMargins=""true"" src=""{0}"" />", HttpUtility.HtmlEncode(form.ImageUrl));
                 }
 
                 return form.DialogResult;

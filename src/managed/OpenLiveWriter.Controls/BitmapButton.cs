@@ -1012,7 +1012,7 @@ namespace OpenLiveWriter.Controls
                     {
                         height = bitmapEnabled == null ? 0 : ScaleY((BITMAP_PAD * 2) + bitmapEnabled.Height);
 
-                        if (!String.IsNullOrEmpty(buttonText))
+                        if (!string.IsNullOrEmpty(buttonText))
                         {
                             // The Font.Height is automatically scaled.
                             int paddedTextHeight = ScaleY((VERTICAL_TEXT_PAD * 2)) + Font.Height;
@@ -1046,11 +1046,11 @@ namespace OpenLiveWriter.Controls
                     {
                         width = bitmapEnabled == null ? 0 : ScaleX(BITMAP_PAD + bitmapEnabled.Width);
 
-                        if (String.IsNullOrEmpty(buttonText) && width != 0)
+                        if (string.IsNullOrEmpty(buttonText) && width != 0)
                         {
                             width += ScaleX(BITMAP_PAD);
                         }
-                        else if (!String.IsNullOrEmpty(buttonText))
+                        else if (!string.IsNullOrEmpty(buttonText))
                         {
                             using (Graphics graphics = CreateGraphics())
                             {

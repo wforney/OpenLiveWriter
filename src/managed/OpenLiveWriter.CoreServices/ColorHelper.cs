@@ -174,7 +174,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string ColorToString(Color color)
         {
-            return String.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
+            return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
         }
 
         /// <summary>

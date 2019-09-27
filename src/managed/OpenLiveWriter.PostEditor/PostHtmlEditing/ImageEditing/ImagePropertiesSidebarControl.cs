@@ -855,7 +855,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public void UpdateImageLink(string newLink, string title, bool newWindow, string rel, ImageDecoratorInvocationSource invocationSource)
         {
-            if (newLink == String.Empty)
+            if (newLink == string.Empty)
             {
                 ImagePropertiesInfo.LinkTarget = LinkTargetType.NONE;
             }
@@ -903,11 +903,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     using (HyperlinkForm hyperlinkForm = new HyperlinkForm(_editorContext.CommandManager, GlobalEditorOptions.SupportsFeature(ContentEditorFeature.ShowAllLinkOptions)))
                     {
                         hyperlinkForm.ContainsImage = true;
-                        hyperlinkForm.EditStyle = !String.IsNullOrEmpty(ImagePropertiesInfo.LinkTargetUrl);
+                        hyperlinkForm.EditStyle = !string.IsNullOrEmpty(ImagePropertiesInfo.LinkTargetUrl);
                         hyperlinkForm.NewWindow = ImagePropertiesInfo.LinkOptions.ShowInNewWindow;
-                        if (ImagePropertiesInfo.LinkTitle != String.Empty)
+                        if (ImagePropertiesInfo.LinkTitle != string.Empty)
                             hyperlinkForm.LinkTitle = ImagePropertiesInfo.LinkTitle;
-                        if (ImagePropertiesInfo.LinkRel != String.Empty)
+                        if (ImagePropertiesInfo.LinkRel != string.Empty)
                             hyperlinkForm.Rel = ImagePropertiesInfo.LinkRel;
                         if (ImagePropertiesInfo.LinkTargetUrl != null && ImagePropertiesInfo.LinkTarget != LinkTargetType.IMAGE)
                         {

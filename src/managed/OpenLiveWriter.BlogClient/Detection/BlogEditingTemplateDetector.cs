@@ -414,7 +414,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     Trace.WriteLine("Error occurred while downloading weblog style: " + e.ToString());
                     if (e.Response != null)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Blogpost homepage request failed: {0}", _blogHomepageUrl));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Blogpost homepage request failed: {0}", _blogHomepageUrl));
                         //Debug.WriteLine(HttpRequestHelper.DumpResponse((HttpWebResponse)e.Response));
                     }
                 }
@@ -493,12 +493,12 @@ namespace OpenLiveWriter.BlogClient.Detection
                     }
                     catch(BlogClientAbortGettingTemplateException)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "Failed to download template {0}.  Aborting getting further templates", templateTypes[i].ToString()));
+                        Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Failed to download template {0}.  Aborting getting further templates", templateTypes[i].ToString()));
                         throw;
                     }
                     catch (Exception e)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "Failed to download template {0}: {1}", templateTypes[i].ToString(), e.ToString()));
+                        Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Failed to download template {0}: {1}", templateTypes[i].ToString(), e.ToString()));
                     }
                 }
                 if (templateFiles.Count > 0)
@@ -697,7 +697,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 string blogTemplateFile = Path.Combine(_blogTemplateDir, files.RootFile);
                 string origFile = blogTemplateFile + ".token";
                 File.Move(blogTemplateFile, origFile);
-                string absPath = String.Format(CultureInfo.InvariantCulture, "file:///{0}/{1}", _blogTemplateDir.Replace('\\', '/'), downloader.PathToken);
+                string absPath = string.Format(CultureInfo.InvariantCulture, "file:///{0}/{1}", _blogTemplateDir.Replace('\\', '/'), downloader.PathToken);
                 TextHelper.ReplaceInFile(origFile, downloader.PathToken, blogTemplateFile, absPath);
                 File.Delete(origFile);
 

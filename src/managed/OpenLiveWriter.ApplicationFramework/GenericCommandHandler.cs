@@ -34,7 +34,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         #region IUICommandHandler Members
 
-        public virtual int Execute(UInt32 commandId, CommandExecutionVerb verb, PropertyKeyRef key, PropVariantRef currentValue, IUISimplePropertySet commandExecutionProperties)
+        public virtual int Execute(uint commandId, CommandExecutionVerb verb, PropertyKeyRef key, PropVariantRef currentValue, IUISimplePropertySet commandExecutionProperties)
         {
             switch (verb)
             {
@@ -121,23 +121,23 @@ namespace OpenLiveWriter.ApplicationFramework
                 else if (key == PropertyKeys.Label)
                 {
                     string str = "Command." + ((CommandId)commandId).ToString() + ".LabelTitle";
-                    newValue = new PropVariant(TextHelper.UnescapeNewlines(Res.GetProp(str)) ?? String.Empty);
+                    newValue = new PropVariant(TextHelper.UnescapeNewlines(Res.GetProp(str)) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.LabelDescription)
                 {
                     string str = "Command." + ((CommandId)commandId).ToString() + ".LabelDescription";
-                    newValue = new PropVariant(Res.GetProp(str) ?? String.Empty);
+                    newValue = new PropVariant(Res.GetProp(str) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.TooltipTitle)
                 {
                     string commandName = ((CommandId)commandId).ToString();
                     string str = "Command." + commandName + ".TooltipTitle";
-                    newValue = new PropVariant(Res.GetProp(str) ?? (Res.GetProp("Command." + commandName + ".LabelTitle") ?? String.Empty));
+                    newValue = new PropVariant(Res.GetProp(str) ?? (Res.GetProp("Command." + commandName + ".LabelTitle") ?? string.Empty));
                 }
                 else if (key == PropertyKeys.TooltipDescription)
                 {
                     string str = "Command." + ((CommandId)commandId).ToString() + ".TooltipDescription";
-                    newValue = new PropVariant(Res.GetProp(str) ?? String.Empty);
+                    newValue = new PropVariant(Res.GetProp(str) ?? string.Empty);
                 }
                 else if (key == PropertyKeys.Keytip)
                 {
@@ -172,7 +172,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.StringValue)
                 {
-                    newValue = new PropVariant(String.Empty);
+                    newValue = new PropVariant(string.Empty);
                 }
                 else if (key == PropertyKeys.SelectedItem)
                 {
@@ -204,7 +204,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
                 else if (key == PropertyKeys.FormatString)
                 {
-                    newValue.SetString(String.Empty);
+                    newValue.SetString(string.Empty);
                 }
                 else if (key == PropertyKeys.StandardColors)
                 {

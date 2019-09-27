@@ -149,7 +149,7 @@ namespace OpenLiveWriter.BlogClient
     public class WriterEditingManifestDownloadInfo
     {
         public WriterEditingManifestDownloadInfo(string sourceUrl)
-            : this(sourceUrl, DateTime.MinValue, DateTime.MinValue, String.Empty)
+            : this(sourceUrl, DateTime.MinValue, DateTime.MinValue, string.Empty)
         {
         }
 

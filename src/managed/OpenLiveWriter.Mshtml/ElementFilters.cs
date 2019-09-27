@@ -84,7 +84,7 @@ namespace OpenLiveWriter.Mshtml
 
             public bool Filter(IHTMLElement e)
             {
-                return String.Compare(e.tagName, _tagId, StringComparison.OrdinalIgnoreCase) == 0;
+                return string.Compare(e.tagName, _tagId, StringComparison.OrdinalIgnoreCase) == 0;
             }
         }
 
@@ -171,7 +171,7 @@ namespace OpenLiveWriter.Mshtml
             public bool Filter(IHTMLElement e)
             {
                 string attributeName = e.getAttribute(_attributeName, 2) as string;
-                return !String.IsNullOrEmpty(attributeName);
+                return !string.IsNullOrEmpty(attributeName);
             }
         }
 
@@ -183,7 +183,7 @@ namespace OpenLiveWriter.Mshtml
 
             public bool Filter(IHTMLElement e)
             {
-                return !String.IsNullOrEmpty((string)e.style.backgroundColor);
+                return !string.IsNullOrEmpty((string)e.style.backgroundColor);
             }
         }
 
@@ -340,7 +340,7 @@ namespace OpenLiveWriter.Mshtml
                 IHTMLElement2 e2 = (IHTMLElement2)e;
                 string dir = e2.currentStyle.direction;
                 if (null != dir)
-                    return String.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
+                    return string.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
             }
             return false;
         }

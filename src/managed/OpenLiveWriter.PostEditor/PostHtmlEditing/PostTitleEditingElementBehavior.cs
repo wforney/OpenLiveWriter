@@ -24,7 +24,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TitleDefaultText), EditingTargetName);
+                return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TitleDefaultText), EditingTargetName);
             }
         }
 
@@ -75,11 +75,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             if (defaultedText)
             {
-                return String.Empty;
+                return string.Empty;
             }
             else if (HTMLElement.innerText == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
             else
             {

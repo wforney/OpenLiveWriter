@@ -19,7 +19,7 @@ namespace OpenLiveWriter.PostEditor.Commands
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, Res.Get(StringId.AboutAbout), ApplicationEnvironment.ProductNameQualified);
+                return string.Format(CultureInfo.InvariantCulture, Res.Get(StringId.AboutAbout), ApplicationEnvironment.ProductNameQualified);
             }
         }
 

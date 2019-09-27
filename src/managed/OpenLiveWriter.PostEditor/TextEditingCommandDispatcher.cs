@@ -80,7 +80,7 @@ namespace OpenLiveWriter.PostEditor
                     string fontName = _postEditor.SelectionFontFamily;
                     if (string.IsNullOrEmpty(fontName))
                     {
-                        selectedItem = String.Empty;
+                        selectedItem = string.Empty;
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace OpenLiveWriter.PostEditor
                         }
                         catch
                         {
-                            selectedItem = String.Empty;
+                            selectedItem = string.Empty;
                         }
                     }
                 }
@@ -194,7 +194,7 @@ namespace OpenLiveWriter.PostEditor
                         return rounded.ToString(format, CultureInfo.InvariantCulture);
                     }
 
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
 

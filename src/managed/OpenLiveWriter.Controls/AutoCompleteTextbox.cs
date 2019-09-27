@@ -64,7 +64,7 @@ namespace OpenLiveWriter.Controls
 
         void AutoCompleteTextbox_Leave(object sender, EventArgs e)
         {
-            if (Text == String.Empty)
+            if (Text == string.Empty)
             {
                 _isDirty = false;
                 SetDefaultText();
@@ -77,7 +77,7 @@ namespace OpenLiveWriter.Controls
             if (!_isDirty)
             {
                 _isDirty = true;
-                Text = String.Empty;
+                Text = string.Empty;
                 ForeColor = SystemColors.WindowText;
                 Font = normalFont;
             }

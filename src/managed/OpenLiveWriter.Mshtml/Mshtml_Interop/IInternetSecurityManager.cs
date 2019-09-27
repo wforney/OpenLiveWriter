@@ -32,7 +32,7 @@ namespace OpenLiveWriter.Mshtml.Mshtml_Interop
         [PreserveSig]
         int GetSecurityId(
             [In][MarshalAs(UnmanagedType.LPWStr)] string pwszUrl,
-            [Out] out Byte pbSecurityId,
+            [Out] out byte pbSecurityId,
             ref int pcbSecurityId,
             [In] IntPtr dwReserved);
 
@@ -51,9 +51,9 @@ namespace OpenLiveWriter.Mshtml.Mshtml_Interop
         int QueryCustomPolicy(
             [In][MarshalAs(UnmanagedType.LPWStr)] string pwszUrl,
             [In] ref Guid guidKey,
-            [Out] out Byte ppPolicy,
+            [Out] out byte ppPolicy,
             [Out] out int pcbPolicy,
-            [In] Byte pContext,
+            [In] byte pContext,
             [In] int cbContext,
             [In] int dwReserved);
 

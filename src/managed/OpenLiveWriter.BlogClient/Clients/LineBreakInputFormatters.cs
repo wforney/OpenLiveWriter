@@ -67,11 +67,11 @@ namespace OpenLiveWriter.BlogClient.Clients
             int pendingLineBreaks = 0;
             while (line != null)
             {
-                if (pendingLineBreaks == 1 && line == String.Empty)
+                if (pendingLineBreaks == 1 && line == string.Empty)
                 {
                     return true;
                 }
-                else if (pendingLineBreaks == 1 && line != String.Empty)
+                else if (pendingLineBreaks == 1 && line != string.Empty)
                 {
                     paragraphBuilder.Append("<br>");
                     pendingLineBreaks = 0;

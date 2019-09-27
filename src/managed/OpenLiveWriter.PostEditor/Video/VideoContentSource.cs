@@ -54,7 +54,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
             if (youtubeEnabled)
             {
-                videoSources.Add(new VideoPublishSource(Options.GetString("Video.lastPermission", String.Empty)));
+                videoSources.Add(new VideoPublishSource(Options.GetString("Video.lastPermission", string.Empty)));
 
                 VideoServiceVideoSource source = new VideoServiceVideoSource();
                 source.RegisterServices(new IVideoService[] { new YouTubeVideoService() });
@@ -197,7 +197,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
             videoSources.Add(new WebVideoSource());
 
-            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", String.Empty));
+            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", string.Empty));
             videoPublishSource.SelectedPath = files[0];
             videoSources.Add(videoPublishSource);
 
@@ -223,7 +223,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
             videoSources.Add(new WebVideoSource());
 
-            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", String.Empty));
+            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", string.Empty));
             //videoPublishSource.SelectedPath = files[0];
             videoSources.Add(videoPublishSource);
 

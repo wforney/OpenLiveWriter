@@ -81,7 +81,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
             item.Tag = settings;
 
             // set text
-            item.Text = String.Format(CultureInfo.CurrentCulture, " {0}", settings.BlogName);
+            item.Text = string.Format(CultureInfo.CurrentCulture, " {0}", settings.BlogName);
         }
 
         public void DeleteSelectedWeblog()

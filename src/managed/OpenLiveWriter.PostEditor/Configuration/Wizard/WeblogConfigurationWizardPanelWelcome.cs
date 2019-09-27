@@ -41,8 +41,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             if (!DesignMode)
             {
                 // customize default provider text
-                labelWelcomeText.Text = String.Format(CultureInfo.CurrentCulture, labelWelcomeText.Text, ApplicationEnvironment.ProductNameQualified);
-                linkLabelLearnMore.Text = String.Format(CultureInfo.CurrentCulture, linkLabelLearnMore.Text, ApplicationEnvironment.ProductNameQualified);
+                labelWelcomeText.Text = string.Format(CultureInfo.CurrentCulture, labelWelcomeText.Text, ApplicationEnvironment.ProductNameQualified);
+                linkLabelLearnMore.Text = string.Format(CultureInfo.CurrentCulture, linkLabelLearnMore.Text, ApplicationEnvironment.ProductNameQualified);
 
                 // is there a custom account wizard with a welcome page installed?
                 IBlogProviderAccountWizardDescription providerAccountWizard = null;

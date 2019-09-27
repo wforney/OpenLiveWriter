@@ -145,7 +145,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
             set
             {

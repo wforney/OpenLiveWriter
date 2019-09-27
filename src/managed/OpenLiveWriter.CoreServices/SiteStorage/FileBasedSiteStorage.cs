@@ -229,7 +229,7 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // storage for root file name
-        private string m_rootFile = String.Empty;
+        private string m_rootFile = string.Empty;
 
         // path where the site's files are stored
         private string m_basePath;

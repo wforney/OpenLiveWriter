@@ -352,7 +352,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (ProgressHost != null)
                     // UrlDownloadToFile can sometimes return progress that exceeds 100%- stop this from happening
-                    ProgressHost.UpdateProgress((int)(Math.Min(ulProgressMax, ulProgress)), (int)ulProgressMax, String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.ProgressDownloading), Url));
+                    ProgressHost.UpdateProgress((int)(Math.Min(ulProgressMax, ulProgress)), (int)ulProgressMax, string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.ProgressDownloading), Url));
             }
 
             return HRESULT.S_OK;
@@ -561,7 +561,7 @@ namespace OpenLiveWriter.CoreServices
         private static void LOG_UN(string iface, string method)
         {
             Debug.Fail(
-                String.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
+                string.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
             LOG(iface, method);
         }
 

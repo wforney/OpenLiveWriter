@@ -52,7 +52,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                if (textBoxWidth.Text != String.Empty)
+                if (textBoxWidth.Text != string.Empty)
                 {
                     try
                     {
@@ -75,7 +75,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 }
                 else
                 {
-                    textBoxWidth.Text = String.Empty;
+                    textBoxWidth.Text = string.Empty;
                 }
 
                 if (value.Units == PixelPercentUnits.Percentage)

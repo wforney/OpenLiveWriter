@@ -37,7 +37,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Called when the DeskBand is about to be closed
         /// </summary>
         /// <param name="dwReserved">Reserved--should always be zero</param>
-        void CloseDW([In] UInt32 dwReserved);
+        void CloseDW([In] uint dwReserved);
 
         /// <summary>
         /// Notify docking window that the frame's border space has changed -- this
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="fReserved">Ignored/unused for DeskBands</param>
         void ResizeBorderDW(
             IntPtr prcBorder,
-            [In, MarshalAs(UnmanagedType.IUnknown)] Object punkToolbarSite,
+            [In, MarshalAs(UnmanagedType.IUnknown)] object punkToolbarSite,
             bool fReserved);
     }
 

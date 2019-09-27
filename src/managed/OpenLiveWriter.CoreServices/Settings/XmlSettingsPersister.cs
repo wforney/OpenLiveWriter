@@ -261,19 +261,19 @@ namespace OpenLiveWriter.CoreServices.Settings
                 case (int)ValueType.Byte:
                     return byte.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Int16:
-                    return Int16.Parse(value, CultureInfo.InvariantCulture);
+                    return short.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.UInt16:
-                    return UInt16.Parse(value, CultureInfo.InvariantCulture);
+                    return ushort.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Int32:
-                    return Int32.Parse(value, CultureInfo.InvariantCulture);
+                    return int.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.UInt32:
-                    return UInt32.Parse(value, CultureInfo.InvariantCulture);
+                    return uint.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Int64:
-                    return Int64.Parse(value, CultureInfo.InvariantCulture);
+                    return long.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.UInt64:
-                    return UInt64.Parse(value, CultureInfo.InvariantCulture);
+                    return ulong.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Double:
-                    return Double.Parse(value, CultureInfo.InvariantCulture);
+                    return double.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Float:
                     return float.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Decimal:
@@ -357,37 +357,37 @@ namespace OpenLiveWriter.CoreServices.Settings
                 valueType = ValueType.Byte;
                 output = ((byte)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is Int16)
+            else if (input is short)
             {
                 valueType = ValueType.Int16;
                 output = ((short)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is UInt16)
+            else if (input is ushort)
             {
                 valueType = ValueType.UInt16;
-                output = ((UInt16)input).ToString(CultureInfo.InvariantCulture);
+                output = ((ushort)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is Int32)
+            else if (input is int)
             {
                 valueType = ValueType.Int32;
-                output = ((Int32)input).ToString(CultureInfo.InvariantCulture);
+                output = ((int)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is UInt32)
+            else if (input is uint)
             {
                 valueType = ValueType.UInt32;
-                output = ((UInt32)input).ToString(CultureInfo.InvariantCulture);
+                output = ((uint)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is Int64)
+            else if (input is long)
             {
                 valueType = ValueType.Int64;
-                output = ((Int64)input).ToString(CultureInfo.InvariantCulture);
+                output = ((long)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is UInt64)
+            else if (input is ulong)
             {
                 valueType = ValueType.UInt64;
-                output = ((UInt64)input).ToString(CultureInfo.InvariantCulture);
+                output = ((ulong)input).ToString(CultureInfo.InvariantCulture);
             }
-            else if (input is Double)
+            else if (input is double)
             {
                 valueType = ValueType.Double;
                 output = ((double)input).ToString(CultureInfo.InvariantCulture);

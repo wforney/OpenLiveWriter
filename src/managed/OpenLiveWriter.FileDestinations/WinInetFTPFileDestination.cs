@@ -206,7 +206,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <param name="RemotePath">The path of the file to get from the FTP server</param>
         /// <param name="LocalFile">The path of the local file to copy the file contents to</param>
         /// <param name="isBinary">True if the remote file is binary</param>
-        override public bool GetFile(String RemotePath, string LocalFile, bool isBinary)
+        override public bool GetFile(string RemotePath, string LocalFile, bool isBinary)
         {
             uint dwFlags = isBinary ? INTERNET_FLAG.TRANSFER_BINARY : INTERNET_FLAG.TRANSFER_ASCII;
             return WinInet.FtpGetFile(m_hFtp, RemotePath, LocalFile, false, (int)FileAttributes.Normal, (int)dwFlags, 0);
@@ -339,7 +339,7 @@ namespace OpenLiveWriter.FileDestinations
             string baseDir = path.Substring(0, index);
             string dirName = path.Substring(index + 1);
             bool pushedBaseDir = false;
-            if (baseDir.Trim() != String.Empty) //fix bug 4886
+            if (baseDir.Trim() != string.Empty) //fix bug 4886
             {
                 pushedBaseDir = pushDirectory(baseDir);
                 if (!pushedBaseDir)
@@ -598,7 +598,7 @@ namespace OpenLiveWriter.FileDestinations
             string exceptionType = null;
 
             string extendedMessage = WinInet.GetExtendedInfo();
-            if (extendedMessage == null || extendedMessage == String.Empty)
+            if (extendedMessage == null || extendedMessage == string.Empty)
                 extendedMessage = "The source of the error is unknown.";
 
             SiteDestinationException exception = null;

@@ -138,12 +138,12 @@ namespace OpenLiveWriter.PostEditor.Video
             string backgroundColor = NodeText(backgroundNode);
 
             XmlNode urlAtomPatternNode = providerNode.SelectSingleNode("urlAtomPattern");
-            string urlAtomPattern = String.Empty;
+            string urlAtomPattern = string.Empty;
             if (urlAtomPatternNode != null)
                 urlAtomPattern = NodeText(urlAtomPatternNode);
 
             XmlNode urlAtomFormatNode = providerNode.SelectSingleNode("urlAtomFormat");
-            string urlAtomFormat = String.Empty;
+            string urlAtomFormat = string.Empty;
             if (urlAtomFormatNode != null)
                 urlAtomFormat = NodeText(urlAtomFormatNode);
 
@@ -170,7 +170,7 @@ namespace OpenLiveWriter.PostEditor.Video
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         public static WhiteList[] WhiteLists

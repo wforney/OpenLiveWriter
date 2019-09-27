@@ -10,7 +10,7 @@ namespace OpenLiveWriter.PostEditor.Video
     class VideoPluginException : ApplicationException
     {
         public VideoPluginException(string title, string description)
-            : base(String.Format(CultureInfo.InvariantCulture, "{0} - {1}", title, description))
+            : base(string.Format(CultureInfo.InvariantCulture, "{0} - {1}", title, description))
         {
             _title = title;
             _description = description;

@@ -59,16 +59,16 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 link.Append(" target='_blank'");
             }
-            if (String.Empty != linkTitle && null != linkTitle)
+            if (string.Empty != linkTitle && null != linkTitle)
             {
                 link.Append(" title=\"{2}\"");
             }
-            if (String.Empty != rel && null != rel)
+            if (string.Empty != rel && null != rel)
             {
                 link.Append(" rel=\"{3}\"");
             }
             link.Append(">{1}</a>");
-            return String.Format(CultureInfo.InvariantCulture, link.ToString(), url, linkText, linkTitle, rel);
+            return string.Format(CultureInfo.InvariantCulture, link.ToString(), url, linkText, linkTitle, rel);
         }
 
         public virtual string GenerateHtmlFromHtmlFragment(string html, string baseUrl)

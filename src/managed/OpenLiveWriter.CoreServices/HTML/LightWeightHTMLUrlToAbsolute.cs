@@ -116,7 +116,7 @@ namespace OpenLiveWriter.CoreServices
 
         private bool ShouldEscapeRelativeUrl(string url)
         {
-            if ((url == String.Empty) && !_escapeEmptyString)
+            if ((url == string.Empty) && !_escapeEmptyString)
                 return false;
             else
                 return true;

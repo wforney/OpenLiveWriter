@@ -256,7 +256,7 @@ namespace OpenLiveWriter.HtmlEditor
                     if (oldParentElement != null)
                     {
                         string oldAlignment = oldParentElement.getAttribute("align", 2) as string;
-                        if (!String.IsNullOrEmpty(oldAlignment))
+                        if (!string.IsNullOrEmpty(oldAlignment))
                             newParentElement.setAttribute("align", oldAlignment, 0);
                     }
                 }

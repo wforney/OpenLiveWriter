@@ -213,7 +213,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
         /// </summary>
         public static Emoticon GetEmoticon(IHTMLElement element)
         {
-            if (element == null || (element as IHTMLImgElement) == null || String.IsNullOrEmpty(element.className))
+            if (element == null || (element as IHTMLImgElement) == null || string.IsNullOrEmpty(element.className))
                 return null;
 
             List<string> classNames = new List<string>(element.className.Split(new[] { ' ' }));
@@ -247,7 +247,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                 inlineImageUri = CreateInlineImage(emoticon);
             }
 
-            return String.Format(CultureInfo.InvariantCulture, "<img src=\"{0}\" style=\"border-style: none;\" alt=\"{1}\" class=\"{2} {3}\" />",
+            return string.Format(CultureInfo.InvariantCulture, "<img src=\"{0}\" style=\"border-style: none;\" alt=\"{1}\" class=\"{2} {3}\" />",
                 UrlHelper.SafeToAbsoluteUri(inlineImageUri), HtmlServices.HtmlEncode(emoticon.AltText), Emoticon.CLASS_NAME, emoticon.Id);
         }
 
@@ -322,7 +322,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                     }
                     catch (Exception ex)
                     {
-                        Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected exception getting Recent emoticon info [{0}]:{1}", recentEmoticonId, ex.ToString()));
+                        Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected exception getting Recent emoticon info [{0}]:{1}", recentEmoticonId, ex.ToString()));
                     }
                 }
             }
@@ -340,7 +340,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
 
             // Save recent emoticons.
             for (int i = 0; i < recentEmoticons.Count; i++)
-                PostEditorSettings.RecentEmoticonsKey.SetString(String.Format(CultureInfo.InvariantCulture, "Entry{0:00}", i), recentEmoticons[i].Id);
+                PostEditorSettings.RecentEmoticonsKey.SetString(string.Format(CultureInfo.InvariantCulture, "Entry{0:00}", i), recentEmoticons[i].Id);
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                 {
                     // Assert all the AutoReplace strings are unique.
                     Debug.Assert(!autoReplaceHashtable.ContainsKey(autoReplaceString), emoticon.AltText + " emoticon auto-replace string is non-unique!");
-                    autoReplaceHashtable.Add(autoReplaceString, String.Empty);
+                    autoReplaceHashtable.Add(autoReplaceString, string.Empty);
 
                     // Assert IsAutoReplaceEndingCharacter is correct.
                     Debug.Assert(IsAutoReplaceEndingCharacter(autoReplaceString[autoReplaceString.Length - 1]), "EmoticonsManager.IsAutoReplaceEndingCharacter needs to be updated for " + emoticon.AltText + " emoticon!");
@@ -366,7 +366,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
 
                 // Assert all the Ids are unique.
                 Debug.Assert(!idHashtable.ContainsKey(emoticon.Id), emoticon.AltText + " emoticon id is non-unique!");
-                autoReplaceHashtable.Add(emoticon.Id, String.Empty);
+                autoReplaceHashtable.Add(emoticon.Id, string.Empty);
             }
         }
     }

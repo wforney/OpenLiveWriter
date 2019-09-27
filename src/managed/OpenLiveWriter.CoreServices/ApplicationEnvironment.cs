@@ -51,13 +51,13 @@ namespace OpenLiveWriter.CoreServices
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(rootAssemblyPath);
             _companyName = fileVersionInfo.CompanyName;
             _productName = productName;
-            _productVersion = String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}.{3}", fileVersionInfo.ProductMajorPart, fileVersionInfo.ProductMinorPart, fileVersionInfo.ProductBuildPart, fileVersionInfo.ProductPrivatePart);
+            _productVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}.{3}", fileVersionInfo.ProductMajorPart, fileVersionInfo.ProductMinorPart, fileVersionInfo.ProductBuildPart, fileVersionInfo.ProductPrivatePart);
             _appVersion = new Version(_productVersion);
 
-            Debug.Assert(_appVersion.Build < UInt16.MaxValue &&
-                         _appVersion.Revision < UInt16.MaxValue &&
-                         _appVersion.Major < UInt16.MaxValue &&
-                         _appVersion.Minor < UInt16.MaxValue, "Invalid ApplicationVersion: " + _appVersion);
+            Debug.Assert(_appVersion.Build < ushort.MaxValue &&
+                         _appVersion.Revision < ushort.MaxValue &&
+                         _appVersion.Major < ushort.MaxValue &&
+                         _appVersion.Minor < ushort.MaxValue, "Invalid ApplicationVersion: " + _appVersion);
 
             // set installation directory and executable name
             _installationDirectory = installationDirectory;
@@ -208,7 +208,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Major, _appVersion.Build);
+                return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Major, _appVersion.Build);
             }
         }
 
@@ -216,7 +216,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Minor, _appVersion.Revision);
+                return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", _appVersion.Minor, _appVersion.Revision);
             }
         }
         private static Version _appVersion;
@@ -447,7 +447,7 @@ namespace OpenLiveWriter.CoreServices
 #else
             _logFilePath = LocalApplicationDataDirectory ;
 #endif
-            _logFilePath = Path.Combine(_logFilePath, String.Format(CultureInfo.InvariantCulture, "{0}.log", ProductName));
+            _logFilePath = Path.Combine(_logFilePath, string.Format(CultureInfo.InvariantCulture, "{0}.log", ProductName));
 
         }
 
@@ -461,7 +461,7 @@ namespace OpenLiveWriter.CoreServices
                 if (_applicationDiagnostics == null)
                 {
                     string templogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        String.Format(CultureInfo.InvariantCulture, "{0}.log", DefaultProductName));
+                        string.Format(CultureInfo.InvariantCulture, "{0}.log", DefaultProductName));
                     _applicationDiagnostics = new ApplicationDiagnostics(templogPath, Assembly.GetCallingAssembly().GetName().Name);
                 }
                 return _applicationDiagnostics;
@@ -494,7 +494,7 @@ namespace OpenLiveWriter.CoreServices
             if (browserBased)
             {
                 // e.g. "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 7.0; Open Live Writer 1.0)"
-                userAgent = String.Format(CultureInfo.InvariantCulture,
+                userAgent = string.Format(CultureInfo.InvariantCulture,
                                           "Mozilla/4.0 (compatible; MSIE {0}.{1}; Windows NT {2}.{3}; {4} 1.0)",
                                           majorBrowserVersion,
                                           minorBrowserVersion,
@@ -505,7 +505,7 @@ namespace OpenLiveWriter.CoreServices
             else
             {
                 // e.g. "Open Live Writer 1.0 (Windows NT 7.0)"
-                userAgent = String.Format(CultureInfo.InvariantCulture,
+                userAgent = string.Format(CultureInfo.InvariantCulture,
                                           "{0} 1.0 (Windows NT {1}.{2})",
                                           productName,
                                           osVersion.Major,

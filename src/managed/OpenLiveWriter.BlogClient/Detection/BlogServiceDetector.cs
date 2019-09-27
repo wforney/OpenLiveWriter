@@ -50,7 +50,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     if (_manifestDownloadInfo == null)
                     {
                         string manifestUrl = WriterEditingManifest.DiscoverUrl(_homepageUrl, weblogDOM);
-                        if (manifestUrl != String.Empty)
+                        if (manifestUrl != string.Empty)
                             _manifestDownloadInfo = new WriterEditingManifestDownloadInfo(manifestUrl);
                     }
 
@@ -98,7 +98,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         AttemptGenericAtomLinkDetection(_homepageUrl, html, false);
 
                     // finished
-                    UpdateProgress(progressHost, 100, String.Empty);
+                    UpdateProgress(progressHost, 100, string.Empty);
                 }
                 catch (OperationCancelledException)
                 {
@@ -275,7 +275,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             if (rsdServiceDescription == null)
                 return false;
 
-            string providerId = String.Empty;
+            string providerId = string.Empty;
             BlogAccount blogAccount = null;
 
             // check for a match on rsd engine link
@@ -512,7 +512,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         if (lastPathPart.IndexOf('.') != -1)
                         {
                             homepagePath = homepagePath.Substring(0, lastPathPartIndex);
-                            if (homepagePath == String.Empty)
+                            if (homepagePath == string.Empty)
                                 homepagePath = "/";
                         }
                     }
@@ -522,7 +522,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     //Update the homepage url
                     _homepageUrl = homepagePath;
 
-                    _postApiUrl = String.Format(CultureInfo.InvariantCulture, "{0}/_layouts/metaweblog.aspx", homepagePath);
+                    _postApiUrl = string.Format(CultureInfo.InvariantCulture, "{0}/_layouts/metaweblog.aspx", homepagePath);
 
                     if (VerifyCredentialsAndDetectAuthScheme(_postApiUrl, _blogCredentials, _credentials))
                     {
@@ -891,7 +891,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     if (index > 0)
                     {
                         string newname = _blogName.Substring(0, index).Trim();
-                        if (newname != String.Empty)
+                        if (newname != string.Empty)
                             _blogName = newname;
                     }
                 }
@@ -918,7 +918,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             using (BlogClientUIContextSilentMode uiContextScope = new BlogClientUIContextSilentMode()) //suppress prompting for credentials
             {
                 // no-op if we don't have a blog-id to work with
-                if (HostBlogId == String.Empty)
+                if (HostBlogId == string.Empty)
                     return this;
 
                 try
@@ -948,7 +948,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         private void DetectWeblogSettingsCompleted(object result)
         {
             // no-op if we don't have a blog detected
-            if (HostBlogId == String.Empty)
+            if (HostBlogId == string.Empty)
                 return;
 
             // get the editing template directory
@@ -1001,12 +1001,12 @@ namespace OpenLiveWriter.BlogClient.Detection
         /// <summary>
         /// Results of scanning
         /// </summary>
-        protected string _providerId = String.Empty;
-        protected string _serviceName = String.Empty;
-        protected string _clientType = String.Empty;
-        protected string _postApiUrl = String.Empty;
-        protected string _hostBlogId = String.Empty;
-        protected string _blogName = String.Empty;
+        protected string _providerId = string.Empty;
+        protected string _serviceName = string.Empty;
+        protected string _clientType = string.Empty;
+        protected string _postApiUrl = string.Empty;
+        protected string _hostBlogId = string.Empty;
+        protected string _blogName = string.Empty;
 
         protected BlogInfo[] _usersBlogs = new BlogInfo[] { };
 

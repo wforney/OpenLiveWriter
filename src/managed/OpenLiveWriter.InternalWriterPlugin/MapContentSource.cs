@@ -99,7 +99,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
             }
 
             string imgAltText = Res.Get(StringId.MapImageAltText);
-            if (settings.Caption != String.Empty)
+            if (settings.Caption != string.Empty)
                 imgAltText = settings.Caption;
 
             string imageHtml = settings.Caption;
@@ -107,24 +107,24 @@ namespace OpenLiveWriter.InternalWriterPlugin
             {
                 Size mapSize = settings.Size;
                 string sizeAttrs = mapSize != Size.Empty
-                                       ? String.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", mapSize.Width, mapSize.Height) : "";
-                imageHtml = String.Format(CultureInfo.InvariantCulture, "<img src=\"{0}\"{1} alt=\"{2}\">", HtmlServices.HtmlEncode(imageUri.ToString()), sizeAttrs, HtmlServices.HtmlEncode(imgAltText));
+                                       ? string.Format(CultureInfo.InvariantCulture, " width=\"{0}\" height=\"{1}\"", mapSize.Width, mapSize.Height) : "";
+                imageHtml = string.Format(CultureInfo.InvariantCulture, "<img src=\"{0}\"{1} alt=\"{2}\">", HtmlServices.HtmlEncode(imageUri.ToString()), sizeAttrs, HtmlServices.HtmlEncode(imgAltText));
             }
             else
             {
-                if (imageHtml.Equals(String.Empty))
+                if (imageHtml.Equals(string.Empty))
                 {
                     imageHtml = Res.Get(StringId.ViewMap);
                 }
             }
 
-            string clickToViewAttr = editor ? "" : String.Format(CultureInfo.InvariantCulture, " alt=\"{0}\" title=\"{0}\"", clickToViewText);
-            string mapHtml = String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\" id=\"{2}\"{3}>{1}</a>",
+            string clickToViewAttr = editor ? "" : string.Format(CultureInfo.InvariantCulture, " alt=\"{0}\" title=\"{0}\"", clickToViewText);
+            string mapHtml = string.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\" id=\"{2}\"{3}>{1}</a>",
                 HtmlServices.HtmlEncode(settings.LiveMapUrl), imageHtml, settings.MapId, clickToViewAttr);
-            if (imageUri != null && settings.Caption != String.Empty)
+            if (imageUri != null && settings.Caption != string.Empty)
             {
                 //append the caption HTML
-                mapHtml += String.Format(CultureInfo.InvariantCulture, _pluginOptions.CaptionHtmlFormat, HtmlServices.HtmlEncode(settings.Caption), settings.MapId);
+                mapHtml += string.Format(CultureInfo.InvariantCulture, _pluginOptions.CaptionHtmlFormat, HtmlServices.HtmlEncode(settings.Caption), settings.MapId);
             }
             return mapHtml;
         }

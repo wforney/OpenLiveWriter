@@ -133,7 +133,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string UnescapeNewlines(string text)
         {
-            if (String.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
                 return text;
 
             return text.Replace("\\r\\n", "\r\n");
@@ -333,8 +333,8 @@ namespace OpenLiveWriter.CoreServices
             if (strVal == null)
                 return null;
 
-            if (strVal == String.Empty)
-                return String.Empty;
+            if (strVal == string.Empty)
+                return string.Empty;
 
             string[] lines = strVal.Split('\n');
 
@@ -522,7 +522,7 @@ namespace OpenLiveWriter.CoreServices
             StringBuilder stringBuilder = new StringBuilder();
             foreach (char ch in text)
             {
-                if (Char.IsControl(ch) || Char.IsWhiteSpace(ch) || Char.IsSeparator(ch))
+                if (char.IsControl(ch) || char.IsWhiteSpace(ch) || char.IsSeparator(ch))
                 {
                     if (!inWhitespace)
                     {

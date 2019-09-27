@@ -517,7 +517,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 
                 proc.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
                 {
-                    if (!String.IsNullOrEmpty(e.Data))
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
                         stdout += e.Data;
                         Trace.WriteLine($"StaticSiteClient stdout: {e.Data}");
@@ -526,7 +526,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 
                 proc.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
                 {
-                    if (!String.IsNullOrEmpty(e.Data))
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
                         stderr += e.Data;
                         Trace.WriteLine($"StaticSiteClient stderr: {e.Data}");

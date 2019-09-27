@@ -125,7 +125,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 {
                     //StringBuilder html = new StringBuilder();
                     //html.AppendFormat("<a href=\"{0}\">{1}</a>", DataMeister.URLData.URL, DataMeister.URLData.Title);
-                    string html = EditorContext.HtmlGenerationService.GenerateHtmlFromLink(Url, Title, Title, String.Empty, false);
+                    string html = EditorContext.HtmlGenerationService.GenerateHtmlFromLink(Url, Title, Title, string.Empty, false);
                     EditorContext.InsertHtml(begin, end, html, null);
 
                     //place the caret at the end of the inserted content

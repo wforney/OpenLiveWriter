@@ -27,7 +27,7 @@ namespace OpenLiveWriter.CoreServices
             if (node == null)
                 return null;
             string rawDate = node.Value; // example: 2010-04-02T18:02:55Z
-            if (String.IsNullOrEmpty(rawDate))
+            if (string.IsNullOrEmpty(rawDate))
                 return null;
 
             DateTime dateTime;
@@ -111,7 +111,7 @@ namespace OpenLiveWriter.CoreServices
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         public static bool NodeBool(XmlNode node, bool defaultValue)
@@ -120,7 +120,7 @@ namespace OpenLiveWriter.CoreServices
             string boolValue = NodeText(node);
 
             // if not empty then read value
-            if (boolValue != String.Empty)
+            if (boolValue != string.Empty)
             {
                 switch (boolValue.Trim().ToUpperInvariant())
                 {

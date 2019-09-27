@@ -426,7 +426,7 @@ namespace OpenLiveWriter.CoreServices
                 string[] lines = HeaderString.Split('\n');
                 for (int it = 0; it < lines.Length; it++)
                 {
-                    string[] pair = lines[it].Split(new Char[] { ':' }, 2);
+                    string[] pair = lines[it].Split(new char[] { ':' }, 2);
                     if (pair.Length == 2)
                     {
                         m_HTMLFormatHeaders.Add(pair[0].Trim(), pair[1].Trim());
@@ -548,7 +548,7 @@ namespace OpenLiveWriter.CoreServices
             get
             {
                 int result;
-                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.StartHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
+                int.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.StartHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
                 return result;
             }
 
@@ -563,7 +563,7 @@ namespace OpenLiveWriter.CoreServices
             get
             {
                 int result;
-                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.EndHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
+                int.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.EndHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
                 return result;
             }
 

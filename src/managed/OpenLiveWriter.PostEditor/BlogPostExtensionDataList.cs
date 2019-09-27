@@ -154,7 +154,7 @@ namespace OpenLiveWriter.PostEditor
         string AddFile(string fileName, Stream s);
         Uri GetFileUri(string fileId);
         Stream GetFileStream(string fileId);
-        Object ObjectState { get; set; }
+        object ObjectState { get; set; }
         void RemoveFile(string fileId);
         DateTime? RefreshCallBack { get; set; }
         event EventHandler RefreshCallBackChanged;
@@ -167,7 +167,7 @@ namespace OpenLiveWriter.PostEditor
         private string _id;
         private ISupportingFileService _fileService;
         private DateTime? _refreshCallBack;
-        private Object _objectContext;
+        private object _objectContext;
 
         Hashtable _fileIds;
 

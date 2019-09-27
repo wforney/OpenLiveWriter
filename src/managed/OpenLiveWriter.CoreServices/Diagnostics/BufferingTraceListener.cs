@@ -97,7 +97,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         {
             //	Add the message.
             if (detailMessage != null && detailMessage.Length != 0)
-                AddEntry(String.Format(CultureInfo.InvariantCulture, "{0} {1}", message, detailMessage), ErrText.FailText, Environment.StackTrace);
+                AddEntry(string.Format(CultureInfo.InvariantCulture, "{0} {1}", message, detailMessage), ErrText.FailText, Environment.StackTrace);
             else
                 AddEntry(message, ErrText.FailText, Environment.StackTrace);
         }

@@ -42,14 +42,14 @@ namespace OpenLiveWriter.CoreServices
         {
             string formattedTitle = FormatString(titleFormat, textFormatArgs);
             string formattedText = FormatString(textFormat, textFormatArgs);
-            return String.Format(CultureInfo.CurrentCulture, "{0} - {1}", formattedTitle, formattedText);
+            return string.Format(CultureInfo.CurrentCulture, "{0} - {1}", formattedTitle, formattedText);
         }
 
         private static string FormatString(string text, params object[] textFormatArgs)
         {
             try
             {
-                return String.Format(CultureInfo.CurrentCulture, ReplaceNewlines(text), textFormatArgs);
+                return string.Format(CultureInfo.CurrentCulture, ReplaceNewlines(text), textFormatArgs);
             }
             catch (Exception ex)
             {

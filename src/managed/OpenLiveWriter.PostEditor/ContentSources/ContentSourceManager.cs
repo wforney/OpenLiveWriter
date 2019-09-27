@@ -347,7 +347,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
         private string VerifyAttributeValue(Type pluginType, object attribute, string attributeField, string attributeValue)
         {
-            if (attributeValue != null && attributeValue != String.Empty)
+            if (attributeValue != null && attributeValue != string.Empty)
                 return attributeValue;
             else
                 throw new PluginAttributeFieldMissingException(pluginType, attribute.GetType(), attributeField);
@@ -365,7 +365,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         // verify bitmap size
                         if ((bitmap.Width != IMAGE_WIDTH || bitmap.Height != IMAGE_HEIGHT) && (bitmap.Width != 20 || bitmap.Height != 18))
                         {
-                            string errorText = String.Format(CultureInfo.CurrentCulture, "Warning: The bitmap for plugin {0} is not the correct size (it should be 16x16 or 20x18).", _pluginType.Name);
+                            string errorText = string.Format(CultureInfo.CurrentCulture, "Warning: The bitmap for plugin {0} is not the correct size (it should be 16x16 or 20x18).", _pluginType.Name);
                             Trace.Fail(errorText);
                         }
                     }
@@ -733,7 +733,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
         public static string MakeContainingElementId(string sourceId, string contentBlockId)
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0}:{1}:{2}", SMART_CONTENT_ID_PREFIX, sourceId, contentBlockId);
+            return string.Format(CultureInfo.InvariantCulture, "{0}:{1}:{2}", SMART_CONTENT_ID_PREFIX, sourceId, contentBlockId);
         }
 
         public static void ParseContainingElementId(string containingElementId, out string sourceId, out string contentBlockId)
@@ -802,7 +802,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 else if (contentSource.Instance is ContentSource)
                 {
                     ContentSource sSource = (ContentSource)contentSource.Instance;
-                    string newContent = String.Empty; // default
+                    string newContent = string.Empty; // default
                     try { if (sourceSite.SelectedHtml != null) newContent = sourceSite.SelectedHtml; }
                     catch { } // safely try to provide selected html
                     if (sSource.CreateContent(sourceSite.DialogOwner, ref newContent) == DialogResult.OK)
@@ -940,7 +940,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             else if (ex is NotImplementedException)
             {
                 DisplayableExceptionDisplayForm.Show(dialogOwner, new DisplayableException(
-                    Res.Get(StringId.MethodNotImplemented), String.Format(CultureInfo.InvariantCulture, Res.Get(StringId.MethodNotImplementedDetail), info.Name, info.WriterPluginPublisherUrl, ex.Message)));
+                    Res.Get(StringId.MethodNotImplemented), string.Format(CultureInfo.InvariantCulture, Res.Get(StringId.MethodNotImplementedDetail), info.Name, info.WriterPluginPublisherUrl, ex.Message)));
             }
             else
             {
@@ -1106,7 +1106,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WithEllipses), _contentSourceInfo.InsertableContentSourceMenuText);
+                return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WithEllipses), _contentSourceInfo.InsertableContentSourceMenuText);
             }
         }
 
@@ -1114,7 +1114,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WithEllipses), _contentSourceInfo.InsertableContentSourceSidebarText);
+                return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WithEllipses), _contentSourceInfo.InsertableContentSourceSidebarText);
             }
         }
 
@@ -1208,7 +1208,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Plugin {0} is missing the \"{1}\" field of the {2}.", _pluginType.Name, _attributeFieldName, _attributeType.Name);
+                return string.Format(CultureInfo.CurrentCulture, "Plugin {0} is missing the \"{1}\" field of the {2}.", _pluginType.Name, _attributeFieldName, _attributeType.Name);
             }
         }
 
@@ -1240,7 +1240,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Unable to load image resource {0} for Plugin {1}.", _imageResourcePath, _pluginType.Name);
+                return string.Format(CultureInfo.CurrentCulture, "Unable to load image resource {0} for Plugin {1}.", _imageResourcePath, _pluginType.Name);
             }
         }
     }
@@ -1256,7 +1256,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Image resource {0} for Plugin {1} is the wrong size (Plugin images must be {2}x{3}).", _imageResourcePath, _pluginType.Name, ContentSourceInfo.IMAGE_WIDTH, ContentSourceInfo.IMAGE_HEIGHT);
+                return string.Format(CultureInfo.CurrentCulture, "Image resource {0} for Plugin {1} is the wrong size (Plugin images must be {2}x{3}).", _imageResourcePath, _pluginType.Name, ContentSourceInfo.IMAGE_WIDTH, ContentSourceInfo.IMAGE_HEIGHT);
             }
         }
     }
@@ -1273,7 +1273,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Invalid regular expression for Plugin {0} ({1}).", _pluginType.Name, _regex);
+                return string.Format(CultureInfo.CurrentCulture, "Invalid regular expression for Plugin {0} ({1}).", _pluginType.Name, _regex);
             }
         }
 
@@ -1293,7 +1293,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "The Plugin {0} does not have the required attributes. Content source plugins must include the WriterPlugin attribute as well as one or more of the InsertableContentSource, UrlContentSource, or LiveClipbaordContentSource attributes.", _pluginType.Name);
+                return string.Format(CultureInfo.CurrentCulture, "The Plugin {0} does not have the required attributes. Content source plugins must include the WriterPlugin attribute as well as one or more of the InsertableContentSource, UrlContentSource, or LiveClipbaordContentSource attributes.", _pluginType.Name);
             }
         }
 

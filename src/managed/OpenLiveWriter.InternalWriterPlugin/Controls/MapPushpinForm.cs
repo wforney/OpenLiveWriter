@@ -63,17 +63,17 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             _pushpinEditedHandler = pushpinEditedHandler;
 
             if (pushpinInfo == null)
-                pushpinInfo = new MapPushpinInfo(String.Empty);
+                pushpinInfo = new MapPushpinInfo(string.Empty);
 
             textBoxTitle.Text = pushpinInfo.Title;
-            if (textBoxTitle.Text == String.Empty)
+            if (textBoxTitle.Text == string.Empty)
                 textBoxTitle.Text = UNTITLED_PUSHPIN;
 
             textBoxNotes.Text = pushpinInfo.Notes;
             textBoxPhotoUrl.Text = pushpinInfo.PhotoUrl;
             textBoxMoreInfoUrl.Text = pushpinInfo.MoreInfoUrl;
 
-            if (pushpinInfo.Title == String.Empty)
+            if (pushpinInfo.Title == string.Empty)
             {
                 Text = Res.Get(StringId.PushpinAdd);
             }
@@ -95,7 +95,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         private void buttonSave_Click(object sender, System.EventArgs e)
         {
             string title = StringHelper.Ellipsis(textBoxTitle.Text.Trim(), 600);
-            if (title == String.Empty)
+            if (title == string.Empty)
             {
                 title = textBoxTitle.Text = UNTITLED_PUSHPIN;
             }
@@ -105,7 +105,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
 
             // treat an empty title as the same as "Cancel" -- since this dialog dismisses
             // on deactivation we can't really throw up a message-box
-            if (pushpinInfo.Title != String.Empty)
+            if (pushpinInfo.Title != string.Empty)
             {
                 pushpinInfo.Notes = StringHelper.Ellipsis(textBoxNotes.Text.Trim(), 600);
                 pushpinInfo.PhotoUrl = StringHelper.RestrictLength(UrlHelper.FixUpUrl(textBoxPhotoUrl.Text), 600);
@@ -318,21 +318,21 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             get { return _notes; }
             set { _notes = value; }
         }
-        private string _notes = String.Empty;
+        private string _notes = string.Empty;
 
         public string PhotoUrl
         {
             get { return _photoUrl; }
             set { _photoUrl = value; }
         }
-        private string _photoUrl = String.Empty;
+        private string _photoUrl = string.Empty;
 
         public string MoreInfoUrl
         {
             get { return _moreInfoUrl; }
             set { _moreInfoUrl = value; }
         }
-        private string _moreInfoUrl = String.Empty;
+        private string _moreInfoUrl = string.Empty;
 
     }
 }

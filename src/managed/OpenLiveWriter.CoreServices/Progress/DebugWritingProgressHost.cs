@@ -27,7 +27,7 @@ namespace OpenLiveWriter.CoreServices.Progress
 
         public void UpdateProgress(int complete, int total, string message)
         {
-            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "Debug Writing Progress {0} {1} : {2} / {3}", progressDisplayPrefix, message, complete, total));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Debug Writing Progress {0} {1} : {2} / {3}", progressDisplayPrefix, message, complete, total));
             committedProgessPercentage = total == 0 ? 0 : ((double)complete) / total;
         }
 

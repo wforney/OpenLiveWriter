@@ -35,10 +35,10 @@ namespace OpenLiveWriter.Interop.Windows
         internal static extern void PropVariantGetUInt32Elem([In] ref PropVariant propVar, [In] uint iElem, [Out] out uint pnVal);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void PropVariantGetInt64Elem([In] ref PropVariant propVar, [In] uint iElem, [Out] out Int64 pnVal);
+        internal static extern void PropVariantGetInt64Elem([In] ref PropVariant propVar, [In] uint iElem, [Out] out long pnVal);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void PropVariantGetUInt64Elem([In] ref PropVariant propVar, [In] uint iElem, [Out] out UInt64 pnVal);
+        internal static extern void PropVariantGetUInt64Elem([In] ref PropVariant propVar, [In] uint iElem, [Out] out ulong pnVal);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern void PropVariantGetDoubleElem([In] ref PropVariant propVar, [In] uint iElem, [Out] out double pnVal);
@@ -53,22 +53,22 @@ namespace OpenLiveWriter.Interop.Windows
         internal static extern void InitPropVariantFromBooleanVector([In, Out] bool[] prgf, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromInt16Vector([In, Out] Int16[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromInt16Vector([In, Out] short[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromUInt16Vector([In, Out] UInt16[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromUInt16Vector([In, Out] ushort[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromInt32Vector([In, Out] Int32[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromInt32Vector([In, Out] int[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromUInt32Vector([In, Out] UInt32[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromUInt32Vector([In, Out] uint[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromInt64Vector([In, Out] Int64[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromInt64Vector([In, Out] long[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void InitPropVariantFromUInt64Vector([In, Out] UInt64[] prgn, uint cElems, out PropVariant ppropvar);
+        internal static extern void InitPropVariantFromUInt64Vector([In, Out] ulong[] prgn, uint cElems, out PropVariant ppropvar);
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern void InitPropVariantFromDoubleVector([In, Out] double[] prgn, uint cElems, out PropVariant ppropvar);

@@ -33,18 +33,18 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         {
             get { return _postLink; }
         }
-        private string _postLink = String.Empty;
+        private string _postLink = string.Empty;
 
         public string PostTitle
         {
             get { return _postTitle; }
         }
-        private string _postTitle = String.Empty;
+        private string _postTitle = string.Empty;
 
         private void SelectPostLinkForm_ValidatePost(object sender, ValidatePostEventArgs ea)
         {
             PostInfo postInfo = ea.PostInfo;
-            if (postInfo.Permalink == String.Empty)
+            if (postInfo.Permalink == string.Empty)
             {
                 // see if we can do a direct fetch from the weblog
                 using (new WaitCursor())
@@ -58,7 +58,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 }
 
                 // if we still don't have it then display an error message
-                if (_postLink == String.Empty)
+                if (_postLink == string.Empty)
                 {
                     // saving the company a few dollars by not putting this one
                     // in DisplayMessages.xml, since it's already been translated

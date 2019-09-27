@@ -159,7 +159,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             // fully custom painting
             IntegralHeight = false;
             DrawMode = DrawMode.OwnerDrawFixed;
-            Items.Add(String.Empty);
+            Items.Add(string.Empty);
         }
 
         public void Initialize(IWin32Window parentFrame, CategoryContext categoryContext)

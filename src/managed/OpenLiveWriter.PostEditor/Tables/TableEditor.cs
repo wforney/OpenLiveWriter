@@ -47,11 +47,11 @@ namespace OpenLiveWriter.PostEditor.Tables
             StringBuilder propertiesString = new StringBuilder();
             if (properties.Width.Units != PixelPercentUnits.Undefined)
                 propertiesString.AppendFormat("width=\"{0}\"", properties.Width);
-            if (properties.BorderSize != String.Empty)
+            if (properties.BorderSize != string.Empty)
                 propertiesString.AppendFormat(" border=\"{0}\"", properties.BorderSize);
-            if (properties.CellPadding != String.Empty)
+            if (properties.CellPadding != string.Empty)
                 propertiesString.AppendFormat(" cellpadding=\"{0}\"", properties.CellPadding);
-            if (properties.CellSpacing != String.Empty)
+            if (properties.CellSpacing != string.Empty)
                 propertiesString.AppendFormat(" cellspacing=\"{0}\"", properties.CellSpacing);
 
             // begin table
@@ -59,7 +59,7 @@ namespace OpenLiveWriter.PostEditor.Tables
             tableHtml.Append("<tbody>\r\n");
 
             // write cells
-            string columnWidth = String.Empty;
+            string columnWidth = string.Empty;
 
             switch (parameters.Properties.Width.Units)
             {
@@ -416,19 +416,19 @@ namespace OpenLiveWriter.PostEditor.Tables
                 if (TableSelection.Table.cellPadding != null)
                     tableProperties.CellPadding = TableSelection.Table.cellPadding.ToString();
                 else
-                    tableProperties.CellPadding = String.Empty;
+                    tableProperties.CellPadding = string.Empty;
 
                 // read cell spacing
                 if (TableSelection.Table.cellSpacing != null)
                     tableProperties.CellSpacing = TableSelection.Table.cellSpacing.ToString();
                 else
-                    tableProperties.CellSpacing = String.Empty;
+                    tableProperties.CellSpacing = string.Empty;
 
                 // read border
                 if (TableSelection.Table.border != null)
                     tableProperties.BorderSize = TableSelection.Table.border.ToString();
                 else
-                    tableProperties.BorderSize = String.Empty;
+                    tableProperties.BorderSize = string.Empty;
 
                 // read width
                 tableProperties.Width = TableHelper.GetTableWidth(TableSelection.Table);
@@ -442,19 +442,19 @@ namespace OpenLiveWriter.PostEditor.Tables
                 using (IUndoUnit undoUnit = _editorContext.CreateUndoUnit())
                 {
                     // cell padding
-                    if (value.CellPadding != String.Empty)
+                    if (value.CellPadding != string.Empty)
                         TableSelection.Table.cellPadding = value.CellPadding;
                     else
                         (TableSelection.Table as IHTMLElement).removeAttribute("cellpadding", 0);
 
                     // cell spacing
-                    if (value.CellSpacing != String.Empty)
+                    if (value.CellSpacing != string.Empty)
                         TableSelection.Table.cellSpacing = value.CellSpacing;
                     else
                         (TableSelection.Table as IHTMLElement).removeAttribute("cellspacing", 0);
 
                     // border
-                    if (value.BorderSize != String.Empty)
+                    if (value.BorderSize != string.Empty)
                         TableSelection.Table.border = value.BorderSize;
                     else
                         (TableSelection.Table as IHTMLElement).removeAttribute("border", 0);
@@ -955,7 +955,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
                     foreach (IHTMLElement cellElement in tableMarkupRange.GetElements(ElementFilters.TABLE_CELL_ELEMENT, true))
                     {
-                        if ((cellElement.innerHTML == null) || cellElement.innerHTML == String.Empty)
+                        if ((cellElement.innerHTML == null) || cellElement.innerHTML == string.Empty)
                         {
                             cellElement.innerHTML = EMPTY_CELL;
                         }
@@ -979,7 +979,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     foreach (IHTMLElement cellElement in tableMarkupRange.GetElements(ElementFilters.TABLE_CELL_ELEMENT, true))
                     {
                         string innerHTML = cellElement.innerHTML;
-                        if ((innerHTML == EMPTY_CELL) || innerHTML == String.Empty)
+                        if ((innerHTML == EMPTY_CELL) || innerHTML == string.Empty)
                         {
                             cellElement.innerHTML = null;
                         }
@@ -1329,21 +1329,21 @@ namespace OpenLiveWriter.PostEditor.Tables
             get { return _cellPadding; }
             set { _cellPadding = value; }
         }
-        private string _cellPadding = String.Empty;
+        private string _cellPadding = string.Empty;
 
         public string CellSpacing
         {
             get { return _cellSpacing; }
             set { _cellSpacing = value; }
         }
-        private string _cellSpacing = String.Empty;
+        private string _cellSpacing = string.Empty;
 
         public string BorderSize
         {
             get { return _borderSize; }
             set { _borderSize = value; }
         }
-        private string _borderSize = String.Empty;
+        private string _borderSize = string.Empty;
 
         public PixelPercent Width { get; set; }
     }

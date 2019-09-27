@@ -99,7 +99,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
                 }
                 else
                 {
-                    QueryStatusLabel.Text = String.Empty;
+                    QueryStatusLabel.Text = string.Empty;
                     QueryStatusLabel.Visible = false;
                     QueryStatusLabel.SendToBack();
                     QueryStatusLabel.Update();
@@ -286,7 +286,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
             {
                 durationRectangle = new Rectangle(leftMargin, topMargin + fontHeight + 3, titleWidth, fontHeight);
 
-                string duration = String.Format(CultureInfo.InvariantCulture, "{0:00}:{1:00}", video.LengthSeconds / 60, video.LengthSeconds % 60);
+                string duration = string.Format(CultureInfo.InvariantCulture, "{0:00}:{1:00}", video.LengthSeconds / 60, video.LengthSeconds % 60);
 
                 g.DrawText(
                     duration,
@@ -393,7 +393,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
                     label.BackColor = BackColor;
                     label.ForeColor = SystemColors.ControlDarkDark;
                     label.Font = Res.GetFont(FontSize.XLarge, FontStyle.Regular);
-                    label.Text = String.Empty;
+                    label.Text = string.Empty;
                     label.Visible = false;
                     //label.FlatStyle = FlatStyle.System;
                     label.TabStop = false;

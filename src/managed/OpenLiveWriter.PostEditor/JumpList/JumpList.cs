@@ -32,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
         }
 
         // Best practice recommends defining a private object to lock on
-        private static Object syncLock = new Object();
+        private static object syncLock = new object();
 
         // Native implementation of destination list
         private ICustomDestinationList customDestinationList;
@@ -203,7 +203,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
 
                             Trace.WriteLine("Dumping ProgId for extension: " + extension);
                             string progId = FileHelper.GetProgIDFromExtension(extension);
-                            if (String.IsNullOrEmpty(progId))
+                            if (string.IsNullOrEmpty(progId))
                             {
                                 error = true;
                                 Trace.Fail("ERROR: ProgId missing for extension: " + extension);
@@ -214,7 +214,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
 
                                 // Detect the UserAppModelId
                                 string appUserModelID = RegistryHelper.GetAppUserModelID(progId);
-                                if (String.IsNullOrEmpty(appUserModelID))
+                                if (string.IsNullOrEmpty(appUserModelID))
                                 {
                                     error = true;
                                     Trace.Fail("ERROR: Missing AppUserModelID for " + progId);

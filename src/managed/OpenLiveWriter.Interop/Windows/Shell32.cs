@@ -37,12 +37,12 @@ namespace OpenLiveWriter.Interop.Windows
             IntPtr hwndOwner, int nFolder, out IntPtr ppidl);
 
         [DllImport("Shell32.dll")]
-        public static extern Int32 SHGetFolderLocation(
-            IntPtr hwndOwner, Int32 nFolder, IntPtr hToken, UInt32 dwReserved, out IntPtr ppidl);
+        public static extern int SHGetFolderLocation(
+            IntPtr hwndOwner, int nFolder, IntPtr hToken, uint dwReserved, out IntPtr ppidl);
 
         [DllImport("Shell32.dll")]
-        public static extern Int32 SHGetKnownFolderIDList(
-            ref Guid rfid, UInt32 dwFlags, IntPtr hToken, out IntPtr ppidl);
+        public static extern int SHGetKnownFolderIDList(
+            ref Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppidl);
 
         [DllImport("Shell32.dll")]
         public static extern void ILFree(IntPtr pidl);
@@ -88,7 +88,7 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern IntPtr ExtractIcon(
             IntPtr hInst,
             string lpszExeFileName,
-            Int32 nIconIndex
+            int nIconIndex
             );
 
         [DllImport("shell32.dll", SetLastError = true)]

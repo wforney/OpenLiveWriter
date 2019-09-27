@@ -18,8 +18,8 @@ namespace OpenLiveWriter.Api
         /// <param name="menuText">Text used to describe the insertable content on the Insert menu.</param>
         public InsertableContentSourceAttribute(string menuText)
         {
-            MenuText = menuText;
-            SidebarText = _menuText;
+            this.MenuText = menuText;
+            this.SidebarText = this._menuText;
         }
 
         /// <summary>
@@ -27,17 +27,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string MenuText
         {
-            get
-            {
-                return _menuText;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("InsertableContentSource.MenuText");
-
-                _menuText = value;
-            }
+            get => this._menuText;
+            set => this._menuText = value ?? throw new ArgumentNullException("InsertableContentSource.MenuText");
         }
         private string _menuText;
 
@@ -48,17 +39,8 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string SidebarText
         {
-            get
-            {
-                return _sidebarText;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("InsertableContentSource.SidebarText");
-
-                _sidebarText = value;
-            }
+            get => this._sidebarText;
+            set => this._sidebarText = value ?? throw new ArgumentNullException("InsertableContentSource.SidebarText");
         }
         private string _sidebarText;
     }

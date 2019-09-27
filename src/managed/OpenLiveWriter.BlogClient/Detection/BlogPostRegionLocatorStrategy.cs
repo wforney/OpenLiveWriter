@@ -83,11 +83,11 @@ namespace OpenLiveWriter.BlogClient.Detection
         private string TEMPORARY_POST_TITLE_GUID = Guid.NewGuid().ToString();
         private string TEMPORARY_POST_BODY
         {
-            get { return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TemporaryPostBody), TEMPORARY_POST_BODY_GUID, TEMPORARY_POST_STABLE_GUID); }
+            get { return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TemporaryPostBody), TEMPORARY_POST_BODY_GUID, TEMPORARY_POST_STABLE_GUID); }
         }
         private string TEMPORARY_POST_TITLE
         {
-            get { return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TemporaryPostTitle), TEMPORARY_POST_TITLE_GUID, TEMPORARY_POST_STABLE_GUID); }
+            get { return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TemporaryPostTitle), TEMPORARY_POST_TITLE_GUID, TEMPORARY_POST_STABLE_GUID); }
         }
 
         public TemporaryPostRegionLocatorStrategy(IBlogClient blogClient, BlogAccount blogAccount,
@@ -189,7 +189,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             //and so we'll know it can be safely removed later
             //Note: this fixes an issue where the editor's postBody <div> was being parented improperly by
             //a <p> element that the blog service was adding...
-            string postContents = String.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", TEMPORARY_POST_BODY);
+            string postContents = string.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", TEMPORARY_POST_BODY);
             testPost.Contents = postContents;
 
             string etag;
@@ -414,7 +414,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             // search up the parent hierarchy
             while (element != null)
             {
-                if (0 == String.Compare(element.tagName, "div", StringComparison.OrdinalIgnoreCase))
+                if (0 == string.Compare(element.tagName, "div", StringComparison.OrdinalIgnoreCase))
                 {
                     string className = element.getAttribute("className", 0) as string;
                     if (className == "wlWriterSmartContent" || className == "wlWriterEditableSmartContent")
@@ -634,7 +634,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             bool whitespaceMode = false;
             foreach (char ch in text)
             {
-                if (Char.IsWhiteSpace(ch))
+                if (char.IsWhiteSpace(ch))
                 {
                     if (!whitespaceMode)
                     {
@@ -642,7 +642,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         whitespaceMode = true;
                     }
                 }
-                else if (Char.IsLetterOrDigit(ch))
+                else if (char.IsLetterOrDigit(ch))
                 {
                     sb.Append(ch);
                     whitespaceMode = false;

@@ -57,7 +57,7 @@ namespace OpenLiveWriter.Interop.Com.ActiveDocuments
         [PreserveSig]
         int TranslateAccelerator(
             [In] ref MSG lpmsg,
-            [In] UInt16 wID);
+            [In] ushort wID);
     }
 
     /// <summary>

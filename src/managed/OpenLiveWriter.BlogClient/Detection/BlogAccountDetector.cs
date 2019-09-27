@@ -91,7 +91,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 string url2 = UrlHelper.InsureTrailingSlash(homepageUrlHint);
 
                 // compare the urls and the blog ids
-                if (((url1 != String.Empty) && UrlHelper.UrlsAreEqual(url1, url2)) ||
+                if (((url1 != string.Empty) && UrlHelper.UrlsAreEqual(url1, url2)) ||
                     blog.Id == blogIdHint)
                 {
                     return blog;
@@ -174,8 +174,8 @@ namespace OpenLiveWriter.BlogClient.Detection
         private string _clientType;
         private string _postApiUrl;
         private IBlogCredentialsAccessor _credentials;
-        private string _blogId = String.Empty;
-        private string _blogName = String.Empty;
+        private string _blogId = string.Empty;
+        private string _blogName = string.Empty;
         private BlogInfo[] _usersBlogs = new BlogInfo[] { };
         private MessageId _errorMessageType;
         private object[] _errorMessageParams;

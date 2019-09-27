@@ -809,7 +809,7 @@ namespace OpenLiveWriter.Mshtml
                     delegate (MarkupRange currentRange, MarkupContext context, string text)
                         {
                             text = text ?? string.Empty;
-                            if (!String.IsNullOrEmpty(text.Trim()))
+                            if (!string.IsNullOrEmpty(text.Trim()))
                             {
                                 isEmptyOfContent = false;
                                 return false;
@@ -844,7 +844,7 @@ namespace OpenLiveWriter.Mshtml
                     delegate (MarkupRange currentRange, MarkupContext context, string text)
                         {
                             text = text ?? string.Empty;
-                            if (!String.IsNullOrEmpty(text.Trim()))
+                            if (!string.IsNullOrEmpty(text.Trim()))
                             {
                                 isEmptyOfText = false;
                                 return false;
@@ -1098,7 +1098,7 @@ namespace OpenLiveWriter.Mshtml
                     }
                     catch (COMException e)
                     {
-                        Trace.Fail(String.Format("Failed to remove element ({0}) with error: {1}",
+                        Trace.Fail(string.Format("Failed to remove element ({0}) with error: {1}",
                             currentElement.outerHTML,   // {0}
                             e                           // {1}
                         ));
@@ -1121,7 +1121,7 @@ namespace OpenLiveWriter.Mshtml
                     }
                     catch (COMException ex)
                     {
-                        Trace.Fail(String.Format("Failed to remove element ({0}) with error: {1}",
+                        Trace.Fail(string.Format("Failed to remove element ({0}) with error: {1}",
                             e.outerHTML,   // {0}
                             ex             // {1}
                         ));

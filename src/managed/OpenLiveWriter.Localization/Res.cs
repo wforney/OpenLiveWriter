@@ -97,7 +97,7 @@ namespace OpenLiveWriter.Localization
         {
             string fontSizeString = propResMan.GetString("Font.Size." + fontSize);
             float fontSizeFloat;
-            if (!String.IsNullOrEmpty(fontSizeString) && float.TryParse(fontSizeString.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out fontSizeFloat))
+            if (!string.IsNullOrEmpty(fontSizeString) && float.TryParse(fontSizeString.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out fontSizeFloat))
                 return fontSizeFloat;
             else
                 return defaultSize;

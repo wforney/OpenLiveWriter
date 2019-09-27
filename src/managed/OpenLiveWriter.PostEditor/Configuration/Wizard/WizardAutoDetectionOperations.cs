@@ -113,7 +113,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
             // copy the detected settings
             _temporarySettings.SetProvider(_blogServiceDetector.ProviderId, _blogServiceDetector.ServiceName, _blogServiceDetector.PostApiUrl, _blogServiceDetector.ClientType);
-            if (_temporarySettings.BlogName == String.Empty)
+            if (_temporarySettings.BlogName == string.Empty)
                 _temporarySettings.BlogName = _blogServiceDetector.BlogName;
             if (string.IsNullOrEmpty(_temporarySettings.HomepageUrl))
                 _temporarySettings.HomepageUrl = ((IBlogSettingsDetectionContext)_blogServiceDetector).HomepageUrl;

@@ -65,7 +65,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     ArrayList list = new ArrayList();
                     for (int i = 0; i < 12; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));

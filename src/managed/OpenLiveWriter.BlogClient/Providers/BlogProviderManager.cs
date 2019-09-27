@@ -43,7 +43,7 @@ namespace OpenLiveWriter.BlogClient.Providers
         {
             lock (_classLock)
             {
-                if (providerId == null || providerId == String.Empty)
+                if (providerId == null || providerId == string.Empty)
                     return null;
 
                 // try to find the provider

@@ -296,7 +296,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             int val = 0;
             try
             {
-                val = Int32.Parse(textBox.Text.Trim(), CultureInfo.CurrentCulture);
+                val = int.Parse(textBox.Text.Trim(), CultureInfo.CurrentCulture);
                 if (val > 100)
                 {
                     val = 100;

@@ -112,7 +112,7 @@ namespace OpenLiveWriter.CoreServices
 
         public static bool IsReady(IHTMLDocument2 document)
         {
-            return String.Compare(document.readyState, "complete", StringComparison.OrdinalIgnoreCase) == 0;
+            return string.Compare(document.readyState, "complete", StringComparison.OrdinalIgnoreCase) == 0;
         }
 
         public static IHTMLElement FindElementContainingText(IHTMLDocument2 document, string text)
@@ -710,7 +710,7 @@ namespace OpenLiveWriter.CoreServices
             return headers;
         }
 
-        public static string AddMarkOfTheWeb(String html, String webUrl)
+        public static string AddMarkOfTheWeb(string html, string webUrl)
         {
             Regex docType = new Regex("<!DOCTYPE[^>]*>");
             Regex savedFrom = new Regex("<!-- saved from url.* -->");
@@ -724,7 +724,7 @@ namespace OpenLiveWriter.CoreServices
 
             int markOffset = 0;
             m = docType.Match(html);
-            if (m.Success && html.Substring(0, m.Index).Trim() == String.Empty)
+            if (m.Success && html.Substring(0, m.Index).Trim() == string.Empty)
             {
                 markOffset = m.Index + m.Length;
             }
@@ -740,7 +740,7 @@ namespace OpenLiveWriter.CoreServices
 
             return html;
         }
-        private const String DEFAULT_MOTW_DOCTYPE = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
+        private const string DEFAULT_MOTW_DOCTYPE = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
 
         /// <summary>
         /// Gets the document type string for a given URL (note that this could actually download the page!)
@@ -1338,7 +1338,7 @@ namespace OpenLiveWriter.CoreServices
             Object pathObject = element.getAttribute(attributeName, HTMLAttributeFlags.DoNotEscapePaths);
             if (pathObject != DBNull.Value)
             {
-                if (pathObject is String)
+                if (pathObject is string)
                     relativePath = (string)pathObject;
             }
 
@@ -1425,8 +1425,8 @@ namespace OpenLiveWriter.CoreServices
             // implementation constants
             const uint fdexNameEnsure = 0x00000002;
             const uint LOCALE_USER_DEFAULT = 1024;
-            const Int16 DISPATCH_PROPERTYPUT = 4;
-            const Int32 DISPID_PROPERTYPUT = -3;
+            const short DISPATCH_PROPERTYPUT = 4;
+            const int DISPID_PROPERTYPUT = -3;
 
             // buffers we will allocate (must free before exiting)
             IntPtr pPropertyPut = IntPtr.Zero;
@@ -1449,7 +1449,7 @@ namespace OpenLiveWriter.CoreServices
                 dispParams.cNamedArgs = 1;
 
                 // indicate that this call to InvokeEx is a property put
-                pPropertyPut = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(Int32)));
+                pPropertyPut = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(int)));
                 Marshal.WriteInt32(pPropertyPut, DISPID_PROPERTYPUT);
                 dispParams.rgdispidNamedArgs = pPropertyPut;
 

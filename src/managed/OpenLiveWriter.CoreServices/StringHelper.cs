@@ -16,7 +16,7 @@ namespace OpenLiveWriter.CoreServices
     {
         public static Encoding GetEncoding(string charset, Encoding defaultEncoding)
         {
-            if (!String.IsNullOrEmpty(charset))
+            if (!string.IsNullOrEmpty(charset))
             {
                 if (string.Compare(Encoding.UTF8.WebName, charset, StringComparison.OrdinalIgnoreCase) == 0)
                 {
@@ -56,12 +56,12 @@ namespace OpenLiveWriter.CoreServices
             string delim = "";
             foreach (object obj in anArray)
             {
-                string str = String.Empty;
+                string str = string.Empty;
 
                 if (obj != null)
                     str = obj.ToString().Trim();
 
-                if (!removeEmpty || (str != String.Empty))
+                if (!removeEmpty || (str != string.Empty))
                 {
                     o.Append(delim);
                     if (obj != null)
@@ -250,13 +250,13 @@ namespace OpenLiveWriter.CoreServices
 
         public static string GetLastWord(string content)
         {
-            if (String.IsNullOrEmpty(content))
+            if (string.IsNullOrEmpty(content))
                 return string.Empty;
 
             // Any whitespace at the end is not considered part of the last word.
             content = content.TrimEnd(Whitespace);
 
-            if (String.IsNullOrEmpty(content))
+            if (string.IsNullOrEmpty(content))
                 return string.Empty;
 
             int beforeLastWord = content.LastIndexOfAny(Whitespace);
@@ -461,7 +461,7 @@ namespace OpenLiveWriter.CoreServices
         /// This implementation was taken from .NET 2.0
         /// http://msdn.microsoft.com/en-us/library/system.string.gethashcode.aspx
         /// </summary>
-        public static unsafe int GetHashCodeStable(String stringToHash)
+        public static unsafe int GetHashCodeStable(string stringToHash)
         {
             fixed (char* str = stringToHash)
             {

@@ -22,7 +22,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         //
         // IUISimplePropertySet implementation
 
-        Int32 IUISimplePropertySet.GetValue(ref PropertyKey key, out PropVariant value)
+        int IUISimplePropertySet.GetValue(ref PropertyKey key, out PropVariant value)
         {
             if (_props.ContainsKey(key))
             {

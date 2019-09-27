@@ -54,7 +54,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _publishCompleted ? base.TooltipDescription : String.Empty;
+                return _publishCompleted ? base.TooltipDescription : string.Empty;
             }
         }
         // @RIBBON TODO: Other overrides for image/string props.
@@ -110,7 +110,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             if (commandVideoWebPreview.PublishCompleted)
             {
-                ShellHelper.LaunchUrl(_VideoContent.Url ?? String.Empty);
+                ShellHelper.LaunchUrl(_VideoContent.Url ?? string.Empty);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
         private void UpdateVideoSizeDisplay()
         {
-            _contentEditorSite.UpdateStatusBar(String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Videos_Video_Size), _VideoContent.HtmlSize.Width, _VideoContent.HtmlSize.Height));
+            _contentEditorSite.UpdateStatusBar(string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Videos_Video_Size), _VideoContent.HtmlSize.Width, _VideoContent.HtmlSize.Height));
         }
 
         private void UpdateAspectRatio()

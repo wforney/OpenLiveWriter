@@ -118,7 +118,7 @@ namespace OpenLiveWriter.CoreServices
         [Conditional("DEBUG")]
         public void DebugLogSplitTime(string description)
         {
-            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "*** Performance {0} {1:###,###,##0.00}ms {2}", name, SplitTime(), description));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "*** Performance {0} {1:###,###,##0.00}ms {2}", name, SplitTime(), description));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace OpenLiveWriter.CoreServices
         [Conditional("DEBUG")]
         public void DebugLogElapsedTime()
         {
-            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "*** Performance {0} {1:###,###,##0.00}ms Total", name, ElapsedTime()));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "*** Performance {0} {1:###,###,##0.00}ms Total", name, ElapsedTime()));
         }
     }
 }

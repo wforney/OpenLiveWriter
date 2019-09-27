@@ -33,7 +33,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
         private static bool IsOfficeHtml(HTMLData data)
         {
             string generator = data.HTMLMetaData.Generator;
-            if (String.IsNullOrEmpty(generator))
+            if (string.IsNullOrEmpty(generator))
                 return false;
             return
                 (generator.StartsWith("Microsoft Word") || generator.StartsWith("Microsoft Excel") ||
@@ -253,7 +253,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 startContext.Element != null &&
                 ElementFilters.IsEndTagOptional(startContext.Element) &&
                 !Regex.IsMatch(startContext.Element.outerHTML,
-                               String.Format(CultureInfo.InvariantCulture, @"</{0}(\s[^>]*)?>\s*$", startContext.Element.tagName),
+                               string.Format(CultureInfo.InvariantCulture, @"</{0}(\s[^>]*)?>\s*$", startContext.Element.tagName),
                                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
             {
                 startFragment.Right(true);
@@ -327,7 +327,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 {
                     // WinLive 249077: Clear the temporary destination container, otherwise behaviors may
                     // inadvertently attach to elements in the MarkupContainer.
-                    temporaryDestinationContainer.Document.body.innerHTML = String.Empty;
+                    temporaryDestinationContainer.Document.body.innerHTML = string.Empty;
                 }
             }
             catch (Exception e)
@@ -464,8 +464,8 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
             IHTMLElement[] topLevelElements = range.GetTopLevelElements(e => !(e is IHTMLCommentElement));
             if (topLevelElements.Length == 1 &&
                 topLevelElements[0] is IHTMLTable &&
-                (String.Compare(topLevelElements[0].getAttribute("align", 2) as string, "left", StringComparison.OrdinalIgnoreCase) == 0 ||
-                 String.Compare(topLevelElements[0].getAttribute("align", 2) as string, "right", StringComparison.OrdinalIgnoreCase) == 0))
+                (string.Compare(topLevelElements[0].getAttribute("align", 2) as string, "left", StringComparison.OrdinalIgnoreCase) == 0 ||
+                 string.Compare(topLevelElements[0].getAttribute("align", 2) as string, "right", StringComparison.OrdinalIgnoreCase) == 0))
             {
                 topLevelElements[0].removeAttribute("align", 0);
             }

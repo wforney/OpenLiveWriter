@@ -47,7 +47,7 @@ namespace OpenLiveWriter.FileDestinations
         public void InsureDirectoryExists(string path)
         {
             // empty paths can just be ignored
-            if (path == String.Empty)
+            if (path == string.Empty)
                 return;
 
             // keep a hashtable of all the directories we've created, if we haven't
@@ -194,7 +194,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <param name="LocalFile">the local file path to copy the contents of the file</param>
         /// <param name="isBinary">true if the remote file is binary</param>
         /// <returns>true indicates the file was successfully transferred</returns>
-        abstract public bool GetFile(String RemotePath, string LocalFile, bool isBinary);
+        abstract public bool GetFile(string RemotePath, string LocalFile, bool isBinary);
 
         /// <summary>
         /// Creates a directory based upon a path, not just a directory name.

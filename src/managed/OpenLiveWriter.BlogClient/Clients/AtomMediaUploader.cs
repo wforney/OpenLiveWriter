@@ -357,10 +357,10 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         public virtual void Init(HttpWebRequest request)
         {
-            _boundary = String.Format(CultureInfo.InvariantCulture, "============{0}==", Guid.NewGuid().ToString().Replace("-", ""));
+            _boundary = string.Format(CultureInfo.InvariantCulture, "============{0}==", Guid.NewGuid().ToString().Replace("-", ""));
             _request = request;
             _request.Method = "POST";
-            _request.ContentType = String.Format(CultureInfo.InvariantCulture,
+            _request.ContentType = string.Format(CultureInfo.InvariantCulture,
                                                 @"multipart/related; boundary=""{0}""; type = ""application/atom+xml""",
                                                 _boundary);
         }
@@ -392,7 +392,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         }
 
         protected UTF8Encoding _utf8NoBOMEncoding = new UTF8Encoding(false);
-        protected virtual void Write(String s, MemoryStream stream)
+        protected virtual void Write(string s, MemoryStream stream)
         {
             byte[] newText = _utf8NoBOMEncoding.GetBytes(s);
             stream.Write(newText, 0, newText.Length);

@@ -81,14 +81,14 @@ namespace OpenLiveWriter.PostEditor
                         }
                         catch (Exception ex)
                         {
-                            Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Error loading smart content item\r\n{0}", ex));
+                            Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Error loading smart content item\r\n{0}", ex));
                             sContent = null;
 
                             if (continueOnError == null)
                                 throw;
 
                             if (!continueOnError.Value)
-                                return String.Empty;
+                                return string.Empty;
                         }
 
                         if (sContent == null)

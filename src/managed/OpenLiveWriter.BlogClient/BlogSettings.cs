@@ -77,7 +77,7 @@ namespace OpenLiveWriter.BlogClient
             get
             {
                 // try to get an explicitly set default profile id
-                string defaultKey = SettingsKey.GetString(DEFAULT_WEBLOG, String.Empty);
+                string defaultKey = SettingsKey.GetString(DEFAULT_WEBLOG, string.Empty);
 
                 // if a default is specified and the key exists
                 if (BlogIdIsValid(defaultKey))
@@ -95,12 +95,12 @@ namespace OpenLiveWriter.BlogClient
                     return blogIds[0];
                 }
                 else
-                    return String.Empty;
+                    return string.Empty;
 
             }
             set
             {
-                SettingsKey.SetString(DEFAULT_WEBLOG, value ?? String.Empty);
+                SettingsKey.SetString(DEFAULT_WEBLOG, value ?? string.Empty);
             }
         }
         public const string DEFAULT_WEBLOG = "DefaultWeblog";
@@ -187,21 +187,21 @@ namespace OpenLiveWriter.BlogClient
         /// </summary>
         public string HostBlogId
         {
-            get { return Settings.GetString(BLOG_ID, String.Empty); }
+            get { return Settings.GetString(BLOG_ID, string.Empty); }
             set { Settings.SetString(BLOG_ID, value); }
         }
         private const string BLOG_ID = "BlogId";
 
         public string BlogName
         {
-            get { return Settings.GetString(BLOG_NAME, String.Empty); }
+            get { return Settings.GetString(BLOG_NAME, string.Empty); }
             set { Settings.SetString(BLOG_NAME, value); }
         }
         private const string BLOG_NAME = "BlogName";
 
         public string HomepageUrl
         {
-            get { return Settings.GetString(HOMEPAGE_URL, String.Empty); }
+            get { return Settings.GetString(HOMEPAGE_URL, string.Empty); }
             set { Settings.SetString(HOMEPAGE_URL, value); }
         }
         private const string HOMEPAGE_URL = "HomepageUrl";
@@ -222,14 +222,14 @@ namespace OpenLiveWriter.BlogClient
                     using (SettingsPersisterHelper manifestKey = Settings.GetSubSettings(WRITER_MANIFEST))
                     {
                         // at a minimum must have a source-url
-                        string sourceUrl = manifestKey.GetString(MANIFEST_SOURCE_URL, String.Empty);
-                        if (sourceUrl != String.Empty)
+                        string sourceUrl = manifestKey.GetString(MANIFEST_SOURCE_URL, string.Empty);
+                        if (sourceUrl != string.Empty)
                         {
                             return new WriterEditingManifestDownloadInfo(
                                 sourceUrl,
                                 manifestKey.GetDateTime(MANIFEST_EXPIRES, DateTime.MinValue),
                                 manifestKey.GetDateTime(MANIFEST_LAST_MODIFIED, DateTime.MinValue),
-                                manifestKey.GetString(MANIFEST_ETAG, String.Empty));
+                                manifestKey.GetString(MANIFEST_ETAG, string.Empty));
                         }
                         else
                         {
@@ -269,7 +269,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string WriterManifestUrl
         {
-            get { return Settings.GetString(WRITER_MANIFEST_URL, String.Empty); }
+            get { return Settings.GetString(WRITER_MANIFEST_URL, string.Empty); }
             set { Settings.SetString(WRITER_MANIFEST_URL, value); }
         }
         private const string WRITER_MANIFEST_URL = "ManifestUrl";
@@ -284,7 +284,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                string providerId = Settings.GetString(PROVIDER_ID, String.Empty);
+                string providerId = Settings.GetString(PROVIDER_ID, string.Empty);
                 if (providerId == "16B3FA3F-DAD7-4c93-A407-81CAE076883E")
                     return "5FD58F3F-A36E-4aaf-8ABE-764248961FA0";
                 else
@@ -295,7 +295,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string ServiceName
         {
-            get { return Settings.GetString(SERVICE_NAME, String.Empty); }
+            get { return Settings.GetString(SERVICE_NAME, string.Empty); }
         }
         private const string SERVICE_NAME = "ServiceName";
 
@@ -303,7 +303,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                string clientType = Settings.GetString(CLIENT_TYPE, String.Empty);
+                string clientType = Settings.GetString(CLIENT_TYPE, string.Empty);
 
                 // temporary hack for migration of MovableType blogs
                 // TODO: is there a cleaner place to do this?
@@ -336,7 +336,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string PostApiUrl
         {
-            get { return Settings.GetString(POST_API_URL, String.Empty); }
+            get { return Settings.GetString(POST_API_URL, string.Empty); }
             set { Settings.SetString(POST_API_URL, value); }
         }
         private const string POST_API_URL = "PostApiUrl";
@@ -355,7 +355,7 @@ namespace OpenLiveWriter.BlogClient
                         using (SettingsPersisterHelper homepageOptionOverridesKey = Settings.GetSubSettings(HOMEPAGE_OPTION_OVERRIDES))
                         {
                             foreach (string optionName in homepageOptionOverridesKey.GetNames())
-                                homepageOptionOverrides.Add(optionName, homepageOptionOverridesKey.GetString(optionName, String.Empty));
+                                homepageOptionOverrides.Add(optionName, homepageOptionOverridesKey.GetString(optionName, string.Empty));
                         }
                     }
                     return homepageOptionOverrides;
@@ -390,7 +390,7 @@ namespace OpenLiveWriter.BlogClient
                     using (SettingsPersisterHelper optionOverridesKey = Settings.GetSubSettings(OPTION_OVERRIDES))
                     {
                         foreach (string optionName in optionOverridesKey.GetNames())
-                            optionOverrides.Add(optionName, optionOverridesKey.GetString(optionName, String.Empty));
+                            optionOverrides.Add(optionName, optionOverridesKey.GetString(optionName, string.Empty));
                     }
                     return optionOverrides;
                 }
@@ -424,7 +424,7 @@ namespace OpenLiveWriter.BlogClient
                     using (SettingsPersisterHelper userOptionOverridesKey = Settings.GetSubSettings(USER_OPTION_OVERRIDES))
                     {
                         foreach (string optionName in userOptionOverridesKey.GetNames())
-                            userOptionOverrides.Add(optionName, userOptionOverridesKey.GetString(optionName, String.Empty));
+                            userOptionOverrides.Add(optionName, userOptionOverridesKey.GetString(optionName, string.Empty));
                     }
                     return userOptionOverrides;
                 }
@@ -587,7 +587,7 @@ namespace OpenLiveWriter.BlogClient
                             using (SettingsPersisterHelper categoryKey = categoriesKey.GetSubSettings(id))
                             {
                                 string name = categoryKey.GetString(CATEGORY_NAME, id);
-                                string parent = categoryKey.GetString(CATEGORY_PARENT, String.Empty);
+                                string parent = categoryKey.GetString(CATEGORY_PARENT, string.Empty);
                                 categories.Add(new BlogPostCategory(id, name, parent));
                             }
                         }
@@ -718,7 +718,7 @@ namespace OpenLiveWriter.BlogClient
                     string folderPath = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "Keywords");
                     if (!Directory.Exists(folderPath))
                         Directory.CreateDirectory(folderPath);
-                    _keywordPath = Path.Combine(folderPath, String.Format(CultureInfo.InvariantCulture, "keywords_{0}.xml", Id));
+                    _keywordPath = Path.Combine(folderPath, string.Format(CultureInfo.InvariantCulture, "keywords_{0}.xml", Id));
                 }
                 return _keywordPath;
             }
@@ -752,8 +752,8 @@ namespace OpenLiveWriter.BlogClient
                         {
                             using (SettingsPersisterHelper authorKey = authorsKey.GetSubSettings(id))
                             {
-                                string name = authorKey.GetString(AUTHOR_NAME, String.Empty);
-                                if (name != String.Empty)
+                                string name = authorKey.GetString(AUTHOR_NAME, string.Empty);
+                                if (name != string.Empty)
                                     authors.Add(new AuthorInfo(id, name));
                                 else
                                     Trace.Fail("Unexpected empty author name for id " + id);
@@ -807,9 +807,9 @@ namespace OpenLiveWriter.BlogClient
                         {
                             using (SettingsPersisterHelper pageKey = pagesKey.GetSubSettings(id))
                             {
-                                string title = pageKey.GetString(PAGE_TITLE, String.Empty);
+                                string title = pageKey.GetString(PAGE_TITLE, string.Empty);
                                 DateTime datePublished = pageKey.GetDateTime(PAGE_DATE_PUBLISHED, DateTime.MinValue);
-                                string parentId = pageKey.GetString(PAGE_PARENT_ID, String.Empty);
+                                string parentId = pageKey.GetString(PAGE_PARENT_ID, string.Empty);
                                 pages.Add(new PageInfo(id, title, datePublished, parentId));
                             }
                         }
@@ -855,7 +855,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                int intVal = Settings.GetInt32(FILE_UPLOAD_SUPPORT, (Int32)FileUploadSupport.Weblog);
+                int intVal = Settings.GetInt32(FILE_UPLOAD_SUPPORT, (int)FileUploadSupport.Weblog);
                 switch (intVal)
                 {
                     case (int)FileUploadSupport.FTP:
@@ -865,7 +865,7 @@ namespace OpenLiveWriter.BlogClient
                         return FileUploadSupport.Weblog;
                 }
             }
-            set { Settings.SetInt32(FILE_UPLOAD_SUPPORT, (Int32)value); }
+            set { Settings.SetInt32(FILE_UPLOAD_SUPPORT, (int)value); }
         }
         private const string FILE_UPLOAD_SUPPORT = "FileUploadSupport";
 
@@ -912,7 +912,7 @@ namespace OpenLiveWriter.BlogClient
 
             // if we are the default profile then set the default to null
             if (_id == DefaultBlogId)
-                DefaultBlogId = String.Empty;
+                DefaultBlogId = string.Empty;
 
             OnBlogSettingsDeleted(_id);
         }
@@ -1013,7 +1013,7 @@ namespace OpenLiveWriter.BlogClient
 
         ~BlogSettings()
         {
-            Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Failed to dispose BlogSettings!!! BlogId: {0} // BlogName: {1}", Id, BlogName));
+            Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Failed to dispose BlogSettings!!! BlogId: {0} // BlogName: {1}", Id, BlogName));
         }
 
         public IBlogFileUploadSettings FileUpload
@@ -1116,7 +1116,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string GetCustomValue(string name)
         {
-            return CredentialsSettings.GetString(name, String.Empty);
+            return CredentialsSettings.GetString(name, string.Empty);
         }
 
         public void SetCustomValue(string name, string value)
@@ -1126,8 +1126,8 @@ namespace OpenLiveWriter.BlogClient
 
         public void Clear()
         {
-            Username = String.Empty;
-            Password = String.Empty;
+            Username = string.Empty;
+            Password = string.Empty;
             foreach (string name in CredentialsSettings.GetNames())
                 CredentialsSettings.SetString(name, null);
         }
@@ -1167,7 +1167,7 @@ namespace OpenLiveWriter.BlogClient
             if (username != null)
                 return username;
             else
-                return _settingsRoot.GetString(USERNAME, String.Empty);
+                return _settingsRoot.GetString(USERNAME, string.Empty);
         }
 
         /// <summary>
@@ -1198,7 +1198,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string GetValue(string name)
         {
-            return _settings.GetString(name, String.Empty);
+            return _settings.GetString(name, string.Empty);
         }
 
         public void SetValue(string name, string value)

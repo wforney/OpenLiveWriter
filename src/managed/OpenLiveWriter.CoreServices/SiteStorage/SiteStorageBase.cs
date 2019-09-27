@@ -177,7 +177,7 @@ namespace OpenLiveWriter.CoreServices
             int leftSlash = left.IndexOf('/');
             int rightSlash = right.IndexOf('/');
             if (leftSlash == -1 && rightSlash == -1)
-                return String.Compare(left, right, StringComparison.OrdinalIgnoreCase); // both are root entries
+                return string.Compare(left, right, StringComparison.OrdinalIgnoreCase); // both are root entries
             else if (leftSlash == -1)
                 return -1;  // left is a root entry and right is not
             else if (rightSlash == -1)
@@ -221,7 +221,7 @@ namespace OpenLiveWriter.CoreServices
             // both share paths up to their last level, compare the last level
             // (case where both are file entries)
             else if (leftPaths.Length == (sharedLevel + 1) && rightPaths.Length == (sharedLevel + 1))
-                return String.Compare(leftPaths[sharedLevel], rightPaths[sharedLevel], StringComparison.OrdinalIgnoreCase);
+                return string.Compare(leftPaths[sharedLevel], rightPaths[sharedLevel], StringComparison.OrdinalIgnoreCase);
 
             // left is a file entry and right has additional directories
             else if (leftPaths.Length == (sharedLevel + 1))
@@ -234,7 +234,7 @@ namespace OpenLiveWriter.CoreServices
             // they are both directories w/ varying content after the shared level,
             // compare them at the level just after the shared one
             else
-                return String.Compare(leftPaths[sharedLevel], rightPaths[sharedLevel], StringComparison.OrdinalIgnoreCase);
+                return string.Compare(leftPaths[sharedLevel], rightPaths[sharedLevel], StringComparison.OrdinalIgnoreCase);
         }
     }
 

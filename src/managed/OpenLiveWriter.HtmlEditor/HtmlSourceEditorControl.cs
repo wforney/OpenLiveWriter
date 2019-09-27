@@ -206,16 +206,16 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 link.Append(" target=\"_blank\"");
             }
-            if (String.Empty != linkTitle && null != linkTitle)
+            if (string.Empty != linkTitle && null != linkTitle)
             {
                 link.Append(" title=\"{2}\"");
             }
-            if (String.Empty != rel && null != rel)
+            if (string.Empty != rel && null != rel)
             {
                 link.Append(" rel=\"{3}\"");
             }
             link.Append(">{1}</a>");
-            InsertHtml(String.Format(CultureInfo.InvariantCulture, link.ToString(),
+            InsertHtml(string.Format(CultureInfo.InvariantCulture, link.ToString(),
                                       HtmlUtils.EscapeEntities(url),
                                       HtmlUtils.EscapeEntities(linkText),
                                       HtmlUtils.EscapeEntities(linkTitle),
@@ -333,7 +333,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         public string SelectionFontFamily
         {
-            get { return String.Empty; }
+            get { return string.Empty; }
         }
 
         void IHtmlEditorCommandSource.ApplyFontForeColor(int color)
@@ -891,21 +891,21 @@ namespace OpenLiveWriter.HtmlEditor
 
         private void ApplyAlignment(string alignment)
         {
-            _textBox.Paste(String.Format(CultureInfo.InvariantCulture, "<p align=\"{0}\">{1}</p>", alignment, _textBox.SelectedText));
+            _textBox.Paste(string.Format(CultureInfo.InvariantCulture, "<p align=\"{0}\">{1}</p>", alignment, _textBox.SelectedText));
         }
 
         private void ApplyFormattingTag(string tagName, string attributes)
         {
             if (attributes != null)
-                _textBox.Paste(String.Format(CultureInfo.InvariantCulture, "<{0} {1}>{2}</{0}>", tagName, attributes, _textBox.SelectedText));
+                _textBox.Paste(string.Format(CultureInfo.InvariantCulture, "<{0} {1}>{2}</{0}>", tagName, attributes, _textBox.SelectedText));
             else
-                _textBox.Paste(String.Format(CultureInfo.InvariantCulture, "<{0}>{1}</{0}>", tagName, _textBox.SelectedText));
+                _textBox.Paste(string.Format(CultureInfo.InvariantCulture, "<{0}>{1}</{0}>", tagName, _textBox.SelectedText));
         }
 
         private void InsertList(string listTag)
         {
             string selectedText = _textBox.SelectedText;
-            _textBox.Paste(String.Format(CultureInfo.InvariantCulture, "<{0}>", listTag) + NEWLINE + "<li>" + selectedText + "</li>" + NEWLINE + String.Format(CultureInfo.InvariantCulture, "</{0}>", listTag));
+            _textBox.Paste(string.Format(CultureInfo.InvariantCulture, "<{0}>", listTag) + NEWLINE + "<li>" + selectedText + "</li>" + NEWLINE + string.Format(CultureInfo.InvariantCulture, "</{0}>", listTag));
         }
 
         #endregion

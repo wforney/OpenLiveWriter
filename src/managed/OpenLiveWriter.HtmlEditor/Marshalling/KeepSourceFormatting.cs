@@ -155,7 +155,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             foreach (IHTMLElement element in document3.getElementsByTagName("input"))
             {
                 IHTMLInputElement inputElement = (IHTMLInputElement)element;
-                if (String.Compare(inputElement.type, "hidden", StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Compare(inputElement.type, "hidden", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     HTMLElementHelper.RemoveElement(element);
                 }
@@ -270,7 +270,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 Trace.Assert(sourceContext.Context == destinationContext.Context, "Mismatched contexts!");
                 Trace.Assert((sourceContext.Element == null && destinationContext.Element == null) ||
                              (sourceContext.Element != null && destinationContext.Element != null &&
-                              String.Compare(sourceContext.Element.tagName, destinationContext.Element.tagName, StringComparison.OrdinalIgnoreCase) == 0),
+                              string.Compare(sourceContext.Element.tagName, destinationContext.Element.tagName, StringComparison.OrdinalIgnoreCase) == 0),
                              "Mismatched tags!");
 
                 // If it is an image, add attribute marker to suppress applying default values for image decorators
@@ -445,7 +445,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
             // Can't copy to inlineStyle.background directly, so we'll do each background style separately.
 
-            if (String.Compare(destinationCascadedStyle.backgroundAttachment, sourceCascadedStyle.backgroundAttachment, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.backgroundAttachment, sourceCascadedStyle.backgroundAttachment, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.backgroundAttachment = sourceCascadedStyle.backgroundAttachment;
             }
@@ -453,13 +453,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // Only inline the background color on a block element since we'll use highlighting to get the proper background color on inline elements.
             if (!IsInlineElement(sourceElement))
             {
-                if (String.Compare(destinationCascadedStyle.backgroundColor as string, sourceCascadedStyle.backgroundColor as string, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle.backgroundColor as string, sourceCascadedStyle.backgroundColor as string, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle.backgroundColor = sourceCascadedStyle.backgroundColor;
                 }
             }
 
-            if (String.Compare(destinationCascadedStyle.backgroundImage, sourceCascadedStyle.backgroundImage, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.backgroundImage, sourceCascadedStyle.backgroundImage, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.backgroundImage = sourceCascadedStyle.backgroundImage;
             }
@@ -472,9 +472,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.backgroundPositionX as string))
             {
                 int backgroundPositionXInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBackgroundPositionX, sourceElement, null, false);
-                destinationInlineStyle.backgroundPositionX = String.Format(CultureInfo.InvariantCulture, "{0}px", backgroundPositionXInPixels);
+                destinationInlineStyle.backgroundPositionX = string.Format(CultureInfo.InvariantCulture, "{0}px", backgroundPositionXInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.backgroundPositionX as string, sourceCascadedStyle.backgroundPositionX as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.backgroundPositionX as string, sourceCascadedStyle.backgroundPositionX as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.backgroundPositionX as string))
             {
                 destinationInlineStyle.backgroundPositionX = sourceCascadedStyle.backgroundPositionX;
@@ -483,22 +483,22 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.backgroundPositionY as string))
             {
                 int backgroundPositionYInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBackgroundPositionY, sourceElement, null, true);
-                destinationInlineStyle.backgroundPositionY = String.Format(CultureInfo.InvariantCulture, "{0}px", backgroundPositionYInPixels);
+                destinationInlineStyle.backgroundPositionY = string.Format(CultureInfo.InvariantCulture, "{0}px", backgroundPositionYInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.backgroundPositionY as string, sourceCascadedStyle.backgroundPositionY as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.backgroundPositionY as string, sourceCascadedStyle.backgroundPositionY as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.backgroundPositionY as string))
             {
                 destinationInlineStyle.backgroundPositionY = sourceCascadedStyle.backgroundPositionY;
             }
 
-            if (String.Compare(destinationCascadedStyle.backgroundRepeat, sourceCascadedStyle.backgroundRepeat, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.backgroundRepeat, sourceCascadedStyle.backgroundRepeat, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.backgroundRepeat = sourceCascadedStyle.backgroundRepeat;
             }
 
             // Can't copy to inlineStyle.border directly, so we'll do each border style separately.
 
-            if (String.Compare(destinationCascadedStyle.borderCollapse, sourceCascadedStyle.borderCollapse, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderCollapse, sourceCascadedStyle.borderCollapse, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.borderCollapse = sourceCascadedStyle.borderCollapse;
             }
@@ -511,9 +511,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 {
                     int borderXInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderSpacingX, sourceElement, null, false);
                     int borderYInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderSpacingY, sourceElement, null, true);
-                    destinationInlineStyle6.borderSpacing = String.Format(CultureInfo.InvariantCulture, "{0}px {1}px", borderXInPixels, borderYInPixels);
+                    destinationInlineStyle6.borderSpacing = string.Format(CultureInfo.InvariantCulture, "{0}px {1}px", borderXInPixels, borderYInPixels);
                 }
-                else if (String.Compare(destinationCascadedStyle5.borderSpacing, sourceCascadedStyle5.borderSpacing, StringComparison.OrdinalIgnoreCase) != 0 ||
+                else if (string.Compare(destinationCascadedStyle5.borderSpacing, sourceCascadedStyle5.borderSpacing, StringComparison.OrdinalIgnoreCase) != 0 ||
                     IsEms(destinationInlineStyle6.borderSpacing))
                 {
                     destinationInlineStyle6.borderSpacing = sourceCascadedStyle5.borderSpacing;
@@ -525,13 +525,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // Can't copy to inlineStyle.borderBottom directly, so we'll do each borderBottom style separately.
 
             // Optimization: only copy over the color if there is actually a border.
-            if (String.Compare(destinationCascadedStyle.borderBottomColor as string, sourceCascadedStyle.borderBottomColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderBottomStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderBottomColor as string, sourceCascadedStyle.borderBottomColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderBottomStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderBottomColor = sourceCascadedStyle.borderBottomColor;
             }
 
-            if (String.Compare(destinationCascadedStyle.borderBottomStyle, sourceCascadedStyle.borderBottomStyle, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderBottomStyle, sourceCascadedStyle.borderBottomStyle, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderBottomStyle = sourceCascadedStyle.borderBottomStyle;
             }
@@ -540,10 +540,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             {
                 int borderBottomInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderBottom, sourceElement,
                     HTMLElementHelper.LastChanceBorderWidthPointSize, true);
-                destinationInlineStyle.borderBottomWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", borderBottomInPixels);
+                destinationInlineStyle.borderBottomWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", borderBottomInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.borderBottomWidth as string, sourceCascadedStyle.borderBottomWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderBottomStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.borderBottomWidth as string, sourceCascadedStyle.borderBottomWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderBottomStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.borderBottomWidth as string))
             {
                 destinationInlineStyle.borderBottomWidth = sourceCascadedStyle.borderBottomWidth;
@@ -552,13 +552,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // Can't copy to inlineStyle.borderLeft directly, so we'll do each borderLeft style separately.
 
             // Optimization: only copy over the color if there is actually a border.
-            if (String.Compare(destinationCascadedStyle.borderLeftColor as string, sourceCascadedStyle.borderLeftColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderLeftStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderLeftColor as string, sourceCascadedStyle.borderLeftColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderLeftStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderLeftColor = sourceCascadedStyle.borderLeftColor;
             }
 
-            if (String.Compare(destinationCascadedStyle.borderLeftStyle, sourceCascadedStyle.borderLeftStyle, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderLeftStyle, sourceCascadedStyle.borderLeftStyle, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderLeftStyle = sourceCascadedStyle.borderLeftStyle;
             }
@@ -567,10 +567,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             {
                 int borderLeftInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderLeft, sourceElement,
                     HTMLElementHelper.LastChanceBorderWidthPointSize, false);
-                destinationInlineStyle.borderLeftWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", borderLeftInPixels);
+                destinationInlineStyle.borderLeftWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", borderLeftInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.borderLeftWidth as string, sourceCascadedStyle.borderLeftWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderLeftStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.borderLeftWidth as string, sourceCascadedStyle.borderLeftWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderLeftStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.borderLeftWidth as string))
             {
                 destinationInlineStyle.borderLeftWidth = sourceCascadedStyle.borderLeftWidth;
@@ -579,13 +579,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // Can't copy to inlineStyle.borderRight directly, so we'll do each borderRight style separately.
 
             // Optimization: only copy over the color if there is actually a border.
-            if (String.Compare(destinationCascadedStyle.borderRightColor as string, sourceCascadedStyle.borderRightColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderRightStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderRightColor as string, sourceCascadedStyle.borderRightColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderRightStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderRightColor = sourceCascadedStyle.borderRightColor;
             }
 
-            if (String.Compare(destinationCascadedStyle.borderRightStyle, sourceCascadedStyle.borderRightStyle, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderRightStyle, sourceCascadedStyle.borderRightStyle, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderRightStyle = sourceCascadedStyle.borderRightStyle;
             }
@@ -594,10 +594,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             {
                 int borderRightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderRight, sourceElement,
                     HTMLElementHelper.LastChanceBorderWidthPointSize, false);
-                destinationInlineStyle.borderRightWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", borderRightInPixels);
+                destinationInlineStyle.borderRightWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", borderRightInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.borderRightWidth as string, sourceCascadedStyle.borderRightWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderRightStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.borderRightWidth as string, sourceCascadedStyle.borderRightWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderRightStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.borderRightWidth as string))
             {
                 destinationInlineStyle.borderRightWidth = sourceCascadedStyle.borderRightWidth;
@@ -606,13 +606,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // Can't copy to inlineStyle.borderTop directly, so we'll do each borderTop style separately.
 
             // Optimization: only copy over the color if there is actually a border.
-            if (String.Compare(destinationCascadedStyle.borderTopColor as string, sourceCascadedStyle.borderTopColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderTopStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderTopColor as string, sourceCascadedStyle.borderTopColor as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderTopStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderTopColor = sourceCascadedStyle.borderTopColor;
             }
 
-            if (String.Compare(destinationCascadedStyle.borderTopStyle, sourceCascadedStyle.borderTopStyle, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.borderTopStyle, sourceCascadedStyle.borderTopStyle, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.borderTopStyle = sourceCascadedStyle.borderTopStyle;
             }
@@ -621,10 +621,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             {
                 int borderTopInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBorderTop, sourceElement,
                     HTMLElementHelper.LastChanceBorderWidthPointSize, true);
-                destinationInlineStyle.borderTopWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", borderTopInPixels);
+                destinationInlineStyle.borderTopWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", borderTopInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.borderTopWidth as string, sourceCascadedStyle.borderTopWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.borderTopStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.borderTopWidth as string, sourceCascadedStyle.borderTopWidth as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.borderTopStyle, "none", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.borderTopWidth as string))
             {
                 destinationInlineStyle.borderTopWidth = sourceCascadedStyle.borderTopWidth;
@@ -635,9 +635,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.bottom as string))
             {
                 int bottomInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringBottom, sourceElement, null, true);
-                destinationInlineStyle2.bottom = String.Format(CultureInfo.InvariantCulture, "{0}px", bottomInPixels);
+                destinationInlineStyle2.bottom = string.Format(CultureInfo.InvariantCulture, "{0}px", bottomInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.bottom as string, sourceCascadedStyle.bottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.bottom as string, sourceCascadedStyle.bottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle2.bottom as string))
             {
                 destinationInlineStyle2.bottom = sourceCascadedStyle.bottom;
@@ -645,13 +645,13 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.captionSide, sourceCascadedStyle5.captionSide, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.captionSide, sourceCascadedStyle5.captionSide, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.captionSide = sourceCascadedStyle5.captionSide;
                 }
             }
 
-            if (String.Compare(destinationCascadedStyle.clear, sourceCascadedStyle.clear, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.clear, sourceCascadedStyle.clear, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.clear = sourceCascadedStyle.clear;
             }
@@ -668,36 +668,36 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 if (IsEms(clipTop))
                 {
                     int clipTopInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringClipTop, sourceElement, null, true);
-                    clipTop = String.Format(CultureInfo.InvariantCulture, "{0}px", clipTopInPixels);
+                    clipTop = string.Format(CultureInfo.InvariantCulture, "{0}px", clipTopInPixels);
                 }
 
                 if (IsEms(clipRight))
                 {
                     int clipRightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringClipRight, sourceElement, null, false);
-                    clipRight = String.Format(CultureInfo.InvariantCulture, "{0}px", clipRightInPixels);
+                    clipRight = string.Format(CultureInfo.InvariantCulture, "{0}px", clipRightInPixels);
                 }
 
                 if (IsEms(clipBottom))
                 {
                     int clipBottomInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringClipBottom, sourceElement, null, true);
-                    clipBottom = String.Format(CultureInfo.InvariantCulture, "{0}px", clipBottomInPixels);
+                    clipBottom = string.Format(CultureInfo.InvariantCulture, "{0}px", clipBottomInPixels);
                 }
 
                 if (IsEms(clipLeft))
                 {
                     int clipLeftInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringClipLeft, sourceElement, null, false);
-                    clipLeft = String.Format(CultureInfo.InvariantCulture, "{0}px", clipLeftInPixels);
+                    clipLeft = string.Format(CultureInfo.InvariantCulture, "{0}px", clipLeftInPixels);
                 }
 
-                destinationInlineStyle.clip = String.Format(CultureInfo.InvariantCulture, "rect({0} {1} {2} {3})", clipTop, clipRight, clipBottom, clipLeft);
+                destinationInlineStyle.clip = string.Format(CultureInfo.InvariantCulture, "rect({0} {1} {2} {3})", clipTop, clipRight, clipBottom, clipLeft);
             }
-            else if (String.Compare(destinationCascadedStyle.clipBottom as string, sourceCascadedStyle.clipBottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
-                String.Compare(destinationCascadedStyle.clipLeft as string, sourceCascadedStyle.clipLeft as string, StringComparison.OrdinalIgnoreCase) != 0 ||
-                String.Compare(destinationCascadedStyle.clipRight as string, sourceCascadedStyle.clipRight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
-                String.Compare(destinationCascadedStyle.clipTop as string, sourceCascadedStyle.clipTop as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.clipBottom as string, sourceCascadedStyle.clipBottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+                string.Compare(destinationCascadedStyle.clipLeft as string, sourceCascadedStyle.clipLeft as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+                string.Compare(destinationCascadedStyle.clipRight as string, sourceCascadedStyle.clipRight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+                string.Compare(destinationCascadedStyle.clipTop as string, sourceCascadedStyle.clipTop as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.clip))
             {
-                destinationInlineStyle.clip = String.Format(CultureInfo.InvariantCulture, "rect({0} {1} {2} {3})", clipTop, clipRight, clipBottom, clipLeft);
+                destinationInlineStyle.clip = string.Format(CultureInfo.InvariantCulture, "rect({0} {1} {2} {3})", clipTop, clipRight, clipBottom, clipLeft);
             }
 
             // We don't want to copy over color as it be handled separately.
@@ -705,30 +705,30 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // The content, counterIncrement and counterReset properties will have already been generated by the time
             // we paste, so we don't do anything with them.
 
-            if (String.Compare(destinationCascadedStyle.cursor, sourceCascadedStyle.cursor, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.cursor, sourceCascadedStyle.cursor, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.cursor = sourceCascadedStyle.cursor;
             }
 
-            if (String.Compare(destinationCascadedStyle.direction, sourceCascadedStyle.direction, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.direction, sourceCascadedStyle.direction, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.direction = sourceCascadedStyle.direction;
             }
 
-            if (String.Compare(destinationCascadedStyle.display, sourceCascadedStyle.display, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.display, sourceCascadedStyle.display, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.display = sourceCascadedStyle.display;
             }
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.emptyCells, sourceCascadedStyle5.emptyCells, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.emptyCells, sourceCascadedStyle5.emptyCells, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.emptyCells = sourceCascadedStyle5.emptyCells;
                 }
             }
 
-            if (String.Compare(destinationCascadedStyle.styleFloat, sourceCascadedStyle.styleFloat, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.styleFloat, sourceCascadedStyle.styleFloat, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.styleFloat = sourceCascadedStyle.styleFloat;
             }
@@ -739,9 +739,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.height as string))
             {
                 int heightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringHeight, sourceElement, null, true);
-                destinationInlineStyle.height = String.Format(CultureInfo.InvariantCulture, "{0}px", heightInPixels);
+                destinationInlineStyle.height = string.Format(CultureInfo.InvariantCulture, "{0}px", heightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.height as string, sourceCascadedStyle.height as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.height as string, sourceCascadedStyle.height as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.height as string))
             {
                 destinationInlineStyle.height = sourceCascadedStyle.height;
@@ -750,9 +750,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.left as string))
             {
                 int leftInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringLeft, sourceElement, null, false);
-                destinationInlineStyle.left = String.Format(CultureInfo.InvariantCulture, "{0}px", leftInPixels);
+                destinationInlineStyle.left = string.Format(CultureInfo.InvariantCulture, "{0}px", leftInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.left as string, sourceCascadedStyle.left as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.left as string, sourceCascadedStyle.left as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.left as string))
             {
                 destinationInlineStyle.left = sourceCascadedStyle.left;
@@ -761,9 +761,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.letterSpacing as string))
             {
                 int positionInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringLetterSpacing, sourceElement, null, false);
-                destinationInlineStyle.letterSpacing = String.Format(CultureInfo.InvariantCulture, "{0}px", positionInPixels);
+                destinationInlineStyle.letterSpacing = string.Format(CultureInfo.InvariantCulture, "{0}px", positionInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.letterSpacing as string, sourceCascadedStyle.letterSpacing as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.letterSpacing as string, sourceCascadedStyle.letterSpacing as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.letterSpacing as string))
             {
                 destinationInlineStyle.letterSpacing = sourceCascadedStyle.letterSpacing;
@@ -775,9 +775,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsPercentage(sourceCascadedStyle.lineHeight as string) || IsEms(sourceCascadedStyle.lineHeight as string))
             {
                 int lineHeightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringLineHeight, sourceElement, null, true);
-                destinationInlineStyle.lineHeight = String.Format(CultureInfo.InvariantCulture, "{0}px", lineHeightInPixels);
+                destinationInlineStyle.lineHeight = string.Format(CultureInfo.InvariantCulture, "{0}px", lineHeightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.lineHeight as string, sourceCascadedStyle.lineHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.lineHeight as string, sourceCascadedStyle.lineHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsPercentage(destinationInlineStyle.lineHeight as string) || IsEms(destinationInlineStyle.lineHeight as string))
             {
                 destinationInlineStyle.lineHeight = sourceCascadedStyle.lineHeight;
@@ -785,17 +785,17 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
             // Can't copy to inlineStyle.listStyle directly, so we'll do each listStyle separately.
 
-            if (String.Compare(destinationCascadedStyle.listStyleImage, sourceCascadedStyle.listStyleImage, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.listStyleImage, sourceCascadedStyle.listStyleImage, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.listStyleImage = sourceCascadedStyle.listStyleImage;
             }
 
-            if (String.Compare(destinationCascadedStyle.listStylePosition, sourceCascadedStyle.listStylePosition, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.listStylePosition, sourceCascadedStyle.listStylePosition, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.listStylePosition = sourceCascadedStyle.listStylePosition;
             }
 
-            if (String.Compare(destinationCascadedStyle.listStyleType, sourceCascadedStyle.listStyleType, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.listStyleType, sourceCascadedStyle.listStyleType, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.listStyleType = sourceCascadedStyle.listStyleType;
             }
@@ -803,10 +803,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.marginBottom as string))
             {
                 int marginBottomInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMarginBottom, sourceElement, null, true);
-                destinationInlineStyle.marginBottom = String.Format(CultureInfo.InvariantCulture, "{0}px", marginBottomInPixels);
+                destinationInlineStyle.marginBottom = string.Format(CultureInfo.InvariantCulture, "{0}px", marginBottomInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.marginBottom as string, sourceCascadedStyle.marginBottom as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.marginBottom as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.marginBottom as string, sourceCascadedStyle.marginBottom as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.marginBottom as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.marginBottom as string))
             {
                 destinationInlineStyle.marginBottom = sourceCascadedStyle.marginBottom;
@@ -815,10 +815,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.marginLeft as string))
             {
                 int marginLeftInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMarginLeft, sourceElement, null, false);
-                destinationInlineStyle.marginLeft = String.Format(CultureInfo.InvariantCulture, "{0}px", marginLeftInPixels);
+                destinationInlineStyle.marginLeft = string.Format(CultureInfo.InvariantCulture, "{0}px", marginLeftInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.marginLeft as string, sourceCascadedStyle.marginLeft as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.marginLeft as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.marginLeft as string, sourceCascadedStyle.marginLeft as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.marginLeft as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.marginLeft as string))
             {
                 destinationInlineStyle.marginLeft = sourceCascadedStyle.marginLeft;
@@ -827,10 +827,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.marginRight as string))
             {
                 int marginRightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMarginRight, sourceElement, null, false);
-                destinationInlineStyle.marginRight = String.Format(CultureInfo.InvariantCulture, "{0}px", marginRightInPixels);
+                destinationInlineStyle.marginRight = string.Format(CultureInfo.InvariantCulture, "{0}px", marginRightInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.marginRight as string, sourceCascadedStyle.marginRight as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.marginRight as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.marginRight as string, sourceCascadedStyle.marginRight as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.marginRight as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.marginRight as string))
             {
                 destinationInlineStyle.marginRight = sourceCascadedStyle.marginRight;
@@ -839,10 +839,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.marginTop as string))
             {
                 int marginTopInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMarginTop, sourceElement, null, true);
-                destinationInlineStyle.marginTop = String.Format(CultureInfo.InvariantCulture, "{0}px", marginTopInPixels);
+                destinationInlineStyle.marginTop = string.Format(CultureInfo.InvariantCulture, "{0}px", marginTopInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.marginTop as string, sourceCascadedStyle.marginTop as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.marginTop as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.marginTop as string, sourceCascadedStyle.marginTop as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.marginTop as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.marginTop as string))
             {
                 destinationInlineStyle.marginTop = sourceCascadedStyle.marginTop;
@@ -851,9 +851,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle4.maxHeight as string))
             {
                 int maxHeightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMaxHeight, sourceElement, null, true);
-                destinationInlineStyle5.maxHeight = String.Format(CultureInfo.InvariantCulture, "{0}px", maxHeightInPixels);
+                destinationInlineStyle5.maxHeight = string.Format(CultureInfo.InvariantCulture, "{0}px", maxHeightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle4.maxHeight as string, sourceCascadedStyle4.maxHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle4.maxHeight as string, sourceCascadedStyle4.maxHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle5.maxHeight as string))
             {
                 destinationInlineStyle5.maxHeight = sourceCascadedStyle4.maxHeight;
@@ -862,9 +862,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle4.maxWidth as string))
             {
                 int maxWidthInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMaxWidth, sourceElement, null, false);
-                destinationInlineStyle5.maxWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", maxWidthInPixels);
+                destinationInlineStyle5.maxWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", maxWidthInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle4.maxWidth as string, sourceCascadedStyle4.maxWidth as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle4.maxWidth as string, sourceCascadedStyle4.maxWidth as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle5.maxWidth as string))
             {
                 destinationInlineStyle5.maxWidth = sourceCascadedStyle4.maxWidth;
@@ -873,9 +873,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle3.minHeight as string))
             {
                 int minHeightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMinHeight, sourceElement, null, true);
-                destinationInlineStyle4.minHeight = String.Format(CultureInfo.InvariantCulture, "{0}px", minHeightInPixels);
+                destinationInlineStyle4.minHeight = string.Format(CultureInfo.InvariantCulture, "{0}px", minHeightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle3.minHeight as string, sourceCascadedStyle3.minHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle3.minHeight as string, sourceCascadedStyle3.minHeight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle4.minHeight as string))
             {
                 destinationInlineStyle4.minHeight = sourceCascadedStyle3.minHeight;
@@ -884,9 +884,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle4.minWidth as string))
             {
                 int minWidthInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringMinWidth, sourceElement, null, false);
-                destinationInlineStyle5.minWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", minWidthInPixels);
+                destinationInlineStyle5.minWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", minWidthInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle4.minWidth as string, sourceCascadedStyle4.minWidth as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle4.minWidth as string, sourceCascadedStyle4.minWidth as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle5.minWidth as string))
             {
                 destinationInlineStyle5.minWidth = sourceCascadedStyle4.minWidth;
@@ -894,19 +894,19 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.orphans as string, sourceCascadedStyle5.orphans as string, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.orphans as string, sourceCascadedStyle5.orphans as string, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.orphans = sourceCascadedStyle5.orphans;
                 }
 
-                if (String.Compare(destinationCascadedStyle5.outlineStyle, sourceCascadedStyle5.outlineStyle, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.outlineStyle, sourceCascadedStyle5.outlineStyle, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.outlineStyle = sourceCascadedStyle5.outlineStyle;
                 }
 
-                if (String.Compare(sourceCascadedStyle5.outlineStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(sourceCascadedStyle5.outlineStyle, "none", StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    if (String.Compare(destinationCascadedStyle5.outlineColor as string, sourceCascadedStyle5.outlineColor as string, StringComparison.OrdinalIgnoreCase) != 0)
+                    if (string.Compare(destinationCascadedStyle5.outlineColor as string, sourceCascadedStyle5.outlineColor as string, StringComparison.OrdinalIgnoreCase) != 0)
                     {
                         destinationInlineStyle6.outlineColor = sourceCascadedStyle5.outlineColor;
                     }
@@ -919,16 +919,16 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                     {
                         int outlineWidthInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringOutlineWidth, sourceElement,
                             HTMLElementHelper.LastChanceBorderWidthPointSize, false);
-                        destinationInlineStyle6.outlineWidth = String.Format(CultureInfo.InvariantCulture, "{0}px", outlineWidthInPixels);
+                        destinationInlineStyle6.outlineWidth = string.Format(CultureInfo.InvariantCulture, "{0}px", outlineWidthInPixels);
                     }
-                    else if (String.Compare(destinationOutlineWidth, sourceOutlineWidth, StringComparison.OrdinalIgnoreCase) != 0 || IsEms(destinationOutlineWidth))
+                    else if (string.Compare(destinationOutlineWidth, sourceOutlineWidth, StringComparison.OrdinalIgnoreCase) != 0 || IsEms(destinationOutlineWidth))
                     {
                         destinationInlineStyle6.outlineWidth = sourceOutlineWidth;
                     }
                 }
             }
 
-            if (String.Compare(destinationCascadedStyle.overflow, sourceCascadedStyle.overflow, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.overflow, sourceCascadedStyle.overflow, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.overflow = sourceCascadedStyle.overflow;
             }
@@ -936,9 +936,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.paddingBottom as string))
             {
                 int paddingBottomInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringPaddingBottom, sourceElement, null, true);
-                destinationInlineStyle.paddingBottom = String.Format(CultureInfo.InvariantCulture, "{0}px", paddingBottomInPixels);
+                destinationInlineStyle.paddingBottom = string.Format(CultureInfo.InvariantCulture, "{0}px", paddingBottomInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.paddingBottom as string, sourceCascadedStyle.paddingBottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.paddingBottom as string, sourceCascadedStyle.paddingBottom as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.paddingBottom as string))
             {
                 destinationInlineStyle.paddingBottom = sourceCascadedStyle.paddingBottom;
@@ -947,9 +947,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.paddingLeft as string))
             {
                 int paddingLeftInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringPaddingLeft, sourceElement, null, false);
-                destinationInlineStyle.paddingLeft = String.Format(CultureInfo.InvariantCulture, "{0}px", paddingLeftInPixels);
+                destinationInlineStyle.paddingLeft = string.Format(CultureInfo.InvariantCulture, "{0}px", paddingLeftInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.paddingLeft as string, sourceCascadedStyle.paddingLeft as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.paddingLeft as string, sourceCascadedStyle.paddingLeft as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.paddingLeft as string))
             {
                 destinationInlineStyle.paddingLeft = sourceCascadedStyle.paddingLeft;
@@ -958,9 +958,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.paddingRight as string))
             {
                 int paddingRightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringPaddingRight, sourceElement, null, false);
-                destinationInlineStyle.paddingRight = String.Format(CultureInfo.InvariantCulture, "{0}px", paddingRightInPixels);
+                destinationInlineStyle.paddingRight = string.Format(CultureInfo.InvariantCulture, "{0}px", paddingRightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.paddingRight as string, sourceCascadedStyle.paddingRight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.paddingRight as string, sourceCascadedStyle.paddingRight as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.paddingRight as string))
             {
                 destinationInlineStyle.paddingRight = sourceCascadedStyle.paddingRight;
@@ -969,40 +969,40 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.paddingTop as string))
             {
                 int paddingTopInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringPaddingTop, sourceElement, null, true);
-                destinationInlineStyle.paddingTop = String.Format(CultureInfo.InvariantCulture, "{0}px", paddingTopInPixels);
+                destinationInlineStyle.paddingTop = string.Format(CultureInfo.InvariantCulture, "{0}px", paddingTopInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.paddingTop as string, sourceCascadedStyle.paddingTop as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.paddingTop as string, sourceCascadedStyle.paddingTop as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.paddingTop as string))
             {
                 destinationInlineStyle.paddingTop = sourceCascadedStyle.paddingTop;
             }
 
-            if (String.Compare(destinationCascadedStyle.pageBreakAfter, sourceCascadedStyle.pageBreakAfter, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.pageBreakAfter, sourceCascadedStyle.pageBreakAfter, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.pageBreakAfter = sourceCascadedStyle.pageBreakAfter;
             }
 
-            if (String.Compare(destinationCascadedStyle.pageBreakBefore, sourceCascadedStyle.pageBreakBefore, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.pageBreakBefore, sourceCascadedStyle.pageBreakBefore, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.pageBreakBefore = sourceCascadedStyle.pageBreakBefore;
             }
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.pageBreakInside, sourceCascadedStyle5.pageBreakInside, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.pageBreakInside, sourceCascadedStyle5.pageBreakInside, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.pageBreakInside = sourceCascadedStyle5.pageBreakInside;
                 }
             }
 
-            if (String.Compare(destinationCascadedStyle.position, sourceCascadedStyle.position, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.position, sourceCascadedStyle.position, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.position = sourceCascadedStyle.position;
             }
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.quotes, sourceCascadedStyle5.quotes, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.quotes, sourceCascadedStyle5.quotes, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.quotes = sourceCascadedStyle5.quotes;
                 }
@@ -1011,20 +1011,20 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.right as string))
             {
                 int rightInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringRight, sourceElement, null, false);
-                destinationInlineStyle2.right = String.Format(CultureInfo.InvariantCulture, "{0}px", rightInPixels);
+                destinationInlineStyle2.right = string.Format(CultureInfo.InvariantCulture, "{0}px", rightInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.right as string, sourceCascadedStyle.right as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.right as string, sourceCascadedStyle.right as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle2.right as string))
             {
                 destinationInlineStyle2.right = sourceCascadedStyle.right;
             }
 
-            if (String.Compare(destinationCascadedStyle.tableLayout, sourceCascadedStyle.tableLayout, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.tableLayout, sourceCascadedStyle.tableLayout, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.tableLayout = sourceCascadedStyle.tableLayout;
             }
 
-            if (String.Compare(destinationCascadedStyle.textAlign, sourceCascadedStyle.textAlign, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.textAlign, sourceCascadedStyle.textAlign, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.textAlign = sourceCascadedStyle.textAlign;
             }
@@ -1034,15 +1034,15 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.textIndent as string))
             {
                 int textIndentInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringTextIndent, sourceElement, null, false);
-                destinationInlineStyle.textIndent = String.Format(CultureInfo.InvariantCulture, "{0}px", textIndentInPixels);
+                destinationInlineStyle.textIndent = string.Format(CultureInfo.InvariantCulture, "{0}px", textIndentInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.textIndent as string, sourceCascadedStyle.textIndent as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.textIndent as string, sourceCascadedStyle.textIndent as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.textIndent as string))
             {
                 destinationInlineStyle.textIndent = sourceCascadedStyle.textIndent;
             }
 
-            if (String.Compare(destinationCascadedStyle.textTransform, sourceCascadedStyle.textTransform, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.textTransform, sourceCascadedStyle.textTransform, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.textTransform = sourceCascadedStyle.textTransform;
             }
@@ -1050,15 +1050,15 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.top as string))
             {
                 int topInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringTop, sourceElement, null, true);
-                destinationInlineStyle.top = String.Format(CultureInfo.InvariantCulture, "{0}px", topInPixels);
+                destinationInlineStyle.top = string.Format(CultureInfo.InvariantCulture, "{0}px", topInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.top as string, sourceCascadedStyle.top as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.top as string, sourceCascadedStyle.top as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.top as string))
             {
                 destinationInlineStyle.top = sourceCascadedStyle.top;
             }
 
-            if (String.Compare(destinationCascadedStyle.unicodeBidi, sourceCascadedStyle.unicodeBidi, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.unicodeBidi, sourceCascadedStyle.unicodeBidi, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.unicodeBidi = sourceCascadedStyle.unicodeBidi;
             }
@@ -1066,28 +1066,28 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.verticalAlign as string))
             {
                 int verticalAlignInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringVerticalAlign, sourceElement, null, true);
-                destinationInlineStyle.verticalAlign = String.Format(CultureInfo.InvariantCulture, "{0}px", verticalAlignInPixels);
+                destinationInlineStyle.verticalAlign = string.Format(CultureInfo.InvariantCulture, "{0}px", verticalAlignInPixels);
             }
-            else if ((String.Compare(destinationCascadedStyle.verticalAlign as string, sourceCascadedStyle.verticalAlign as string, StringComparison.OrdinalIgnoreCase) != 0 &&
-                String.Compare(sourceCascadedStyle.verticalAlign as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
+            else if ((string.Compare(destinationCascadedStyle.verticalAlign as string, sourceCascadedStyle.verticalAlign as string, StringComparison.OrdinalIgnoreCase) != 0 &&
+                string.Compare(sourceCascadedStyle.verticalAlign as string, "auto", StringComparison.OrdinalIgnoreCase) != 0) ||
                 IsEms(destinationInlineStyle.verticalAlign as string))
             {
                 destinationInlineStyle.verticalAlign = sourceCascadedStyle.verticalAlign;
             }
 
-            if (String.Compare(destinationCascadedStyle.visibility, sourceCascadedStyle.visibility, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.visibility, sourceCascadedStyle.visibility, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.visibility = sourceCascadedStyle.visibility;
             }
 
-            if (String.Compare(destinationCascadedStyle3.whiteSpace, sourceCascadedStyle3.whiteSpace, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle3.whiteSpace, sourceCascadedStyle3.whiteSpace, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.whiteSpace = sourceCascadedStyle3.whiteSpace;
             }
 
             if (isAtLeastIE8)
             {
-                if (String.Compare(destinationCascadedStyle5.widows as string, sourceCascadedStyle5.widows as string, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(destinationCascadedStyle5.widows as string, sourceCascadedStyle5.widows as string, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     destinationInlineStyle6.widows = sourceCascadedStyle5.widows;
                 }
@@ -1096,9 +1096,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle.width as string))
             {
                 int widthInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringWidth, sourceElement, null, false);
-                destinationInlineStyle.width = String.Format(CultureInfo.InvariantCulture, "{0}px", widthInPixels);
+                destinationInlineStyle.width = string.Format(CultureInfo.InvariantCulture, "{0}px", widthInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle.width as string, sourceCascadedStyle.width as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle.width as string, sourceCascadedStyle.width as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.width as string))
             {
                 destinationInlineStyle.width = sourceCascadedStyle.width;
@@ -1107,15 +1107,15 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             if (IsEms(sourceCascadedStyle3.wordSpacing as string))
             {
                 int wordSpacingInPixels = (int)HTMLElementHelper.CSSUnitStringToPixelSize(HTMLElementHelper.CSSUnitStringWordSpacing, sourceElement, null, false);
-                destinationInlineStyle.wordSpacing = String.Format(CultureInfo.InvariantCulture, "{0}px", wordSpacingInPixels);
+                destinationInlineStyle.wordSpacing = string.Format(CultureInfo.InvariantCulture, "{0}px", wordSpacingInPixels);
             }
-            else if (String.Compare(destinationCascadedStyle3.wordSpacing as string, sourceCascadedStyle3.wordSpacing as string, StringComparison.OrdinalIgnoreCase) != 0 ||
+            else if (string.Compare(destinationCascadedStyle3.wordSpacing as string, sourceCascadedStyle3.wordSpacing as string, StringComparison.OrdinalIgnoreCase) != 0 ||
                 IsEms(destinationInlineStyle.wordSpacing as string))
             {
                 destinationInlineStyle.wordSpacing = sourceCascadedStyle3.wordSpacing;
             }
 
-            if (String.Compare(destinationCascadedStyle.zIndex as string, sourceCascadedStyle.zIndex as string, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.zIndex as string, sourceCascadedStyle.zIndex as string, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle.zIndex = sourceCascadedStyle.zIndex;
             }
@@ -1124,47 +1124,47 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             // 3.  CSS 3
             // ---------
 
-            if (String.Compare(destinationCascadedStyle.rubyAlign, sourceCascadedStyle.rubyAlign, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.rubyAlign, sourceCascadedStyle.rubyAlign, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.rubyAlign = sourceCascadedStyle.rubyAlign;
             }
 
-            if (String.Compare(destinationCascadedStyle.rubyOverhang, sourceCascadedStyle.rubyOverhang, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.rubyOverhang, sourceCascadedStyle.rubyOverhang, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.rubyOverhang = sourceCascadedStyle.rubyOverhang;
             }
 
-            if (String.Compare(destinationCascadedStyle.rubyPosition, sourceCascadedStyle.rubyPosition, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.rubyPosition, sourceCascadedStyle.rubyPosition, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.rubyPosition = sourceCascadedStyle.rubyPosition;
             }
 
-            if (String.Compare(destinationCascadedStyle2.textAlignLast, sourceCascadedStyle2.textAlignLast, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle2.textAlignLast, sourceCascadedStyle2.textAlignLast, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle3.textAlignLast = sourceCascadedStyle2.textAlignLast;
             }
 
-            if (String.Compare(destinationCascadedStyle.textJustify, sourceCascadedStyle.textJustify, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.textJustify, sourceCascadedStyle.textJustify, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.textJustify = sourceCascadedStyle.textJustify;
             }
 
-            if (String.Compare(destinationCascadedStyle3.textOverflow, sourceCascadedStyle3.textOverflow, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle3.textOverflow, sourceCascadedStyle3.textOverflow, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle4.textOverflow = sourceCascadedStyle3.textOverflow;
             }
 
-            if (String.Compare(destinationCascadedStyle.wordBreak, sourceCascadedStyle.wordBreak, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle.wordBreak, sourceCascadedStyle.wordBreak, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle2.wordBreak = sourceCascadedStyle.wordBreak;
             }
 
-            if (String.Compare(destinationCascadedStyle2.wordWrap, sourceCascadedStyle2.wordWrap, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle2.wordWrap, sourceCascadedStyle2.wordWrap, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle3.wordWrap = sourceCascadedStyle2.wordWrap;
             }
 
-            if (String.Compare(destinationCascadedStyle2.writingMode, sourceCascadedStyle2.writingMode, StringComparison.OrdinalIgnoreCase) != 0)
+            if (string.Compare(destinationCascadedStyle2.writingMode, sourceCascadedStyle2.writingMode, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 destinationInlineStyle3.writingMode = sourceCascadedStyle2.writingMode;
             }
@@ -1177,7 +1177,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <returns>true if a percent sign appears and false otherwise.</returns>
         private bool IsPercentage(string cssUnits)
         {
-            return !String.IsNullOrEmpty(cssUnits) && cssUnits.IndexOf("%", StringComparison.OrdinalIgnoreCase) > 0;
+            return !string.IsNullOrEmpty(cssUnits) && cssUnits.IndexOf("%", StringComparison.OrdinalIgnoreCase) > 0;
         }
 
         /// <summary>
@@ -1188,7 +1188,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <returns>true if a percent sign appears and false otherwise.</returns>
         private bool IsEms(string cssUnits)
         {
-            return !String.IsNullOrEmpty(cssUnits) && cssUnits.IndexOf("em", StringComparison.OrdinalIgnoreCase) > 0;
+            return !string.IsNullOrEmpty(cssUnits) && cssUnits.IndexOf("em", StringComparison.OrdinalIgnoreCase) > 0;
         }
 
         /// <summary>
@@ -1201,37 +1201,37 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             IHTMLStyle inlineStyle = element.style;
 
             // Remove any inline text styles. We'll add these back later.
-            if (!String.IsNullOrEmpty(inlineStyle.fontFamily))
+            if (!string.IsNullOrEmpty(inlineStyle.fontFamily))
             {
                 inlineStyle.fontFamily = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.fontSize as string))
+            if (!string.IsNullOrEmpty(inlineStyle.fontSize as string))
             {
                 inlineStyle.fontSize = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.fontStyle))
+            if (!string.IsNullOrEmpty(inlineStyle.fontStyle))
             {
                 inlineStyle.fontStyle = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.fontVariant))
+            if (!string.IsNullOrEmpty(inlineStyle.fontVariant))
             {
                 inlineStyle.fontVariant = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.fontWeight))
+            if (!string.IsNullOrEmpty(inlineStyle.fontWeight))
             {
                 inlineStyle.fontWeight = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.color as string))
+            if (!string.IsNullOrEmpty(inlineStyle.color as string))
             {
                 inlineStyle.color = string.Empty;
             }
 
-            if (!String.IsNullOrEmpty(inlineStyle.textDecoration))
+            if (!string.IsNullOrEmpty(inlineStyle.textDecoration))
             {
                 inlineStyle.textDecoration = string.Empty;
             }
@@ -1253,7 +1253,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             IHTMLStyle inlineStyle = destinationElement.style;
 
-            if (!String.IsNullOrEmpty(inlineStyle.textAlign))
+            if (!string.IsNullOrEmpty(inlineStyle.textAlign))
             {
                 if (SupportsAlignmentAttribute(destinationElement))
                 {
@@ -1264,7 +1264,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             }
 
             string width = inlineStyle.width as string;
-            if (!String.IsNullOrEmpty(width) && String.Compare(width, "auto", StringComparison.OrdinalIgnoreCase) != 0)
+            if (!string.IsNullOrEmpty(width) && string.Compare(width, "auto", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 if (IsPercentage(width) && SupportsPercentageWidthAttribute(destinationElement))
                 {
@@ -1284,7 +1284,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             }
 
             string height = inlineStyle.height as string;
-            if (!String.IsNullOrEmpty(height) && String.Compare(height, "auto", StringComparison.OrdinalIgnoreCase) != 0)
+            if (!string.IsNullOrEmpty(height) && string.Compare(height, "auto", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 if (IsPercentage(height) && SupportsPercentageHeightAttribute(destinationElement))
                 {
@@ -1490,10 +1490,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             const string inline = "inline";
 
             if (element != null &&
-                String.Compare(((IHTMLElement2)element).scopeName, html, StringComparison.OrdinalIgnoreCase) != 0)
+                string.Compare(((IHTMLElement2)element).scopeName, html, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 // This is a custom element (e.g. <o:p></o:p> from Word), so check if its set to display inline.
-                return String.Compare(((IHTMLElement2)element).currentStyle.display, inline,
+                return string.Compare(((IHTMLElement2)element).currentStyle.display, inline,
                     StringComparison.OrdinalIgnoreCase) == 0;
             }
 

@@ -292,7 +292,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         protected virtual DateTime ParseBlogDate(XmlNode xmlNode)
         {
             string date = NodeText(xmlNode);
-            if (date != String.Empty)
+            if (date != string.Empty)
             {
                 try
                 {

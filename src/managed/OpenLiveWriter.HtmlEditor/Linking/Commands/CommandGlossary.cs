@@ -22,7 +22,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking.Commands
         {
             using (SelectGlossaryLinkForm glossaryForm = new SelectGlossaryLinkForm())
             {
-                if (linkText != String.Empty)
+                if (linkText != string.Empty)
                 {
                     glossaryForm.SetSelected(linkText);
                 }

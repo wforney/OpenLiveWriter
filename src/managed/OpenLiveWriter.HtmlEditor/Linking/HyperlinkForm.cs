@@ -165,7 +165,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             Debug.Assert(result == HRESULT.S_OK, "Unexpected failure to install AutoComplete");
 
             // prepopulate the text box w/ http prefix and move the cursor to the end
-            if (textBoxAddress.Text == String.Empty)
+            if (textBoxAddress.Text == string.Empty)
             {
                 try
                 {
@@ -188,14 +188,14 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 }
             }
 
-            if (textBoxAddress.Text == String.Empty)
+            if (textBoxAddress.Text == string.Empty)
             {
                 textBoxAddress.Text = HTTP_PREFIX;
                 textBoxAddress.Select(HTTP_PREFIX.Length, 0);
             }
 
             //decide whether it should be maximized
-            ShowAdvancedOptions = (LinkSettings.ShowAdvancedOptions || Rel != String.Empty || LinkTitle != String.Empty)
+            ShowAdvancedOptions = (LinkSettings.ShowAdvancedOptions || Rel != string.Empty || LinkTitle != string.Empty)
                 && comboBoxRel.Visible;
 
             //use new window sticky setting if this isn't an edit
@@ -347,9 +347,9 @@ namespace OpenLiveWriter.HtmlEditor.Linking
         private void SetAdvancedText()
         {
             if (_isMaxed)
-                btnAdvanced.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00AB);
+                btnAdvanced.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00AB);
             else
-                btnAdvanced.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00BB);
+                btnAdvanced.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00BB);
         }
 
         private void handleState()
@@ -368,13 +368,13 @@ namespace OpenLiveWriter.HtmlEditor.Linking
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            if (LinkText == String.Empty)
+            if (LinkText == string.Empty)
 
             {
                 DisplayMessage.Show(MessageId.NoLinkTextSpecified, this);
                 textBoxLinkText.Focus();
             }
-            else if (Hyperlink.Trim() == String.Empty || Hyperlink.Trim().ToUpper(CultureInfo.InvariantCulture) == HTTP_PREFIX.ToUpper(CultureInfo.InvariantCulture))
+            else if (Hyperlink.Trim() == string.Empty || Hyperlink.Trim().ToUpper(CultureInfo.InvariantCulture) == HTTP_PREFIX.ToUpper(CultureInfo.InvariantCulture))
             {
                 DisplayMessage.Show(MessageId.NoValidHyperlinkSpecified, this);
                 textBoxAddress.Focus();

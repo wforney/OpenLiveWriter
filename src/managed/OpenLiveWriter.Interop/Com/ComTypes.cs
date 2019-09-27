@@ -13,12 +13,12 @@ namespace OpenLiveWriter.Interop.Com
         /// <summary>
         /// S_OK return code
         /// </summary>
-        public const Int32 S_OK = 0;
+        public const int S_OK = 0;
 
         /// <summary>
         /// S_FALSE return code
         /// </summary>
-        public const Int32 S_FALSE = 1;
+        public const int S_FALSE = 1;
 
         /// <summary>
         /// E_NOINTERFACE return code

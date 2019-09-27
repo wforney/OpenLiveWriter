@@ -122,7 +122,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         {
             // If the default text is in the box, remove it
             if (!_filterDirty)
-                textBoxFilter.Text = String.Empty;
+                textBoxFilter.Text = string.Empty;
 
             _filterDirty = true;
         }
@@ -133,7 +133,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             _filterDirty = false;
             textBoxFilter.ForeColor = SystemColors.GrayText;
 
-            string text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPageFilter), listBoxPosts.ShowPages ? Res.Get(StringId.PagesLower) : Res.Get(StringId.PostsLower));
+            string text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPageFilter), listBoxPosts.ShowPages ? Res.Get(StringId.PagesLower) : Res.Get(StringId.PostsLower));
             textBoxFilter.Text = text;
             textBoxFilter.AccessibleName = text;
             listBoxPosts.ClearFilterWithoutUpdate();
@@ -502,7 +502,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             // manage delete button
             bool allowDelete = _allowDelete && (selectedPostSource != null) && (selectedPostSource.SupportsDelete);
             buttonDelete.Visible = allowDelete;
-            buttonDelete.Width = buttonDelete.GetPreferredSize(new Size(Int32.MaxValue, buttonDelete.Height)).Width;
+            buttonDelete.Width = buttonDelete.GetPreferredSize(new Size(int.MaxValue, buttonDelete.Height)).Width;
             buttonDelete.Left = textBoxFilter.Right - buttonDelete.Width;
 
             listBoxPosts.AllowDelete = allowDelete;

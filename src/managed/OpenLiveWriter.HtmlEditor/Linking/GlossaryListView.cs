@@ -76,7 +76,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             {
                 if (x != orig)
                 {
-                    if (0 == String.Compare(x.Text, itemText, true, CultureInfo.InvariantCulture))
+                    if (0 == string.Compare(x.Text, itemText, true, CultureInfo.InvariantCulture))
                     {
                         return x;
                     }
@@ -104,8 +104,8 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             item.SubItems.Clear();
 
             // set text
-            item.Text = String.Format(CultureInfo.InvariantCulture, "{0}", entry.Text);
-            item.SubItems.Add(String.Format(CultureInfo.InvariantCulture, "{0}", entry.Url));
+            item.Text = string.Format(CultureInfo.InvariantCulture, "{0}", entry.Text);
+            item.SubItems.Add(string.Format(CultureInfo.InvariantCulture, "{0}", entry.Url));
         }
 
         public void DeleteSelectedEntry()

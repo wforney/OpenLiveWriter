@@ -857,7 +857,7 @@ namespace OpenLiveWriter.PostEditor
         private bool ValidateTitleSpecified()
         {
 
-            if (_htmlEditor.Title == String.Empty)
+            if (_htmlEditor.Title == string.Empty)
             {
                 if (_editingManager.BlogRequiresTitles)
                 {
@@ -1056,7 +1056,7 @@ namespace OpenLiveWriter.PostEditor
                 commandSavePost.CommandBarButtonContextMenuDefinition = null;
 
             // if the blog supports post draft and edit online
-            commandPostAsDraftAndEditOnline.Enabled = newBlog.ClientOptions.SupportsPostAsDraft && (newBlog.ClientOptions.PostEditingUrl != String.Empty);
+            commandPostAsDraftAndEditOnline.Enabled = newBlog.ClientOptions.SupportsPostAsDraft && (newBlog.ClientOptions.PostEditingUrl != string.Empty);
 
             // if the blog supports pages or not
             bool enablePages = newBlog.ClientOptions.SupportsPages;
@@ -1123,10 +1123,10 @@ namespace OpenLiveWriter.PostEditor
         {
             // calculate the text that describes the post
             string title = _htmlEditor.Title;
-            string postDescription = (title != String.Empty) ? title : Res.Get(StringId.Untitled);
+            string postDescription = (title != string.Empty) ? title : Res.Get(StringId.Untitled);
 
             // update frame window
-            _mainFrameWindow.Caption = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WindowTitleFormat), postDescription, ApplicationEnvironment.ProductNameQualified);
+            _mainFrameWindow.Caption = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WindowTitleFormat), postDescription, ApplicationEnvironment.ProductNameQualified);
 
             UpdatePostStatusUI();
         }
@@ -1138,7 +1138,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 DateTime dateSaved = _editingManager.PostDateSaved ?? DateTime.MinValue;
                 statusText = dateSaved != DateTime.MinValue
-                                 ? String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusDraftSaved),
+                                 ? string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.StatusDraftSaved),
                                                    FormatUtcDate(dateSaved))
                                  : Res.Get(StringId.StatusDraftUnsaved);
             }
@@ -1710,7 +1710,7 @@ namespace OpenLiveWriter.PostEditor
         {
             try
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Creating a {0} ribbon istream for {1}", writable ? "writable" : "readable", filename));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Creating a {0} ribbon istream for {1}", writable ? "writable" : "readable", filename));
                 STGM mode = writable ? STGM.WRITE : STGM.READ;
                 if (create)
                     mode |= STGM.CREATE;

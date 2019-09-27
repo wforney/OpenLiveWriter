@@ -135,13 +135,13 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         internal class BackgroundWorker
         {
-            internal BackgroundWorker(WaitCallback callback, Object state)
+            internal BackgroundWorker(WaitCallback callback, object state)
             {
                 Callback = callback;
                 State = state;
             }
             internal WaitCallback Callback;
-            internal Object State;
+            internal object State;
         }
     }
 }

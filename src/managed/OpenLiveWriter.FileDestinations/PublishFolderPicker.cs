@@ -258,7 +258,7 @@ namespace OpenLiveWriter.FileDestinations
                 }
                 else
                 {
-                    Debug.Fail(String.Format(CultureInfo.InvariantCulture, "specified path [{0}] is not within destination root [{1}]", value, rootPath));
+                    Debug.Fail(string.Format(CultureInfo.InvariantCulture, "specified path [{0}] is not within destination root [{1}]", value, rootPath));
                 }
             }
         }
@@ -277,7 +277,7 @@ namespace OpenLiveWriter.FileDestinations
                 if (rootPathLength < fullPath.Length)
                     return fullPath.Substring(rootPathLength);
                 else
-                    return String.Empty;
+                    return string.Empty;
             }
 
             set

@@ -39,7 +39,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 }
                 catch (Exception e)
                 {
-                    Debug.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected error querying data format handler factory {0}: {1}", handlerFactory.GetType().Name, e.Message));
+                    Debug.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected error querying data format handler factory {0}: {1}", handlerFactory.GetType().Name, e.Message));
                 }
             }
 

@@ -81,7 +81,7 @@ namespace OpenLiveWriter.PostEditor
         public int GetInt(string key, int defaultValue)
         {
             string val = GetString(key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            return Int32.Parse(val, CultureInfo.InvariantCulture);
+            return int.Parse(val, CultureInfo.InvariantCulture);
         }
         public void SetInt(string key, int value)
         {

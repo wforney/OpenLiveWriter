@@ -104,7 +104,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             using (new AutoGrow(this, AnchorStyles.Bottom, false))
             {
                 base.OnLoad(e);
-                imageSizeControl1.Height = imageSizeControl1.GetPreferredSize(new Size(imageSizeControl1.Width, Int32.MaxValue)).Height;
+                imageSizeControl1.Height = imageSizeControl1.GetPreferredSize(new Size(imageSizeControl1.Width, int.MaxValue)).Height;
                 linkOptionsControl1.Top = imageSizeControl1.Bottom;
             }
 

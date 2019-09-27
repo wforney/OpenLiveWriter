@@ -39,7 +39,7 @@ namespace OpenLiveWriter.CoreServices
                 }
             }
 
-            return String.Format(CultureInfo.CurrentCulture, pattern, Math.Abs(n));
+            return string.Format(CultureInfo.CurrentCulture, pattern, Math.Abs(n));
         }
 
         // http://www.taygeta.com/random/gaussian.html

@@ -40,7 +40,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        public Object ObjectState
+        public object ObjectState
         {
             get
             {

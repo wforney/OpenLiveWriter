@@ -166,7 +166,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
             sizeCommand.Value = imageSize;
 
-            if (EditorContext.SourceImageSize == new Size(Int32.MaxValue, Int32.MaxValue))
+            if (EditorContext.SourceImageSize == new Size(int.MaxValue, int.MaxValue))
             {
                 //The source image size is unknown, so calculate the actual image size by removing
                 //the size attributes, checking the size, and then placing the size attributes back

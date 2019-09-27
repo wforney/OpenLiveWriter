@@ -96,7 +96,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
 
             _originalPassword = ftpSettings.Password;
             textBoxPassword.Text = ftpSettings.Password;
-            checkBoxSavePassword.Checked = ftpSettings.Password != String.Empty;
+            checkBoxSavePassword.Checked = ftpSettings.Password != string.Empty;
 
             _originalPath = ftpSettings.PublishPath;
             textBoxPath.Text = ftpSettings.PublishPath;
@@ -161,7 +161,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             {
                 _ftpSettings.FtpServer = HostName;
                 _ftpSettings.Username = Username;
-                _ftpSettings.Password = checkBoxSavePassword.Checked ? Password : String.Empty;
+                _ftpSettings.Password = checkBoxSavePassword.Checked ? Password : string.Empty;
                 _ftpSettings.PublishPath = Path;
                 _ftpSettings.UrlMapping = UrlMapping;
 

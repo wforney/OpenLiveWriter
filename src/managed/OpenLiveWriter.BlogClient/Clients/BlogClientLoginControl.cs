@@ -45,8 +45,8 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             if (!DesignMode)
             {
-                textboxLoginDomain.Text = String.Empty;
-                textboxLoginDomainDescription.Text = String.Empty;
+                textboxLoginDomain.Text = string.Empty;
+                textboxLoginDomainDescription.Text = string.Empty;
             }
         }
 
@@ -227,8 +227,8 @@ namespace OpenLiveWriter.BlogClient.Clients
 
                 if (_domain != null)
                 {
-                    textboxLoginDomain.Text = _domain.Name != null ? _domain.Name : String.Empty;
-                    textboxLoginDomainDescription.Text = _domain.Description != null ? _domain.Description : String.Empty;
+                    textboxLoginDomain.Text = _domain.Name != null ? _domain.Name : string.Empty;
+                    textboxLoginDomainDescription.Text = _domain.Description != null ? _domain.Description : string.Empty;
                 }
             }
         }

@@ -111,7 +111,7 @@ namespace OpenLiveWriter.CoreServices.Progress
             complete = (int)doubleComplete;
             total = TICK_BASE_COUNT; //reset the total to be 100000000 based
 
-            Debug.Assert(complete <= total, String.Format(CultureInfo.InvariantCulture, "Progress calculation error occurred: {0} > {1}", complete.ToString(CultureInfo.InvariantCulture), total.ToString(CultureInfo.InvariantCulture)));
+            Debug.Assert(complete <= total, string.Format(CultureInfo.InvariantCulture, "Progress calculation error occurred: {0} > {1}", complete.ToString(CultureInfo.InvariantCulture), total.ToString(CultureInfo.InvariantCulture)));
 
             //save the %complete of this tick object
             lastCompletionPercentage = fractionalComplete;

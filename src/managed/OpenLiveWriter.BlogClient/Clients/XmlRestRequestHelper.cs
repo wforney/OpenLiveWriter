@@ -131,7 +131,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         protected virtual XmlDocument Send(string method, ref Uri uri, string etag, HttpRequestFilter filter, string contentType, XmlDocument doc, string encoding, string filename, bool ignoreResponse, out WebHeaderCollection responseHeaders)
         {
-            if (!String.IsNullOrEmpty(filename))
+            if (!string.IsNullOrEmpty(filename))
             {
                 return MultipartSend(method, ref uri, etag, filter, contentType, doc, encoding, filename, ignoreResponse,
                                      out responseHeaders);

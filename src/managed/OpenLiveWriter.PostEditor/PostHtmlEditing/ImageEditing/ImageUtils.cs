@@ -98,9 +98,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 bool widthChanged = (newImageSize.Width != currentImageSize.Width);
 
                 if (widthChanged)
-                    newImageSize.Height = ImageUtils.GetScaledImageSize(newImageSize.Width, Int32.MaxValue, targetAspectRatioSize).Height;
+                    newImageSize.Height = ImageUtils.GetScaledImageSize(newImageSize.Width, int.MaxValue, targetAspectRatioSize).Height;
                 else
-                    newImageSize.Width = ImageUtils.GetScaledImageSize(Int32.MaxValue, newImageSize.Height, targetAspectRatioSize).Width;
+                    newImageSize.Width = ImageUtils.GetScaledImageSize(int.MaxValue, newImageSize.Height, targetAspectRatioSize).Width;
             }
 
             return newImageSize;

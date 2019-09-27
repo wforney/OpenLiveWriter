@@ -52,7 +52,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
             get { return name; }
             set
             {
-                if (String.Compare(name, value, false, CultureInfo.CurrentUICulture) != 0)
+                if (string.Compare(name, value, false, CultureInfo.CurrentUICulture) != 0)
                 {
                     name = value;
                 }

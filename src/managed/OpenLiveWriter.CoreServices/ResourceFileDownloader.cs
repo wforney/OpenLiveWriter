@@ -152,7 +152,7 @@ namespace OpenLiveWriter.CoreServices
             catch (Exception ex)
             {
                 // report failure
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Unexpected exception occurred while processing resource {0}: {1}", name, ex.ToString()));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Unexpected exception occurred while processing resource {0}: {1}", name, ex.ToString()));
 
                 // NOTE: we should save the last successfully download/used file and
                 // "restore" from this rather than the embedded copy in the case of
@@ -215,7 +215,7 @@ namespace OpenLiveWriter.CoreServices
                 }
 
                 // local file doesn't exist or is out of date, try downloading from the web
-                if (_enableDownloading && (resourceUrl != String.Empty))
+                if (_enableDownloading && (resourceUrl != string.Empty))
                 {
                     using (Stream urlStream = SafeDownloadUrl(resourceUrl, contentType, timeoutMs))
                     {
@@ -241,7 +241,7 @@ namespace OpenLiveWriter.CoreServices
             }
             catch (Exception ex)
             {
-                Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected exception attempting to load resource {0}: {1}", assemblyResourcePath, ex.ToString()));
+                Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected exception attempting to load resource {0}: {1}", assemblyResourcePath, ex.ToString()));
             }
 
             // if we get this far it means downloading was disabled, we couldn't find the file
@@ -314,15 +314,15 @@ namespace OpenLiveWriter.CoreServices
 
         private string GetLocalCachePath(string assemblyResourcePath)
         {
-            if (_fileCacheBasePath != String.Empty)
+            if (_fileCacheBasePath != string.Empty)
                 return Path.Combine(_fileCacheBasePath, ConvertResourcePath(assemblyResourcePath, '\\'));
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         private string FormatResourcePath(Assembly assembly, string name)
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, name);
+            return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, name);
         }
 
         private string ConvertResourcePath(string resourcePath, char pathSeparator)

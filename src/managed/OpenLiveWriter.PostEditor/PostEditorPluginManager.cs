@@ -271,7 +271,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private string _pluginsKey = String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", ApplicationEnvironment.SettingsRootKeyName, PLUGIN_ASSEMBLIES);
+        private string _pluginsKey = string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", ApplicationEnvironment.SettingsRootKeyName, PLUGIN_ASSEMBLIES);
         private const string PLUGIN_ASSEMBLIES = "PluginAssemblies";
         private readonly string PLUGIN_LEGACY_KEY = ApplicationEnvironment.SettingsRootKeyName + @"\PluginAssemblies";
 
@@ -279,7 +279,7 @@ namespace OpenLiveWriter.PostEditor
         {
             foreach (string name in settingsKey.GetNames())
             {
-                string assemblyPath = settingsKey.GetString(name, String.Empty);
+                string assemblyPath = settingsKey.GetString(name, string.Empty);
                 if (!pluginPaths.Contains(assemblyPath))
                     pluginPaths.Add(assemblyPath);
             }

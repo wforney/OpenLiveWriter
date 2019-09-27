@@ -76,7 +76,7 @@ namespace OpenLiveWriter.PostEditor
             PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.PluginsSmall.png");
 
             // parameterize caption with product name
-            labelCaption.Text = String.Format(CultureInfo.CurrentCulture, labelCaption.Text, ApplicationEnvironment.ProductName);
+            labelCaption.Text = string.Format(CultureInfo.CurrentCulture, labelCaption.Text, ApplicationEnvironment.ProductName);
 
             // initialize preferences
             _pluginsPreferences = new PluginsPreferences();
@@ -191,7 +191,7 @@ namespace OpenLiveWriter.PostEditor
             ContentSourceInfo selectedContentSource = GetSelectedPlugin();
             if (selectedContentSource != null)
             {
-                if (selectedContentSource.WriterPluginPublisherUrl != String.Empty)
+                if (selectedContentSource.WriterPluginPublisherUrl != string.Empty)
                     ShellHelper.LaunchUrl(selectedContentSource.WriterPluginPublisherUrl);
             }
         }

@@ -705,30 +705,30 @@ namespace OpenLiveWriter.BlogClient.Providers
         private bool _futurePublishDateWarning = false;
         private bool _useSpacesTemplateHack = false;
         private bool _supportsSpacesCIDUrls = false;
-        private string _postDateFormat = String.Empty;
-        private string _fileUploadFormat = String.Empty;
+        private string _postDateFormat = string.Empty;
+        private string _fileUploadFormat = string.Empty;
         private bool _useLocalTime = false;
-        private string _characterSet = String.Empty;
+        private string _characterSet = string.Empty;
         private bool _requiresXHTML = false;
-        private string _contentFilter = String.Empty;
+        private string _contentFilter = string.Empty;
         private bool _postSynchronizationEnabled = true;
         private bool _requiresHtmlTitles = true;
         private bool _linkToSkyDriveSelfPage = false;
         private SupportsFeature _returnsHtmlTitlesOnGet = SupportsFeature.Unknown;
         private bool _supportsEmptyTitles = true;
-        private string _defaultView = String.Empty;
-        private string _permalinkFormat = String.Empty;
-        private string _homepageLinkText = String.Empty;
-        private string _adminLinkText = String.Empty;
-        private string _adminUrl = String.Empty;
-        private string _postEditingUrl = String.Empty;
-        private string _postEditingUrlPostIdPattern = String.Empty;
-        private string _imagePostingUrl = String.Empty;
+        private string _defaultView = string.Empty;
+        private string _permalinkFormat = string.Empty;
+        private string _homepageLinkText = string.Empty;
+        private string _adminLinkText = string.Empty;
+        private string _adminUrl = string.Empty;
+        private string _postEditingUrl = string.Empty;
+        private string _postEditingUrlPostIdPattern = string.Empty;
+        private string _imagePostingUrl = string.Empty;
         private int _maxRecentPosts = -1;
         private int _maxCategoryNameLength = 0;
-        private string _serviceName = String.Empty;
-        private string _invalidPostIdFaultCodePattern = String.Empty;
-        private string _invalidPostIdFaultStringPattern = String.Empty;
+        private string _serviceName = string.Empty;
+        private string _invalidPostIdFaultCodePattern = string.Empty;
+        private string _invalidPostIdFaultStringPattern = string.Empty;
         private bool usePicasaImgMaxAlways = true;
         private bool usePicasaS1600h = true;
         private string _dhtmlImageViewer;
@@ -790,7 +790,7 @@ namespace OpenLiveWriter.BlogClient.Providers
             }
             WriteOption(Res.Get(StringId.CapabilityDefaultView), defaultView);
 
-            WriteOption(Res.Get(StringId.CapabilityCharacterSet), clientOptions.CharacterSet != String.Empty ? clientOptions.CharacterSet : "UTF-8");
+            WriteOption(Res.Get(StringId.CapabilityCharacterSet), clientOptions.CharacterSet != string.Empty ? clientOptions.CharacterSet : "UTF-8");
             WriteOption(Res.Get(StringId.CapabilityRequiresXHTML), clientOptions.RequiresXHTML);
             WriteOption(Res.Get(StringId.CapabilityTemplateIsRTL), clientOptions.IsRTLTemplate);
             WriteOption(Res.Get(StringId.CapabilityCategoryNameLimit), clientOptions.MaxCategoryNameLength != 0 ? clientOptions.MaxCategoryNameLength.ToString(CultureInfo.CurrentCulture) : Res.Get(StringId.CapabilityValueNoLimit));
@@ -1014,7 +1014,7 @@ namespace OpenLiveWriter.BlogClient.Providers
         {
             get
             {
-                if (_homepageUrlRegex == null && _homepageUrlPattern != String.Empty)
+                if (_homepageUrlRegex == null && _homepageUrlPattern != string.Empty)
                 {
                     try
                     {
@@ -1034,7 +1034,7 @@ namespace OpenLiveWriter.BlogClient.Providers
         {
             get
             {
-                if (_homepageContentRegex == null && _homepageContentPattern != String.Empty)
+                if (_homepageContentRegex == null && _homepageContentPattern != string.Empty)
                 {
                     try
                     {
@@ -1054,7 +1054,7 @@ namespace OpenLiveWriter.BlogClient.Providers
         {
             get
             {
-                if (_rsdEngineNameRegex == null && _rsdEngineNamePattern != String.Empty)
+                if (_rsdEngineNameRegex == null && _rsdEngineNamePattern != string.Empty)
                 {
                     try
                     {
@@ -1074,7 +1074,7 @@ namespace OpenLiveWriter.BlogClient.Providers
         {
             get
             {
-                if (_rsdHomepageLinkRegex == null && _rsdHomepageLinkPattern != String.Empty)
+                if (_rsdHomepageLinkRegex == null && _rsdHomepageLinkPattern != string.Empty)
                 {
                     try
                     {
@@ -1129,15 +1129,15 @@ namespace OpenLiveWriter.BlogClient.Providers
 
             public bool IsMatch(string faultCode, string faultString)
             {
-                if (_faultCodePattern != String.Empty && _faultStringPattern != String.Empty)
+                if (_faultCodePattern != string.Empty && _faultStringPattern != string.Empty)
                 {
                     return FaultCodeMatches(faultCode) && FaultStringMatches(faultString);
                 }
-                else if (_faultCodePattern != String.Empty)
+                else if (_faultCodePattern != string.Empty)
                 {
                     return FaultCodeMatches(faultCode);
                 }
-                else if (_faultStringPattern != String.Empty)
+                else if (_faultStringPattern != string.Empty)
                 {
                     return FaultStringMatches(faultString);
                 }

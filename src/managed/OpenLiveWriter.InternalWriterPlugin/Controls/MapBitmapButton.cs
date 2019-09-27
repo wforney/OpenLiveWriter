@@ -19,10 +19,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
             {
                 BackColor = Color.Transparent;
                 ButtonStyle = ButtonStyle.Bitmap;
-                BitmapEnabled = ResourceHelper.LoadAssemblyResourceBitmap(String.Format(CultureInfo.InvariantCulture, "Images.{0}Enabled.png", resourceName));
-                BitmapDisabled = ResourceHelper.LoadAssemblyResourceBitmap(String.Format(CultureInfo.InvariantCulture, "Images.{0}Enabled.png", resourceName));
-                BitmapPushed = ResourceHelper.LoadAssemblyResourceBitmap(String.Format(CultureInfo.InvariantCulture, "Images.{0}Pressed.png", resourceName));
-                BitmapSelected = ResourceHelper.LoadAssemblyResourceBitmap(String.Format(CultureInfo.InvariantCulture, "Images.{0}Selected.png", resourceName));
+                BitmapEnabled = ResourceHelper.LoadAssemblyResourceBitmap(string.Format(CultureInfo.InvariantCulture, "Images.{0}Enabled.png", resourceName));
+                BitmapDisabled = ResourceHelper.LoadAssemblyResourceBitmap(string.Format(CultureInfo.InvariantCulture, "Images.{0}Enabled.png", resourceName));
+                BitmapPushed = ResourceHelper.LoadAssemblyResourceBitmap(string.Format(CultureInfo.InvariantCulture, "Images.{0}Pressed.png", resourceName));
+                BitmapSelected = ResourceHelper.LoadAssemblyResourceBitmap(string.Format(CultureInfo.InvariantCulture, "Images.{0}Selected.png", resourceName));
                 Width = (int)(BitmapEnabled.Width * scale.X);
                 Height = (int)(BitmapEnabled.Height * scale.Y); ;
                 AutoSizeHeight = true;

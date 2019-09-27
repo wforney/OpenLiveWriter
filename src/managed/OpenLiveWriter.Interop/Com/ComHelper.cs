@@ -23,7 +23,7 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         public static void Return(int hResult)
         {
-            throw new COMException(String.Empty, hResult);
+            throw new COMException(string.Empty, hResult);
         }
 
         public static bool SUCCEEDED(int hResult)

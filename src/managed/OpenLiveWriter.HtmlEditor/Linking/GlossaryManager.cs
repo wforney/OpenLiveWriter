@@ -242,7 +242,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
         public GlossaryLinkItem AddEntry(string text, string url, string title, string rel, bool openInNewWindow)
         {
             if (title == null)
-                title = String.Empty;
+                title = string.Empty;
 
             if (url == null)
                 throw new ArgumentException("url cannot be null");
@@ -405,7 +405,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         #endregion
@@ -486,7 +486,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
 
         public int CompareTo(object obj)
         {
-            return String.Compare(Text, ((GlossaryLinkItem)obj).Text, StringComparison.CurrentCultureIgnoreCase);
+            return string.Compare(Text, ((GlossaryLinkItem)obj).Text, StringComparison.CurrentCultureIgnoreCase);
         }
 
         #endregion

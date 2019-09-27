@@ -394,7 +394,7 @@ namespace OpenLiveWriter.CoreServices
         [Conditional("DEBUG")]
         private static void LOG(string iface, string method)
         {
-            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}.{1}", iface, method));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0}.{1}", iface, method));
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace OpenLiveWriter.CoreServices
         private static void LOG_UN(string iface, string method)
         {
             Debug.Fail(
-                String.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
+                string.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
             LOG(iface, method);
         }
 

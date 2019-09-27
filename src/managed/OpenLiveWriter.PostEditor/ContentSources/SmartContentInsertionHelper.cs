@@ -39,7 +39,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     BeginTag bt = el as BeginTag;
                     Attr idAttr = bt.GetAttribute("id");
 
-                    String contentSourceId, contentItemId;
+                    string contentSourceId, contentItemId;
                     ContentSourceManager.ParseContainingElementId(idAttr.Value, out contentSourceId, out contentItemId);
                     ISmartContent smartContent = sourceContext.FindSmartContent(contentItemId);
                     if (smartContent != null)
@@ -204,7 +204,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             {
                 // Persist the language direction of the smart content if it's explicitly set.
                 string currentDirection = element.getAttribute("dir", 2) as string;
-                if (!String.IsNullOrEmpty(currentDirection))
+                if (!string.IsNullOrEmpty(currentDirection))
                 {
                     htmlBuilder.AppendFormat(" dir=\"{0}\"", currentDirection);
                 }
@@ -270,7 +270,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
         private static string ToPaddingString(ILayoutStyle layoutStyle)
         {
-            return String.Format(CultureInfo.InvariantCulture,
+            return string.Format(CultureInfo.InvariantCulture,
                                  "{0}px {1}px {2}px {3}px",
                                  layoutStyle.TopMargin,
                                  layoutStyle.RightMargin,

@@ -540,7 +540,7 @@ namespace OpenLiveWriter.Localization
                         string id = el.GetAttribute("Identifier");
                         if (id == "")
                             throw new ConfigurationErrorsException(
-                                String.Format(CultureInfo.CurrentCulture, "The following command is missing an identifier:\r\n{0}", el.OuterXml));
+                                string.Format(CultureInfo.CurrentCulture, "The following command is missing an identifier:\r\n{0}", el.OuterXml));
 
                         if (!ids.Add(id))
                             throw new ConfigurationErrorsException("Duplicate command identifier: " + id);
@@ -633,7 +633,7 @@ namespace OpenLiveWriter.Localization
             string comment = element.GetAttribute(property, COMMENT_NAMESPACE);
 
             // Ribbon XML files use a Comment attribute (e.g. <Command Comment=".." />)
-            if (String.IsNullOrEmpty(comment) && element.HasAttribute("Comment"))
+            if (string.IsNullOrEmpty(comment) && element.HasAttribute("Comment"))
                 comment = element.GetAttribute("Comment");
 
             return comment;

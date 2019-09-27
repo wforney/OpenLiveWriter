@@ -44,7 +44,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
             textBoxPushpinUrl.Text = _mapOptions.PushpinUrl;
 
-            linkLabelViewPushpin.Visible = _mapOptions.MoreAboutPushpinsUrl != String.Empty;
+            linkLabelViewPushpin.Visible = _mapOptions.MoreAboutPushpinsUrl != string.Empty;
 
         }
 
@@ -340,7 +340,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
             using (new WaitCursor())
             {
                 // empty url is ok, means no custom pushpin
-                if (PushpinUrl == String.Empty)
+                if (PushpinUrl == string.Empty)
                     return true;
 
                 // try to validate (take no more than 5 seconds)

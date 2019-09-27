@@ -101,7 +101,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             if (FileUploadSupport == FileUploadSupport.FTP)
             {
                 FtpUploaderSettings ftpUploaderSettings = new FtpUploaderSettings(TemporaryBlogSettings.FileUploadSettings);
-                if (ftpUploaderSettings.FtpServer == String.Empty)
+                if (ftpUploaderSettings.FtpServer == string.Empty)
                 {
                     switchToPanel();
                     DisplayMessage.Show(MessageId.FtpSettingsRequired, FindForm());

@@ -118,7 +118,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             _fileTitleBuffer = Marshal.AllocCoTaskMem(2 * _MAX_PATH);
             _directoryBuffer = Marshal.AllocCoTaskMem(2 * _MAX_PATH);
 
-            if (directoryName == String.Empty)
+            if (directoryName == string.Empty)
             {
                 directoryName = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             }
@@ -147,7 +147,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             _ofn.lpstrFileTitle = _fileTitleBuffer;
             _ofn.nMaxFileTitle = _MAX_PATH + 1;
             _ofn.lpstrInitialDir = _directoryBuffer;
-            _ofn.lpstrFilter = Marshal.StringToCoTaskMemUni(String.Format(CultureInfo.InvariantCulture, "{0} \0*.gif;*.jpg;*.jpeg;*.png\0{1} \0*.*\0\0", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString)));
+            _ofn.lpstrFilter = Marshal.StringToCoTaskMemUni(string.Format(CultureInfo.InvariantCulture, "{0} \0*.gif;*.jpg;*.jpeg;*.png\0{1} \0*.*\0\0", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString)));
             _ofn.Flags = OpenFileNameFlags.HideReadOnly | OpenFileNameFlags.EnableHook |
                          OpenFileNameFlags.EnableTemplateHandle | OpenFileNameFlags.EnableSizing
                          | OpenFileNameFlags.Explorer
@@ -159,7 +159,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             }
 
             _ofn.hInstance = _ipTemplate;
-            string title = String.Format(CultureInfo.InvariantCulture, "{0}\0\0", Res.Get(StringId.InsertPicture));
+            string title = string.Format(CultureInfo.InvariantCulture, "{0}\0\0", Res.Get(StringId.InsertPicture));
             _ofn.lpstrTitle = Marshal.StringToCoTaskMemUni(title);
             _ofn.lpfnHook = new OfnHookProc(MyHookProc);
             _ofn.hwndOwner = parent.Handle;
@@ -215,7 +215,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         /// <param name="wParam">message-specific parameter data</param>
         /// <param name="lParam">mess-specific parameter data</param>
         /// <returns></returns>
-        public IntPtr MyHookProc(IntPtr hWnd, UInt32 msg, Int32 wParam, Int32 lParam)
+        public IntPtr MyHookProc(IntPtr hWnd, uint msg, int wParam, int lParam)
         {
             try
             {
@@ -464,7 +464,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     string path = Marshal.PtrToStringUni(pImageBuffer);
                     Marshal.FreeCoTaskMem(pPathBuffer);
                     //grrr bug 441665--user might have altered image but the path still has the old image
-                    if (fileName != String.Empty)
+                    if (fileName != string.Empty)
                     {
                         //case: new path entered in file name
                         try

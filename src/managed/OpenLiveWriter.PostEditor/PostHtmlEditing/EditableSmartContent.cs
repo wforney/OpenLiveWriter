@@ -18,7 +18,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     {
         private ISmartContent _smartContent;
         private string _contentSourceId;
-        private String _smartContentId;
+        private string _smartContentId;
         private IContentSourceSidebarContext _contentSourceContext;
         private IHTMLElement _smartContentElement;
         private SmartContentSource _contentSource;
@@ -69,7 +69,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
         }
 
-        public Object ObjectState
+        public object ObjectState
         {
             get
             {
@@ -272,10 +272,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         class EditableSubProperties : EditableProperties
         {
-            String _name;
+            string _name;
             EditableProperties _parent;
 
-            public EditableSubProperties(String name, EditableProperties parent)
+            public EditableSubProperties(string name, EditableProperties parent)
             {
                 _name = name;
                 _parent = parent;

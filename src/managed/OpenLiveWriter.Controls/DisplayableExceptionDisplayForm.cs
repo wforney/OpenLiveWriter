@@ -52,7 +52,7 @@ namespace OpenLiveWriter.Controls
                 textBoxDetails.Text = EnsureStringValueProvided(displayableException.Text);
 
                 // log the error
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "DisplayableException occurred: {0}", displayableException.ToString()));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "DisplayableException occurred: {0}", displayableException.ToString()));
             }
             else
             {
@@ -98,7 +98,7 @@ namespace OpenLiveWriter.Controls
             if (value == null || value.Length == 0)
             {
                 Debug.Fail("Required string value not passed to DisplayableExceptionDisplayForm constructor");
-                return String.Empty;
+                return string.Empty;
             }
             else
             {
@@ -112,7 +112,7 @@ namespace OpenLiveWriter.Controls
             using (new AutoGrow(this, AnchorStyles.Bottom, true))
             {
                 LayoutHelper.NaturalizeHeightAndDistribute(8, labelMessage, textBoxDetails, buttonOK);
-                DisplayHelper.AutoFitSystemButton(buttonOK, buttonOK.Width, Int32.MaxValue);
+                DisplayHelper.AutoFitSystemButton(buttonOK, buttonOK.Width, int.MaxValue);
                 buttonOK.Left = (Width / 2) - (buttonOK.Width / 2);
             }
 

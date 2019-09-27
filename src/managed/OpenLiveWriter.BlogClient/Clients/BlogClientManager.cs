@@ -53,7 +53,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             // didn't find a match!
             throw new ArgumentException(
-                String.Format(CultureInfo.CurrentCulture, "Client type {0} not found.", clientType));
+                string.Format(CultureInfo.CurrentCulture, "Client type {0} not found.", clientType));
         }
 
         public static IBlogClient CreateClient(IBlogSettingsAccessor settings)

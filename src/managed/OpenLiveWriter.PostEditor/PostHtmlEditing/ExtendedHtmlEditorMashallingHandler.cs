@@ -372,7 +372,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
 
             // create the content
-            string content = String.Empty;
+            string content = string.Empty;
             if (lcContentSource.CreateContentFromLiveClipboard(EditorContext.FrameWindow, lcDocument, ref content) == DialogResult.OK)
             {
                 _contentSourceSite.InsertContent(content, false);
@@ -643,8 +643,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSimpleContentFromUrl(ContentSourceInfo contentSource, string url)
         {
-            string title = String.Empty;
-            string content = String.Empty;
+            string title = string.Empty;
+            string content = string.Empty;
 
             if (UrlContentRetreivalWithProgress.ExecuteSimpleContentRetreival(
                 EditorContext.FrameWindow, contentSource, url, ref title, ref content))
@@ -661,7 +661,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         private bool InsertSmartContentFromUrl(ContentSourceInfo contentSource, string url)
         {
             SmartContentSource smartSource = contentSource.Instance as SmartContentSource;
-            string title = String.Empty;
+            string title = string.Empty;
             IExtensionData extensionData = _contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
             ISmartContent smartContent = new SmartContent(extensionData);
 

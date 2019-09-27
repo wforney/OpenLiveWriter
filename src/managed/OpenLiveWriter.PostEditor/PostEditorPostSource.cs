@@ -50,7 +50,7 @@ namespace OpenLiveWriter.PostEditor
             get { return _id; }
             set { _id = value; }
         }
-        private string _id = String.Empty;
+        private string _id = string.Empty;
 
         public bool IsPage
         {
@@ -63,49 +63,49 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                if (_title == String.Empty)
+                if (_title == string.Empty)
                     return IsPage ? UntitledPage : UntitledPost;
                 else
                     return _title;
             }
             set { _title = value; }
         }
-        private string _title = String.Empty;
+        private string _title = string.Empty;
 
         public string Permalink
         {
             get { return _permalink; }
             set { _permalink = value; }
         }
-        private string _permalink = String.Empty;
+        private string _permalink = string.Empty;
 
         public string BlogName
         {
             get { return _blogName; }
             set { _blogName = value; }
         }
-        private string _blogName = String.Empty;
+        private string _blogName = string.Empty;
 
         public string BlogId
         {
             get { return _blogId; }
             set { _blogId = value; }
         }
-        private string _blogId = String.Empty;
+        private string _blogId = string.Empty;
 
         public string BlogPostId
         {
             get { return _blogPostId; }
             set { _blogPostId = value; }
         }
-        private string _blogPostId = String.Empty;
+        private string _blogPostId = string.Empty;
 
         public string Contents
         {
             get { return _contents; }
             set { _contents = value; }
         }
-        private string _contents = String.Empty;
+        private string _contents = string.Empty;
 
         public string PlainTextContents
         {
@@ -153,14 +153,14 @@ namespace OpenLiveWriter.PostEditor
                 {
                     if (date.DayOfYear == dateNow.DayOfYear)
                     {
-                        formattedDate = String.Format(CultureInfo.CurrentCulture, format, Res.Get(StringId.Today), time);
+                        formattedDate = string.Format(CultureInfo.CurrentCulture, format, Res.Get(StringId.Today), time);
                     }
                     else
                     {
                         int dayDiff = dateNow.DayOfYear - date.DayOfYear;
                         if (dayDiff > 0 && dayDiff <= 6)
                         {
-                            formattedDate = String.Format(CultureInfo.CurrentCulture, format, date.ToString("dddd", CultureInfo.CurrentCulture), time);
+                            formattedDate = string.Format(CultureInfo.CurrentCulture, format, date.ToString("dddd", CultureInfo.CurrentCulture), time);
                         }
                     }
                 }
@@ -679,7 +679,7 @@ namespace OpenLiveWriter.PostEditor
 
         private string _displayName;
         private int _numberOfPosts;
-        public const int ALL_POSTS = Int32.MaxValue;
+        public const int ALL_POSTS = int.MaxValue;
     }
 
 }

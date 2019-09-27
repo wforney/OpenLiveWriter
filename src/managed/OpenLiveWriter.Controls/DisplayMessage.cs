@@ -168,14 +168,14 @@ namespace OpenLiveWriter.Controls
         }
 
         /// <summary>
-        public DisplayMessage(String text, String title)
+        public DisplayMessage(string text, string title)
         {
             InitializeComponent();
 
-            if (!String.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(text))
                 Text = text;
 
-            if (!String.IsNullOrEmpty(title))
+            if (!string.IsNullOrEmpty(title))
                 Title = title;
         }
 
@@ -264,7 +264,7 @@ namespace OpenLiveWriter.Controls
             //	Format the display text.
             string displayText;
             if (args != null && args.Length != 0)
-                displayText = String.Format(CultureInfo.CurrentCulture, text, args);
+                displayText = string.Format(CultureInfo.CurrentCulture, text, args);
             else
                 displayText = text;
 

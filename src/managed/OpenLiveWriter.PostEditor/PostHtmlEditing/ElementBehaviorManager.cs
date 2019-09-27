@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             TargetClass = targetClass;
             Clsid = clsid.ToString("D");
-            HtmlId = String.Format(CultureInfo.InvariantCulture, "{0}_WRITER_BEHAVIOR", TargetClass.ToUpper(CultureInfo.InvariantCulture).Replace(" ", "_"));
+            HtmlId = string.Format(CultureInfo.InvariantCulture, "{0}_WRITER_BEHAVIOR", TargetClass.ToUpper(CultureInfo.InvariantCulture).Replace(" ", "_"));
             _createBehavior = createBehavior;
         }
 
@@ -60,7 +60,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -68,7 +68,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

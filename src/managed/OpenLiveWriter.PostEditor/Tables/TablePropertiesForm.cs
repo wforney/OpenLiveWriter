@@ -172,14 +172,14 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                if (checkBoxShowBorder.Checked && numericTextBoxBorder.Text.Trim() != String.Empty)
+                if (checkBoxShowBorder.Checked && numericTextBoxBorder.Text.Trim() != string.Empty)
                     return numericTextBoxBorder.Text;
                 else
                     return ZERO;
             }
             set
             {
-                if (value != String.Empty && value != ZERO)
+                if (value != string.Empty && value != ZERO)
                 {
                     checkBoxShowBorder.Checked = true;
                     numericTextBoxBorder.Text = value;
@@ -187,7 +187,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 else
                 {
                     checkBoxShowBorder.Checked = false;
-                    numericTextBoxBorder.Text = String.Empty;
+                    numericTextBoxBorder.Text = string.Empty;
                 }
 
                 ManageUIState();
@@ -249,7 +249,7 @@ namespace OpenLiveWriter.PostEditor.Tables
             }
 
             string cellPadding = numericTextBoxCellPadding.Text.Trim();
-            if (cellPadding != String.Empty)
+            if (cellPadding != string.Empty)
             {
                 if (!ValidateTextBoxInteger(Res.Get(StringId.TableCellPadding), numericTextBoxCellPadding, 100))
                     return false;
@@ -259,7 +259,7 @@ namespace OpenLiveWriter.PostEditor.Tables
             }
 
             string cellSpacing = numericTextBoxCellSpacing.Text.Trim();
-            if (cellSpacing != String.Empty)
+            if (cellSpacing != string.Empty)
             {
                 if (!ValidateTextBoxInteger(Res.Get(StringId.TableCellSpacing), numericTextBoxCellSpacing, 100))
                     return false;
@@ -276,7 +276,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         private bool ValidateTextBoxInteger(string name, TextBox textBox, int maxValue)
         {
             string textBoxValue = textBox.Text.Trim();
-            if (textBoxValue == String.Empty || !SafeCheckForInt(textBox))
+            if (textBoxValue == string.Empty || !SafeCheckForInt(textBox))
             {
                 DisplayMessage.Show(MessageId.UnspecifiedValue, this, name);
                 textBox.Focus();
@@ -318,7 +318,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         private bool ValidateTextBoxPositiveInteger(string name, TextBox textBox)
         {
             string textBoxValue = textBox.Text.Trim();
-            if (textBoxValue == String.Empty || int.Parse(textBoxValue, CultureInfo.CurrentCulture) <= 0)
+            if (textBoxValue == string.Empty || int.Parse(textBoxValue, CultureInfo.CurrentCulture) <= 0)
             {
                 DisplayMessage.Show(MessageId.InvalidNumberPositiveOnly, this, name);
                 textBox.Focus();
@@ -333,7 +333,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         private bool ValidateTextBoxGreaterThanZero(string name, TextBox textBox)
         {
             string textBoxValue = textBox.Text.Trim();
-            if (textBoxValue == String.Empty || int.Parse(textBoxValue, CultureInfo.CurrentCulture) < 0)
+            if (textBoxValue == string.Empty || int.Parse(textBoxValue, CultureInfo.CurrentCulture) < 0)
             {
                 DisplayMessage.Show(MessageId.InvalidNumberNonNegative, this, name);
                 textBox.Focus();

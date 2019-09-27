@@ -96,7 +96,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0}?blog_id={1}&button_id={2}", ContentUrl, HttpUtility.UrlEncode(_hostBlogId), HttpUtility.UrlEncode(_buttonId));
+                return string.Format(CultureInfo.InvariantCulture, "{0}?blog_id={1}&button_id={2}", ContentUrl, HttpUtility.UrlEncode(_hostBlogId), HttpUtility.UrlEncode(_buttonId));
             }
         }
 
@@ -166,7 +166,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             {
                 ShowNotificationImage = false;
 
-                NotificationText = String.Empty;
+                NotificationText = string.Empty;
 
                 // fire notification events
                 BlogProviderButtonNotificationSink.FireNotificationEvent(BlogId, Id);
@@ -229,7 +229,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
         private IBlogProviderButtonNotification GetButtonNotification()
         {
-            string notificationUrl = String.Format(
+            string notificationUrl = string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}?blog_id={1}&button_id={2}&image_url={3}",
                 NotificationUrl,
@@ -280,7 +280,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             // notification image
             Bitmap notificationImage = null;
             string notificationImageUrl = XmlHelper.NodeText(xmlDocument.SelectSingleNode("//n:imageUrl", nsmgr));
-            if (notificationImageUrl != String.Empty)
+            if (notificationImageUrl != string.Empty)
             {
                 // compute the absolute url then allow parameter substitution
                 notificationImageUrl = BlogClientHelper.GetAbsoluteUrl(notificationImageUrl, NotificationUrl);
@@ -351,7 +351,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             }
             catch (Exception ex)
             {
-                Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected exception occurred updating notification image: {0}", ex.ToString()));
+                Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected exception occurred updating notification image: {0}", ex.ToString()));
                 return false;
             }
         }
@@ -373,14 +373,14 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
         private string NotificationText
         {
-            get { return _settingsKey.GetString(NOTIFICATION_TEXT, String.Empty); }
+            get { return _settingsKey.GetString(NOTIFICATION_TEXT, string.Empty); }
             set { _settingsKey.SetString(NOTIFICATION_TEXT, value); }
         }
         private const string NOTIFICATION_TEXT = "NotificationText";
 
         private bool ShowNotificationText
         {
-            get { return NotificationText != String.Empty; }
+            get { return NotificationText != string.Empty; }
         }
         private const string SHOW_NOTIFICATION_TEXT = "ShowNotificationText";
 

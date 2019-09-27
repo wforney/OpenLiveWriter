@@ -104,7 +104,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 Trace.Fail("Exception generating XHTML: " + e.ToString());
             }
 
-            string html = HTMLElement.innerHTML ?? String.Empty;
+            string html = HTMLElement.innerHTML ?? string.Empty;
             if (doCleanup)
                 return CleanupHtml(html, false);
             else
@@ -449,7 +449,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             IHTMLTxtRange textRange = EditorContext.MarkupServices.CreateTextRange(start, end);
             string text = textRange.text;
-            if (text == null || text.Trim().Equals(String.Empty))
+            if (text == null || text.Trim().Equals(string.Empty))
                 return false;
             else
                 return true;

@@ -268,7 +268,7 @@ namespace OpenLiveWriter.CoreServices
                 string file = null;
 
                 // skip leading white-space
-                while (currentLoc < fileList.Length && Char.IsWhiteSpace(fileList[currentLoc]))
+                while (currentLoc < fileList.Length && char.IsWhiteSpace(fileList[currentLoc]))
                     currentLoc++;
 
                 // account for quoted entries
@@ -289,7 +289,7 @@ namespace OpenLiveWriter.CoreServices
                 if (file == null)
                 {
                     // skip leading white-space
-                    while (currentLoc < fileList.Length && Char.IsWhiteSpace(fileList[currentLoc]))
+                    while (currentLoc < fileList.Length && char.IsWhiteSpace(fileList[currentLoc]))
                         currentLoc++;
 
                     // if we aren't at the end then get the next entry
@@ -298,7 +298,7 @@ namespace OpenLiveWriter.CoreServices
                         // find the end of the entry
                         int endEntry = currentLoc;
                         while (endEntry < fileList.Length)
-                            if (!Char.IsWhiteSpace(fileList[endEntry]))
+                            if (!char.IsWhiteSpace(fileList[endEntry]))
                                 endEntry++;
                             else
                                 break;
@@ -331,7 +331,7 @@ namespace OpenLiveWriter.CoreServices
                 if (key != null)
                 {
                     using (RegistryKey classKey = Registry.ClassesRoot.OpenSubKey(
-                                key.GetValue(null, String.Empty) + @"\ShellEx\IconHandler"))
+                                key.GetValue(null, string.Empty) + @"\ShellEx\IconHandler"))
                     {
                         if (classKey != null)
                             return true;

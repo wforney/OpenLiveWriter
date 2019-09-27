@@ -175,7 +175,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         private void _imageUrl_Paste(object sender, TextBoxWithPaste.PasteEventArgs eventArgs)
         {
             //special case...image on clipboard
-            if (_webImageUrl.Text.Trim() == String.Empty)
+            if (_webImageUrl.Text.Trim() == string.Empty)
             {
                 DataObjectMeister dataObject = new DataObjectMeister(Clipboard.GetDataObject());
                 if (dataObject.HTMLData != null && dataObject.HTMLData.OnlyImagePath != null)
@@ -255,7 +255,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         private void PopulatePreviewBox()
         {
             string imageUrl = _webImageUrl.Text.Trim();
-            if (imageUrl != String.Empty && UrlHelper.IsUrl(imageUrl))
+            if (imageUrl != string.Empty && UrlHelper.IsUrl(imageUrl))
             {
                 using (new WaitCursor())
                 {

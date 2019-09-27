@@ -15,13 +15,13 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             get
             {
-                return SettingsKey.GetString(LAST_SERVICE_NAME, String.Empty);
+                return SettingsKey.GetString(LAST_SERVICE_NAME, string.Empty);
             }
             set
             {
                 // record the service name and add it to our list
                 SettingsKey.SetString(LAST_SERVICE_NAME, value);
-                _serviceNames.SetString(value, String.Empty);
+                _serviceNames.SetString(value, string.Empty);
             }
 
         }

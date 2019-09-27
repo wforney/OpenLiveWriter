@@ -30,7 +30,7 @@ namespace OpenLiveWriter.Interop.Com
             [In, MarshalAs(UnmanagedType.Bool)] bool fClearDirty);
 
         void GetSizeMax(
-            [Out] out UInt64 pcbSize);
+            [Out] out ulong pcbSize);
     }
 }
 

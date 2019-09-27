@@ -75,7 +75,7 @@ namespace OpenLiveWriter.CoreServices
                 bool unhooked = User32.UnhookWindowsHookEx(m_hHook);
 
                 // verify success in debug mode (ignore in release)
-                Debug.Assert(unhooked, String.Format(CultureInfo.InvariantCulture,
+                Debug.Assert(unhooked, string.Format(CultureInfo.InvariantCulture,
                     "Win32 error number {0} occurred when attempting to " +
                     "remove keyboard hook.", Marshal.GetLastWin32Error()));
 

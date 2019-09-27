@@ -348,12 +348,12 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             {
                 string parent = category.Parent;
                 if (!availableParents.ContainsKey(category.Parent))
-                    parent = String.Empty;
+                    parent = string.Empty;
                 sourceCategories.Add(new BlogPostCategory(category.Id, category.Name, parent));
             }
 
             // get a tree of child items
-            ArrayList categoryListItems = ExtractChildItemsOfParent(sourceCategories, String.Empty, 0);
+            ArrayList categoryListItems = ExtractChildItemsOfParent(sourceCategories, string.Empty, 0);
 
             // flatten list if requested
             if (flatten)

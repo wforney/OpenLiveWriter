@@ -109,7 +109,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         public override void Fail(string message, string detailMessage)
         {
             if (detailMessage != null && detailMessage.Length != 0)
-                WriteEntry(String.Format(CultureInfo.InvariantCulture, "{0} {1}", message, detailMessage), FailText, Environment.StackTrace);
+                WriteEntry(string.Format(CultureInfo.InvariantCulture, "{0} {1}", message, detailMessage), FailText, Environment.StackTrace);
             else
                 WriteEntry(message, FailText, Environment.StackTrace);
             OnFail();

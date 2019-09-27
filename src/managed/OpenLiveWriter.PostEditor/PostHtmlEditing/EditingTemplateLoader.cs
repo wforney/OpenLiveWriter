@@ -34,7 +34,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             using (PostHtmlEditingSettings templateSettings = new PostHtmlEditingSettings(blogId))
             {
                 string html = templateSettings.GetEditorTemplateHtml(templateType, forceRTL);
-                if (html == null || html == String.Empty ||
+                if (html == null || html == string.Empty ||
                     html.IndexOf(BlogEditingTemplate.POST_TITLE_MARKER) == -1 ||
                     html.IndexOf(BlogEditingTemplate.POST_BODY_MARKER) == -1)
                 {

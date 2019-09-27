@@ -186,12 +186,12 @@ namespace OpenLiveWriter.PostEditor
 
         private string FormatFormCaption(string entityName, bool publish)
         {
-            return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.UpdateWeblogPublish1), publish ? entityName : Res.Get(StringId.UpdateWeblogDraft));
+            return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.UpdateWeblogPublish1), publish ? entityName : Res.Get(StringId.UpdateWeblogDraft));
         }
 
         private string FormatPublishingToCaption(string destinationName, string entityName, bool publish)
         {
-            return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.UpdateWeblogPublish2), publish ? entityName : Res.Get(StringId.UpdateWeblogDraft), destinationName);
+            return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.UpdateWeblogPublish2), publish ? entityName : Res.Get(StringId.UpdateWeblogDraft), destinationName);
         }
 
         private void _updateWeblogAsyncOperation_Completed(object sender, EventArgs ea)
@@ -273,7 +273,7 @@ namespace OpenLiveWriter.PostEditor
                     ArrayList list = new ArrayList();
                     for (int i = 1; i <= 26; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "Images.PublishAnimation.post{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "Images.PublishAnimation.post{0:00}.png", i);
                         // Add the scaled animation frame bitmap
                         list.Add(
                             DisplayHelper.ScaleBitmap(ResourceHelper.LoadAssemblyResourceBitmap(resourceName))

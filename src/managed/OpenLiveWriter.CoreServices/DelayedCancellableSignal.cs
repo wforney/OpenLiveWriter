@@ -31,7 +31,7 @@ namespace OpenLiveWriter.CoreServices
                     Trace.Assert(signalTime - nowTicks > 0, "Surprising...");
                     // time to wait
                     long millisToWait = (this.signalTime - nowTicks) / 10000L;
-                    millisToWait = Math.Min(millisToWait, (long)Int32.MaxValue);
+                    millisToWait = Math.Min(millisToWait, (long)int.MaxValue);
                     Trace.Assert(millisToWait >= 0, "It couldn't possibly!");
 
                     Monitor.Wait(lockObj, checked((int)millisToWait));

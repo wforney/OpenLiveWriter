@@ -21,7 +21,7 @@ namespace OpenLiveWriter.Interop.Com
         void InvokeEx(
             IntPtr id,
             uint lcid,
-            Int16 wFlags,
+            short wFlags,
             ref System.Runtime.InteropServices.ComTypes.DISPPARAMS pdp,
             IntPtr pVarRes,
             ref System.Runtime.InteropServices.ComTypes.EXCEPINFO pei,

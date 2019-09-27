@@ -19,10 +19,10 @@ namespace OpenLiveWriter.Controls.Wizard
         private IList wizardSteps;
         private int wizardStepIndex = 0;
         private WizardForm _wizardForm;
-        public delegate void DisplayCallback(Object stepControl);
-        public delegate bool VerifyStepCallback(Object stepControl);
-        public delegate void NextCallback(Object stepControl);
-        public delegate void BackCallback(Object stepControl);
+        public delegate void DisplayCallback(object stepControl);
+        public delegate bool VerifyStepCallback(object stepControl);
+        public delegate void NextCallback(object stepControl);
+        public delegate void BackCallback(object stepControl);
 
         public event CancelEventHandler NextCalled;
         public event CancelEventHandler BackCalled;

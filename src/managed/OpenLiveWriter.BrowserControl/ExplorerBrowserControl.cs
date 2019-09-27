@@ -241,7 +241,7 @@ namespace OpenLiveWriter.BrowserControl
             object output = null;
             target.Exec(MSHTML, GETFRAMEZONE, OpenLiveWriter.Interop.Com.OLECMDEXECOPT.DODEFAULT, ref input, ref output);
 
-            UInt32 zoneInt = (UInt32)output;
+            UInt32 zoneInt = (uint)output;
             InternetSecurityZone zone = (InternetSecurityZone)zoneInt;
             return zone;
         }

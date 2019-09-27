@@ -30,7 +30,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                 throw new ArgumentException("tagId");
             }
 
-            if (String.IsNullOrEmpty(tagName))
+            if (string.IsNullOrEmpty(tagName))
             {
                 throw new ArgumentException("tagName");
             }
@@ -40,8 +40,8 @@ namespace OpenLiveWriter.CoreServices.HTML
                 throw new ArgumentOutOfRangeException("numberOfNewLinesToReplace");
             }
 
-            this.BeginTag = String.Format("<{0}>", tagName);
-            this.EndTag = String.Format("</{0}>", tagName);
+            this.BeginTag = string.Format("<{0}>", tagName);
+            this.EndTag = string.Format("</{0}>", tagName);
             this.TagId = tagId;
             this.TagName = tagName;
             this.NumberOfNewLinesToReplace = numberOfNewLinesToReplace;

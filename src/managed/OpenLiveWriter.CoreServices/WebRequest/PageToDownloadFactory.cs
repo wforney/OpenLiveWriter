@@ -231,7 +231,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                     catch (Exception ex)
                     {
-                        HandleException(new Exception(String.Format(CultureInfo.CurrentCulture, "{0} could not be downloaded", _url), ex));
+                        HandleException(new Exception(string.Format(CultureInfo.CurrentCulture, "{0} could not be downloaded", _url), ex));
                     }
                 }
 

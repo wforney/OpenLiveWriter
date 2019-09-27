@@ -86,8 +86,8 @@ namespace OpenLiveWriter.CoreServices
                 path = assembly.GetName().Name;
 
             //	Format the schema resource name that we will load from the assembly.
-            string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", path, resource);
-            string key = String.Format(CultureInfo.InvariantCulture, "{0},{1}", resourceName, mirror);
+            string resourceName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", path, resource);
+            string key = string.Format(CultureInfo.InvariantCulture, "{0},{1}", resourceName, mirror);
             //	Get the bitmap.
             Bitmap bitmap;
             lock (typeof(ResourceHelper))
@@ -198,8 +198,8 @@ namespace OpenLiveWriter.CoreServices
             AssemblyName callingAssemblyName = callingAssembly.GetName();
 
             //	Format the schema resource name that we will load from the calling assembly.
-            string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", callingAssemblyName.Name, path);
-            string resourceNameKey = String.Format(CultureInfo.InvariantCulture, "{0}/{1}x{2}", resourceName, desiredWidth, desiredHeight);
+            string resourceName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", callingAssemblyName.Name, path);
+            string resourceNameKey = string.Format(CultureInfo.InvariantCulture, "{0}/{1}x{2}", resourceName, desiredWidth, desiredHeight);
 
             //	Get the icon
             Icon icon;
@@ -245,7 +245,7 @@ namespace OpenLiveWriter.CoreServices
         public static Stream LoadAssemblyResourceStream(string resourcePath)
         {
             Assembly assembly = Assembly.GetCallingAssembly();
-            string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
+            string resourceName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
             return assembly.GetManifestResourceStream(resourceName);
         }
 
@@ -258,7 +258,7 @@ namespace OpenLiveWriter.CoreServices
         {
             // Format the schema resource name that we will load from the assembly.
             Assembly assembly = Assembly.GetCallingAssembly();
-            string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
+            string resourceName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
 
             // transfer the resource into the file stream
             using (Stream fileStream = new FileStream(targetFilePath, FileMode.Create))
@@ -280,7 +280,7 @@ namespace OpenLiveWriter.CoreServices
         {
             // Format the schema resource name that we will load from the assembly.
             Assembly assembly = Assembly.GetCallingAssembly();
-            string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
+            string resourceName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, resourcePath);
 
             // Load stream and transfer it to the target stream
             using (Stream resourceStream = assembly.GetManifestResourceStream(resourceName))

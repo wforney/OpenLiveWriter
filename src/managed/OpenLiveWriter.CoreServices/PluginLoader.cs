@@ -92,7 +92,7 @@ namespace OpenLiveWriter.CoreServices
             }
             catch (ReflectionTypeLoadException e)
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Failed to load plugin assembly [{0}]", assemblyPath));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Failed to load plugin assembly [{0}]", assemblyPath));
                 Trace.WriteLine(e.ToString());
                 if (e.LoaderExceptions != null)
                 {
@@ -104,7 +104,7 @@ namespace OpenLiveWriter.CoreServices
             }
             catch (Exception e)
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Failed to load plugin assembly [{0}]", assemblyPath));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Failed to load plugin assembly [{0}]", assemblyPath));
                 Trace.WriteLine(e.ToString());
             }
         }

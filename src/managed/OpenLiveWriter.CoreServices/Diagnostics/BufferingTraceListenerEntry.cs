@@ -47,9 +47,9 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         {
             this.sequenceNumber = sequenceNumber;
             this.dateTime = DateTime.Now;
-            this.category = category == null ? String.Empty : category;
-            this.text = text == null ? String.Empty : text;
-            this.stackTrace = stackTrace == null ? String.Empty : stackTrace;
+            this.category = category == null ? string.Empty : category;
+            this.text = text == null ? string.Empty : text;
+            this.stackTrace = stackTrace == null ? string.Empty : stackTrace;
         }
 
         /// <summary>
@@ -136,14 +136,14 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         public override string ToString()
         {
             if (StackTrace.Length == 0)
-                return String.Format(CultureInfo.InvariantCulture,
+                return string.Format(CultureInfo.InvariantCulture,
                                         "{0} at {1} ({2})\r\n{3}",
                                         SequenceNumberString,
                                         DateTimeString,
                                         Category,
                                         Text);
             else
-                return String.Format(CultureInfo.InvariantCulture,
+                return string.Format(CultureInfo.InvariantCulture,
                                         "{0} at {1} ({2})\r\n{3}\r\nStack Trace:\r\n{4}",
                                         SequenceNumberString,
                                         DateTimeString,

@@ -14,10 +14,10 @@ namespace OpenLiveWriter.Interop.Windows
     public class UrlMon
     {
         [DllImport("urlmon.dll")]
-        public static extern Int32 IsValidURL(
+        public static extern int IsValidURL(
             [In] IntPtr pBC,
             [In] string szURL,
-            [In] Int32 dxReserved);
+            [In] int dxReserved);
 
         [DllImport("urlmon.dll")]
         public static extern int CreateURLMoniker(

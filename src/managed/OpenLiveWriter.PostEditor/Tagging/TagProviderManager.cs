@@ -166,7 +166,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
         {
             string id = GetString(providerNode, ID);
             string name = GetString(providerNode, NAME);
-            string caption = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TagsCaptionFormat), name);
+            string caption = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TagsCaptionFormat), name);
             string separator = GetString(providerNode, SEPARATOR);
 
             string formatString = GetString(providerNode, FORMAT);
@@ -188,7 +188,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
             if (node != null)
                 return node.InnerText;
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         private const string ID = "id";

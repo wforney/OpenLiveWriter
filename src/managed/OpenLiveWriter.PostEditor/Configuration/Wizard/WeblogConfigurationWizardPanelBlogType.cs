@@ -93,7 +93,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 comboBoxSelectWeblogType.SelectedIndex = 0;
 
                 // improve on the default selection
-                if (WeblogConfigurationWizardSettings.LastServiceName != String.Empty)
+                if (WeblogConfigurationWizardSettings.LastServiceName != string.Empty)
                 {
                     SelectServiceName(WeblogConfigurationWizardSettings.LastServiceName);
                 }
@@ -270,7 +270,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             public WeblogType(RadioButton radioButton)
             {
                 _radioButton = radioButton;
-                _name = radioButton.Text.Replace("&", String.Empty);
+                _name = radioButton.Text.Replace("&", string.Empty);
             }
 
             public WeblogType(string name)

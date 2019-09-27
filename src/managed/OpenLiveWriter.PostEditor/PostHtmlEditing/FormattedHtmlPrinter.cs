@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
         }
 
-        public static String ToFormattedHtml(MshtmlMarkupServices markupServices, MarkupRange bounds)
+        public static string ToFormattedHtml(MshtmlMarkupServices markupServices, MarkupRange bounds)
         {
             StringBuilder sb = new StringBuilder();
             HtmlWriter xmlWriter = new HtmlWriter(sb);
@@ -301,7 +301,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                     }
                                 }
                             }
-                            Debug.WriteLineIf(attrValue != null && attrName != "id", String.Format(CultureInfo.InvariantCulture, "{0}.{1} attribute value not retreived", tagName, attrName), element.outerHTML);
+                            Debug.WriteLineIf(attrValue != null && attrName != "id", string.Format(CultureInfo.InvariantCulture, "{0}.{1} attribute value not retreived", tagName, attrName), element.outerHTML);
                         }
 
                         // Minimized attributes are not allowed, according
@@ -355,12 +355,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.sb = sb;
         }
 
-        public void WriteAttributeString(String name, String val)
+        public void WriteAttributeString(string name, string val)
         {
             GetCurrentElementPrinter().WriteElementAttribute(sb, name, val);
         }
 
-        public void WriteStartElement(String name)
+        public void WriteStartElement(string name)
         {
             HtmlElementPrinter currentPrinter = null;
             if (openElements.Count > 0)
@@ -382,7 +382,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             return (HtmlElementPrinter)openElements.Peek();
         }
 
-        public void WriteString(String str)
+        public void WriteString(string str)
         {
             if (openElements.Count > 0)
                 GetCurrentElementPrinter().WriteString(sb, str);
@@ -439,12 +439,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             private enum START_TAG_STATE { NONE, OPENED, CLOSED };
             private START_TAG_STATE startTagState = START_TAG_STATE.NONE;
 
-            private String tagName;
+            private string tagName;
             private int stackDepth;
             private HtmlElementPrinter parentElementPrinter;
             private ElementIndentStrategy indentStrategy;
             private int childCount;
-            public HtmlElementPrinter(String tagName, int stackDepth, HtmlElementPrinter parentElementPrinter)
+            public HtmlElementPrinter(string tagName, int stackDepth, HtmlElementPrinter parentElementPrinter)
             {
                 this.tagName = tagName;
                 this.stackDepth = stackDepth;
@@ -467,7 +467,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 sb.Append(tagName);
             }
 
-            public void WriteElementAttribute(StringBuilder sb, String attrName, String attrValue)
+            public void WriteElementAttribute(StringBuilder sb, string attrName, string attrValue)
             {
                 Debug.Assert(Regex.IsMatch(attrName, "^[a-zA-Z-]+$"), "Illegal attribute name: " + attrName);
                 sb.Append(" ");
@@ -498,13 +498,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 }
             }
 
-            public void BeforeAddChildElement(StringBuilder sb, String tagName)
+            public void BeforeAddChildElement(StringBuilder sb, string tagName)
             {
                 CloseStartElement(sb);
                 childCount++;
             }
 
-            public void WriteString(StringBuilder sb, String str)
+            public void WriteString(StringBuilder sb, string str)
             {
                 CloseStartElement(sb);
                 sb.Append(str);
@@ -534,7 +534,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 indentStrategy.ApplyEndIndent(sb, depth);
             }
 
-            private static ElementIndentStrategy CreateIndentStrategy(String tagName, HtmlElementPrinter printer)
+            private static ElementIndentStrategy CreateIndentStrategy(string tagName, HtmlElementPrinter printer)
             {
                 if (BlockTagNames.ContainsKey(tagName))
                     return new BlockElementIndentStrategy(printer);

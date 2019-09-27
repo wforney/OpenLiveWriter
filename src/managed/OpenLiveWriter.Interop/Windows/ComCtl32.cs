@@ -26,11 +26,11 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct TBSTYLE
     {
-        public const UInt32 TRANSPARENT = 0x8000;
-        public const UInt32 FLAT = 0x0800;
-        public const UInt32 LIST = 0x1000;
-        public const UInt32 TOOLTIPS = 0x0100;
-        public const UInt32 WRAPABLE = 0x0200;
+        public const uint TRANSPARENT = 0x8000;
+        public const uint FLAT = 0x0800;
+        public const uint LIST = 0x1000;
+        public const uint TOOLTIPS = 0x0100;
+        public const uint WRAPABLE = 0x0200;
     }
 
     public struct BUTTON_IMAGELIST_ALIGN
@@ -47,10 +47,10 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct CCS
     {
-        public const UInt32 TOP = 0x00000001;
-        public const UInt32 NORESIZE = 0x00000004;
-        public const UInt32 NODIVIDER = 0x00000040;
-        public const UInt32 NOPARENTALIGN = 0x00000008;
+        public const uint TOP = 0x00000001;
+        public const uint NORESIZE = 0x00000004;
+        public const uint NODIVIDER = 0x00000040;
+        public const uint NOPARENTALIGN = 0x00000008;
     }
 
 }

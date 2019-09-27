@@ -27,10 +27,10 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// <param name="cb">[in] Specifies the number of bytes of data to attempt to read from the byte array.</param>
         /// <param name="pcbRead">[out] Pointer to a location where this method writes the actual number of bytes read from the byte array. You can set this pointer to NULL to indicate that you are not interested in this value. In this case, this method does not provide the actual number of bytes that were read.</param>
         void ReadAt(
-            [In] UInt64 ulOffset,
+            [In] ulong ulOffset,
             [Out] IntPtr pv,
-            [In] UInt32 cb,
-            [Out] out UInt32 pcbRead);
+            [In] uint cb,
+            [Out] out uint pcbRead);
 
         /// <summary>
         /// Writes a specified number of bytes to a specified location in the byte array.
@@ -40,10 +40,10 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// <param name="cb">[in] Specifies the number of bytes of data to attempt to write into the byte array.</param>
         /// <param name="pcbWritten">[out] Pointer to a location where this method specifies the actual number of bytes written to the byte array. You can set this pointer to NULL to indicate that you are not interested in this value. In this case, this method does not provide the actual number of bytes written.</param>
         void WriteAt(
-            [In] UInt64 ulOffset,
+            [In] ulong ulOffset,
             [In] IntPtr pv,
-            [In] UInt32 cb,
-            [Out] out UInt32 pcbWritten);
+            [In] uint cb,
+            [Out] out uint pcbWritten);
 
         /// <summary>
         /// Ensures that any internal buffers maintained by the byte array object are
@@ -56,7 +56,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// </summary>
         /// <param name="cb">[in] Specifies the new size of the byte array as a number of bytes.</param>
         void SetSize(
-            [In] UInt64 cb);
+            [In] ulong cb);
 
         /// <summary>
         /// Restricts access to a specified range of bytes in the byte array
@@ -65,8 +65,8 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// <param name="cb">[in] Specifies, in bytes, the length of the range to be restricted.</param>
         /// <param name="dwLockType">[in] Specifies the type of restrictions being requested on accessing the range. This parameter uses one of the values from the LOCKTYPE enumeration.</param>
         void LockRegion(
-            [In] UInt64 libOffset,
-            [In] UInt64 cb,
+            [In] ulong libOffset,
+            [In] ulong cb,
             [In] uint dwLockType);
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// <param name="cb">[in] Specifies, in bytes, the length of the range that is restricted.</param>
         /// <param name="dwLockType">[in] Specifies the type of access restrictions previously placed on the range. This parameter uses a value from the LOCKTYPE enumeration.</param>
         void UnlockRegion(
-            [In] UInt64 libOffset,
-            [In] UInt64 cb,
+            [In] ulong libOffset,
+            [In] ulong cb,
             [In] LOCKTYPE dwLockType);
 
         /// <summary>

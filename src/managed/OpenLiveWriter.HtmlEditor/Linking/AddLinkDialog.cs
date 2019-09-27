@@ -66,13 +66,13 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             if (!showAdvanced)
             {
                 buttonAdvanced.Text =
-                    String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00BB);
+                    string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00BB);
                 panelAdvanced.Visible = _advancedPanelIsShowing = false;
                 Height -= panelAdvanced.Height;
             }
             else
             {
-                buttonAdvanced.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00AB);
+                buttonAdvanced.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkAdvanced), (char)0x00AB);
                 panelAdvanced.Visible = _advancedPanelIsShowing = true;
                 Height += panelAdvanced.Height;
             }
@@ -98,7 +98,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             Debug.Assert(result == HRESULT.S_OK, "Unexpected failure to install AutoComplete");
 
             // prepopulate the text box w/ http prefix and move the cursor to the end
-            if (txtURL.Text == String.Empty)
+            if (txtURL.Text == string.Empty)
             {
                 txtURL.Text = HTTP_PREFIX;
             }
@@ -392,12 +392,12 @@ namespace OpenLiveWriter.HtmlEditor.Linking
 
         private void btnOK_Click(object sender, System.EventArgs e)
         {
-            if (LinkText == String.Empty)
+            if (LinkText == string.Empty)
             {
                 DisplayMessage.Show(MessageId.NoLinkTextSpecified, this);
                 txtText.Focus();
             }
-            else if (Url.Trim() == String.Empty || Url.Trim() == HTTP_PREFIX)
+            else if (Url.Trim() == string.Empty || Url.Trim() == HTTP_PREFIX)
             {
                 DisplayMessage.Show(MessageId.NoValidHyperlinkSpecified, this);
             }

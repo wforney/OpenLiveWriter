@@ -54,7 +54,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
         public void Start(bool getPages)
         {
-            labelCaption.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.RetrievingFromWeblog), getPages ? Res.Get(StringId.PagesLower) : Res.Get(StringId.PostsLower));
+            labelCaption.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.RetrievingFromWeblog), getPages ? Res.Get(StringId.PagesLower) : Res.Get(StringId.PostsLower));
 
             if (!progressAnimatedBitmap.IsDisposed)
             {
@@ -85,7 +85,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     ArrayList list = new ArrayList();
                     for (int i = 0; i < 12; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));

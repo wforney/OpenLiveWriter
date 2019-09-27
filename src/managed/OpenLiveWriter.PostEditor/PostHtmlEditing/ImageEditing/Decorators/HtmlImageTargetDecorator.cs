@@ -305,7 +305,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 string target = newWindow ? "_blank" : null;
                 if (htmlAnchorElement.target != target) //don't set the target to null if its already null (avoids adding empty target attr)
                     htmlAnchorElement.target = target;
-                if (title != String.Empty)
+                if (title != string.Empty)
                 {
                     anchorElement.setAttribute("title", title, 0);
                 }
@@ -313,7 +313,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     anchorElement.removeAttribute("title", 0);
                 }
-                if (rel != String.Empty)
+                if (rel != string.Empty)
                 {
                     anchorElement.setAttribute("rel", rel, 0);
                 }
@@ -334,11 +334,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     if (anchorElement.title != null)
                         return anchorElement.title;
                     else
-                        return String.Empty;
+                        return string.Empty;
                 }
                 else
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -355,11 +355,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     if (htmlAnchorElement.rel != null)
                         return htmlAnchorElement.rel;
                     else
-                        return String.Empty;
+                        return string.Empty;
                 }
                 else
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }

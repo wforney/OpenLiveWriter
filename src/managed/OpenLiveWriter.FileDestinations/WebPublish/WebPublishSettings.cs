@@ -69,7 +69,7 @@ namespace OpenLiveWriter.FileDestinations
                 }
             }
         }
-        private string publishPath = String.Empty;
+        private string publishPath = string.Empty;
 
         public string FullPublishPath
         {

@@ -160,7 +160,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	Parse the menu path entry.
             string[] values = StringHelper.SplitWithEscape(menuPathEntry, '@', '_'); //menuPathEntry.Split(new char[] {'@'});
-            Debug.Assert(values.Length == 2, "Invalid menu path entry.", String.Format(CultureInfo.InvariantCulture, "{0} is not a valid menu path entry.", menuPathEntry));
+            Debug.Assert(values.Length == 2, "Invalid menu path entry.", string.Format(CultureInfo.InvariantCulture, "{0} is not a valid menu path entry.", menuPathEntry));
 
             //	Set the name.
             text = values[0];
@@ -171,13 +171,13 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 try
                 {
-                    position = Int32.Parse(values[1], CultureInfo.InvariantCulture);
+                    position = int.Parse(values[1], CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
                     //	Don't kill a running system because of this problem.  In this case, use a
                     //	position of 0 and keep on running.  For debug mode, throw an assertion.
-                    Debug.Assert(false, "Invalid menu merge order specified.", String.Format(CultureInfo.InvariantCulture, "{0} contains an invalid menu merge order specification.", menuPathEntry));
+                    Debug.Assert(false, "Invalid menu merge order specified.", string.Format(CultureInfo.InvariantCulture, "{0} contains an invalid menu merge order specification.", menuPathEntry));
                 }
             }
         }

@@ -212,7 +212,7 @@ namespace OpenLiveWriter.PostEditor
                 return ImgAlignment.LEFT;
             }
 
-            if ((_element.style.styleFloat == "none" || String.IsNullOrEmpty(_element.style.styleFloat)) && _element.style.display == "block" && _element.style.marginLeft as string == "auto" && _element.style.marginRight as string == "auto")
+            if ((_element.style.styleFloat == "none" || string.IsNullOrEmpty(_element.style.styleFloat)) && _element.style.display == "block" && _element.style.marginLeft as string == "auto" && _element.style.marginRight as string == "auto")
             {
                 return ImgAlignment.CENTER;
             }

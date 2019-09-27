@@ -16,7 +16,7 @@ namespace OpenLiveWriter.CoreServices
     public class LiveClipboardFormat
     {
         public LiveClipboardFormat(string contentType)
-            : this(contentType, String.Empty)
+            : this(contentType, string.Empty)
         {
         }
 
@@ -26,10 +26,10 @@ namespace OpenLiveWriter.CoreServices
 
             // provide a hard guarantee that Type is never null
             // (simplifies code downstream)
-            _type = (type != null) ? type : String.Empty;
+            _type = (type != null) ? type : string.Empty;
 
             // id is ContentType plus "/type" if a type is specified
-            _id = ContentType + (Type != String.Empty ? "/" + Type : String.Empty);
+            _id = ContentType + (Type != string.Empty ? "/" + Type : string.Empty);
         }
 
         public string Id
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _type; }
         }
-        private string _type = String.Empty;
+        private string _type = string.Empty;
 
         public override bool Equals(object obj)
         {
@@ -164,7 +164,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 foreach (string textFormat in _textFormats)
                 {
-                    string selectExpr = String.Format(CultureInfo.InvariantCulture, "//lc:presentations/lc:format[@contenttype='{0}']", textFormat);
+                    string selectExpr = string.Format(CultureInfo.InvariantCulture, "//lc:presentations/lc:format[@contenttype='{0}']", textFormat);
                     XmlNode htmlPresentationNode = Document.SelectSingleNode(selectExpr, _namespaceManager);
 
                     if (htmlPresentationNode != null)

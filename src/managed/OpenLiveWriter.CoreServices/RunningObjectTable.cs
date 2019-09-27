@@ -177,7 +177,7 @@ namespace OpenLiveWriter.CoreServices
 
                 if (hr != HRESULT.S_OK)
                 {
-                    Trace.WriteLine(String.Format("ROT.GetObject returned HRESULT 0x{0:x}.", hr));
+                    Trace.WriteLine(string.Format("ROT.GetObject returned HRESULT 0x{0:x}.", hr));
                     return null;
                 }
                 return obj;

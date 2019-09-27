@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor
         {
             // WinLive 182295: Set all the EditorOptions just once so they are immutable.
             RequiresXHTML = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.XHTML);
-            MaxPostTitleLength = Int32.MaxValue;
+            MaxPostTitleLength = int.MaxValue;
             IsRTLTemplate = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.RTLDirectionDefault);
             HasRTLFeatures = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.RTLFeatures);
             SupportsImageUpload = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.ImageUpload) ? SupportsFeature.Yes : SupportsFeature.No;

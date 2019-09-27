@@ -513,7 +513,7 @@ namespace OpenLiveWriter.Mshtml
                             return true;
 
                         default:
-                            Debug.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected selection type: {0}", type));
+                            Debug.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected selection type: {0}", type));
                             return false;
                     }
                 }
@@ -1670,7 +1670,7 @@ namespace OpenLiveWriter.Mshtml
         private static void LOG_UN(string iface, string method)
         {
             Debug.Fail(
-                String.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
+                string.Format(CultureInfo.InvariantCulture, "Unexpected call to {0}.{1}", iface, method));
             LOG(iface, method);
         }
 

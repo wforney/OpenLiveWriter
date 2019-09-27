@@ -33,8 +33,8 @@ namespace OpenLiveWriter.Interop.Windows
         public struct ICONINFO
         {
             public bool fIcon;
-            public Int32 xHotspot;
-            public Int32 yHotspot;
+            public int xHotspot;
+            public int yHotspot;
             public IntPtr hbmMask;
             public IntPtr hbmColor;
         }
@@ -180,7 +180,7 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern IntPtr GetActiveWindow();
 
         [DllImport("User32.dll")]
-        public static extern Boolean SetForegroundWindow(IntPtr hWnd);
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("User32.dll")]
         public static extern IntPtr GetForegroundWindow();
@@ -189,14 +189,14 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern bool BringWindowToTop(IntPtr hWnd);
 
         [DllImport("User32.dll")]
-        public static extern Boolean GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
 
         [DllImport("User32.dll")]
-        public static extern Boolean SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport("User32.dll")]
-        public static extern Boolean ShowWindow(IntPtr hWnd, int nCmdShow);
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("User32.dll")]
         public static extern bool MoveWindow(
@@ -237,7 +237,7 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern IntPtr GetAncestor(IntPtr hWnd, GA gaFlags);
 
         [DllImport("User32.dll")]
-        public static extern Boolean AnimateWindow(IntPtr hWnd, uint dwTime, AW dwFlags);
+        public static extern bool AnimateWindow(IntPtr hWnd, uint dwTime, AW dwFlags);
 
         /// <summary>
         /// The IsWindow function determines whether the specified
@@ -251,10 +251,10 @@ namespace OpenLiveWriter.Interop.Windows
         /// If the window handle does not identify an existing window, the return value is zero.
         /// </returns>
         [DllImport("User32.dll")]
-        public static extern Boolean IsWindow(IntPtr hWnd);
+        public static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("User32.dll")]
-        public static extern UInt32 WaitForInputIdle(IntPtr hProcess, UInt32 dwMilliseconds);
+        public static extern uint WaitForInputIdle(IntPtr hProcess, uint dwMilliseconds);
 
         [DllImport("User32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr hWnd);
@@ -265,7 +265,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// subsequent GDI functions to draw in the DC.
         /// </summary>
         [DllImport("user32.dll")]
-        public static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr region, UInt32 dw);
+        public static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr region, uint dw);
 
         /// <summary>
         /// The ReleaseDC function releases a device context (DC), freeing it for use by other
@@ -281,14 +281,14 @@ namespace OpenLiveWriter.Interop.Windows
         /// window memory.
         /// </summary>
         [DllImport("user32.dll")]
-        public static extern UInt32 GetWindowLong(IntPtr hWnd, int nIndex);
+        public static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
 
         /// <summary>
         /// The SetWindowLong function changes an attribute of the specified window. The function
         /// also sets the 32-bit (long) value at the specified offset into the extra window memory.
         /// </summary>
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, UInt32 dwNewLong);
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetWindowTextLength(IntPtr hWnd);
@@ -448,9 +448,9 @@ namespace OpenLiveWriter.Interop.Windows
         [StructLayout(LayoutKind.Sequential)]
         public struct GETTEXTEX
         {
-            public Int32 cb;
-            public Int32 flags;
-            public Int32 codepage;
+            public int cb;
+            public int flags;
+            public int codepage;
             public IntPtr lpDefaultChar;
             public IntPtr lpUsedDefChar;
         }
@@ -458,7 +458,7 @@ namespace OpenLiveWriter.Interop.Windows
         public const int EM_GETTEXTEX = 0x0400 + 94;
 
         [DllImport("user32.dll")]
-        public static extern bool FlashWindow(IntPtr hwnd, Boolean bInvert);
+        public static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
 
         [DllImport("user32.dll")]
         public static extern bool FlashWindowEx(ref FLASHWINFO pfwi);
@@ -466,7 +466,7 @@ namespace OpenLiveWriter.Interop.Windows
         [StructLayout(LayoutKind.Sequential)]
         public struct FLASHWINFO
         {
-            public FLASHWINFO(IntPtr hwnd, Int32 dwFlags, Int32 uCount, Int32 dwTimeout)
+            public FLASHWINFO(IntPtr hwnd, int dwFlags, int uCount, int dwTimeout)
             {
                 this.hwnd = hwnd;
                 this.dwFlags = dwFlags;
@@ -477,11 +477,11 @@ namespace OpenLiveWriter.Interop.Windows
                 cbSize = IntPtr.Size + 16;
             }
 
-            public Int32 cbSize;
+            public int cbSize;
             public IntPtr hwnd;
-            public Int32 dwFlags;
-            public Int32 uCount;
-            public Int32 dwTimeout;
+            public int dwFlags;
+            public int uCount;
+            public int dwTimeout;
         }
 
         public struct TRACKMOUSEEVENT
@@ -494,12 +494,12 @@ namespace OpenLiveWriter.Interop.Windows
 
         public struct FlashStatus
         {
-            public static Int32 FLASHW_STOP = 0;
-            public static Int32 FLASHW_CAPTION = 1;
-            public static Int32 FLASHW_TRAY = 2;
-            public static Int32 FLASHW_ALL = (FlashStatus.FLASHW_CAPTION | FlashStatus.FLASHW_TRAY);
-            public static Int32 FLASHW_TIMER = 4;
-            public static Int32 FLASHW_TIMERNOFG = 12;
+            public static int FLASHW_STOP = 0;
+            public static int FLASHW_CAPTION = 1;
+            public static int FLASHW_TRAY = 2;
+            public static int FLASHW_ALL = (FlashStatus.FLASHW_CAPTION | FlashStatus.FLASHW_TRAY);
+            public static int FLASHW_TIMER = 4;
+            public static int FLASHW_TIMERNOFG = 12;
         };
 
         // declaration for EnumWindows
@@ -515,8 +515,8 @@ namespace OpenLiveWriter.Interop.Windows
 
         public struct GETTEXTLENGTHEX
         {
-            public Int32 flags;
-            public Int32 codepage;
+            public int flags;
+            public int codepage;
         }
 
         public const int EM_GETTEXTLENGTHEX = 0x0400 + 95;
@@ -581,7 +581,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public delegate void WinEventProc(IntPtr hWinEventHook,
             EVENT_SYSTEM evt, IntPtr hwnd,
-            Int32 idObject, Int32 idChild,
+            int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime);
 
         /// <summary>
@@ -612,10 +612,10 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern bool GetOpenFileName(ref OpenFileName ofn);
 
         [DllImport("ComDlg32.dll", CharSet = CharSet.Unicode)]
-        public static extern Int32 CommDlgExtendedError();
+        public static extern int CommDlgExtendedError();
 
         [DllImport("User32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr GetDlgItem(IntPtr hWndDlg, Int32 Id);
+        public static extern IntPtr GetDlgItem(IntPtr hWndDlg, int Id);
 
         [DllImport("User32.dll", SetLastError = true)]
         public static extern IntPtr GetDlgCtrlID(IntPtr hwndCtl);
@@ -804,22 +804,22 @@ namespace OpenLiveWriter.Interop.Windows
         /// <summary>
         /// The message number
         /// </summary>
-        public UInt32 message;
+        public uint message;
 
         /// <summary>
         /// First message parameter
         /// </summary>
-        public UInt32 wParam;
+        public uint wParam;
 
         /// <summary>
         /// Second message parameter
         /// </summary>
-        public Int32 lParam;
+        public int lParam;
 
         /// <summary>
         /// The time the message was posted
         /// </summary>
-        public UInt32 time;
+        public uint time;
 
         /// <summary>
         /// A POINT structure containing the cursor position in screen coordinates
@@ -836,12 +836,12 @@ namespace OpenLiveWriter.Interop.Windows
         /// <summary>
         /// x-coordinate
         /// </summary>
-        public Int32 x;
+        public int x;
 
         /// <summary>
         /// y-coordinate
         /// </summary>
-        public Int32 y;
+        public int y;
     }
 
     /// <summary>
@@ -849,10 +849,10 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct RECT
     {
-        public Int32 left;
-        public Int32 top;
-        public Int32 right;
-        public Int32 bottom;
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
 
         public static implicit operator Rectangle(RECT rect)
         {
@@ -882,12 +882,12 @@ namespace OpenLiveWriter.Interop.Windows
         /// <summary>
         /// Width
         /// </summary>
-        public Int32 cx;
+        public int cx;
 
         /// <summary>
         /// Height
         /// </summary>
-        public Int32 cy;
+        public int cy;
     }
 
     /// <summary>
@@ -908,23 +908,23 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct WS
     {
-        public const UInt32 CHILD = 0x40000000;
-        public const UInt32 VISIBLE = 0x10000000;
-        public const UInt32 CLIPCHILDREN = 0x02000000;
-        public const UInt32 CLIPSIBLINGS = 0x04000000;
-        public const UInt32 HSCROLL = 0x00100000;
-        public const UInt32 POPUP = 0x80000000;
-        public const UInt32 TABSTOP = 0x00010000;
-        public const UInt32 VSCROLL = 0x00200000;
-        public const UInt32 EX_TOOLWINDOW = 0x00000080;
-        public const UInt32 EX_APPWINDOW = 0x00040000;
-        public const UInt32 EX_TOPMOST = 0x00000008;
+        public const uint CHILD = 0x40000000;
+        public const uint VISIBLE = 0x10000000;
+        public const uint CLIPCHILDREN = 0x02000000;
+        public const uint CLIPSIBLINGS = 0x04000000;
+        public const uint HSCROLL = 0x00100000;
+        public const uint POPUP = 0x80000000;
+        public const uint TABSTOP = 0x00010000;
+        public const uint VSCROLL = 0x00200000;
+        public const uint EX_TOOLWINDOW = 0x00000080;
+        public const uint EX_APPWINDOW = 0x00040000;
+        public const uint EX_TOPMOST = 0x00000008;
 
-        public const UInt32 BORDER = 0x00800000;
-        public const UInt32 THICKFRAME = 0x00040000;
-        public const UInt32 SYSMENU = 0x00080000;
-        public const UInt32 MINIMIZEBOX = 0x00020000;
-        public const UInt32 MAXIMIZEBOX = 0x00010000;
+        public const uint BORDER = 0x00800000;
+        public const uint THICKFRAME = 0x00040000;
+        public const uint SYSMENU = 0x00080000;
+        public const uint MINIMIZEBOX = 0x00020000;
+        public const uint MAXIMIZEBOX = 0x00010000;
     }
 
     public struct MOD
@@ -1051,18 +1051,18 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct DCX
     {
-        public const UInt32 WINDOW = 0x00000001;
-        public const UInt32 CACHE = 0x00000002;
-        public const UInt32 NORESETATTRS = 0x00000004;
-        public const UInt32 CLIPCHILDREN = 0x00000008;
-        public const UInt32 CLIPSIBLINGS = 0x00000010;
-        public const UInt32 PARENTCLIP = 0x00000020;
-        public const UInt32 EXCLUDERGN = 0x00000040;
-        public const UInt32 INTERSECTRGN = 0x00000080;
-        public const UInt32 EXCLUDEUPDATE = 0x00000100;
-        public const UInt32 INTERSECTUPDATE = 0x00000200;
-        public const UInt32 LOCKWINDOWUPDATE = 0x00000400;
-        public const UInt32 VALIDATE = 0x00200000;
+        public const uint WINDOW = 0x00000001;
+        public const uint CACHE = 0x00000002;
+        public const uint NORESETATTRS = 0x00000004;
+        public const uint CLIPCHILDREN = 0x00000008;
+        public const uint CLIPSIBLINGS = 0x00000010;
+        public const uint PARENTCLIP = 0x00000020;
+        public const uint EXCLUDERGN = 0x00000040;
+        public const uint INTERSECTRGN = 0x00000080;
+        public const uint EXCLUDEUPDATE = 0x00000100;
+        public const uint INTERSECTUPDATE = 0x00000200;
+        public const uint LOCKWINDOWUPDATE = 0x00000400;
+        public const uint VALIDATE = 0x00200000;
     }
 
     /// <summary>
@@ -1070,7 +1070,7 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct BM
     {
-        public const UInt32 SETSTYLE = 0x000000F4;
+        public const uint SETSTYLE = 0x000000F4;
     }
 
     public struct ButtonStyles
@@ -1092,77 +1092,77 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct WM
     {
-        public const UInt32 COMMAND = 0x0111;
-        public const UInt32 DESTROY = 0x0002;
-        public const UInt32 SIZE = 0x0005;
-        public const UInt32 CLOSE = 0x0010;
+        public const uint COMMAND = 0x0111;
+        public const uint DESTROY = 0x0002;
+        public const uint SIZE = 0x0005;
+        public const uint CLOSE = 0x0010;
 
-        public const UInt32 QUERYENDSESSION = 0x0011;
-        public const UInt32 ENDSESSION = 0x0016;
+        public const uint QUERYENDSESSION = 0x0011;
+        public const uint ENDSESSION = 0x0016;
 
-        public const UInt32 VSCROLL = 0x0115;
-        public const UInt32 SETCURSOR = 0x0020;
-        public const UInt32 MOUSEACTIVATE = 0x0021;
-        public const UInt32 NOTIFY = 0x004E;
-        public const UInt32 INITDIALOG = 0x0110;
-        public const UInt32 GETTEXT = 0x000D;
-        public const UInt32 GETTEXTLENGTH = 0x000E;
-        public const UInt32 USER = 0x0400;
-        public const UInt32 NULL = 0x0000;
-        public const UInt32 GETMINMAXINFO = 0x0024;
-        public const UInt32 HOTKEY = 0x0312;
-        public const UInt32 SETFOCUS = 0x0007;
-        public const UInt32 KEYDOWN = 0x100;
-        public const UInt32 KEYUP = 0x0101;
-        public const UInt32 CHAR = 0x0102;
-        public const UInt32 SYSKEYDOWN = 0x104;
-        public const UInt32 SYSKEYUP = 0x105;
-        public const UInt32 SYSCHAR = 0x106;
-        public const UInt32 NCDESTROY = 0x0082;
-        public const UInt32 NCPAINT = 0x0085;
-        public const UInt32 NCACTIVATE = 0x0086;
-        public const UInt32 ERASEBKGND = 0x0014;
-        public const UInt32 NCHITTEST = 0x0084;
-        public const UInt32 SYSCOMMAND = 0x0112;
-        public const UInt32 MOUSEMOVE = 0x0200;
-        public const UInt32 LBUTTONDOWN = 0x0201;
-        public const UInt32 LBUTTONUP = 0x0202;
-        public const UInt32 LBUTTONDBLCLK = 0x0203;
-        public const UInt32 RBUTTONDOWN = 0x0204;
-        public const UInt32 RBUTTONUP = 0x0205;
-        public const UInt32 CHANGEUISTATE = 0x0127;
-        public const UInt32 UPDATEUISTATE = 0x0128;
-        public const UInt32 ENTERMENULOOP = 0x0211;
-        public const UInt32 EXITMENULOOP = 0x0212;
-        public const UInt32 CUT = 0x0300;
-        public const UInt32 COPY = 0x0301;
-        public const UInt32 PASTE = 0x0302;
-        public const UInt32 CLEAR = 0x0303;
-        public const UInt32 ACTIVATE = 0x0006;
-        public const UInt32 COPYDATA = 0x004A;
-        public const UInt32 CONTEXTMENU = 0x007B;
-        public const UInt32 WININICHANGE = 0x001A;
-        public const UInt32 ENTERSIZEMOVE = 0x0231;
-        public const UInt32 EXITSIZEMOVE = 0x0232;
-        public const UInt32 NCMOUSEMOVE = 0x00A0;
-        public const UInt32 NCLBUTTONDOWN = 0x00A1;
-        public const UInt32 NCLBUTTONUP = 0x00A2;
-        public const UInt32 NCLBUTTONDBLCLK = 0x00A3;
-        public const UInt32 NCRBUTTONDOWN = 0x00A4;
-        public const UInt32 NCRBUTTONUP = 0x00A5;
-        public const UInt32 NCRBUTTONDBLCLK = 0x00A6;
-        public const UInt32 NCMBUTTONDOWN = 0x00A7;
-        public const UInt32 NCMBUTTONUP = 0x00A8;
-        public const UInt32 NCMBUTTONDBLCLK = 0x00A9;
-        public const UInt32 NCMOUSEHOVER = 0x02A0;
-        public const UInt32 NCMOUSELEAVE = 0x02A2;
-        public const UInt32 DM_SETDEFID = WM.USER + 1;
-        public const UInt32 EM_REPLACESEL = 0x00C2;
-        public const UInt32 EM_POSFROMCHAR = 0x00D6;
-        public const UInt32 EM_SETMARGINS = 0x00D3;
-        public const UInt32 EM_GETMARGINS = 0x00D4;
+        public const uint VSCROLL = 0x0115;
+        public const uint SETCURSOR = 0x0020;
+        public const uint MOUSEACTIVATE = 0x0021;
+        public const uint NOTIFY = 0x004E;
+        public const uint INITDIALOG = 0x0110;
+        public const uint GETTEXT = 0x000D;
+        public const uint GETTEXTLENGTH = 0x000E;
+        public const uint USER = 0x0400;
+        public const uint NULL = 0x0000;
+        public const uint GETMINMAXINFO = 0x0024;
+        public const uint HOTKEY = 0x0312;
+        public const uint SETFOCUS = 0x0007;
+        public const uint KEYDOWN = 0x100;
+        public const uint KEYUP = 0x0101;
+        public const uint CHAR = 0x0102;
+        public const uint SYSKEYDOWN = 0x104;
+        public const uint SYSKEYUP = 0x105;
+        public const uint SYSCHAR = 0x106;
+        public const uint NCDESTROY = 0x0082;
+        public const uint NCPAINT = 0x0085;
+        public const uint NCACTIVATE = 0x0086;
+        public const uint ERASEBKGND = 0x0014;
+        public const uint NCHITTEST = 0x0084;
+        public const uint SYSCOMMAND = 0x0112;
+        public const uint MOUSEMOVE = 0x0200;
+        public const uint LBUTTONDOWN = 0x0201;
+        public const uint LBUTTONUP = 0x0202;
+        public const uint LBUTTONDBLCLK = 0x0203;
+        public const uint RBUTTONDOWN = 0x0204;
+        public const uint RBUTTONUP = 0x0205;
+        public const uint CHANGEUISTATE = 0x0127;
+        public const uint UPDATEUISTATE = 0x0128;
+        public const uint ENTERMENULOOP = 0x0211;
+        public const uint EXITMENULOOP = 0x0212;
+        public const uint CUT = 0x0300;
+        public const uint COPY = 0x0301;
+        public const uint PASTE = 0x0302;
+        public const uint CLEAR = 0x0303;
+        public const uint ACTIVATE = 0x0006;
+        public const uint COPYDATA = 0x004A;
+        public const uint CONTEXTMENU = 0x007B;
+        public const uint WININICHANGE = 0x001A;
+        public const uint ENTERSIZEMOVE = 0x0231;
+        public const uint EXITSIZEMOVE = 0x0232;
+        public const uint NCMOUSEMOVE = 0x00A0;
+        public const uint NCLBUTTONDOWN = 0x00A1;
+        public const uint NCLBUTTONUP = 0x00A2;
+        public const uint NCLBUTTONDBLCLK = 0x00A3;
+        public const uint NCRBUTTONDOWN = 0x00A4;
+        public const uint NCRBUTTONUP = 0x00A5;
+        public const uint NCRBUTTONDBLCLK = 0x00A6;
+        public const uint NCMBUTTONDOWN = 0x00A7;
+        public const uint NCMBUTTONUP = 0x00A8;
+        public const uint NCMBUTTONDBLCLK = 0x00A9;
+        public const uint NCMOUSEHOVER = 0x02A0;
+        public const uint NCMOUSELEAVE = 0x02A2;
+        public const uint DM_SETDEFID = WM.USER + 1;
+        public const uint EM_REPLACESEL = 0x00C2;
+        public const uint EM_POSFROMCHAR = 0x00D6;
+        public const uint EM_SETMARGINS = 0x00D3;
+        public const uint EM_GETMARGINS = 0x00D4;
 
-        public const UInt32 REFLECT = 0x2000;
+        public const uint REFLECT = 0x2000;
     }
 
     public struct EC
@@ -1342,9 +1342,9 @@ namespace OpenLiveWriter.Interop.Windows
 
     public struct ENDSESSION
     {
-        public const UInt32 ENDSESSION_CLOSEAPP = 0x00000001;
-        public const UInt32 ENDSESSION_CRITICAL = 0x40000000;
-        public const UInt32 ENDSESSION_LOGOFF = 0x80000000;
+        public const uint ENDSESSION_CLOSEAPP = 0x00000001;
+        public const uint ENDSESSION_CRITICAL = 0x40000000;
+        public const uint ENDSESSION_LOGOFF = 0x80000000;
     }
 
     /// <summary>
@@ -1477,64 +1477,64 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct OpenFileName
     {
-        public Int32 lStructSize;
+        public int lStructSize;
         public IntPtr hwndOwner;
         public IntPtr hInstance;
         public IntPtr lpstrFilter;
         public IntPtr lpstrCustomFilter;
-        public Int32 nMaxCustFilter;
-        public Int32 nFilterIndex;
+        public int nMaxCustFilter;
+        public int nFilterIndex;
         public IntPtr lpstrFile;
-        public Int32 nMaxFile;
+        public int nMaxFile;
         public IntPtr lpstrFileTitle;
-        public Int32 nMaxFileTitle;
+        public int nMaxFileTitle;
         public IntPtr lpstrInitialDir;
         public IntPtr lpstrTitle;
-        public Int32 Flags;
-        public Int16 nFileOffset;
-        public Int16 nFileExtension;
+        public int Flags;
+        public short nFileOffset;
+        public short nFileExtension;
         public IntPtr lpstrDefExt;
-        public Int32 lCustData;
+        public int lCustData;
         public OfnHookProc lpfnHook;
         public IntPtr lpTemplateName;
         public IntPtr pvReserved;
-        public Int32 dwReserved;
-        public Int32 FlagsEx;
+        public int dwReserved;
+        public int FlagsEx;
     };
 
-    public delegate IntPtr OfnHookProc(IntPtr hWnd, UInt32 msg, Int32 wParam, Int32 lParam);
+    public delegate IntPtr OfnHookProc(IntPtr hWnd, uint msg, int wParam, int lParam);
 
     /// <summary>
     /// Values that can be placed in the OPENFILENAME structure, we don't use all of them
     /// </summary>
     public class OpenFileNameFlags
     {
-        public const Int32 ReadOnly = 0x00000001;
-        public const Int32 OverWritePrompt = 0x00000002;
-        public const Int32 HideReadOnly = 0x00000004;
-        public const Int32 NoChangeDir = 0x00000008;
-        public const Int32 ShowHelp = 0x00000010;
-        public const Int32 EnableHook = 0x00000020;
-        public const Int32 EnableTemplate = 0x00000040;
-        public const Int32 EnableTemplateHandle = 0x00000080;
-        public const Int32 NoValidate = 0x00000100;
-        public const Int32 AllowMultiSelect = 0x00000200;
-        public const Int32 ExtensionDifferent = 0x00000400;
-        public const Int32 PathMustExist = 0x00000800;
-        public const Int32 FileMustExist = 0x00001000;
-        public const Int32 CreatePrompt = 0x00002000;
-        public const Int32 ShareAware = 0x00004000;
-        public const Int32 NoReadOnlyReturn = 0x00008000;
-        public const Int32 NoTestFileCreate = 0x00010000;
-        public const Int32 NoNetworkButton = 0x00020000;
-        public const Int32 NoLongNames = 0x00040000;
-        public const Int32 Explorer = 0x00080000;
-        public const Int32 NoDereferenceLinks = 0x00100000;
-        public const Int32 LongNames = 0x00200000;
-        public const Int32 EnableIncludeNotify = 0x00400000;
-        public const Int32 EnableSizing = 0x00800000;
-        public const Int32 DontAddToRecent = 0x02000000;
-        public const Int32 ForceShowHidden = 0x10000000;
+        public const int ReadOnly = 0x00000001;
+        public const int OverWritePrompt = 0x00000002;
+        public const int HideReadOnly = 0x00000004;
+        public const int NoChangeDir = 0x00000008;
+        public const int ShowHelp = 0x00000010;
+        public const int EnableHook = 0x00000020;
+        public const int EnableTemplate = 0x00000040;
+        public const int EnableTemplateHandle = 0x00000080;
+        public const int NoValidate = 0x00000100;
+        public const int AllowMultiSelect = 0x00000200;
+        public const int ExtensionDifferent = 0x00000400;
+        public const int PathMustExist = 0x00000800;
+        public const int FileMustExist = 0x00001000;
+        public const int CreatePrompt = 0x00002000;
+        public const int ShareAware = 0x00004000;
+        public const int NoReadOnlyReturn = 0x00008000;
+        public const int NoTestFileCreate = 0x00010000;
+        public const int NoNetworkButton = 0x00020000;
+        public const int NoLongNames = 0x00040000;
+        public const int Explorer = 0x00080000;
+        public const int NoDereferenceLinks = 0x00100000;
+        public const int LongNames = 0x00200000;
+        public const int EnableIncludeNotify = 0x00400000;
+        public const int EnableSizing = 0x00800000;
+        public const int DontAddToRecent = 0x02000000;
+        public const int ForceShowHidden = 0x10000000;
     };
 
     /// <summary>
@@ -1542,7 +1542,7 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public class OpenFileNameFlagsEx
     {
-        public const Int32 NoPlacesBar = 0x00000001;
+        public const int NoPlacesBar = 0x00000001;
     };
 
     /// <summary>
@@ -1551,14 +1551,14 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     internal class DlgStyle
     {
-        public const Int32 DsSetFont = 0x00000040;
-        public const Int32 Ds3dLook = 0x00000004;
-        public const Int32 DsControl = 0x00000400;
-        public const Int32 WsChild = 0x40000000;
-        public const Int32 WsClipSiblings = 0x04000000;
-        public const Int32 WsVisible = 0x10000000;
-        public const Int32 WsGroup = 0x00020000;
-        public const Int32 SsNotify = 0x00000100;
+        public const int DsSetFont = 0x00000040;
+        public const int Ds3dLook = 0x00000004;
+        public const int DsControl = 0x00000400;
+        public const int WsChild = 0x40000000;
+        public const int WsClipSiblings = 0x04000000;
+        public const int WsVisible = 0x10000000;
+        public const int WsGroup = 0x00020000;
+        public const int SsNotify = 0x00000100;
     };
 
     /// <summary>
@@ -1566,8 +1566,8 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     internal class ExStyle
     {
-        public const Int32 WsExNoParentNotify = 0x00000004;
-        public const Int32 WsExControlParent = 0x00010000;
+        public const int WsExNoParentNotify = 0x00000004;
+        public const int WsExControlParent = 0x00010000;
     };
 
     /// <summary>
@@ -1579,29 +1579,29 @@ namespace OpenLiveWriter.Interop.Windows
     public class DlgTemplate
     {
         // The dialog template - see documentation for DLGTEMPLATE
-        public Int32 style = DlgStyle.Ds3dLook | DlgStyle.DsControl | DlgStyle.WsChild | DlgStyle.WsClipSiblings | DlgStyle.SsNotify;
-        public Int32 extendedStyle = ExStyle.WsExControlParent;
-        public Int16 numItems = 1;
-        public Int16 x = 0;
-        public Int16 y = 0;
-        public Int16 cx = 0;
-        public Int16 cy = 0;
-        public Int16 reservedMenu = 0;
-        public Int16 reservedClass = 0;
-        public Int16 reservedTitle = 0;
+        public int style = DlgStyle.Ds3dLook | DlgStyle.DsControl | DlgStyle.WsChild | DlgStyle.WsClipSiblings | DlgStyle.SsNotify;
+        public int extendedStyle = ExStyle.WsExControlParent;
+        public short numItems = 1;
+        public short x = 0;
+        public short y = 0;
+        public short cx = 0;
+        public short cy = 0;
+        public short reservedMenu = 0;
+        public short reservedClass = 0;
+        public short reservedTitle = 0;
 
         // Single dlg item, must be dword-aligned - see documentation for DLGITEMTEMPLATE
-        public Int32 itemStyle = DlgStyle.WsChild;
-        public Int32 itemExtendedStyle = ExStyle.WsExNoParentNotify;
-        public Int16 itemX = 0;
-        public Int16 itemY = 0;
-        public Int16 itemCx = 0;
-        public Int16 itemCy = 0;
-        public Int16 itemId = 0;
-        public UInt16 itemClassHdr = 0xffff;	// we supply a constant to indicate the class of this control
-        public Int16 itemClass = 0x0082;	// static label control
-        public Int16 itemText = 0x0000;	// no text for this control
-        public Int16 itemData = 0x0000;	// no creation data for this control
+        public int itemStyle = DlgStyle.WsChild;
+        public int itemExtendedStyle = ExStyle.WsExNoParentNotify;
+        public short itemX = 0;
+        public short itemY = 0;
+        public short itemCx = 0;
+        public short itemCy = 0;
+        public short itemId = 0;
+        public ushort itemClassHdr = 0xffff;	// we supply a constant to indicate the class of this control
+        public short itemClass = 0x0082;	// static label control
+        public short itemText = 0x0000;	// no text for this control
+        public short itemData = 0x0000;	// no creation data for this control
     };
 
     /// <summary>
@@ -1613,16 +1613,16 @@ namespace OpenLiveWriter.Interop.Windows
         //this was original definition but it errors in corext due asmmeta storing it as negative value
         //private const UInt16 First =			unchecked((UInt16)((UInt16)0 - (UInt16)601));
         //this is the same value
-        private const Int16 First = -601;
+        private const short First = -601;
 
-        public const Int16 InitDone = (First - 0x0000);
-        public const Int16 SelChange = (First - 0x0001);
-        public const Int16 FolderChange = (First - 0x0002);
-        public const Int16 ShareViolation = (First - 0x0003);
-        public const Int16 Help = (First - 0x0004);
-        public const Int16 FileOk = (First - 0x0005);
-        public const Int16 TypeChange = (First - 0x0006);
-        public const Int16 IncludeItem = (First - 0x0007);
+        public const short InitDone = (First - 0x0000);
+        public const short SelChange = (First - 0x0001);
+        public const short FolderChange = (First - 0x0002);
+        public const short ShareViolation = (First - 0x0003);
+        public const short Help = (First - 0x0004);
+        public const short FileOk = (First - 0x0005);
+        public const short TypeChange = (First - 0x0006);
+        public const short IncludeItem = (First - 0x0007);
     }
 
     /// <summary>
@@ -1631,11 +1631,11 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public class CommonDlgMessage
     {
-        private const UInt16 User = 0x0400;
-        private const UInt16 First = User + 100;
+        private const ushort User = 0x0400;
+        private const ushort First = User + 100;
 
-        public const UInt16 GetFilePath = First + 0x0001;
-        public const UInt16 GetFolderPath = First + 0x0002;
+        public const ushort GetFilePath = First + 0x0001;
+        public const ushort GetFolderPath = First + 0x0002;
     };
 
     /// <summary>
@@ -1647,9 +1647,9 @@ namespace OpenLiveWriter.Interop.Windows
         [FieldOffset(0)]
         public IntPtr hWndFrom;
         [FieldOffset(4)]
-        public UInt16 idFrom;
+        public ushort idFrom;
         [FieldOffset(8)]
-        public UInt16 code;
+        public ushort code;
     };
 
     /// <summary>

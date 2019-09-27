@@ -21,7 +21,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
         public override void Apply(MshtmlMarkupServices markupServices, MarkupRange markupRange, MshtmlCoreCommandSet commands)
         {
-            string fontSizeAttribute = String.Format(CultureInfo.InvariantCulture, "style=\"font-size:{0:F1}pt\"", FontSizeInPoints);
+            string fontSizeAttribute = string.Format(CultureInfo.InvariantCulture, "style=\"font-size:{0:F1}pt\"", FontSizeInPoints);
             ElementFactory factory = () => markupServices.CreateElement(_ELEMENT_TAG_ID.TAGID_FONT, fontSizeAttribute);
             WrapInElement(factory, markupServices, markupRange);
         }

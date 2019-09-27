@@ -164,7 +164,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 return false;
 
             string clickCommand = element.getAttribute(CLICK_HANDLER, 0) as string;
-            return !String.IsNullOrEmpty(clickCommand);
+            return !string.IsNullOrEmpty(clickCommand);
         }
 
         protected override void UpdateCursor(bool selected, int inEvtDispId, IHTMLEventObj pIEventObj)
@@ -205,7 +205,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     // Is there a click handler to execute?
                     string clickCommand = pIEventObj.srcElement.getAttribute(CLICK_HANDLER, 0) as string;
-                    if (!String.IsNullOrEmpty(clickCommand))
+                    if (!string.IsNullOrEmpty(clickCommand))
                     {
                         try
                         {
@@ -361,7 +361,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         // WinLive 233200: JA-JP: photoalbum is created with subject instead of album name when album name specified in email body contains Japanese only
                         // We don't get key press events with IME input for languages such as Japanese that employ IME composition
                         // (e.g. multiple keystrokes to generate a single character).
-                        if (String.Compare("COMPOSITION", args.EventObj.type, StringComparison.OrdinalIgnoreCase) == 0)
+                        if (string.Compare("COMPOSITION", args.EventObj.type, StringComparison.OrdinalIgnoreCase) == 0)
                             PersistSelectedEditField();
                         break;
                     case DISPID_HTMLELEMENTEVENTS2.ONKEYPRESS:

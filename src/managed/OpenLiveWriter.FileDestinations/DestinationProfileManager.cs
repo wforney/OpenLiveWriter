@@ -42,7 +42,7 @@ namespace OpenLiveWriter.FileDestinations
         /// </summary>
         /// <param name="key">The name of the registry key to define the profile under.</param>
         /// <returns></returns>
-        public DestinationProfile loadProfile(String key)
+        public DestinationProfile loadProfile(string key)
         {
             SettingsPersisterHelper settings = getProfileSettings(key);
 
@@ -78,7 +78,7 @@ namespace OpenLiveWriter.FileDestinations
         /// </summary>
         /// <param name="key"></param>
         /// <param name="profile"></param>
-        public void saveProfile(String key, DestinationProfile profile)
+        public void saveProfile(string key, DestinationProfile profile)
         {
             SettingsPersisterHelper settings = getProfileSettings(key);
             profile.Id = key;

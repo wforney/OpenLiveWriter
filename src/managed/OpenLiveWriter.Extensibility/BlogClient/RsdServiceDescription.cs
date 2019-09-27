@@ -9,10 +9,10 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 {
     public class RsdApi
     {
-        public string Name = String.Empty;
+        public string Name = string.Empty;
         public bool Preferred = false;
-        public string ApiLink = String.Empty;
-        public string BlogId = String.Empty;
+        public string ApiLink = string.Empty;
+        public string BlogId = string.Empty;
         public IDictionary Settings = new Hashtable();
     }
 
@@ -24,27 +24,27 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         /// <summary>
         /// Source URL for for this service description
         /// </summary>
-        public string SourceUrl = String.Empty;
+        public string SourceUrl = string.Empty;
 
         /// <summary>
         /// Title of homepage this service is associated with
         /// </summary>
-        public string HomepageTitle = String.Empty;
+        public string HomepageTitle = string.Empty;
 
         /// <summary>
         /// Link to homepage this service is associated with
         /// </summary>
-        public string HomepageLink = String.Empty;
+        public string HomepageLink = string.Empty;
 
         /// <summary>
         /// Name of back-end posting engine (e.g. Blogger, Typepad, etc.)
         /// </summary>
-        public string EngineName = String.Empty;
+        public string EngineName = string.Empty;
 
         /// <summary>
         /// Url for back-end posting engine (e.g. www.typepad.com)
         /// </summary>
-        public string EngineLink = String.Empty;
+        public string EngineLink = string.Empty;
 
         /// <summary>
         /// Supported Apis

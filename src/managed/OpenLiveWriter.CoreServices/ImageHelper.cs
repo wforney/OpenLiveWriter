@@ -69,7 +69,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 // reformat error for contextual clarity
                 throw new Exception(
-                    String.Format(CultureInfo.CurrentCulture, "Error attempting to download bitmap from url {0}: {1}", bitmapUrl, ex.Message), ex);
+                    string.Format(CultureInfo.CurrentCulture, "Error attempting to download bitmap from url {0}: {1}", bitmapUrl, ex.Message), ex);
             }
         }
 

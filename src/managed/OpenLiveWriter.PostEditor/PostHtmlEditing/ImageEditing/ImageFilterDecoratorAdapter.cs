@@ -109,7 +109,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
             catch (Exception e)
             {
-                Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Failed to apply image decorator [{0}]: {1}", decorator.DecoratorName, e.ToString()));
+                Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Failed to apply image decorator [{0}]: {1}", decorator.DecoratorName, e.ToString()));
             }
         }
 

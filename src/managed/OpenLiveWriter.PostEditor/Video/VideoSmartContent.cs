@@ -43,7 +43,7 @@ namespace OpenLiveWriter.PostEditor.Video
             _content.Properties.SetString(VIDEO_AUTHOR, video.Url);
             _content.Properties.SetString(VIDEO_ID, video.Id);
             _content.Properties.SetString(VIDEO_EMBED, video.Embed);
-            _content.Properties.SetString(VIDEO_PROVIDER_ID, (video.Provider != null ? video.Provider.ServiceId : String.Empty));
+            _content.Properties.SetString(VIDEO_PROVIDER_ID, (video.Provider != null ? video.Provider.ServiceId : string.Empty));
             _content.Properties.SetString(VIDEO_URL, video.Url);
             _content.Properties.SetString(VIDEO_THUMBNAIL_URL, video.ThumbnailUrl);
             _content.Properties.SetBoolean(VIDEO_HAS_PROGRESS, video.IsUploading);
@@ -76,9 +76,9 @@ namespace OpenLiveWriter.PostEditor.Video
 
         public void UpdateVideoSnapshot(Bitmap videoSnapshot)
         {
-            string jpegImageFile = _content.Properties.GetString(VIDEO_PUBLISH_IMAGE, String.Empty);
+            string jpegImageFile = _content.Properties.GetString(VIDEO_PUBLISH_IMAGE, string.Empty);
 
-            if (jpegImageFile == String.Empty)
+            if (jpegImageFile == string.Empty)
             {
                 jpegImageFile = MakeVideoFileName() + ".jpg";
                 _content.Properties.SetString(VIDEO_PUBLISH_IMAGE, jpegImageFile);
@@ -94,7 +94,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_ID, String.Empty);
+                return _content.Properties.GetString(VIDEO_ID, string.Empty);
             }
             set
             {
@@ -106,7 +106,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_PERMISSION, String.Empty);
+                return _content.Properties.GetString(VIDEO_PERMISSION, string.Empty);
             }
             set
             {
@@ -118,7 +118,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_URL, String.Empty).Replace(VideoProvider.VIDEOID, Id);
+                return _content.Properties.GetString(VIDEO_URL, string.Empty).Replace(VideoProvider.VIDEOID, Id);
             }
         }
 
@@ -126,7 +126,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_EMBED, String.Empty);
+                return _content.Properties.GetString(VIDEO_EMBED, string.Empty);
             }
         }
 
@@ -134,7 +134,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return VideoProvider.GenerateEmbedHtml(_content.Properties.GetString(VIDEO_EDITOR_FORMAT, String.Empty), Id, HtmlSize);
+                return VideoProvider.GenerateEmbedHtml(_content.Properties.GetString(VIDEO_EDITOR_FORMAT, string.Empty), Id, HtmlSize);
             }
             set
             {
@@ -156,7 +156,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_PROVIDER_ID, String.Empty);
+                return _content.Properties.GetString(VIDEO_PROVIDER_ID, string.Empty);
             }
         }
 
@@ -176,7 +176,7 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             get
             {
-                return _content.Properties.GetString(VIDEO_CAPTION, String.Empty);
+                return _content.Properties.GetString(VIDEO_CAPTION, string.Empty);
             }
             set
             {
@@ -190,7 +190,7 @@ namespace OpenLiveWriter.PostEditor.Video
             get
             {
                 VideoAspectRatioType aspectRatioType = VideoAspectRatioType.Unknown;
-                string aspectRatioString = _content.Properties.GetString(VIDEO_ASPECT_RATIO, String.Empty);
+                string aspectRatioString = _content.Properties.GetString(VIDEO_ASPECT_RATIO, string.Empty);
 
                 if (Enum.IsDefined(typeof(VideoAspectRatioType), aspectRatioString))
                 {
@@ -309,7 +309,7 @@ namespace OpenLiveWriter.PostEditor.Video
             string status = GenerateStatus(((IContentSourceSite)publishingContext).DialogOwner, ((IContentSourceSite)publishingContext).AccountId);
 
             // If the status has changed we need to show it to the user
-            if (status != String.Empty && status != _content.Properties.GetString(VIDEO_STATUS, null))
+            if (status != string.Empty && status != _content.Properties.GetString(VIDEO_STATUS, null))
             {
                 using (Bitmap image = CreateMockPlayer(status))
                 {
@@ -372,7 +372,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 {
                     // Make a video for the publisher to create a watcher for
                     Video video = new Video(_content.Properties.GetString(VIDEO_ID, Guid.Empty.ToString()),
-                                            _content.Properties.GetString(VIDEO_URL, String.Empty),
+                                            _content.Properties.GetString(VIDEO_URL, string.Empty),
                                             EmbedFormat,
                                             EditorFormat,
                                             null,
@@ -428,7 +428,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 // return the status message
                 return publishStatus.DisplayMessage;
             }
-            return String.Empty;
+            return string.Empty;
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace OpenLiveWriter.PostEditor.Video
             // Remove the place holder on success
             if (!hasError)
             {
-                RemoveBitmap(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, String.Empty));
+                RemoveBitmap(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, string.Empty));
                 _content.Properties.Remove(VIDEO_PUBLISH_IMAGE);
             }
 
@@ -468,7 +468,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 HtmlUtils.EscapeEntities(VIDEO_CAPTION)
             );
 
-            if (Caption.Trim() != String.Empty)
+            if (Caption.Trim() != string.Empty)
             {
                 metadataHtml.Append(string.Format(CultureInfo.InvariantCulture, "<div style=\"width:{0}px;clear:both;font-size:{1}\"{2}>", HtmlSize.Width, Res.Get(StringId.Plugin_Video_Caption_Size), editMode ? editModeAttributes : string.Empty));
                 metadataHtml.Append(Caption.Trim());
@@ -508,10 +508,10 @@ namespace OpenLiveWriter.PostEditor.Video
 
             if (VideoHasError() || VideoHasProgress())
             {
-                string videoImageFile = _content.Files.GetUri(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, String.Empty)).ToString();
+                string videoImageFile = _content.Files.GetUri(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, string.Empty)).ToString();
 
                 // Add the snapshot of the video
-                videoHtml.Append(String.Format(CultureInfo.InvariantCulture,
+                videoHtml.Append(string.Format(CultureInfo.InvariantCulture,
                                              "<div id=\"{3}\" style=\"float:left;width:{0}px;height:{1}px;background-image:url({2})\">",
                                              HtmlSize.Width,
                                              HtmlSize.Height,
@@ -523,7 +523,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 if (uriProgressPath != null)
                 {
                     // If the video is being published, show the progress animation on the placeholder, the gif is 32x32
-                    videoHtml.Append(String.Format(CultureInfo.InvariantCulture, @"<img style=""padding:0;margin:0;border-style:none"" title=""{2}"" src=""{0}"" alt=""{1}"" hspace=""{3}"" vspace=""{4}"" >",
+                    videoHtml.Append(string.Format(CultureInfo.InvariantCulture, @"<img style=""padding:0;margin:0;border-style:none"" title=""{2}"" src=""{0}"" alt=""{1}"" hspace=""{3}"" vspace=""{4}"" >",
                                      HtmlUtils.EscapeEntities(uriProgressPath.ToString()),
                                      HtmlUtils.EscapeEntities(Res.Get(StringId.Plugin_Video_Alt_Text)),
                                      _content.Properties.GetString(VIDEO_STATUS, null),
@@ -571,7 +571,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     UpdateVideoSnapshot(snapshot);
                 }
 
-                Uri uri = _content.Files.GetUri(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, String.Empty));
+                Uri uri = _content.Files.GetUri(_content.Properties.GetString(VIDEO_PUBLISH_IMAGE, string.Empty));
 
                 if (uri != null)
                     return uri.ToString();
@@ -590,7 +590,7 @@ namespace OpenLiveWriter.PostEditor.Video
             string output;
             if (VideoProviderManager.CheckForWhitelist(context.BlogProviderId, ProviderId, Id, HtmlSize, out output))
             {
-                return String.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", output);
+                return string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", output);
             }
 
             // generate 'smart' html based on the user's preference
@@ -601,7 +601,7 @@ namespace OpenLiveWriter.PostEditor.Video
             HtmlType htmlType;
 
             //determine player style
-            VideoPlayerStyle playerStyle = context.DetermineAppropriatePlayer(Url != String.Empty);
+            VideoPlayerStyle playerStyle = context.DetermineAppropriatePlayer(Url != string.Empty);
             switch (playerStyle)
             {
                 case VideoPlayerStyle.Automatic:

@@ -518,25 +518,25 @@ namespace OpenLiveWriter.ApplicationFramework
             }
             else if (key == PropertyKeys.Label)
             {
-                value.SetString(LabelTitle ?? String.Empty);
+                value.SetString(LabelTitle ?? string.Empty);
             }
             else if (key == PropertyKeys.LabelDescription)
             {
-                value.SetString(LabelDescription ?? String.Empty);
+                value.SetString(LabelDescription ?? string.Empty);
             }
             else if (key == PropertyKeys.TooltipTitle)
             {
                 // In order to eliminate some duplicate strings in our localization we will
                 // return the LabelTitle for the TooltipTitle if the TooltipTitle is missing in the markup.
-                value.SetString(TooltipTitle ?? (LabelTitle ?? String.Empty));
+                value.SetString(TooltipTitle ?? (LabelTitle ?? string.Empty));
             }
             else if (key == PropertyKeys.TooltipDescription)
             {
-                value.SetString(TooltipDescription ?? String.Empty);
+                value.SetString(TooltipDescription ?? string.Empty);
             }
             else if (key == PropertyKeys.Keytip)
             {
-                value.SetString(Keytip ?? String.Empty);
+                value.SetString(Keytip ?? string.Empty);
             }
             else if (key == PropertyKeys.ContextAvailable)
             {

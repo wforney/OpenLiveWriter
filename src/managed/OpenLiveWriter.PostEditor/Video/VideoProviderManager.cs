@@ -46,7 +46,7 @@ namespace OpenLiveWriter.PostEditor.Video
             VideoProvider[] providers = VideoProviderHelper.VideoProviders;
             foreach (VideoProvider provider in providers)
             {
-                if (String.Compare(provider.ServiceId, id, true, CultureInfo.InvariantCulture) == 0)
+                if (string.Compare(provider.ServiceId, id, true, CultureInfo.InvariantCulture) == 0)
                     return provider;
             }
             return null;
@@ -128,7 +128,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 string embed;
                 Size videoSize = ParseEmbed(input, 425, 350, out embed);
                 return new Video(Guid.NewGuid().ToString(),
-                                 String.Empty,
+                                 string.Empty,
                                  embed,
                                  embed,
                                  null,
@@ -160,7 +160,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     if (provider.IsSoapbox)
                         return provider.AppId;
                 }
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -175,17 +175,17 @@ namespace OpenLiveWriter.PostEditor.Video
                 {
                     //change the embed to be that special one
                     string pattern = list.HasPattern(videoProviderId);
-                    if (pattern != null && pattern != String.Empty)
+                    if (pattern != null && pattern != string.Empty)
                     {
                         pattern = pattern.Replace("{id}", "{0}");
                         pattern = pattern.Replace("{width}", videoSize.Width.ToString(CultureInfo.InvariantCulture));
                         pattern = pattern.Replace("{height}", videoSize.Height.ToString(CultureInfo.InvariantCulture));
-                        output = String.Format(CultureInfo.InvariantCulture, pattern, videoId);
+                        output = string.Format(CultureInfo.InvariantCulture, pattern, videoId);
                         return true;
                     }
                 }
             }
-            output = String.Empty;
+            output = string.Empty;
             return false;
         }
 
@@ -204,7 +204,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
         public bool MatchesBlogProviderId(string testBlogProviderId)
         {
-            if (String.Compare(_blogProviderId, testBlogProviderId, true, CultureInfo.InvariantCulture) == 0)
+            if (string.Compare(_blogProviderId, testBlogProviderId, true, CultureInfo.InvariantCulture) == 0)
                 return true;
             return false;
         }

@@ -142,7 +142,7 @@ namespace OpenLiveWriter.HtmlEditor
                         }
                         else if (IsFontableElement(currentElement) && HTMLElementHelper.IsBold((IHTMLElement2)currentElement) != turnBold)
                         {
-                            currentElement.style.fontWeight = String.Empty;
+                            currentElement.style.fontWeight = string.Empty;
                         }
                     }
 
@@ -202,7 +202,7 @@ namespace OpenLiveWriter.HtmlEditor
 
             if (wrapFont)
             {
-                string weightAttribute = String.Format(CultureInfo.InvariantCulture, "style=\"font-weight: {0}\"", turnBold ? "bold" : "normal");
+                string weightAttribute = string.Format(CultureInfo.InvariantCulture, "style=\"font-weight: {0}\"", turnBold ? "bold" : "normal");
                 HtmlStyleHelper.WrapRangeInElement(markupServices, currentRange, _ELEMENT_TAG_ID.TAGID_FONT, weightAttribute);
             }
         }

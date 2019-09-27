@@ -152,7 +152,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             string homepageUrl = HomepageUrl;
 
-            if (homepageUrl == String.Empty)
+            if (homepageUrl == string.Empty)
             {
                 ShowValidationError(textBoxHomepageUrl, MessageId.HomepageUrlRequired);
                 return false;
@@ -164,13 +164,13 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return false;
             }
 
-            if (textBoxUsername.Text.Trim() == String.Empty)
+            if (textBoxUsername.Text.Trim() == string.Empty)
             {
                 ShowValidationError(textBoxUsername, MessageId.UsernameAndPasswordRequired);
                 return false;
             }
 
-            if (textBoxPassword.Text.Trim() == String.Empty)
+            if (textBoxPassword.Text.Trim() == string.Empty)
             {
                 ShowValidationError(textBoxPassword, MessageId.UsernameAndPasswordRequired);
                 return false;

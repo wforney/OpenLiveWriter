@@ -170,7 +170,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         public AuthorInfo(string id, string name)
         {
             _id = id;
-            if (name != String.Empty)
+            if (name != string.Empty)
                 _name = name;
             else
                 _name = _id;

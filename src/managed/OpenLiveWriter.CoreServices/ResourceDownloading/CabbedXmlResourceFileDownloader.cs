@@ -44,7 +44,7 @@ namespace OpenLiveWriter.CoreServices.ResourceDownloading
 
             // calculate the full resource path name
             string assemblyResourcePath =
-                String.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, name);
+                string.Format(CultureInfo.InvariantCulture, "{0}.{1}", assembly.GetName().Name, name);
 
             // return the resource stream
             Stream stream = assembly.GetManifestResourceStream(assemblyResourcePath);

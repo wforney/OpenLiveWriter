@@ -296,7 +296,7 @@ namespace OpenLiveWriter.HtmlEditor
         public override void OnKeyPress(HtmlEventArgs e)
         {
             char ch = (char)e.htmlEvt.keyCode;
-            if (!Char.IsLetterOrDigit(ch))
+            if (!char.IsLetterOrDigit(ch))
             {
                 // Do not commit if we're backing in a correct region
                 if ((Keys)e.htmlEvt.keyCode == Keys.Back && !_editor.IsSelectionMisspelled())

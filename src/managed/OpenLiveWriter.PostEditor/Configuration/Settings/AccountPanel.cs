@@ -105,7 +105,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         public override bool PrepareSave(SwitchToPanel switchToPanel)
         {
             // validate that we have a post api url
-            if (WeblogName == String.Empty)
+            if (WeblogName == string.Empty)
             {
                 switchToPanel();
                 DisplayMessage.Show(MessageId.RequiredFieldOmitted, FindForm(), TextHelper.StripAmpersands(Res.Get(StringId.WeblogName)));

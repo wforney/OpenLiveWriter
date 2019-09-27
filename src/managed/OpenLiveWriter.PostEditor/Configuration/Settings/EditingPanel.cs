@@ -50,7 +50,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             UpdateStrings();
             PanelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Settings.Images.EditingPanelBitmap.png");
 
-            labelEditUsingStyle.Text = String.Format(CultureInfo.CurrentCulture, labelEditUsingStyle.Text, ApplicationEnvironment.ProductName);
+            labelEditUsingStyle.Text = string.Format(CultureInfo.CurrentCulture, labelEditUsingStyle.Text, ApplicationEnvironment.ProductName);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -92,7 +92,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 : useRTL;
 
             // The default setting only comes from the homepage or manifest
-            comboBoxRTL.Items.Add(String.Format(CultureInfo.CurrentUICulture, Res.Get(StringId.EditingRTLDefault), (useRTL == true ? Res.Get(StringId.EditingRTLYes) : Res.Get(StringId.EditingRTLNo))));
+            comboBoxRTL.Items.Add(string.Format(CultureInfo.CurrentUICulture, Res.Get(StringId.EditingRTLDefault), (useRTL == true ? Res.Get(StringId.EditingRTLYes) : Res.Get(StringId.EditingRTLNo))));
             comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLYes));
             comboBoxRTL.Items.Add(Res.Get(StringId.EditingRTLNo));
 

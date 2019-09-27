@@ -21,7 +21,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         // Overrides shared canvas logic with respect to the given property key.
         // IUICommandHandler::UpdateProperty will reflect any active overrides
         [PreserveSig]
-        Int32 OverrideProperty(UInt32 commandId,
+        int OverrideProperty(uint commandId,
                                [In] ref PropertyKey key,
                                [In, Optional] PropVariantRef overrideValue);
 
@@ -30,7 +30,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         // Returns S_FALSE if override was not active.
         // Returns E_INVALIDARG for an unsupported commandId and/or property key.
         [PreserveSig]
-        Int32 CancelOverride(UInt32 commandId,
+        int CancelOverride(uint commandId,
                              [In] ref PropertyKey key);
     }
 

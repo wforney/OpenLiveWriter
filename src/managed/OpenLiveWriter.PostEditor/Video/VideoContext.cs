@@ -16,7 +16,7 @@ namespace OpenLiveWriter.PostEditor.Video
     {
         private SupportsFeature _embeddable = SupportsFeature.Unknown;
         private SupportsFeature _scriptable = SupportsFeature.Unknown;
-        private string _blogProviderId = String.Empty;
+        private string _blogProviderId = string.Empty;
         private IPublishingContext _context;
 
         public VideoContext()

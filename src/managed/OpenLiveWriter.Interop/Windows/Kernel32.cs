@@ -33,13 +33,13 @@ namespace OpenLiveWriter.Interop.Windows
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern void ExitProcess(
-            UInt32 uExitCode
+            uint uExitCode
             );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool TerminateProcess(
             IntPtr hProcess,
-            UInt32 uExitCode
+            uint uExitCode
             );
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -332,7 +332,7 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern int GetTempFileName(
             string lpPathName,
             string lpPrefixString,
-            Int32 uUnique,
+            int uUnique,
             StringBuilder lpTempFileName);
 
         [DllImport("Kernel32.dll", SetLastError = true)]

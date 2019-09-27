@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.Video
         private bool _isUserDirty = false;
         private string _selectedPermission;
 
-        public VideoPublishSource(String selectedPermission)
+        public VideoPublishSource(string selectedPermission)
         {
             InitializeComponent();
             _selectedPermission = selectedPermission;
@@ -141,7 +141,7 @@ namespace OpenLiveWriter.PostEditor.Video
             // Add the categories for the publisher
             List<CategoryItem> categoryList = _currentPublisher.Categories;
             comboBoxCategory.Items.Clear();
-            comboBoxCategory.Items.Add(new CategoryItem(Guid.Empty.ToString(), String.Empty));
+            comboBoxCategory.Items.Add(new CategoryItem(Guid.Empty.ToString(), string.Empty));
             if (categoryList.Count > 0)
             {
                 foreach (CategoryItem c in categoryList)
@@ -174,7 +174,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
         private static void LaunchUrl(string link)
         {
-            if (link != null && link != String.Empty)
+            if (link != null && link != string.Empty)
             {
                 try
                 {
@@ -216,22 +216,22 @@ namespace OpenLiveWriter.PostEditor.Video
                     string seperator = Res.Get(StringId.Plugin_Video_Publish_Filename_Seperator);
 
                     // Try to fill in as many fields as we can
-                    if (!String.IsNullOrEmpty(seperator))
+                    if (!string.IsNullOrEmpty(seperator))
                     {
-                        if (txtTitle.Text == String.Empty || !_isUserDirty)
+                        if (txtTitle.Text == string.Empty || !_isUserDirty)
                             txtTitle.Text = baseWords.Replace(seperator, " ");
-                        if (txtDescription.Text == String.Empty || !_isUserDirty)
+                        if (txtDescription.Text == string.Empty || !_isUserDirty)
                             txtDescription.Text = baseWords.Replace(seperator, " ");
-                        if (txtTags.Text == String.Empty || !_isUserDirty)
+                        if (txtTags.Text == string.Empty || !_isUserDirty)
                             txtTags.Text = baseWords.Replace(seperator, " ");
                     }
                     else
                     {
-                        if (txtTitle.Text == String.Empty || !_isUserDirty)
+                        if (txtTitle.Text == string.Empty || !_isUserDirty)
                             txtTitle.Text = baseWords;
-                        if (txtDescription.Text == String.Empty || !_isUserDirty)
+                        if (txtDescription.Text == string.Empty || !_isUserDirty)
                             txtDescription.Text = baseWords;
-                        if (txtTags.Text == String.Empty || !_isUserDirty)
+                        if (txtTags.Text == string.Empty || !_isUserDirty)
                             txtTags.Text = baseWords;
                     }
 
@@ -264,10 +264,10 @@ namespace OpenLiveWriter.PostEditor.Video
 
             // Make sure they filled in all the fields
             if (((CategoryItem)comboBoxCategory.SelectedItem).CategoryId == Guid.Empty.ToString() ||
-                title == String.Empty ||
-                description == String.Empty ||
-                tags == String.Empty ||
-                filePath == String.Empty)
+                title == string.Empty ||
+                description == string.Empty ||
+                tags == string.Empty ||
+                filePath == string.Empty)
             {
                 DisplayMessage.Show(MessageId.VideoRequiredFields, ParentForm, ApplicationEnvironment.ProductNameQualified);
                 return false;

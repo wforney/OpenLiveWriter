@@ -226,7 +226,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 foreach (char unsafeChar in UNSAFE_URL_CHARS)
                 {
-                    string unsafeCharStr = unsafeChar + String.Empty;
+                    string unsafeCharStr = unsafeChar + string.Empty;
                     encodedUrl = encodedUrl.Replace(unsafeCharStr, HttpUtility.UrlEncode(unsafeCharStr)); //URLPathEncode doesn't encode # signs.
                 }
             }
@@ -253,7 +253,7 @@ namespace OpenLiveWriter.CoreServices
             if (parts.Length > 2)
             {
 
-                return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", parts[parts.Length - 2], parts[parts.Length - 1]);
+                return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", parts[parts.Length - 2], parts[parts.Length - 1]);
             }
             else
                 return uri.Host;
@@ -527,7 +527,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string AppendQueryParameters(string url, string[] parameters)
         {
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
                 return url;
 
             Debug.Assert(IsUrl(url));
@@ -535,7 +535,7 @@ namespace OpenLiveWriter.CoreServices
             Uri uri = new Uri(url);
 
             string appendedUrl = url;
-            bool queryWasEmpty = String.IsNullOrEmpty(uri.Query);
+            bool queryWasEmpty = string.IsNullOrEmpty(uri.Query);
             if (parameters.Length > 0)
             {
                 if (queryWasEmpty)
@@ -544,9 +544,9 @@ namespace OpenLiveWriter.CoreServices
                     appendedUrl += "&";
             }
 
-            Debug.Assert(!new List<string>(parameters).Exists((p) => String.IsNullOrEmpty(p)));
+            Debug.Assert(!new List<string>(parameters).Exists((p) => string.IsNullOrEmpty(p)));
 
-            appendedUrl += String.Join("&", parameters);
+            appendedUrl += string.Join("&", parameters);
 
             Debug.Assert(IsUrl(appendedUrl));
 
@@ -564,7 +564,7 @@ namespace OpenLiveWriter.CoreServices
         public static string GetBaseUrl(string url)
         {
             if (url == null || url.Length == 0)
-                return String.Empty;
+                return string.Empty;
 
             try
             {
@@ -582,7 +582,7 @@ namespace OpenLiveWriter.CoreServices
         public static string GetServerPath(string url)
         {
             if (url == null || url.Length == 0)
-                return String.Empty;
+                return string.Empty;
 
             Uri uri = new Uri(url);
             return uri.AbsolutePath;
@@ -598,7 +598,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string GetBasePathUrl(string url)
         {
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
                 return string.Empty;
 
             try
@@ -671,10 +671,10 @@ namespace OpenLiveWriter.CoreServices
         /// <returns>null, if paramName does not exist in query string</returns>
         public static string GetQueryParamValue(string url, string paramName)
         {
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
                 throw new ArgumentException("Invalid url.");
 
-            if (String.IsNullOrEmpty(paramName))
+            if (string.IsNullOrEmpty(paramName))
                 throw new ArgumentException("Invalid parameter name.");
 
             Hashtable queryParams = GetQueryParams(url);
@@ -777,7 +777,7 @@ namespace OpenLiveWriter.CoreServices
                     baseUrl = baseUrl.Split('!')[0];
                 }
 
-                relativeUrl = String.Format(CultureInfo.InvariantCulture, "{0}!{1}", baseUrl, relativeUrl);
+                relativeUrl = string.Format(CultureInfo.InvariantCulture, "{0}!{1}", baseUrl, relativeUrl);
             }
             return relativeUrl;
         }

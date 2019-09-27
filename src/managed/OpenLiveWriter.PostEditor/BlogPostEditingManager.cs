@@ -141,7 +141,7 @@ namespace OpenLiveWriter.PostEditor
 
             // trim leading and trailing whitespace from the post
             string contents = publishingPost.Contents;
-            if (contents != String.Empty)
+            if (contents != string.Empty)
             {
                 try
                 {
@@ -324,7 +324,7 @@ namespace OpenLiveWriter.PostEditor
                     {
                         if (ApplicationDiagnostics.AutomationMode || ApplicationDiagnostics.TestMode)
                         {
-                            Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "IBlogPostEditor Dirty {0}", postEditor));
+                            Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "IBlogPostEditor Dirty {0}", postEditor));
                         }
                         return true;
                     }
@@ -613,7 +613,7 @@ namespace OpenLiveWriter.PostEditor
             }
 
             // prompt the user to confirm deletion
-            string title = BlogPost.Title != String.Empty ? BlogPost.Title : BlogPost.IsPage ? PostInfo.UntitledPage : PostInfo.UntitledPost;
+            string title = BlogPost.Title != string.Empty ? BlogPost.Title : BlogPost.IsPage ? PostInfo.UntitledPage : PostInfo.UntitledPost;
             string type = BlogPost.IsPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower);
             if (DisplayMessage.Show(MessageId.ConfirmDeleteDraft, _mainFrameWindow, type, title) == DialogResult.Yes)
             {
@@ -647,7 +647,7 @@ namespace OpenLiveWriter.PostEditor
 
         public void ViewPost()
         {
-            if (BlogPost.IsPage && BlogPost.Permalink != String.Empty)
+            if (BlogPost.IsPage && BlogPost.Permalink != string.Empty)
                 ShellHelper.LaunchUrl(BlogPost.Permalink);
             else
                 ShellHelper.LaunchUrl(Blog.HomepageUrl);
@@ -703,7 +703,7 @@ namespace OpenLiveWriter.PostEditor
         {
             // calculate whether the user has a "blank" unsaved post
             bool currentPostIsEmptyAndUnsaved =
-                ((BlogPost != null) && BlogPost.IsNew && (BlogPost.Contents == null || BlogPost.Contents == String.Empty)) &&
+                ((BlogPost != null) && BlogPost.IsNew && (BlogPost.Contents == null || BlogPost.Contents == string.Empty)) &&
                  !LocalFile.IsSaved && !PostIsDirty;
 
             // edge case: current post is empty and unsaved and this is a new post,
@@ -988,7 +988,7 @@ namespace OpenLiveWriter.PostEditor
                     SaveToRecentPosts();
 
                     // notify editors that we successfully published
-                    Debug.Assert(_lastPublishingResult.PostResult.PostId != String.Empty);
+                    Debug.Assert(_lastPublishingResult.PostResult.PostId != string.Empty);
                     foreach (IBlogPostEditor postEditor in _postEditors)
                         postEditor.OnPublishSucceeded(BlogPost, _lastPublishingResult.PostResult);
 
@@ -1527,13 +1527,13 @@ namespace OpenLiveWriter.PostEditor
             get
             {
                 // create on demand based on the title of the post
-                if (_serverSupportingFileDirectory == String.Empty)
+                if (_serverSupportingFileDirectory == string.Empty)
                 {
                     // convert title to usable directory name
                     string baseDirName = SupportingFileStorage.CleanPathForServer(BlogPost.Title);
 
                     // append seconds since midnight as an additional randomizer to make conflicts less likely
-                    _serverSupportingFileDirectory = String.Format(CultureInfo.InvariantCulture, "{0}_{1}", baseDirName, (DateTime.Now.TimeOfDay.Ticks / TimeSpan.TicksPerSecond).ToString("X", CultureInfo.InvariantCulture));
+                    _serverSupportingFileDirectory = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", baseDirName, (DateTime.Now.TimeOfDay.Ticks / TimeSpan.TicksPerSecond).ToString("X", CultureInfo.InvariantCulture));
                 }
                 return _serverSupportingFileDirectory;
             }
@@ -1630,7 +1630,7 @@ namespace OpenLiveWriter.PostEditor
         private Blog _blog;
         private BlogPost _blogPost;
         private BlogPostSupportingFileStorage _supportingFileStorage;
-        private string _serverSupportingFileDirectory = String.Empty;
+        private string _serverSupportingFileDirectory = string.Empty;
         private BlogPostImageDataList _imageDataList;
         private BlogPostExtensionDataList _extensionDataList;
         private ISupportingFileService _fileService;

@@ -180,7 +180,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 element.style.display = "inline";
             }
 
-            string marginString = String.Format(CultureInfo.InvariantCulture, "{0}{4} {1} {2}{4} {3}",
+            string marginString = string.Format(CultureInfo.InvariantCulture, "{0}{4} {1} {2}{4} {3}",
                 margin.Top, marginRight, margin.Bottom, marginLeft, unitSize);
             return marginString;
         }
@@ -205,13 +205,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
             Match match = marginRegex.Match(htmlString);
             string pixelCount = match.Groups["pixels"].Value;
-            if (pixelCount == null || pixelCount == String.Empty)
+            if (pixelCount == null || pixelCount == string.Empty)
                 return 0;
             else
             {
                 try
                 {
-                    return Int32.Parse(pixelCount, CultureInfo.InvariantCulture);
+                    return int.Parse(pixelCount, CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
@@ -240,7 +240,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0}{4} {1}{4} {2}{4} {3}{4}", Top, Right, Bottom, Left, SizeUnit.ToString().ToLower(CultureInfo.InvariantCulture));
+            return string.Format(CultureInfo.InvariantCulture, "{0}{4} {1}{4} {2}{4} {3}{4}", Top, Right, Bottom, Left, SizeUnit.ToString().ToLower(CultureInfo.InvariantCulture));
         }
     }
 }

@@ -48,7 +48,7 @@ namespace OpenLiveWriter.BlogClient
                 BeginTag tag = (BeginTag)ex.Element;
                 string src = tag.GetAttributeValue("src");
 
-                if (String.IsNullOrEmpty(src))
+                if (string.IsNullOrEmpty(src))
                 {
                     continue;
                 }

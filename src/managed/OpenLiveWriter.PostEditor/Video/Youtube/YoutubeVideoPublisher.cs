@@ -245,13 +245,13 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
         public YouTubeVideoUploader(string username, string authToken, string videoId, string urlAtomFormat)
             : base(null)
         {
-            _filePath = String.Empty;
+            _filePath = string.Empty;
             _authToken = authToken;
-            _title = String.Empty;
-            _description = String.Empty;
-            _tags = String.Empty;
-            _categoryId = String.Empty;
-            _permissionValue = String.Empty;
+            _title = string.Empty;
+            _description = string.Empty;
+            _tags = string.Empty;
+            _categoryId = string.Empty;
+            _permissionValue = string.Empty;
 
             _updateUrl = urlAtomFormat.Replace("{user}", username).Replace("{videoId", videoId);
         }
@@ -394,7 +394,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 }
 
                 _status = VideoPublishStatus.RemoteProcessing;
-                _message = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.VideoRemoteProcessing), Res.Get(StringId.Plugin_Video_Youtube_Publish_Name));
+                _message = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.VideoRemoteProcessing), Res.Get(StringId.Plugin_Video_Youtube_Publish_Name));
 
                 bool allow404 = true;
 
@@ -629,7 +629,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
             Write(Environment.NewLine, _requestBodyBottom);
         }
 
-        private void Write(String s, MemoryStream stream)
+        private void Write(string s, MemoryStream stream)
         {
             byte[] newText = _utf8NoBOMEncoding.GetBytes(s);
             stream.Write(newText, 0, newText.Length);

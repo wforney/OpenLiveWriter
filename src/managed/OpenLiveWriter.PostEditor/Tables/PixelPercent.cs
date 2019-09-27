@@ -127,11 +127,11 @@ namespace OpenLiveWriter.PostEditor.Tables
             switch (Units)
             {
                 case PixelPercentUnits.Percentage:
-                    return String.Format(provider, "{0}%", Value);
+                    return string.Format(provider, "{0}%", Value);
                 case PixelPercentUnits.Pixels:
-                    return String.Format(provider, "{0}", Value);
+                    return string.Format(provider, "{0}", Value);
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
 
         }

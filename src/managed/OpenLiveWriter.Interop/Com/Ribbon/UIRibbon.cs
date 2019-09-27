@@ -113,7 +113,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // Retrieves the stored value of a given property
         [PreserveSig]
-        Int32 GetValue([In] ref PropertyKey key, [Out] out PropVariant value);
+        int GetValue([In] ref PropertyKey key, [Out] out PropVariant value);
     }
 
     [
@@ -125,15 +125,15 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // Returns the Ribbon height
         [PreserveSig]
-        Int32 GetHeight([Out] out UInt32 cy);
+        int GetHeight([Out] out uint cy);
 
         // Load QAT from a stream
         [PreserveSig]
-        Int32 LoadSettingsFromStream([In] System.Runtime.InteropServices.ComTypes.IStream pStream);
+        int LoadSettingsFromStream([In] System.Runtime.InteropServices.ComTypes.IStream pStream);
 
         // Save QAT to a stream
         [PreserveSig]
-        Int32 SaveSettingsToStream([In] System.Runtime.InteropServices.ComTypes.IStream pStream);
+        int SaveSettingsToStream([In] System.Runtime.InteropServices.ComTypes.IStream pStream);
     }
 
     [
@@ -145,39 +145,39 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // Connects the framework and the application
         [PreserveSig]
-        Int32 Initialize(IntPtr frameWnd, IUIApplication application);
+        int Initialize(IntPtr frameWnd, IUIApplication application);
 
         // Releases all framework objects
         [PreserveSig]
-        Int32 Destroy();
+        int Destroy();
 
         // Loads and instantiates the views and commands specified in markup
         [PreserveSig]
-        Int32 LoadUI(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)] string resourceName);
+        int LoadUI(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)] string resourceName);
 
         // Retrieves a pointer to a view object
         [PreserveSig]
-        Int32 GetView(UInt32 viewId, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 1)] out object ppv);
+        int GetView(uint viewId, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 1)] out object ppv);
 
         // Retrieves the current value of a property
         [PreserveSig]
-        Int32 GetUICommandProperty(UInt32 commandId, [In] ref PropertyKey key, [Out] out PropVariant value);
+        int GetUICommandProperty(uint commandId, [In] ref PropertyKey key, [Out] out PropVariant value);
 
         // Immediately sets the value of a property
         [PreserveSig]
-        Int32 SetUICommandProperty(UInt32 commandId, [In] ref PropertyKey key, [In] ref PropVariant value);
+        int SetUICommandProperty(uint commandId, [In] ref PropertyKey key, [In] ref PropVariant value);
 
         // Asks the framework to retrieve the new value of a property at the next update cycle
         [PreserveSig]
-        Int32 InvalidateUICommand(UInt32 commandId, CommandInvalidationFlags flags, IntPtr keyPtr);
+        int InvalidateUICommand(uint commandId, CommandInvalidationFlags flags, IntPtr keyPtr);
 
         // Flush all the pending UI command updates
         [PreserveSig]
-        Int32 FlushPendingInvalidations();
+        int FlushPendingInvalidations();
 
         // Asks the framework to switch to the list of modes specified and adjust visibility of controls accordingly
         [PreserveSig]
-        Int32 SetModes(Int32 iModes);
+        int SetModes(int iModes);
     }
 
     [
@@ -191,7 +191,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         // Typically this is the mouse location at the time of right click.
         // x and y are in virtual screen coordinates
         [PreserveSig]
-        Int32 ShowAtLocation(Int32 x, Int32 y);
+        int ShowAtLocation(int x, int y);
     }
 
     [
@@ -203,31 +203,31 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // Retrieves the count of the collection
         [PreserveSig]
-        Int32 GetCount([Out] out UInt32 count);
+        int GetCount([Out] out uint count);
 
         // Retrieves an item
         [PreserveSig]
-        Int32 GetItem(UInt32 index, [Out, MarshalAs(UnmanagedType.IUnknown)] out object item);
+        int GetItem(uint index, [Out, MarshalAs(UnmanagedType.IUnknown)] out object item);
 
         // Adds an item to the end
         [PreserveSig]
-        Int32 Add([In, MarshalAs(UnmanagedType.IUnknown)] object item);
+        int Add([In, MarshalAs(UnmanagedType.IUnknown)] object item);
 
         // Inserts an item
         [PreserveSig]
-        Int32 Insert(UInt32 index, [In, MarshalAs(UnmanagedType.IUnknown)] object item);
+        int Insert(uint index, [In, MarshalAs(UnmanagedType.IUnknown)] object item);
 
         // Removes an item at the specified position
         [PreserveSig]
-        Int32 RemoveAt(UInt32 index);
+        int RemoveAt(uint index);
 
         // Replaces an item at the specified position
         [PreserveSig]
-        Int32 Replace(UInt32 indexReplaced, [In, MarshalAs(UnmanagedType.IUnknown)] object itemReplaceWith);
+        int Replace(uint indexReplaced, [In, MarshalAs(UnmanagedType.IUnknown)] object itemReplaceWith);
 
         // Clear the collection
         [PreserveSig]
-        Int32 Clear();
+        int Clear();
     }
 
     [
@@ -238,10 +238,10 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     public interface IUICollectionChangedEvent
     {
         [PreserveSig]
-        Int32 OnChanged(CollectionChangeType action,
-                          UInt32 oldIndex,
+        int OnChanged(CollectionChangeType action,
+                          uint oldIndex,
                           [In, Optional, MarshalAs(UnmanagedType.IUnknown)] object oldItem,
-                          UInt32 newIndex,
+                          uint newIndex,
                           [In, Optional, MarshalAs(UnmanagedType.IUnknown)] object newItem);
     }
 
@@ -254,7 +254,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // User action callback, with transient execution parameters
         [PreserveSig]
-        Int32 Execute(UInt32 commandId, // the command that has been executed
+        int Execute(uint commandId, // the command that has been executed
                         CommandExecutionVerb verb, // the mode of execution
                         [In, Optional] PropertyKeyRef key, // the property that has changed
                         [In, Optional] PropVariantRef currentValue, // the new value of the property that has changed
@@ -262,7 +262,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
 
         // Informs of the current value of a property, and queries for the new one
         [PreserveSig]
-        Int32 UpdateProperty(UInt32 commandId,
+        int UpdateProperty(uint commandId,
                                [In] ref PropertyKey key,
                                [In, Optional] PropVariantRef currentValue,
                                [Out] out PropVariant newValue);
@@ -277,21 +277,21 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     {
         // A view has changed
         [PreserveSig]
-        Int32 OnViewChanged(UInt32 viewId,
+        int OnViewChanged(uint viewId,
                               CommandTypeID typeID,
                               [In, MarshalAs(UnmanagedType.IUnknown)] object view,
                               ViewVerb verb,
-                              Int32 uReasonCode);
+                              int uReasonCode);
 
         // Command creation callback
         [PreserveSig]
-        Int32 OnCreateUICommand(UInt32 commandId,
+        int OnCreateUICommand(uint commandId,
                                   CommandTypeID typeID,
                                   [Out] out IUICommandHandler commandHandler);
 
         // Command destroy callback
         [PreserveSig]
-        Int32 OnDestroyUICommand(UInt32 commandId,
+        int OnDestroyUICommand(uint commandId,
                                    CommandTypeID typeID,
                                    [In, Optional] IUICommandHandler commandHandler);
     }
@@ -304,7 +304,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     public interface IUIImage
     {
         [PreserveSig]
-        Int32 GetBitmap([Out] out IntPtr bitmap);
+        int GetBitmap([Out] out IntPtr bitmap);
     }
 
     [

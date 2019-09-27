@@ -123,7 +123,7 @@ namespace OpenLiveWriter.CoreServices
 
                 // determine the default browser EXE path
                 StringBuilder pathBuilder = new StringBuilder(Kernel32.MAX_PATH * 4);
-                IntPtr returnCode = Shell32.FindExecutable(_tmpHtmlFile, String.Empty, pathBuilder);
+                IntPtr returnCode = Shell32.FindExecutable(_tmpHtmlFile, string.Empty, pathBuilder);
                 int rc = returnCode.ToInt32();
                 if (rc > 32)
                 {
@@ -160,7 +160,7 @@ namespace OpenLiveWriter.CoreServices
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Failed to open browser to display url({0}): {1}", url, ex));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Failed to open browser to display url({0}): {1}", url, ex));
                 UnexpectedErrorMessage.Show(ex);
             }
         }

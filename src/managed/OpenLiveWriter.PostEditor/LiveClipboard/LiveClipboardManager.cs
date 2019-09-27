@@ -60,10 +60,10 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         {
             get
             {
-                if (_formatDescription != String.Empty)
+                if (_formatDescription != string.Empty)
                     return _formatDescription;
                 else
-                    return String.Format(CultureInfo.CurrentCulture, "{0} format", FormatName);
+                    return string.Format(CultureInfo.CurrentCulture, "{0} format", FormatName);
             }
         }
         private string _formatDescription;
@@ -96,10 +96,10 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         {
             get
             {
-                if (Format.Type == String.Empty)
+                if (Format.Type == string.Empty)
                     return Format.ContentType;
                 else
-                    return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Format.Type, Format.ContentType);
+                    return string.Format(CultureInfo.CurrentCulture, "{0} ({1})", Format.Type, Format.ContentType);
             }
         }
 

@@ -83,7 +83,7 @@ namespace OpenLiveWriter.CoreServices
         {
             foreach (PropertyItem pi in _image.PropertyItems)
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "0x{0}: {1}: {2}", pi.Id.ToString("X", CultureInfo.InvariantCulture), pi.Type, pi.Type == 2 ? Encoding.UTF8.GetString(pi.Value) : ""));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "0x{0}: {1}: {2}", pi.Id.ToString("X", CultureInfo.InvariantCulture), pi.Type, pi.Type == 2 ? Encoding.UTF8.GetString(pi.Value) : ""));
             }
         }
     }

@@ -61,7 +61,7 @@ namespace OpenLiveWriter.PostEditor
             }
             catch (Exception e)
             {
-                Debug.Fail(String.Format(CultureInfo.InvariantCulture, "Error opening post file [{0}]: {1}", file.FullName, e));
+                Debug.Fail(string.Format(CultureInfo.InvariantCulture, "Error opening post file [{0}]: {1}", file.FullName, e));
                 return null;
             }
         }
@@ -112,7 +112,7 @@ namespace OpenLiveWriter.PostEditor
                     }
                     catch (Exception e)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Unexpected exception getting Recent post info [{0}]:{1}", file.Name, e.ToString()));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Unexpected exception getting Recent post info [{0}]:{1}", file.Name, e.ToString()));
                     }
                 }
 
@@ -135,7 +135,7 @@ namespace OpenLiveWriter.PostEditor
                     PostInfo postInfo = new PostInfo();
                     postInfo.Id = file.FullName;
                     postInfo.Title = ReadString(postStorage, POST_TITLE);
-                    postInfo.Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty);
+                    postInfo.Permalink = SafeReadString(postStorage, POST_PERMALINK, string.Empty);
                     postInfo.IsPage = SafeReadBoolean(postStorage, POST_ISPAGE, false);
                     postInfo.BlogName = ReadBlogName(postStorage);
                     postInfo.BlogId = ReadString(postStorage, DESTINATION_BLOG_ID);
@@ -155,7 +155,7 @@ namespace OpenLiveWriter.PostEditor
         {
             try
             {
-                if (filePath == null || filePath == String.Empty)
+                if (filePath == null || filePath == string.Empty)
                     return false;
 
                 filePath = Kernel32.GetLongPathName(filePath);
@@ -345,19 +345,19 @@ namespace OpenLiveWriter.PostEditor
                     blogPost.TrackbackPolicy = ReadTrackbackPolicy(postStorage);
                     blogPost.Keywords = ReadString(postStorage, POST_KEYWORDS);
                     blogPost.Excerpt = ReadString(postStorage, POST_EXCERPT);
-                    blogPost.Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty);
+                    blogPost.Permalink = SafeReadString(postStorage, POST_PERMALINK, string.Empty);
                     blogPost.PingUrlsPending = (string[])ReadXml(postStorage, POST_PINGURLS_PENDING, new XmlReadHandler(ReadPingUrls));
                     blogPost.PingUrlsSent = (string[])SafeReadXml(postStorage, POST_PINGURLS_SENT, new XmlReadHandler(ReadPingUrls), new string[0]);
-                    blogPost.Slug = SafeReadString(postStorage, POST_SLUG, String.Empty);
-                    blogPost.Password = SafeReadString(postStorage, POST_PASSWORD, String.Empty);
-                    string authorId = SafeReadString(postStorage, POST_AUTHOR_ID, String.Empty);
-                    string authorName = SafeReadString(postStorage, POST_AUTHOR_NAME, String.Empty);
+                    blogPost.Slug = SafeReadString(postStorage, POST_SLUG, string.Empty);
+                    blogPost.Password = SafeReadString(postStorage, POST_PASSWORD, string.Empty);
+                    string authorId = SafeReadString(postStorage, POST_AUTHOR_ID, string.Empty);
+                    string authorName = SafeReadString(postStorage, POST_AUTHOR_NAME, string.Empty);
                     blogPost.Author = new PostIdAndNameField(authorId, authorName);
-                    string pageParentId = SafeReadString(postStorage, POST_PAGE_PARENT_ID, String.Empty);
-                    string pageParentName = SafeReadString(postStorage, POST_PAGE_PARENT_NAME, String.Empty);
+                    string pageParentId = SafeReadString(postStorage, POST_PAGE_PARENT_ID, string.Empty);
+                    string pageParentName = SafeReadString(postStorage, POST_PAGE_PARENT_NAME, string.Empty);
                     blogPost.PageParent = new PostIdAndNameField(pageParentId, pageParentName);
-                    blogPost.PageOrder = SafeReadString(postStorage, POST_PAGE_ORDER, String.Empty);
-                    blogPost.ETag = SafeReadString(postStorage, POST_ETAG, String.Empty);
+                    blogPost.PageOrder = SafeReadString(postStorage, POST_PAGE_ORDER, string.Empty);
+                    blogPost.ETag = SafeReadString(postStorage, POST_ETAG, string.Empty);
                     blogPost.AtomRemotePost = (XmlDocument)SafeReadXml(postStorage, POST_ATOM_REMOTE_POST, new XmlReadHandler(XmlDocReadHandler), null);
 
                     try
@@ -703,7 +703,7 @@ namespace OpenLiveWriter.PostEditor
         private string FileNameForTitle(bool isPage, string postTitle)
         {
             // default name for untitled posts
-            if (postTitle == String.Empty)
+            if (postTitle == string.Empty)
                 postTitle = isPage ? PostInfo.UntitledPage : PostInfo.UntitledPost;
 
             return Path.ChangeExtension(FileHelper.GetValidFileName(postTitle), Extension);
@@ -966,7 +966,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 if (reader.NodeType == XmlNodeType.Element && reader.LocalName == CATEGORY_ELEMENT)
                 {
-                    string id = null, name = null, parent = String.Empty;
+                    string id = null, name = null, parent = string.Empty;
                     for (int i = 0; i < reader.AttributeCount; i++)
                     {
                         reader.MoveToAttribute(i);
@@ -1106,10 +1106,10 @@ namespace OpenLiveWriter.PostEditor
                                     switch (reader.LocalName)
                                     {
                                         case IMAGE_FILE_LINK_WIDTH_ATTRIBUTE:
-                                            imageFileData.Width = Int32.Parse(reader.Value, CultureInfo.InvariantCulture);
+                                            imageFileData.Width = int.Parse(reader.Value, CultureInfo.InvariantCulture);
                                             break;
                                         case IMAGE_FILE_LINK_HEIGHT_ATTRIBUTE:
-                                            imageFileData.Height = Int32.Parse(reader.Value, CultureInfo.InvariantCulture);
+                                            imageFileData.Height = int.Parse(reader.Value, CultureInfo.InvariantCulture);
                                             break;
                                         case IMAGE_FILE_LINK_RELATIONSHIP_ATTRIBUTE:
                                             imageFileData.Relationship = (ImageFileRelationship)ImageFileRelationship.Parse(typeof(ImageFileRelationship), reader.Value);
@@ -1464,7 +1464,7 @@ namespace OpenLiveWriter.PostEditor
                 string nextFileVersionString = reader.GetAttribute(ATTACHED_FILE_NEXT_VERSION_ATTRIBUTE);
                 int nextFileVersion = 1;
                 if (nextFileVersionString != null)
-                    nextFileVersion = Int32.Parse(nextFileVersionString, CultureInfo.InvariantCulture);
+                    nextFileVersion = int.Parse(nextFileVersionString, CultureInfo.InvariantCulture);
 
                 SupportingFileFactory fileFactory = _fileService.CreateSupportingFile(fileId, fileName, nextFileVersion);
 
@@ -1523,7 +1523,7 @@ namespace OpenLiveWriter.PostEditor
                 string uploadVersionString = reader.GetAttribute(ATTACHED_FILE_UPLOAD_VERSION_ATTRIBUTE);
                 int uploadVersion = -1;
                 if (uploadVersionString != null)
-                    uploadVersion = Int32.Parse(uploadVersionString, CultureInfo.InvariantCulture);
+                    uploadVersion = int.Parse(uploadVersionString, CultureInfo.InvariantCulture);
 
                 //fixup the reference path
                 BlogPostSettingsBag settings = new BlogPostSettingsBag();
@@ -1578,7 +1578,7 @@ namespace OpenLiveWriter.PostEditor
                 string fileVersionString = reader.GetAttribute(ATTACHED_FILE_VERSION_ATTRIBUTE);
                 int fileVersion = -1;
                 if (fileVersionString != null)
-                    fileVersion = Int32.Parse(fileVersionString, CultureInfo.InvariantCulture);
+                    fileVersion = int.Parse(fileVersionString, CultureInfo.InvariantCulture);
 
                 bool embedded = bool.Parse(reader.GetAttribute(ATTACHED_FILE_EMBEDDED_ATTRIBUTE));
                 string fileUriString = reader.GetAttribute(ATTACHED_FILE_URI_ATTRIBUTE);
@@ -1717,7 +1717,7 @@ namespace OpenLiveWriter.PostEditor
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

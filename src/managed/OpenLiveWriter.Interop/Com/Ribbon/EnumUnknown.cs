@@ -14,14 +14,14 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
     public interface IEnumUnknown
     {
         [PreserveSig]
-        Int32 Next(
+        int Next(
             uint celt,
             [Out, MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.IUnknown, SizeParamIndex = 0)] object[] rgelt,
             IntPtr pceltFetched
             );
 
         [PreserveSig]
-        Int32 Skip(
+        int Skip(
             uint celt
             );
 

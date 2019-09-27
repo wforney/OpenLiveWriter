@@ -299,7 +299,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             try
             {
-                string access_token_url = String.Format("{0}?client_id={1}&redirect_uri={2}&response_type=token", auth_url, _user_key, _redirect_url);
+                string access_token_url = string.Format("{0}?client_id={1}&redirect_uri={2}&response_type=token", auth_url, _user_key, _redirect_url);
 
                 return LoginWithWeb(access_token_url, username, password, access_token_url, ref access_key);
             }
@@ -316,7 +316,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             string username = tc.Username;
             string password = tc.Password;
 
-            bool promptForpassword = ((username == null || username == String.Empty) || (password == null || password == String.Empty));
+            bool promptForpassword = ((username == null || username == string.Empty) || (password == null || password == string.Empty));
 
             if (tc.Token != null)
             {
@@ -324,7 +324,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     return;
             }
 
-            string access_token_url = String.Format("{0}?client_id={1}&redirect_uri={2}&response_type=token", auth_url, _user_key, _redirect_url);
+            string access_token_url = string.Format("{0}?client_id={1}&redirect_uri={2}&response_type=token", auth_url, _user_key, _redirect_url);
             string access_key = "";
 
             if (VerifyCredentialsReturn(username, password, ref access_key) == false)
@@ -337,7 +337,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         //if we're in silent mode where prompting isn't allowed, so throw the verification exception
                         if (BlogClientUIContext.SilentModeForCurrentThread)
                         {
-                            throw new BlogClientAuthenticationException(String.Empty, String.Empty);
+                            throw new BlogClientAuthenticationException(string.Empty, string.Empty);
                         }
 
                         CredentialsPromptResult prompt = CredentialsHelper.PromptForCredentials(ref username, ref password, Credentials.Domain);
@@ -376,7 +376,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             XmlRestRequestHelper Blog = new XmlRestRequestHelper();
             TokenResponse tistory_token =(TokenResponse) tc.Token;
-            string blog_info_uri = String.Format("{0}{1}&url={2}", blog_info_url, tistory_token.AccessToken, tc.Username);
+            string blog_info_uri = string.Format("{0}{1}&url={2}", blog_info_url, tistory_token.AccessToken, tc.Username);
             Uri blog_info = new Uri(blog_info_uri);
             XmlDocument blog_xml = Blog.Get(ref blog_info, null);
 
@@ -476,7 +476,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             BlogPostCategory[] result_category = null;
             XmlRestRequestHelper Blog = new XmlRestRequestHelper();
             TokenResponse tistory_token = (TokenResponse)_tistoryCredential.Token;
-            string categori_info_uri = String.Format("{0}{1}&blogName={2}", category_url, tistory_token.AccessToken, blogId);
+            string categori_info_uri = string.Format("{0}{1}&blogName={2}", category_url, tistory_token.AccessToken, blogId);
             Uri blog_info = new Uri(categori_info_uri);
             XmlDocument blog_xml = Blog.Get(ref blog_info, null);
 
@@ -549,10 +549,10 @@ namespace OpenLiveWriter.BlogClient.Clients
             //note: spec calls for description, htmlURL, rssURL only
             //but tested metaweblog implementers seem to all have title, and at least MSDN blogs has category id
             //thus, the twisted logic here
-            String catID, catName;
+            string catID, catName;
             catID = catName = GetNodeValue(categoryNode, "name");// member[name='name']/value");
             String categoryTitle = GetNodeValue(categoryNode, "name");// member[name='name']/value");
-            if (categoryTitle != String.Empty && categoryTitle != null)
+            if (categoryTitle != string.Empty && categoryTitle != null)
             {
                 catID = catName = categoryTitle;
             }
@@ -563,7 +563,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 categoryId = GetNodeValue(categoryNode, "id");
 
             // set if we got it
-            if (categoryId != String.Empty && categoryId != null)
+            if (categoryId != string.Empty && categoryId != null)
             {
                 catID = categoryId;
             }
@@ -585,7 +585,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             // optional parent specifier
             string parent = GetNodeValue(categoryNode, "parent");// member[name='parent']/value");
             if (parent == null)
-                parent = String.Empty;
+                parent = string.Empty;
 
             // validate (a null category name downstream will result in unexpected error
             // dialogs -- better to show the user an error here indicating that the
@@ -609,7 +609,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         {
             XmlRestRequestHelper Blog = new XmlRestRequestHelper();
             TokenResponse tistory_token = (TokenResponse)_tistoryCredential.Token;
-            string recent_post_uri = String.Format("{0}{1}&blogName={2}&count={3}&sort=date", recent_post_url, tistory_token.AccessToken, blogId, maxPosts);
+            string recent_post_uri = string.Format("{0}{1}&blogName={2}&count={3}&sort=date", recent_post_url, tistory_token.AccessToken, blogId, maxPosts);
             Uri blog_info = new Uri(recent_post_uri);
             XmlDocument blog_xml = Blog.Get(ref blog_info, null);
             //Blog.Post()
@@ -1050,7 +1050,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             // get node values
             blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// member[name='id']/value"));
-            if (blogPost.Id == String.Empty)
+            if (blogPost.Id == string.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// "member[name='id']/value"));
 
             SetPostTitleFromXmlValue(blogPost, NodeText(postNode.SelectSingleNode("title")));// member[name='title']/value")));
@@ -1066,7 +1066,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsCommentPolicy)
             {
                 string commentPolicy = NodeText(postNode.SelectSingleNode("comments"));// member[name='comments']/value"));
-                if (commentPolicy != String.Empty)
+                if (commentPolicy != string.Empty)
                 {
                     switch (commentPolicy)
                     {
@@ -1090,7 +1090,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsPingPolicy)
             {
                 string allowTrackbacks = NodeText(postNode.SelectSingleNode("trackbacks"));// member[name='trackbacks']/value"));
-                if (allowTrackbacks != String.Empty)
+                if (allowTrackbacks != string.Empty)
                     blogPost.TrackbackPolicy = (allowTrackbacks == "1") ? BlogTrackbackPolicy.Allow : BlogTrackbackPolicy.Deny;
             }
 
@@ -1213,7 +1213,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             // get node values
             blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// member[name='id']/value"));
-            if (blogPost.Id == String.Empty)
+            if (blogPost.Id == string.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// "member[name='id']/value"));
 
             SetPostTitleFromXmlValue(blogPost, NodeText(postNode.SelectSingleNode("title")));// member[name='title']/value")));
@@ -1244,7 +1244,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsCommentPolicy)
             {
                 string commentPolicy = NodeText(postNode.SelectSingleNode("comments"));// member[name='comments']/value"));
-                if (commentPolicy != String.Empty)
+                if (commentPolicy != string.Empty)
                 {
                     switch (commentPolicy)
                     {
@@ -1268,7 +1268,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsPingPolicy)
             {
                 string allowTrackbacks = NodeText(postNode.SelectSingleNode("trackbacks"));// member[name='trackbacks']/value"));
-                if (allowTrackbacks != String.Empty)
+                if (allowTrackbacks != string.Empty)
                     blogPost.TrackbackPolicy = (allowTrackbacks == "1") ? BlogTrackbackPolicy.Allow : BlogTrackbackPolicy.Deny;
             }
 
@@ -1568,7 +1568,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if(_token != null )
                     {
                         string request_uri;
-                        request_uri = String.Format("{0}{1}&url={2}", expire_check_url, _token.AccessToken, Username);
+                        request_uri = string.Format("{0}{1}&url={2}", expire_check_url, _token.AccessToken, Username);
                         Uri expire_uri = new Uri(request_uri);
 
                         XmlRestRequestHelper expire_request = new XmlRestRequestHelper();

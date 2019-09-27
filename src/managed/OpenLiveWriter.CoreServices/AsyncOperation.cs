@@ -443,7 +443,7 @@ namespace OpenLiveWriter.CoreServices
                 catch (InvalidOperationException e)
                 {
                     string targetType = Target != null ? Target.GetType().AssemblyQualifiedName : "(unknown)";
-                    Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Failed to fire event from '{0}' to target '{1}' because it was disposed already: {2}",
+                    Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Failed to fire event from '{0}' to target '{1}' because it was disposed already: {2}",
                         GetType().Name, // {0}
                         targetType,     // {1}
                         e               // {2}

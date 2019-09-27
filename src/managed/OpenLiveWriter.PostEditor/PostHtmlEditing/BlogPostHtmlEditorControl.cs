@@ -527,7 +527,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                     // And there is no other HTML besides the anchor and the image.
                     IHTMLElementCollection anchorChildren = (IHTMLElementCollection)imgParentElement.children;
-                    if (anchorChildren.length > 1 || !String.IsNullOrEmpty(imgParentElement.innerText))
+                    if (anchorChildren.length > 1 || !string.IsNullOrEmpty(imgParentElement.innerText))
                         return;
 
                     // Move the caret outside the hyperlink.
@@ -590,7 +590,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                 // And the anchor contains just a single child element.
                 IHTMLElementCollection anchorChildren = (IHTMLElementCollection)context.Element.children;
-                if (anchorChildren.length > 1 || !String.IsNullOrEmpty(context.Element.innerText))
+                if (anchorChildren.length > 1 || !string.IsNullOrEmpty(context.Element.innerText))
                 {
                     return;
                 }
@@ -658,10 +658,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             string postTitleStyles = $"margin: 0px 0px {titlePaddingY}px 0px; padding: 0px; border: 0px;"; //add some space btwn the title and body
 
             //set a minimum height for the body element so that it takes up a larger space when its empty.
-            string postBodyStyles = String.Format(CultureInfo.InvariantCulture, "margin: 0px; padding: 0px; border: 0px; {0}", _postBodyInlineStyle);
+            string postBodyStyles = string.Format(CultureInfo.InvariantCulture, "margin: 0px; padding: 0px; border: 0px; {0}", _postBodyInlineStyle);
             string defaultCssStyles = ".postTitle {" + postTitleStyles + "} .postBody {" + postBodyStyles + "}";
 
-            string style = String.Format(CultureInfo.InvariantCulture, "<style>{0}</style>", defaultCssStyles);
+            string style = string.Format(CultureInfo.InvariantCulture, "<style>{0}</style>", defaultCssStyles);
             MarkupServices.InsertHtml(style, insertionPoint);
 
             RemoveProblematicEditingStyles();
@@ -1300,7 +1300,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             if (TidyWhitespace && Editable)
             {
                 blogPostBody = HTMLTrimmer.Trim(blogPostBody, true);
-                if (blogPostBody != String.Empty)
+                if (blogPostBody != string.Empty)
                     blogPostBody += CONTENT_BODY_PADDING;
             }
 
@@ -1330,7 +1330,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             //break the rendering of the surrounding inline styles.
             string titleHtml = _strategy.OnTitleInserted(title);
 
-            if (blogPostBody == String.Empty && TidyWhitespace)
+            if (blogPostBody == string.Empty && TidyWhitespace)
                 blogPostBody = "<p>&nbsp;</p>";
 
             blogPostBody = _strategy.OnBodyInserted(blogPostBody);
@@ -1338,7 +1338,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             string postHtml = editingTemplate.ApplyTemplateToPostHtml(title, titleHtml, blogPostBody);
 
             //add the base tag for the HTML so relative resource references in the post will be resolved.
-            postHtml = postHtml.Replace("</HEAD>", String.Format(CultureInfo.InvariantCulture, "<BASE href=\"{0}\"></HEAD>", baseUrl));
+            postHtml = postHtml.Replace("</HEAD>", string.Format(CultureInfo.InvariantCulture, "<BASE href=\"{0}\"></HEAD>", baseUrl));
 
             // save the content to a temp file for loading
             string documentPath = TempFileManager.Instance.CreateTempFile("index.htm");
@@ -1703,7 +1703,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     // Don't allow new lines after emoticons.
                     string classNames = tag.GetAttributeValue("class");
-                    if (!String.IsNullOrEmpty(classNames) && classNames.Contains(Emoticon.CLASS_NAME))
+                    if (!string.IsNullOrEmpty(classNames) && classNames.Contains(Emoticon.CLASS_NAME))
                         return false;
                 }
             }
@@ -2312,7 +2312,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 char ch = (char)e.htmlEvt.keyCode;
                 if (CurrentCommitStrategy == _realtimeCommitStrategy)
                 {
-                    if (!Char.IsLetterOrDigit(ch) || !ShouldUseRealtimeDamageCommitStrategy())
+                    if (!char.IsLetterOrDigit(ch) || !ShouldUseRealtimeDamageCommitStrategy())
                     {
                         //the caret position moved onto a new word, so revoke realtime spelling strategy
                         CurrentCommitStrategy = _wordBasedCommitStrategy;
@@ -2423,7 +2423,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public override string FixImageReferences(string html, string sourceUrl)
         {
-            if (_referenceFixer == null || String.IsNullOrEmpty(sourceUrl))
+            if (_referenceFixer == null || string.IsNullOrEmpty(sourceUrl))
                 return html;
 
             return _referenceFixer.FixImageReferences(html, sourceUrl);

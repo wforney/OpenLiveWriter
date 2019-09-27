@@ -17,10 +17,10 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern bool IsAppThemed();
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Auto)]
-        public static extern Int32 DrawThemeBackground(IntPtr hTheme,
+        public static extern int DrawThemeBackground(IntPtr hTheme,
                                                         IntPtr hdc,
-                                                        Int32 iPartId,
-                                                        Int32 iStateId,
+                                                        int iPartId,
+                                                        int iStateId,
                                                         ref RECT pRect,
                                                         ref RECT pClipRect);
 
@@ -28,24 +28,24 @@ namespace OpenLiveWriter.Interop.Windows
         public static extern IntPtr OpenThemeData(IntPtr hwnd, string classes);
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-        public static extern Int32 CloseThemeData(IntPtr htheme);
+        public static extern int CloseThemeData(IntPtr htheme);
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-        public static extern Int32 GetThemeColor(IntPtr hTheme,
-                                                    Int32 partID,
-                                                    Int32 stateID,
-                                                    Int32 propID,
-                                                    out Int32 color);
+        public static extern int GetThemeColor(IntPtr hTheme,
+                                                    int partID,
+                                                    int stateID,
+                                                    int propID,
+                                                    out int color);
 
         /// <summary>
         /// Window Parts.
         /// </summary>
         public struct WP
         {
-            public const Int32 CAPTION = 0x00000001;
-            public const Int32 FRAMELEFT = 0x00000007;
-            public const Int32 FRAMERIGHT = 0x00000008;
-            public const Int32 FRAMEBOTTOM = 0x00000009;
+            public const int CAPTION = 0x00000001;
+            public const int FRAMELEFT = 0x00000007;
+            public const int FRAMERIGHT = 0x00000008;
+            public const int FRAMEBOTTOM = 0x00000009;
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public struct CS
         {
-            public const Int32 ACTIVE = 0x00000001;
-            public const Int32 INACTIVE = 0x00000002;
+            public const int ACTIVE = 0x00000001;
+            public const int INACTIVE = 0x00000002;
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public struct FS
         {
-            public const Int32 ACTIVE = 0x00000001;
-            public const Int32 INACTIVE = 0x00000002;
+            public const int ACTIVE = 0x00000001;
+            public const int INACTIVE = 0x00000002;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public struct EP
         {
-            public const Int32 EDITTEXT = 0x00000001;
+            public const int EDITTEXT = 0x00000001;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public struct ETS
         {
-            public const Int32 NORMAL = 0x00000001;
+            public const int NORMAL = 0x00000001;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// </summary>
         public struct TMT
         {
-            public const Int32 BORDERCOLOR = 0x00000ED9;
+            public const int BORDERCOLOR = 0x00000ED9;
         }
     }
 }

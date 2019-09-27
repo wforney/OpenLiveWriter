@@ -104,7 +104,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             int val = 0;
             try
             {
-                val = Int32.Parse(textBoxTilt.Text.Trim(), CultureInfo.CurrentCulture);
+                val = int.Parse(textBoxTilt.Text.Trim(), CultureInfo.CurrentCulture);
                 if (val > trackBarTilt.Maximum)
                 {
                     val = trackBarTilt.Maximum;

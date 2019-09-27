@@ -100,7 +100,7 @@ namespace OpenLiveWriter.BlogClient
             Credentials.TransientCredentials = tc;
             try
             {
-                bool promptForPassword = RequiresPassword && (password == null || password == String.Empty);
+                bool promptForPassword = RequiresPassword && (password == null || password == string.Empty);
                 Exception verificationException = promptForPassword ? null : VerifyCredentialsReturnException(tc);
                 bool verified = !promptForPassword && verificationException == null;
                 while (!verified)
@@ -111,7 +111,7 @@ namespace OpenLiveWriter.BlogClient
                         if (verificationException != null)
                             throw verificationException;
                         else
-                            throw new BlogClientAuthenticationException(String.Empty, String.Empty);
+                            throw new BlogClientAuthenticationException(string.Empty, string.Empty);
                     }
 
                     //prompt the user for credentials

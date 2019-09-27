@@ -91,9 +91,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 int width = imgElement.width;
                 int height = imgElement.height;
 
-                if (!String.IsNullOrEmpty(oldHeight))
+                if (!string.IsNullOrEmpty(oldHeight))
                     imgHtmlElement.setAttribute("height", oldHeight, 0);
-                if (!String.IsNullOrEmpty(oldWidth))
+                if (!string.IsNullOrEmpty(oldWidth))
                     imgHtmlElement.setAttribute("width", oldWidth, 0);
                 Uri infoUri;
                 if (Uri.TryCreate(imgSrc, UriKind.Absolute, out infoUri))
@@ -107,11 +107,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 info.ImgElement = imgHtmlElement;
 
                 // Sets the correct inline image size and image size name for the remote image.
-                if (!String.IsNullOrEmpty(oldWidth) && !String.IsNullOrEmpty(oldHeight))
+                if (!string.IsNullOrEmpty(oldWidth) && !string.IsNullOrEmpty(oldHeight))
                 {
                     int inlineWidth, inlineHeight;
-                    if (Int32.TryParse(oldWidth, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineWidth) &&
-                        Int32.TryParse(oldHeight, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineHeight))
+                    if (int.TryParse(oldWidth, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineWidth) &&
+                        int.TryParse(oldHeight, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineHeight))
                     {
                         info.InlineImageSize = new Size(inlineWidth, inlineHeight);
                     }

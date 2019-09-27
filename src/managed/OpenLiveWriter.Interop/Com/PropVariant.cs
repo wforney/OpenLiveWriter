@@ -59,7 +59,7 @@ namespace OpenLiveWriter.Interop.Com
         // the last 4-bytes of an 8-byte value on 32-bit
         // architectures.
         IntPtr valueData;
-        Int32 valueDataExt;
+        int valueDataExt;
         #endregion // struct fields
 
         #region public Methods
@@ -126,7 +126,7 @@ namespace OpenLiveWriter.Interop.Com
             if (value.GetType() == typeof(string))
             {
                 //Strings require special consideration, because they cannot be empty as well
-                if (String.IsNullOrEmpty(value as string) || String.IsNullOrEmpty((value as string).Trim()))
+                if (string.IsNullOrEmpty(value as string) || string.IsNullOrEmpty((value as string).Trim()))
                     throw new ArgumentException("String argument cannot be null or empty.");
                 propVar.SetString(value as string);
             }
@@ -564,7 +564,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetDecimal(decimal value)
         {
-            int[] bits = Decimal.GetBits(value);
+            int[] bits = decimal.GetBits(value);
             valueData = (IntPtr)bits[0];
             valueDataExt = bits[1];
             wReserved3 = (ushort)(bits[2] >> 16);
@@ -707,21 +707,21 @@ namespace OpenLiveWriter.Interop.Com
                     case (VarEnum.VT_VECTOR | VarEnum.VT_LPWSTR):
                         return GetStringVector();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_I2):
-                        return GetVector<Int16>();
+                        return GetVector<short>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_UI2):
-                        return GetVector<UInt16>();
+                        return GetVector<ushort>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_I4):
-                        return GetVector<Int32>();
+                        return GetVector<int>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_UI4):
-                        return GetVector<UInt32>();
+                        return GetVector<uint>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_I8):
-                        return GetVector<Int64>();
+                        return GetVector<long>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_UI8):
-                        return GetVector<UInt64>();
+                        return GetVector<ulong>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_R8):
-                        return GetVector<Double>();
+                        return GetVector<double>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_BOOL):
-                        return GetVector<Boolean>();
+                        return GetVector<bool>();
                     case (VarEnum.VT_VECTOR | VarEnum.VT_FILETIME):
                         return GetVector<DateTime>();
                     default:
@@ -805,7 +805,7 @@ namespace OpenLiveWriter.Interop.Com
             get { return DateTime.FromOADate(dblVal); }
         }
 
-        Decimal decVal  // Decimal value
+        decimal decVal  // Decimal value
         {
             get
             {
@@ -868,8 +868,8 @@ namespace OpenLiveWriter.Interop.Com
                 // because the size of the blob is represented as a 4-byte int
                 // but the pointer is immediately after that.
                 pBlobData = new IntPtr(
-                    (Int64)(BitConverter.ToInt32(GetDataBytes(), sizeof(int))) +
-                    (Int64)(BitConverter.ToInt32(GetDataBytes(), 2 * sizeof(int)) << 32));
+                    (long)(BitConverter.ToInt32(GetDataBytes(), sizeof(int))) +
+                    (long)(BitConverter.ToInt32(GetDataBytes(), 2 * sizeof(int)) << 32));
             }
             else
             {
@@ -890,37 +890,37 @@ namespace OpenLiveWriter.Interop.Com
 
             for (uint i = 0; i < count; i++)
             {
-                if (typeof(T) == typeof(Int16))
+                if (typeof(T) == typeof(short))
                 {
                     short val;
                     Propsys.PropVariantGetInt16Elem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(UInt16))
+                else if (typeof(T) == typeof(ushort))
                 {
                     ushort val;
                     Propsys.PropVariantGetUInt16Elem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(Int32))
+                else if (typeof(T) == typeof(int))
                 {
                     int val;
                     Propsys.PropVariantGetInt32Elem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(UInt32))
+                else if (typeof(T) == typeof(uint))
                 {
                     uint val;
                     Propsys.PropVariantGetUInt32Elem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(Int64))
+                else if (typeof(T) == typeof(long))
                 {
                     long val;
                     Propsys.PropVariantGetInt64Elem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(UInt64))
+                else if (typeof(T) == typeof(ulong))
                 {
                     ulong val;
                     Propsys.PropVariantGetUInt64Elem(ref this, i, out val);
@@ -935,19 +935,19 @@ namespace OpenLiveWriter.Interop.Com
 
                     arr.SetValue(DateTime.FromFileTime(fileTime), i);
                 }
-                else if (typeof(T) == typeof(Boolean))
+                else if (typeof(T) == typeof(bool))
                 {
                     bool val;
                     Propsys.PropVariantGetBooleanElem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(Double))
+                else if (typeof(T) == typeof(double))
                 {
                     double val;
                     Propsys.PropVariantGetDoubleElem(ref this, i, out val);
                     arr.SetValue(val, i);
                 }
-                else if (typeof(T) == typeof(String))
+                else if (typeof(T) == typeof(string))
                 {
                     string val;
                     Propsys.PropVariantGetStringElem(ref this, i, out val);

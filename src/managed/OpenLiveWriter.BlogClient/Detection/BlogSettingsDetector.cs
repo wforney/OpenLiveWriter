@@ -338,7 +338,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 BeginTag tag = (BeginTag)extractor.Element;
                 string dir = tag.GetAttributeValue("dir");
-                if (String.Compare(dir, "rtl", StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Compare(dir, "rtl", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     homepageSettings.Add(BlogClientOptions.TEMPLATE_IS_RTL, true.ToString(CultureInfo.InvariantCulture));
                 }
@@ -532,7 +532,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private void ReportException(string context, Exception ex)
         {
-            string error = String.Format(CultureInfo.InvariantCulture, "Exception occurred {0} for weblog {1}: {2}", context, _context.HomepageUrl, ex.ToString());
+            string error = string.Format(CultureInfo.InvariantCulture, "Exception occurred {0} for weblog {1}: {2}", context, _context.HomepageUrl, ex.ToString());
 
             if (_silentMode)
             {

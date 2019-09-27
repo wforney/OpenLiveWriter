@@ -194,7 +194,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 // calculate indexes and status text
                 int beginIndex = ((_currentPage - 1) * NUMBEROFVIDEOSPERPAGE) + 1;
                 int endIndex = Math.Min((beginIndex + NUMBEROFVIDEOSPERPAGE) - 1, _numberOfVideos);
-                string statusText = FormatVideoString(beginIndex, endIndex) + " " + String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Total_Videos), _numberOfVideos); ;
+                string statusText = FormatVideoString(beginIndex, endIndex) + " " + string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Total_Videos), _numberOfVideos); ;
 
                 // set status text
 
@@ -212,9 +212,9 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
         private static string FormatVideoString(int beginIndex, int endIndex)
         {
             if (beginIndex != endIndex)
-                return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Result_Range), beginIndex, endIndex);
+                return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Result_Range), beginIndex, endIndex);
             else
-                return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Result_Single), beginIndex);
+                return string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Soapbox_Result_Single), beginIndex);
         }
 
         private void InitializeComponent()

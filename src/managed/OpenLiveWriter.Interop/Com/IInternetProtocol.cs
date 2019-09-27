@@ -206,9 +206,9 @@ namespace OpenLiveWriter.Interop.Com
         /// <returns>Returns S_OK if successful, or E_FAIL if the protocol does not
         /// support seekable data retrieval.</returns>
         int Seek(
-            [In] Int64 dlibMove,
+            [In] long dlibMove,
             [In] uint dwOrigin,
-            [Out] out UInt64 plibNewPosition);
+            [Out] out ulong plibNewPosition);
 
         /// <summary>
         /// Locks the requested resource so that the IInternetProtocolRoot::Terminate method can be called and the remaining data can be read.

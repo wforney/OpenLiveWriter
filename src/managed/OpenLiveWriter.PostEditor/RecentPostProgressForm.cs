@@ -38,8 +38,8 @@ namespace OpenLiveWriter.PostEditor
             this.buttonCancelForm.Text = Res.Get(StringId.CancelButton);
             this.Text = Res.Get(StringId.Retrieving);
 
-            Text = String.Format(CultureInfo.CurrentCulture, Text, entityName);
-            labelRetrievingPost.Text = String.Format(CultureInfo.CurrentCulture, labelRetrievingPost.Text, entityName.ToLower(CultureInfo.CurrentCulture));
+            Text = string.Format(CultureInfo.CurrentCulture, Text, entityName);
+            labelRetrievingPost.Text = string.Format(CultureInfo.CurrentCulture, labelRetrievingPost.Text, entityName.ToLower(CultureInfo.CurrentCulture));
 
             progressAnimatedBitmap.Bitmaps = AnimationBitmaps;
             progressAnimatedBitmap.Interval = 2000 / AnimationBitmaps.Length;
@@ -70,7 +70,7 @@ namespace OpenLiveWriter.PostEditor
                     ArrayList list = new ArrayList();
                     for (int i = 0; i < 12; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));

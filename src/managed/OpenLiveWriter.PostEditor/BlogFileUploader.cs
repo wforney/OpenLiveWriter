@@ -77,7 +77,7 @@ namespace OpenLiveWriter.PostEditor
                 postRandomizerToken = PostContext.TrimEnd('/').Substring(uniqueIndex + 1);
             }
 
-            if (format == String.Empty)
+            if (format == string.Empty)
             {
                 format = "{PostTitle}_{PostRandomizer}/{FileName}";
             }
@@ -116,7 +116,7 @@ namespace OpenLiveWriter.PostEditor
                     {
                         if (tokenFormatGroup != null)
                         {
-                            val = String.Format(CultureInfo.InvariantCulture, "{0" + tokenFormatGroup.Value + "}", val);
+                            val = string.Format(CultureInfo.InvariantCulture, "{0" + tokenFormatGroup.Value + "}", val);
                         }
                         sb.Append(val);
                     }
@@ -146,7 +146,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 string formattedString = _value;
                 if (format != null)
-                    formattedString = String.Format(CultureInfo.InvariantCulture, format.Replace("?", "{0}"), _value);
+                    formattedString = string.Format(CultureInfo.InvariantCulture, format.Replace("?", "{0}"), _value);
                 return formattedString;
             }
 
@@ -198,7 +198,7 @@ namespace OpenLiveWriter.PostEditor
 
                 case FileUploadSupport.FTP:
                     FtpUploaderSettings ftpSettings = new FtpUploaderSettings(uploadSettings);
-                    return String.Format(CultureInfo.InvariantCulture, "ftp://{0}@{1}{2}", ftpSettings.Username, ftpSettings.FtpServer, ftpSettings.PublishPath);
+                    return string.Format(CultureInfo.InvariantCulture, "ftp://{0}@{1}{2}", ftpSettings.Username, ftpSettings.FtpServer, ftpSettings.PublishPath);
 
                 default:
                     Trace.Fail("Unexpected value for fileUploadSupport: " + fileUploadSupport.ToString());
@@ -215,7 +215,7 @@ namespace OpenLiveWriter.PostEditor
             }
             else
             {
-                Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "File is up-to-date: {0}", file.FileName));
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "File is up-to-date: {0}", file.FileName));
                 return false;
             }
         }
@@ -342,7 +342,7 @@ namespace OpenLiveWriter.PostEditor
         public override string FormatUploadFileName(string filename, string conflictToken)
         {
             string format = _blogClient.Options.FileUploadNameFormat;
-            if (format == String.Empty)
+            if (format == string.Empty)
             {
                 format = "{OpenLiveWriter}/{PostTitle}_{PostRandomizer}/{FileNameWithoutExtension}{FileNameConflictToken:_?}{FileExtension}";
             }
@@ -398,7 +398,7 @@ namespace OpenLiveWriter.PostEditor
 
                     while (!loggedIn)
                     {
-                        if (password == String.Empty)
+                        if (password == string.Empty)
                         {
                             CredentialsDomain cd = new CredentialsDomain(Res.Get(StringId.FtpLoginDomain), _settings.FtpServer, null, FtpIconBytes);
                             CredentialsPromptResult result = CredentialsHelper.PromptForCredentials(ref username, ref password, cd);
@@ -412,7 +412,7 @@ namespace OpenLiveWriter.PostEditor
                                 if (result == CredentialsPromptResult.SaveUsername)
                                 {
                                     _settings.Username = username;
-                                    _settings.Password = String.Empty;
+                                    _settings.Password = string.Empty;
                                 }
                                 else if (result == CredentialsPromptResult.SaveUsernameAndPassword)
                                 {
@@ -440,7 +440,7 @@ namespace OpenLiveWriter.PostEditor
                         catch (LoginException)
                         {
                             loggedIn = false;
-                            password = String.Empty;
+                            password = string.Empty;
                             _credentials.Remove(DestinationContext);
                         }
                     }
@@ -534,7 +534,7 @@ namespace OpenLiveWriter.PostEditor
                             Hashtable existingFiles = new Hashtable();
                             foreach (string name in _fileDestination.ListFiles(uploadFolder))
                                 existingFiles[name] = name;
-                            for (int i = 3; i < Int32.MaxValue && existingFiles.ContainsKey(fileName); i++)
+                            for (int i = 3; i < int.MaxValue && existingFiles.ContainsKey(fileName); i++)
                             {
                                 fileName = FileHelper.GetValidAnsiFileName(fileBaseName + "_" + i + fileExtension);
                             }
@@ -661,11 +661,11 @@ namespace OpenLiveWriter.PostEditor
                 {
                     Trace.Fail("Failed to decrypt password: " + e);
                 }
-                return String.Empty;
+                return string.Empty;
             }
             set
             {
-                if (value != String.Empty)
+                if (value != string.Empty)
                 {
                     //save an encrypted password
                     try

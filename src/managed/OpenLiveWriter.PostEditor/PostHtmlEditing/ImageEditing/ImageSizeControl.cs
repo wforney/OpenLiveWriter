@@ -262,7 +262,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             if (imageSizePickerControl1.SelectedImageSize == PostHtmlEditing.ImageSize.Unknown)
             {
-                int lockedHeight = ImageUtils.GetScaledImageSize(imageSize.Width, Int32.MaxValue, fullImageSize).Height;
+                int lockedHeight = ImageUtils.GetScaledImageSize(imageSize.Width, int.MaxValue, fullImageSize).Height;
                 cbConstrainRatio.Checked = imageSize.Height == lockedHeight;
             }
             else
@@ -316,7 +316,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (_imageSize != size)
                 {
                     _imageSize = size;
-                    if (size != new Size(Int32.MaxValue, Int32.MaxValue))
+                    if (size != new Size(int.MaxValue, int.MaxValue))
                     {
                         textBoxHeight.Text = _imageSize.Height.ToString(CultureInfo.CurrentCulture);
                         textBoxWidth.Text = _imageSize.Width.ToString(CultureInfo.CurrentCulture);
@@ -456,7 +456,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             _ignoreTextChanges++;
             try
             {
-                if (textBoxWidth.Text == String.Empty || textBoxHeight.Text == String.Empty)
+                if (textBoxWidth.Text == string.Empty || textBoxHeight.Text == string.Empty)
                 {
                     //there is only a partial value entered, so don't apply the current custom size
                     return false;
@@ -464,8 +464,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                 try
                 {
-                    int width = Int32.Parse(textBoxWidth.Text.Trim(), CultureInfo.CurrentCulture);
-                    int height = Int32.Parse(textBoxHeight.Text.Trim(), CultureInfo.CurrentCulture);
+                    int width = int.Parse(textBoxWidth.Text.Trim(), CultureInfo.CurrentCulture);
+                    int height = int.Parse(textBoxHeight.Text.Trim(), CultureInfo.CurrentCulture);
 
                     if (width <= 0 || height <= 0 || width > ImageSizeHelper.MAX_WIDTH || height > ImageSizeHelper.MAX_HEIGHT)
                     {
@@ -484,12 +484,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         if (anchorWidth)
                         {
                             customSize.Height =
-                                ImageUtils.GetScaledImageSize(customSize.Width, Int32.MaxValue, _fullImageSize).Height;
+                                ImageUtils.GetScaledImageSize(customSize.Width, int.MaxValue, _fullImageSize).Height;
                         }
                         else
                         {
                             customSize.Width =
-                                ImageUtils.GetScaledImageSize(Int32.MaxValue, customSize.Height, _fullImageSize).Width;
+                                ImageUtils.GetScaledImageSize(int.MaxValue, customSize.Height, _fullImageSize).Width;
                         }
                     }
                     return SetImageSize(customSize, true);

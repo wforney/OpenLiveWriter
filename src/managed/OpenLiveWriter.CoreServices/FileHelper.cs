@@ -216,12 +216,12 @@ namespace OpenLiveWriter.CoreServices
             foreach (char ch in fileName)
             {
                 if (ch < 128
-                    && (Char.IsLetterOrDigit(ch)
+                    && (char.IsLetterOrDigit(ch)
                     || ch == '.' || ch == '_' || ch == '-'))
                 {
                     ansiNameBuilder.Append(ch);
                 }
-                else if (Char.IsWhiteSpace(ch))
+                else if (char.IsWhiteSpace(ch))
                 {
                     // Replace whitespace with hyphens.
                     ansiNameBuilder.Append('-');
@@ -763,8 +763,8 @@ namespace OpenLiveWriter.CoreServices
             //then just generate a guid.
             // WinLive 272918: Make sure there is at least one alphanumeric character.
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            if (fileNameWithoutExtension == String.Empty ||
-                !ArrayHelper.Any(fileNameWithoutExtension.ToCharArray(), c => Char.IsLetterOrDigit(c)))
+            if (fileNameWithoutExtension == string.Empty ||
+                !ArrayHelper.Any(fileNameWithoutExtension.ToCharArray(), c => char.IsLetterOrDigit(c)))
             {
                 string ext = Path.GetExtension(fileName);
                 fileName = Guid.NewGuid().ToString().Split('-')[4] + ext;
@@ -782,7 +782,7 @@ namespace OpenLiveWriter.CoreServices
         {
             foreach (char ch in EvilEndChars)
             {
-                if (fileName.EndsWith(new String(ch, 1), StringComparison.OrdinalIgnoreCase))
+                if (fileName.EndsWith(new string(ch, 1), StringComparison.OrdinalIgnoreCase))
                     return true;
             }
             return false;

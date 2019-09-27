@@ -369,7 +369,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             if (txtNewCategory.ForeColor == SystemColors.WindowText)
             {
                 string categoryName = txtNewCategory.Text.Trim();
-                if (categoryName != String.Empty)
+                if (categoryName != string.Empty)
                 {
                     // see if we have a parent
                     BlogPostCategory parentCategory = cbParent.Category;
@@ -488,11 +488,11 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             public override string ToString()
             {
                 // default padding
-                string padding = new String(' ', _indentLevel * 3);
+                string padding = new string(' ', _indentLevel * 3);
 
                 // override if we are selected
                 if (!_parentCombo.DroppedDown && (_parentCombo.SelectedItem != null) && this.Equals(_parentCombo.SelectedItem))
-                    padding = String.Empty;
+                    padding = string.Empty;
 
                 string categoryName = HtmlUtils.UnEscapeEntities(Category.Name, HtmlUtils.UnEscapeMode.Default);
                 string stringRepresentation = padding + categoryName;

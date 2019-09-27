@@ -156,7 +156,7 @@ namespace OpenLiveWriter
 
                         // Apply any culture overrides.
                         WriterCommandLineOptions opts = WriterCommandLineOptions.Create(args);
-                        if (!String.IsNullOrEmpty(opts.CultureOverride))
+                        if (!string.IsNullOrEmpty(opts.CultureOverride))
                         {
                             LoadCulture(opts.CultureOverride);
                         }
@@ -284,7 +284,7 @@ namespace OpenLiveWriter
             // initialize application environment
             ApplicationEnvironment.Initialize();
             ApplicationEnvironment.ProductName_Short = "Writer";
-            ApplicationEnvironment.ProductDisplayVersion = String.Format(
+            ApplicationEnvironment.ProductDisplayVersion = string.Format(
                 CultureInfo.InvariantCulture,
                 Res.Get(StringId.ProductDisplayVersion),
                 ApplicationEnvironment.ProductVersion
@@ -311,8 +311,8 @@ namespace OpenLiveWriter
                 // register file associations
                 // Removing this call, as it causes exceptions in Vista
                 // RegisterFileAssociations() ;
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Starting {0} {1}", ApplicationEnvironment.ProductNameQualified, ApplicationEnvironment.ProductVersion));
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, ".NET version: {0}", Environment.Version));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Starting {0} {1}", ApplicationEnvironment.ProductNameQualified, ApplicationEnvironment.ProductVersion));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, ".NET version: {0}", Environment.Version));
                 // force initialization which may fail with error dialogs
                 // and/or cause the whole application to not load
                 if (PostEditorLifetimeManager.Initialize())

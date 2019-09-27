@@ -59,7 +59,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
                 //set the save password flag
                 tempSettings.SavePassword = blogSettings.Credentials.Password != null &&
-                    blogSettings.Credentials.Password != String.Empty;
+                    blogSettings.Credentials.Password != string.Empty;
 
                 // file upload support
                 tempSettings.FileUploadSupport = blogSettings.FileUploadSupport;
@@ -197,11 +197,11 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
         public void ClearProvider()
         {
-            _providerId = String.Empty;
-            _serviceName = String.Empty;
-            _postApiUrl = String.Empty;
-            _clientType = String.Empty;
-            _hostBlogId = String.Empty;
+            _providerId = string.Empty;
+            _serviceName = string.Empty;
+            _postApiUrl = string.Empty;
+            _clientType = string.Empty;
+            _hostBlogId = string.Empty;
             _manifestDownloadInfo = null;
             _optionOverrides.Clear();
             _templateFiles = new BlogEditingTemplateFile[0];
@@ -630,21 +630,21 @@ namespace OpenLiveWriter.PostEditor.Configuration
         //
         // IMPORTANT NOTE: When adding member variables you MUST update the CopyFrom() implementation below!!!!
         //
-        private string _id = String.Empty;
+        private string _id = string.Empty;
         private bool? _savePassword;
         private bool _isSpacesBlog = false;
         private bool _isSharePointBlog = false;
         private bool _isGoogleBloggerBlog = false;
         private bool _isStaticSiteBlog = false;
-        private string _hostBlogId = String.Empty;
-        private string _blogName = String.Empty;
-        private string _homePageUrl = String.Empty;
+        private string _hostBlogId = string.Empty;
+        private string _blogName = string.Empty;
+        private string _homePageUrl = string.Empty;
         private bool _forceManualConfig = false;
         private WriterEditingManifestDownloadInfo _manifestDownloadInfo = null;
-        private string _providerId = String.Empty;
-        private string _serviceName = String.Empty;
-        private string _clientType = String.Empty;
-        private string _postApiUrl = String.Empty;
+        private string _providerId = string.Empty;
+        private string _serviceName = string.Empty;
+        private string _clientType = string.Empty;
+        private string _postApiUrl = string.Empty;
         private TemporaryBlogCredentials _credentials = new TemporaryBlogCredentials();
         private bool _lastPublishFailed = false;
         private BlogEditingTemplateFile[] _templateFiles = new BlogEditingTemplateFile[0];
@@ -838,14 +838,14 @@ namespace OpenLiveWriter.PostEditor.Configuration
             get { return _username; }
             set { _username = value; }
         }
-        private string _username = String.Empty;
+        private string _username = string.Empty;
 
         public string Password
         {
             get { return _password; }
             set { _password = value; }
         }
-        private string _password = String.Empty;
+        private string _password = string.Empty;
 
         public string[] CustomValues
         {
@@ -866,7 +866,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -884,8 +884,8 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
         public void Clear()
         {
-            _username = String.Empty;
-            _password = String.Empty;
+            _username = string.Empty;
+            _password = string.Empty;
             _values.Clear();
         }
 
@@ -907,7 +907,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

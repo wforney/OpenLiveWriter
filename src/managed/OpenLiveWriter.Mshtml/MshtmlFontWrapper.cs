@@ -63,7 +63,7 @@ namespace OpenLiveWriter.Mshtml
 
         public string ApplyFontToBody(string bodyInnerHtml)
         {
-            return String.Format(CultureInfo.InvariantCulture, @"<div style=""font-family:'{0}';font-size:{1}pt;color:{2};"">{3}</div>",
+            return string.Format(CultureInfo.InvariantCulture, @"<div style=""font-family:'{0}';font-size:{1}pt;color:{2};"">{3}</div>",
                 FontFamily,     // {0}
                 FontPointSize,  // {1}
                 FontColor,      // {2}
@@ -92,7 +92,7 @@ namespace OpenLiveWriter.Mshtml
             end.Insert(0, "</DIV>");
 
             start.Append("font-size:");
-            if (Int32.TryParse(parts[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out FontSize))
+            if (int.TryParse(parts[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out FontSize))
             {
                 if (FontSize > 7)
                     FontSize = 7;
@@ -121,7 +121,7 @@ namespace OpenLiveWriter.Mshtml
 
                 try
                 {
-                    Color c = Color.FromArgb(Int32.Parse(rgb[0], CultureInfo.InvariantCulture), Int32.Parse(rgb[1], CultureInfo.InvariantCulture), Int32.Parse(rgb[2], CultureInfo.InvariantCulture));
+                    Color c = Color.FromArgb(int.Parse(rgb[0], CultureInfo.InvariantCulture), int.Parse(rgb[1], CultureInfo.InvariantCulture), int.Parse(rgb[2], CultureInfo.InvariantCulture));
                     FontColor = ColorHelper.ColorToString(c);
                     start.Append("color:");
                     start.Append(FontColor);
@@ -150,9 +150,9 @@ namespace OpenLiveWriter.Mshtml
                 FontFamily = parts[6];
 
                 int fontFamilyIndex = 7;
-                while (fontFamilyIndex < parts.Length && !String.IsNullOrEmpty(parts[fontFamilyIndex]))
+                while (fontFamilyIndex < parts.Length && !string.IsNullOrEmpty(parts[fontFamilyIndex]))
                 {
-                    FontFamily = String.Format(CultureInfo.InvariantCulture, "{0},{1}", FontFamily, parts[fontFamilyIndex]);
+                    FontFamily = string.Format(CultureInfo.InvariantCulture, "{0},{1}", FontFamily, parts[fontFamilyIndex]);
                     fontFamilyIndex++;
                 }
 

@@ -280,7 +280,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 if (BlogClientUIContext.SilentModeForCurrentThread)
                 {
                     // If we're in silent mode where prompting isn't allowed, throw the verification exception
-                    throw new BlogClientAuthenticationException(String.Empty, String.Empty);
+                    throw new BlogClientAuthenticationException(string.Empty, string.Empty);
                 }
 
                 // Start an OAuth flow to renew the credentials.
@@ -713,7 +713,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 var uploadRes = uploadReq.Upload();
                 if (uploadRes.Status != Google.Apis.Upload.UploadStatus.Completed)
                     throw new BlogClientFileTransferException(
-                        String.Format(Res.Get(StringId.BCEFileTransferTransferringFile), Path.GetFileName(filename)), 
+                        string.Format(Res.Get(StringId.BCEFileTransferTransferringFile), Path.GetFileName(filename)), 
                         "BloggerDriveError",
                         $"Google Drive image upload for {Path.GetFileName(filename)} failed.\nDetails: {uploadRes.Exception}");
             }

@@ -642,12 +642,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             public override string OnBodyInserted(string bodyContents)
             {
-                return String.Format(CultureInfo.InvariantCulture, "<div id=\"{0}\" class='postBody' style='margin: 4px 0px 0px 0px; padding: 0px 0px 0px 0px; border: 0px;'>{1}</div>", BODY_FRAGMENT_ID, bodyContents); ;
+                return string.Format(CultureInfo.InvariantCulture, "<div id=\"{0}\" class='postBody' style='margin: 4px 0px 0px 0px; padding: 0px 0px 0px 0px; border: 0px;'>{1}</div>", BODY_FRAGMENT_ID, bodyContents); ;
             }
 
             public override string OnTitleInserted(string title)
             {
-                return String.Format(CultureInfo.InvariantCulture, "<span id=\"{0}\" class='postTitle' style='margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; border: 0px;'>{1}</span>", TITLE_FRAGMENT_ID, HtmlUtils.EscapeEntities(title));
+                return string.Format(CultureInfo.InvariantCulture, "<span id=\"{0}\" class='postTitle' style='margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; border: 0px;'>{1}</span>", TITLE_FRAGMENT_ID, HtmlUtils.EscapeEntities(title));
             }
 
             public override void OnDocumentComplete(IHTMLDocument2 doc)

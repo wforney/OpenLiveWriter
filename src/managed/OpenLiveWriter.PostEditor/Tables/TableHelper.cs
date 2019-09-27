@@ -225,7 +225,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 case HorizontalAlignment.Right:
                     return "right";
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
 
@@ -254,7 +254,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 case VerticalAlignment.Bottom:
                     return "bottom";
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
 

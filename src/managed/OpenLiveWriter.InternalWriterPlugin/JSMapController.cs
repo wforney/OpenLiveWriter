@@ -68,7 +68,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         public void ShowContextMenu(int x, int y, float latitude, float longitude, string reserved, string pushpinId)
         {
-            if (reserved == String.Empty)
+            if (reserved == string.Empty)
                 reserved = null;
 
             if (pushpinId == "")
@@ -90,9 +90,9 @@ namespace OpenLiveWriter.InternalWriterPlugin
             OnBirdseyeChanged(EventArgs.Empty);
         }
 
-        public void SetCenter(float latitude, float longitude, String reserved)
+        public void SetCenter(float latitude, float longitude, string reserved)
         {
-            if (reserved == String.Empty)
+            if (reserved == string.Empty)
                 reserved = null;
             _center = new VELatLong(latitude, longitude, reserved);
         }
@@ -281,7 +281,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         private float _longitude;
         private string _reserved;
 
-        public VELatLong(float latitude, float longitude, String reserved)
+        public VELatLong(float latitude, float longitude, string reserved)
         {
             _latitude = latitude;
             _longitude = longitude;
@@ -298,7 +298,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
             get { return _longitude; }
         }
 
-        public String Reserved
+        public string Reserved
         {
             get { return _reserved; }
         }

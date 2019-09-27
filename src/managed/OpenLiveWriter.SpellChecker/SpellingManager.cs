@@ -114,7 +114,7 @@ namespace OpenLiveWriter.SpellChecker
                 //range is invalid for some reason--damage committed while switching views, getting it later on the timer
                 if (!range.Positioned)
                     return;
-                else if (range.Text == null || String.IsNullOrEmpty(range.Text.Trim()))
+                else if (range.Text == null || string.IsNullOrEmpty(range.Text.Trim()))
                 {
                     //empty range--on a delete for instance, just clear
                     _spellingHighlighter.ClearRange(range.Start, range.End);

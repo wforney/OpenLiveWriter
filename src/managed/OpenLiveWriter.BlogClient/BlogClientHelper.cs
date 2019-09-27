@@ -25,8 +25,8 @@ namespace OpenLiveWriter.BlogClient
 
         public static string GetAbsoluteUrl(string url, string sourceUrl)
         {
-            if (url == String.Empty)
-                return String.Empty;
+            if (url == string.Empty)
+                return string.Empty;
             else if (url.IndexOf(BlogClientHelper.BlogHomepageUrlToken, StringComparison.OrdinalIgnoreCase) != -1)
                 return url;
             else if (url.IndexOf(BlogClientHelper.BlogPostApiUrlToken, StringComparison.OrdinalIgnoreCase) != -1)
@@ -124,7 +124,7 @@ namespace OpenLiveWriter.BlogClient
             CookieString cookieString = null;
             NetworkCredential credential = null;
 
-            if (credentials != null && credentials.Username != String.Empty)
+            if (credentials != null && credentials.Username != string.Empty)
             {
                 credential = new NetworkCredential(credentials.Username, credentials.Password);
             }

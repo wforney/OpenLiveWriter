@@ -38,14 +38,14 @@ namespace OpenLiveWriter.PostEditor
 
             string itemName = isPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower);
             this.Text = Res.Get(StringId.PostPublishFileUploadErrorTitle);
-            this.labelCaption1.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPublishFileUploadErrorCaption1), itemName);
-            this.labelCaption2.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPublishFileUploadErrorCaption2), itemName);
+            this.labelCaption1.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPublishFileUploadErrorCaption1), itemName);
+            this.labelCaption2.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.PostPublishFileUploadErrorCaption2), itemName);
             this.buttonOK.Text = Res.Get(StringId.OKButtonText);
 
             if (ex is DisplayableException)
             {
                 DisplayableException displayableEx = ex as DisplayableException;
-                textBoxDetails.Text = String.Format(CultureInfo.CurrentCulture, "{0}\r\n\r\n{1}", displayableEx.Title, displayableEx.Text);
+                textBoxDetails.Text = string.Format(CultureInfo.CurrentCulture, "{0}\r\n\r\n{1}", displayableEx.Title, displayableEx.Text);
             }
             else
             {

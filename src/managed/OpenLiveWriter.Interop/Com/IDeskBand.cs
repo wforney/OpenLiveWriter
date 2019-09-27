@@ -38,7 +38,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Called when the DeskBand is about to be closed
         /// </summary>
         /// <param name="dwReserved">Reserved--should always be zero</param>
-        void CloseDW([In] UInt32 dwReserved);
+        void CloseDW([In] uint dwReserved);
 
         /// <summary>
         /// Notify docking window that the frame's border space has changed -- this
@@ -49,7 +49,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="fReserved">Ignored/unused for DeskBands</param>
         void ResizeBorderDW(
             IntPtr prcBorder,
-            [In, MarshalAs(UnmanagedType.IUnknown)] Object punkToolbarSite,
+            [In, MarshalAs(UnmanagedType.IUnknown)] object punkToolbarSite,
             bool fReserved);
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="dwViewMode">The view mode of the band object</param>
         /// <param name="pdbi">Reference to DESKBANDINFO structure to fill in</param>
         void GetBandInfo(
-            UInt32 dwBandID,
-            UInt32 dwViewMode,
+            uint dwBandID,
+            uint dwViewMode,
             ref DESKBANDINFO pdbi);
     }
 
@@ -99,7 +99,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Title of the band object
         /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
-        public String wszTitle;
+        public string wszTitle;
 
         /// <summary>
         /// Mode of operations for the band object (can contain multiple values)
@@ -110,7 +110,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Background color of the band object -- only valid if DBIMF.BKCOLOR is
         /// specified in dwModeFlags
         /// </summary>
-        public Int32 crBkgnd;
+        public int crBkgnd;
     };
 
     /// <summary>

@@ -235,8 +235,8 @@ namespace OpenLiveWriter.Interop.Com.ActiveDocuments
     /// </summary>
     public struct LOGPALETTE
     {
-        public UInt16 palVersion;
-        public UInt16 palNumEntries;
+        public ushort palVersion;
+        public ushort palNumEntries;
         public IntPtr palPalEntry;
     };
 

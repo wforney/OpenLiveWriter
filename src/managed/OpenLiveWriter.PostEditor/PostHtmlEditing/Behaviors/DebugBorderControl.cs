@@ -13,9 +13,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     /// </summary>
     public class DebugBorderControl : BehaviorControl
     {
-        private String _name;
+        private string _name;
         private Color _color;
-        public DebugBorderControl(String name, Color c)
+        public DebugBorderControl(string name, Color c)
         {
             _name = name;
             _color = c;

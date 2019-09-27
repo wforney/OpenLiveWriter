@@ -124,7 +124,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 if ((ApplicationDiagnostics.AutomationMode || ApplicationDiagnostics.TestMode) && _isDirty)
                 {
-                    Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "ForceDirtyPostEditor Dirty Values {0}", _isDirty));
+                    Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "ForceDirtyPostEditor Dirty Values {0}", _isDirty));
                 }
                 return _isDirty;
             }

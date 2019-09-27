@@ -75,7 +75,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
         public readonly string Method;
 
-        public readonly string ErrorMessage = String.Empty;
+        public readonly string ErrorMessage = string.Empty;
 
         public readonly string Response;
     }
@@ -112,8 +112,8 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             ErrorString = errorString;
         }
 
-        public readonly string ErrorCode = String.Empty;
-        public readonly string ErrorString = String.Empty;
+        public readonly string ErrorCode = string.Empty;
+        public readonly string ErrorString = string.Empty;
     }
 
     public class BlogClientAccessDeniedException : BlogClientAuthenticationException

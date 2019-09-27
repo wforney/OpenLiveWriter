@@ -280,7 +280,7 @@ namespace OpenLiveWriter.Mshtml
                         continue;
                     }
 
-                    Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected error setting IE editing option {0} to value {1}: {2}",
+                    Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected error setting IE editing option {0} to value {1}: {2}",
 editingOption.Key, editingOption.Value, ex.ToString()));
 
                 }
@@ -919,7 +919,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
         /// <param name="dwReserved">Reserved. Must be set to NULL</param>
         void IDocHostUIHandler2.GetOptionKeyPath(out IntPtr pchKey, uint dwReserved)
         {
-            if (!String.IsNullOrEmpty(_mshtmlOptions.DocHostUIOptionKeyPath))
+            if (!string.IsNullOrEmpty(_mshtmlOptions.DocHostUIOptionKeyPath))
                 // MSHTML is responsible for freeing the allocated memory
                 pchKey = Marshal.StringToCoTaskMemUni(_mshtmlOptions.DocHostUIOptionKeyPath);
             else
@@ -933,7 +933,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
         /// <param name="dwReserved"></param>
         void IDocHostUIHandler2.GetOverrideKeyPath(out IntPtr pchKey, uint dwReserved)
         {
-            if (!String.IsNullOrEmpty(_mshtmlOptions.DocHostUIOverrideKeyPath))
+            if (!string.IsNullOrEmpty(_mshtmlOptions.DocHostUIOverrideKeyPath))
                 // MSHTML is responsible for freeing the allocated memory
                 pchKey = Marshal.StringToCoTaskMemUni(_mshtmlOptions.DocHostUIOverrideKeyPath);
             else
@@ -1443,23 +1443,23 @@ editingOption.Key, editingOption.Value, ex.ToString()));
         /// Base registry key path that used to override the IE settings found in
         /// HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer
         /// </summary>
-        public String DocHostUIOverrideKeyPath
+        public string DocHostUIOverrideKeyPath
         {
             get { return _docHostUIOverrideKeyPath; }
             set { _docHostUIOverrideKeyPath = value; }
         }
-        private String _docHostUIOverrideKeyPath = null;
+        private string _docHostUIOverrideKeyPath = null;
 
         /// <summary>
         /// Base registry key path that used to override the IE settings found in
         /// HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer
         /// </summary>
-        public String DocHostUIOptionKeyPath
+        public string DocHostUIOptionKeyPath
         {
             get { return _docHostUIOptionKeyPath; }
             set { _docHostUIOptionKeyPath = value; }
         }
-        private String _docHostUIOptionKeyPath = null;
+        private string _docHostUIOptionKeyPath = null;
     }
 
     public class MshtmlEditingOption

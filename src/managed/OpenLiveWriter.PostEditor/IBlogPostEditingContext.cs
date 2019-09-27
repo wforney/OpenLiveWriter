@@ -85,7 +85,7 @@ namespace OpenLiveWriter.PostEditor
                 return _serverSupportingFileDirectory;
             }
         }
-        private string _serverSupportingFileDirectory = String.Empty;
+        private string _serverSupportingFileDirectory = string.Empty;
 
         public BlogPostSupportingFileStorage SupportingFileStorage
         {

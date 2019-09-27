@@ -364,7 +364,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             //sits on its own line.
             if (postBodyHtml.IndexOf(BlogPost.ExtendedEntryBreak) != -1)
             {
-                string moreExtendedEntryBreakWS = String.Format(CultureInfo.InvariantCulture, "\r\n{0}\r\n", BlogPost.ExtendedEntryBreak);
+                string moreExtendedEntryBreakWS = string.Format(CultureInfo.InvariantCulture, "\r\n{0}\r\n", BlogPost.ExtendedEntryBreak);
                 if (postBodyHtml.IndexOf(moreExtendedEntryBreakWS) == -1)
                     postBodyHtml = postBodyHtml.Replace(BlogPost.ExtendedEntryBreak, moreExtendedEntryBreakWS);
             }
@@ -568,7 +568,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private string ConvertUrl(String url)
+        private string ConvertUrl(string url)
         {
             if (Mode == REPLACE_MODE.ABS2VAR)
             {
@@ -606,10 +606,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             string localPath = new Uri(url).LocalPath;
             string fileName = Path.GetFileNameWithoutExtension(localPath);
             string ext = Path.GetExtension(localPath);
-            string varName = String.Format(CultureInfo.InvariantCulture, "${0}{1}", fileName, ext);
+            string varName = string.Format(CultureInfo.InvariantCulture, "${0}{1}", fileName, ext);
             for (int i = 0; var2abs.ContainsKey(varName); i++)
             {
-                varName = String.Format(CultureInfo.InvariantCulture, "${0}-{1}{2}", fileName, i, ext);
+                varName = string.Format(CultureInfo.InvariantCulture, "${0}-{1}{2}", fileName, i, ext);
             }
 
             var2abs[varName] = url;

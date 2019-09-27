@@ -89,7 +89,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             using (StreamWriter writer = new StreamWriter(cssPath, true, Encoding.UTF8))
                 writer.Write(css);
 
-            return String.Format(CultureInfo.InvariantCulture, defaultDocType + "\r\n" + template, cssPath, containsTitle ? POST_TITLE_MARKER : "", POST_BODY_MARKER);
+            return string.Format(CultureInfo.InvariantCulture, defaultDocType + "\r\n" + template, cssPath, containsTitle ? POST_TITLE_MARKER : "", POST_BODY_MARKER);
         }
 
         internal static string AddRTL(string html)
@@ -100,7 +100,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         public static string GetBlogTemplateDir(string blogId)
         {
-            if (blogId == null || blogId == String.Empty)
+            if (blogId == null || blogId == string.Empty)
                 throw new ArgumentException("Must specify a blogId for GetBlogTemplateDir", "blogId");
 
             string blogTemplateDir = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "blogtemplates");

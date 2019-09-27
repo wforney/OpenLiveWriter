@@ -35,21 +35,21 @@ namespace OpenLiveWriter.Mshtml
             return INET_E.DEFAULT_ACTION;
         }
 
-        public virtual int GetSecurityId(string pwszUrl, out Byte pbSecurityId, ref int pcbSecurityId, IntPtr dwReserved)
+        public virtual int GetSecurityId(string pwszUrl, out byte pbSecurityId, ref int pcbSecurityId, IntPtr dwReserved)
         {
-            pbSecurityId = new Byte();
+            pbSecurityId = new byte();
             return INET_E.DEFAULT_ACTION;
         }
 
         public virtual int ProcessUrlAction(string pwszUrl, int dwAction, out byte pPolicy, int cbPolicy, IntPtr pContext, int cbContext, int dwFlags, int dwReserved)
         {
-            pPolicy = new Byte();
+            pPolicy = new byte();
             return INET_E.DEFAULT_ACTION;
         }
 
-        public virtual int QueryCustomPolicy(string pwszUrl, ref Guid guidKey, out Byte ppPolicy, out int pcbPolicy, Byte pContext, int cbContext, int dwReserved)
+        public virtual int QueryCustomPolicy(string pwszUrl, ref Guid guidKey, out byte ppPolicy, out int pcbPolicy, byte pContext, int cbContext, int dwReserved)
         {
-            ppPolicy = new Byte();
+            ppPolicy = new byte();
             pcbPolicy = 0;
             return INET_E.DEFAULT_ACTION;
         }

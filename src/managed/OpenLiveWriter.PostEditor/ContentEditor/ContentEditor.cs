@@ -1686,8 +1686,8 @@ namespace OpenLiveWriter.PostEditor
                 return;
 
             // state to transfer from editor to editor (default if no existing editor)
-            string htmlTitle = String.Empty;
-            string htmlContents = String.Empty;
+            string htmlTitle = string.Empty;
+            string htmlContents = string.Empty;
             bool isDirty = false;
             IHtmlEditorComponentContext componentContext = null;
             if (_currentEditor != null)
@@ -1943,7 +1943,7 @@ namespace OpenLiveWriter.PostEditor
         {
             string text = "";
             bool bOnlySelectedText = false;
-            if (String.IsNullOrEmpty(_currentEditor.SelectedText))
+            if (string.IsNullOrEmpty(_currentEditor.SelectedText))
             {
                 bOnlySelectedText = false;
                 text = _currentEditor.GetEditedHtmlFast();
@@ -2171,7 +2171,7 @@ namespace OpenLiveWriter.PostEditor
                     //dialog.InitialDirectory = ApplicationEnvironment.InsertImageDirectory;
                     // So instead we just set the user to the my pictures folder.
                     _insertImageDialogWin7.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-                    _insertImageDialogWin7.Filter = String.Format(CultureInfo.InvariantCulture, "{0}|*.gif;*.jpg;*.jpeg;*.png|{1}|*.*", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString));
+                    _insertImageDialogWin7.Filter = string.Format(CultureInfo.InvariantCulture, "{0}|*.gif;*.jpg;*.jpeg;*.png|{1}|*.*", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString));
                 }
 
                 if (DialogResult.OK == _insertImageDialogWin7.ShowDialog(_mainFrameWindow))
@@ -2922,7 +2922,7 @@ namespace OpenLiveWriter.PostEditor
                 if (_editingTemplatePlain == null)
                 {
                     string plainTextHtml =
-                        String.Format(CultureInfo.InvariantCulture, "<html><head></head><body style='font-family: {0}'>{{post-body}}</body></html>",
+                        string.Format(CultureInfo.InvariantCulture, "<html><head></head><body style='font-family: {0}'>{{post-body}}</body></html>",
                                       Res.Get(StringId.DefaultTemplateBodyFont));
                     string html = EditingTemplateLoader.CreateTemplateWithBehaviors(plainTextHtml, new NullElementBehaviorManager());
                     _editingTemplatePlain = new BlogEditingTemplate(html, false);
@@ -2978,7 +2978,7 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return _currentEditor != null ? _currentEditor.CommandSource.SelectionFontFamily : String.Empty;
+                return _currentEditor != null ? _currentEditor.CommandSource.SelectionFontFamily : string.Empty;
             }
         }
 
@@ -3031,7 +3031,7 @@ namespace OpenLiveWriter.PostEditor
         {
             get
             {
-                return _currentEditor != null ? _currentEditor.CommandSource.SelectionStyleName : String.Empty;
+                return _currentEditor != null ? _currentEditor.CommandSource.SelectionStyleName : string.Empty;
             }
         }
 

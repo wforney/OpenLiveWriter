@@ -109,7 +109,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (_scaledImageSizeDelegate != null)
                 {
                     Size scaledSize = _scaledImageSizeDelegate(ImageSize);
-                    return String.Format(CultureInfo.InvariantCulture, "{0} ({1}x{2})", _displayName, scaledSize.Width, scaledSize.Height);
+                    return string.Format(CultureInfo.InvariantCulture, "{0} ({1}x{2})", _displayName, scaledSize.Width, scaledSize.Height);
                 }
                 else
                 {

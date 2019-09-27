@@ -63,10 +63,10 @@ namespace OpenLiveWriter.PostEditor
             get
             {
                 string propertyPath = _element.getAttribute("wlPropertyPath", 2) as string;
-                if (!String.IsNullOrEmpty(propertyPath))
+                if (!string.IsNullOrEmpty(propertyPath))
                     _smartContent.Properties.SetString("wlPropertyPath", propertyPath);
 
-                return _smartContent.Properties.GetString("wlPropertyPath", String.Empty);
+                return _smartContent.Properties.GetString("wlPropertyPath", string.Empty);
             }
         }
 
@@ -169,7 +169,7 @@ namespace OpenLiveWriter.PostEditor
             Debug.Assert(_undoRedoCheck != null, "Setting default text on an unmanaged inline edit field");
             // WinLive 210281: Don't update the default text unless really necessary. If an undo forces this function
             // to run, then creating a new undo unit will clear the redo stack.
-            if (String.IsNullOrEmpty(_element.innerText) && (!_undoRedoCheck.UndoRedoExecuting()))
+            if (string.IsNullOrEmpty(_element.innerText) && (!_undoRedoCheck.UndoRedoExecuting()))
             {
                 using (IUndoUnit undo = _editorContext.CreateInvisibleUndoUnit())
                 {

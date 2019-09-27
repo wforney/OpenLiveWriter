@@ -22,8 +22,8 @@ namespace OpenLiveWriter.Api
         /// contentType attribute of the &lt;lc:format&gt; tag)</param>
         public LiveClipboardContentSourceAttribute(string name, string contentType)
         {
-            Name = name;
-            ContentType = contentType;
+            this.Name = name;
+            this.ContentType = contentType;
         }
 
         /// <summary>
@@ -31,19 +31,10 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Name");
-
-                _name = value;
-            }
+            get => this._name;
+            set => this._name = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Name");
         }
-        private string _name = String.Empty;
+        private string _name = string.Empty;
 
         /// <summary>
         /// MIME content-type handled by this ContentSource (corresponds to the
@@ -51,19 +42,10 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string ContentType
         {
-            get
-            {
-                return _contentType;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.ContentType");
-
-                _contentType = value;
-            }
+            get => this._contentType;
+            set => this._contentType = value ?? throw new ArgumentNullException("LiveClipboardContentSource.ContentType");
         }
-        private string _contentType = String.Empty;
+        private string _contentType = string.Empty;
 
         /// <summary>
         /// Path to embedded image resource used to represent this format within the Live Clipboard
@@ -72,19 +54,10 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string ImagePath
         {
-            get
-            {
-                return _imagePath;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.ImagePath");
-
-                _imagePath = value;
-            }
+            get => this._imagePath;
+            set => this._imagePath = value ?? throw new ArgumentNullException("LiveClipboardContentSource.ImagePath");
         }
-        private string _imagePath = String.Empty;
+        private string _imagePath = string.Empty;
 
         /// <summary>
         /// End-user presentable description of the data format handled by this ContentSource.
@@ -92,19 +65,10 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Description
         {
-            get
-            {
-                return _description;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Description");
-
-                _description = value;
-            }
+            get => this._description;
+            set => this._description = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Description");
         }
-        private string _description = String.Empty;
+        private string _description = string.Empty;
 
         /// <summary>
         /// Content sub-type handled by this content source. (corresponds to the
@@ -114,18 +78,9 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public string Type
         {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("LiveClipboardContentSource.Type");
-
-                _type = value;
-            }
+            get => this._type;
+            set => this._type = value ?? throw new ArgumentNullException("LiveClipboardContentSource.Type");
         }
-        private string _type = String.Empty;
+        private string _type = string.Empty;
     }
 }

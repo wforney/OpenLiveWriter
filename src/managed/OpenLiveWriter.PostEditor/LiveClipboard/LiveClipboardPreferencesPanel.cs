@@ -67,7 +67,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
             pictureBoxLiveClipboardIcon.Image = ResourceHelper.LoadAssemblyResourceBitmap("LiveClipboard.Images.LiveClipboardIcon.png", true);
 
             // parameterize caption with product name
-            labelCaption.Text = String.Format(CultureInfo.CurrentCulture, labelCaption.Text, ApplicationEnvironment.ProductName);
+            labelCaption.Text = string.Format(CultureInfo.CurrentCulture, labelCaption.Text, ApplicationEnvironment.ProductName);
 
             // initialize preferences
             _liveClipboardPreferences = new LiveClipboardPreferences();
@@ -207,7 +207,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                 panelFormatDetails.Visible = true;
                 labelNoFormatSelected.Visible = false;
 
-                groupBoxFormatDetails.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LCPrefDetailsGroupBoxFormat), formatHandler.FormatName);
+                groupBoxFormatDetails.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LCPrefDetailsGroupBoxFormat), formatHandler.FormatName);
                 LiveClipboardComponentDisplay componentDisplay = new LiveClipboardComponentDisplay(formatHandler.ContentSource);
                 pictureBoxContentSource.Image = componentDisplay.Icon;
                 labelContentSourceName.Text = componentDisplay.Name;

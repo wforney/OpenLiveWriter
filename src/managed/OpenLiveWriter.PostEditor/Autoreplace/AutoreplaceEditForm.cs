@@ -60,14 +60,14 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
             if (_newReplaceValue)
             {
 
-                if (String.IsNullOrEmpty(Phrase))
+                if (string.IsNullOrEmpty(Phrase))
                 {
                     DisplayMessage.Show(MessageId.AutoreplacePhraseRequired);
                     textBoxPhrase.Focus();
                     return false;
                 }
 
-                if (String.IsNullOrEmpty(ReplaceValue))
+                if (string.IsNullOrEmpty(ReplaceValue))
                 {
                     DisplayMessage.Show(MessageId.AutoreplaceReplacementRequired);
                     textBoxReplace.Focus();

@@ -36,7 +36,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public string LastEditingView
         {
-            get { return _editorTemplateSettings.GetString(LAST_EDITING_VIEW, String.Empty); }
+            get { return _editorTemplateSettings.GetString(LAST_EDITING_VIEW, string.Empty); }
             set { _editorTemplateSettings.SetString(LAST_EDITING_VIEW, value); }
         }
         private const string LAST_EDITING_VIEW = "LastEditingView";
@@ -188,7 +188,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     // get the list of templates which are legit
                     ArrayList templatesInUse = new ArrayList();
                     foreach (string key in templates.GetNames())
-                        templatesInUse.Add(MakeAbsolute(templates.GetString(key, String.Empty)).Trim().ToLower(CultureInfo.CurrentCulture));
+                        templatesInUse.Add(MakeAbsolute(templates.GetString(key, string.Empty)).Trim().ToLower(CultureInfo.CurrentCulture));
 
                     // delete each of the template files in the directory which
                     // are not contained in our list of valid templates
@@ -248,7 +248,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Error occurred cleaning up template {0}: {1}", templateFile, ex.ToString()));
+                Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Error occurred cleaning up template {0}: {1}", templateFile, ex.ToString()));
             }
         }
 

@@ -52,7 +52,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 {
                     foreach (string customizationName in settingsKey.GetNames())
                     {
-                        IBlogProviderAccountWizardDescription wizardDescription = LoadAccountWizardFromXml(settingsKey.GetString(customizationName, String.Empty));
+                        IBlogProviderAccountWizardDescription wizardDescription = LoadAccountWizardFromXml(settingsKey.GetString(customizationName, string.Empty));
                         if (wizardDescription != null)
                             accountWizardsFromXml.Add(wizardDescription);
                     }
@@ -74,7 +74,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
             catch (Exception ex)
             {
-                Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Unexpected exception loading account wizard {0}: {1}", xmlDocumentPath, ex.ToString()));
+                Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Unexpected exception loading account wizard {0}: {1}", xmlDocumentPath, ex.ToString()));
                 return null;
             }
         }
@@ -281,27 +281,27 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
             // service name
             string serviceName = NodeText(customAccountWizardNode.SelectSingleNode("serviceName"));
-            if (serviceName == String.Empty)
+            if (serviceName == string.Empty)
                 throw new Exception("Required element serviceName is not specified or empty");
 
             // welcome page is optional
             BlogProviderWelcomePage welcomePage = null;
             string welcomePageCaption = NodeText(customAccountWizardNode.SelectSingleNode("welcomePage/caption"));
             string welcomePageText = NodeText(customAccountWizardNode.SelectSingleNode("welcomePage/text"));
-            if (welcomePageCaption != String.Empty && welcomePageText != String.Empty)
+            if (welcomePageCaption != string.Empty && welcomePageText != string.Empty)
                 welcomePage = new BlogProviderWelcomePage(welcomePageCaption, welcomePageText);
 
             // account creation link is optional
             BlogProviderAccountCreationLink accountCreationLink = null;
             string imagePath = NodeText(customAccountWizardNode.SelectSingleNode("accountCreationLink/imagePath"));
-            if (imagePath != String.Empty)
+            if (imagePath != string.Empty)
             {
                 if (!Path.IsPathRooted(imagePath))
                     imagePath = Path.Combine(Path.GetDirectoryName(wizardDocumentPath), imagePath);
             }
             string caption = NodeText(customAccountWizardNode.SelectSingleNode("accountCreationLink/caption"));
             string link = NodeText(customAccountWizardNode.SelectSingleNode("accountCreationLink/link"));
-            if (imagePath != String.Empty && caption != String.Empty && link != String.Empty)
+            if (imagePath != string.Empty && caption != string.Empty && link != string.Empty)
                 accountCreationLink = new BlogProviderAccountCreationLinkFromFile(imagePath, caption, link);
 
             // initialize
@@ -313,7 +313,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
     }
 

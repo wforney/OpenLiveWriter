@@ -62,7 +62,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     // if the server didn't return a post-id then replace it with the
                     // known post id
-                    if (serverBlogPost.Id == String.Empty)
+                    if (serverBlogPost.Id == string.Empty)
                         serverBlogPost.Id = editingContext.BlogPost.Id;
 
                     // merge trackbacks
@@ -421,7 +421,7 @@ namespace OpenLiveWriter.PostEditor
                     Uri fixedImageUri = (Uri)urlFixupTable[new Uri(reference)];
                     if (fixedImageUri != null)
                     {
-                        Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "RecentPostSyncrhonizer: converting remote image reference [{0}] to local reference", reference));
+                        Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "RecentPostSyncrhonizer: converting remote image reference [{0}] to local reference", reference));
                         reference = fixedImageUri.ToString();
                     }
                 }

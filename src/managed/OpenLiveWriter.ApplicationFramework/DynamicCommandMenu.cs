@@ -131,8 +131,8 @@ namespace OpenLiveWriter.ApplicationFramework
                     command.Enabled = false;
 
                     //	Update the command.
-                    command.Tag = String.Empty;
-                    command.MenuFormatArgs = new object[] { String.Empty };
+                    command.Tag = string.Empty;
+                    command.MenuFormatArgs = new object[] { string.Empty };
                 }
                 else
                 {

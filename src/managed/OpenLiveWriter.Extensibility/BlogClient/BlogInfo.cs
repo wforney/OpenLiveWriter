@@ -20,14 +20,14 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             Name = name;
             HomepageUrl = homepageUrl;
         }
-        public readonly string Id = String.Empty;
-        public readonly string Name = String.Empty;
+        public readonly string Id = string.Empty;
+        public readonly string Name = string.Empty;
 
         /// <summary>
         /// Note: Specification of this field is not required, do not depend
         /// upon it having a valid URL
         /// </summary>
-        public readonly string HomepageUrl = String.Empty;
+        public readonly string HomepageUrl = string.Empty;
 
         public override string ToString()
         {
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         {
             public int Compare(object x, object y)
             {
-                return String.Compare((x as BlogInfo).Name, (y as BlogInfo).Name, StringComparison.Ordinal);
+                return string.Compare((x as BlogInfo).Name, (y as BlogInfo).Name, StringComparison.Ordinal);
             }
         }
     }

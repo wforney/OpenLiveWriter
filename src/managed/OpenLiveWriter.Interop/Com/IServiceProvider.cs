@@ -25,7 +25,7 @@ namespace OpenLiveWriter.Interop.Com
         void QueryService(
             [In] ref Guid guid,
             [In] ref Guid riid,
-            [Out, MarshalAs(UnmanagedType.Interface)] out Object Obj);
+            [Out, MarshalAs(UnmanagedType.Interface)] out object Obj);
     }
 
     /// <summary>

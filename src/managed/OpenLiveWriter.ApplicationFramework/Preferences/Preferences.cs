@@ -214,7 +214,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                 // open handle to registry key
                 int result = Advapi32.RegOpenKeyEx(
                     HKEY.CURRENT_USER,
-                    String.Format(CultureInfo.InvariantCulture, @"{0}\{1}\{2}", ApplicationEnvironment.SettingsRootKeyName, ApplicationConstants.PREFERENCES_SUB_KEY, subKey),
+                    string.Format(CultureInfo.InvariantCulture, @"{0}\{1}\{2}", ApplicationEnvironment.SettingsRootKeyName, ApplicationConstants.PREFERENCES_SUB_KEY, subKey),
                     0, KEY.READ, out hPrefsKey);
                 if (result != ERROR.SUCCESS)
                 {

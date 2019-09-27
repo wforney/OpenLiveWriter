@@ -59,9 +59,9 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                 Debug.Assert(AutoReplaceText.Count > 0, AltText + " emoticon is missing auto-replace text!");
 
                 if (AutoReplaceText.Count == 1)
-                    return String.Format(CultureInfo.InvariantCulture, Res.Get(StringId.EmoticonsTooltipOneAutoReplace), AltText, AutoReplaceText[0]);
+                    return string.Format(CultureInfo.InvariantCulture, Res.Get(StringId.EmoticonsTooltipOneAutoReplace), AltText, AutoReplaceText[0]);
                 else
-                    return String.Format(CultureInfo.InvariantCulture, Res.Get(StringId.EmoticonsTooltipTwoAutoReplace), AltText, AutoReplaceText[0], AutoReplaceText[1]);
+                    return string.Format(CultureInfo.InvariantCulture, Res.Get(StringId.EmoticonsTooltipTwoAutoReplace), AltText, AutoReplaceText[0], AutoReplaceText[1]);
             }
         }
 

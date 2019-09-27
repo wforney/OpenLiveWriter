@@ -88,7 +88,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             _positionOriginal = WatermarkSettings.Position;
             _textOriginal = WatermarkSettings.Text;
 
-            textBoxText.Text = string.IsNullOrEmpty(WatermarkSettings.Text) ? String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WatermarkDefaultText), DateTime.Now) : WatermarkSettings.Text;
+            textBoxText.Text = string.IsNullOrEmpty(WatermarkSettings.Text) ? string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.WatermarkDefaultText), DateTime.Now) : WatermarkSettings.Text;
 
             SelectInCombo(comboBoxSize, WatermarkSettings.FontSize.ToString(CultureInfo.CurrentCulture));
             SelectInCombo(comboBoxPosition, GetPrettyName(WatermarkSettings.Position));
@@ -203,7 +203,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         {
             base.OnSaveSettings();
             WatermarkSettings.Text = textBoxText.Text;
-            WatermarkSettings.FontSize = Int32.Parse(comboBoxSize.GetItemText(comboBoxSize.SelectedItem), CultureInfo.CurrentCulture);
+            WatermarkSettings.FontSize = int.Parse(comboBoxSize.GetItemText(comboBoxSize.SelectedItem), CultureInfo.CurrentCulture);
             WatermarkSettings.Position = GetEnumFromName(comboBoxPosition.GetItemText(comboBoxPosition.SelectedItem));
             WatermarkSettings.FontFamily = comboBoxFontFamily.GetItemText(comboBoxFontFamily.SelectedItem);
         }

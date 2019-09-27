@@ -39,8 +39,8 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             this.labelCaption.Font = Res.GetFont(FontSize.Normal, FontStyle.Bold);
             // initialize text
             Text = contentSourceInfo.Name;
-            labelCaption.Text = contentSourceInfo.UrlContentSourceProgressCaption != String.Empty ? contentSourceInfo.UrlContentSourceProgressCaption : Res.Get(StringId.UrlRetrieveProgressCaption);
-            labelDetails.Text = contentSourceInfo.UrlContentSourceProgressMessage != String.Empty ? contentSourceInfo.UrlContentSourceProgressMessage : Res.Get(StringId.UrlRetrieveProgressMessage);
+            labelCaption.Text = contentSourceInfo.UrlContentSourceProgressCaption != string.Empty ? contentSourceInfo.UrlContentSourceProgressCaption : Res.Get(StringId.UrlRetrieveProgressCaption);
+            labelDetails.Text = contentSourceInfo.UrlContentSourceProgressMessage != string.Empty ? contentSourceInfo.UrlContentSourceProgressMessage : Res.Get(StringId.UrlRetrieveProgressMessage);
 
             // initialize animated bitmap
             _animatedBitmapControl.Bitmaps = AnimationBitmaps;
@@ -131,7 +131,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     ArrayList list = new ArrayList();
                     for (int i = 1; i <= 22; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "ContentSources.Images.NetworkProgress.Progress{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "ContentSources.Images.NetworkProgress.Progress{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));

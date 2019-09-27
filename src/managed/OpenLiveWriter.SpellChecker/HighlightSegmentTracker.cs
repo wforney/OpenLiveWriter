@@ -109,7 +109,7 @@ namespace OpenLiveWriter.SpellChecker
             {
                 SegmentDef x = (SegmentDef) list.GetByIndex(i);
                 //TODO: Change with new cultures added!!!
-                if (0 == String.Compare(word, x.word, true, CultureInfo.InvariantCulture))
+                if (0 == string.Compare(word, x.word, true, CultureInfo.InvariantCulture))
                 {
                     //check spelling--capitalized word may be ok, but not mixed case, etc.
                     if (!checkSpelling(x.word))

@@ -199,7 +199,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             if (HtmlImageTargetSettings.LinkTarget == LinkTargetType.IMAGE)
             {
                 linkToSummaryText = Path.GetFileName(EditorContext.SourceImageUri.LocalPath);
-                linkToSizeText = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.DimensionsFormat), HtmlImageTargetSettings.ImageSize.Width, HtmlImageTargetSettings.ImageSize.Height);
+                linkToSizeText = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.DimensionsFormat), HtmlImageTargetSettings.ImageSize.Width, HtmlImageTargetSettings.ImageSize.Height);
                 linkToImageViewer = "";
                 if (HtmlImageTargetSettings.DhtmlImageViewer != null && HtmlImageTargetSettings.DhtmlImageViewer == ImageEditingContext.EditorOptions.DhtmlImageViewer)
                 {
@@ -227,7 +227,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             }
             else if (HtmlImageTargetSettings.LinkTarget == LinkTargetType.URL)
             {
-                linkToImageViewer = String.Empty;
+                linkToImageViewer = string.Empty;
                 linkToSummaryText = HtmlImageTargetSettings.LinkTargetUrl;
                 if (UrlHelper.IsUrl(linkToSummaryText))
                 {
@@ -235,7 +235,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     {
                         //attempt to shorten the URI string into a path-ellipsed format.
                         Uri sourceUri = new Uri(HtmlImageTargetSettings.LinkTargetUrl);
-                        linkToSummaryText = String.Format(CultureInfo.InvariantCulture, "{0}://{1}", sourceUri.Scheme, sourceUri.Host);
+                        linkToSummaryText = string.Format(CultureInfo.InvariantCulture, "{0}://{1}", sourceUri.Scheme, sourceUri.Host);
                         string[] segments = sourceUri.Segments;
                         if (segments.Length > 2)
                         {
@@ -245,7 +245,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                             linkToSummaryText += segments[segments.Length - 1];
                         }
                         else
-                            linkToSummaryText += String.Join("", segments);
+                            linkToSummaryText += string.Join("", segments);
 
                         if (sourceUri.Query != null)
                             linkToSummaryText += sourceUri.Query;
@@ -264,9 +264,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             PerformLayout();
             Invalidate();
         }
-        string linkToSummaryText = String.Empty;
+        string linkToSummaryText = string.Empty;
         string linkToSizeText = "1024x768";
-        string linkToImageViewer = String.Empty;
+        string linkToImageViewer = string.Empty;
 
         protected override void OnLayout(LayoutEventArgs levent)
         {
@@ -436,11 +436,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     using (HyperlinkForm hyperlinkForm = new HyperlinkForm(EditorContext.CommandManager, GlobalEditorOptions.SupportsFeature(ContentEditorFeature.ShowAllLinkOptions)))
                     {
                         hyperlinkForm.ContainsImage = true;
-                        hyperlinkForm.EditStyle = HtmlImageTargetSettings.LinkTargetUrl != null && HtmlImageTargetSettings.LinkTargetUrl != String.Empty;
+                        hyperlinkForm.EditStyle = HtmlImageTargetSettings.LinkTargetUrl != null && HtmlImageTargetSettings.LinkTargetUrl != string.Empty;
                         hyperlinkForm.NewWindow = HtmlImageTargetSettings.LinkOptions.ShowInNewWindow;
-                        if (HtmlImageTargetSettings.LinkTitle != String.Empty)
+                        if (HtmlImageTargetSettings.LinkTitle != string.Empty)
                             hyperlinkForm.LinkTitle = HtmlImageTargetSettings.LinkTitle;
-                        if (HtmlImageTargetSettings.LinkRel != String.Empty)
+                        if (HtmlImageTargetSettings.LinkRel != string.Empty)
                             hyperlinkForm.Rel = HtmlImageTargetSettings.LinkRel;
                         if (HtmlImageTargetSettings.LinkTargetUrl != null && HtmlImageTargetSettings.LinkTarget != LinkTargetType.IMAGE)
                         {

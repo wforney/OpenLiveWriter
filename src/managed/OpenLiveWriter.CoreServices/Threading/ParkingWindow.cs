@@ -29,7 +29,7 @@ namespace OpenLiveWriter.CoreServices.Threading
                 if (parkingWindow == null)
                 {
                     parkingWindow = new Form();
-                    parkingWindow.Text = String.Format(CultureInfo.InvariantCulture, "{0} Task Window", ApplicationEnvironment.ProductName);
+                    parkingWindow.Text = string.Format(CultureInfo.InvariantCulture, "{0} Task Window", ApplicationEnvironment.ProductName);
                     parkingWindow.FormBorderStyle = FormBorderStyle.None;
                     parkingWindow.MinimumSize = new Size(1, 1);
                     parkingWindow.Size = new Size(1, 1);

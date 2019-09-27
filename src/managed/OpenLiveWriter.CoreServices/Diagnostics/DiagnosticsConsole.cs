@@ -72,7 +72,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The font we use to draw the log.
         /// </summary>
-        private Font itemFont = new Font("Verdana", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+        private Font itemFont = new Font("Verdana", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 
         /// <summary>
         /// The first event index being displayed.
@@ -87,12 +87,12 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The include regex text used to create includeRegex.
         /// </summary>
-        private string includeRegexText = String.Empty;
+        private string includeRegexText = string.Empty;
 
         /// <summary>
         /// The exclude regex text used to create excludeRegex.
         /// </summary>
-        private string excludeRegexText = String.Empty;
+        private string excludeRegexText = string.Empty;
 
         /// <summary>
         /// The include regex.
@@ -132,7 +132,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <param name="title">The title.</param>
         public DiagnosticsConsole(BufferingTraceListener bufferingTraceListener, string title) : this()
         {
-            Text = String.Format(CultureInfo.InvariantCulture, "{0} - {1} Diagnostics Console", ApplicationEnvironment.ProductNameQualified, title);
+            Text = string.Format(CultureInfo.InvariantCulture, "{0} - {1} Diagnostics Console", ApplicationEnvironment.ProductNameQualified, title);
             this.bufferingTraceListener = bufferingTraceListener;
             this.bufferingTraceListener.Changed += new EventHandler(bufferingTraceListener_Changed);
         }
@@ -687,7 +687,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     if (bufferingTraceListenerEntry.Category == ErrText.FailText)
                     {
                         color = Color.Red;
-                        text = String.Format(CultureInfo.InvariantCulture, "{0} {1}", bufferingTraceListenerEntry.Text, StackTraceText);
+                        text = string.Format(CultureInfo.InvariantCulture, "{0} {1}", bufferingTraceListenerEntry.Text, StackTraceText);
                     }
                     else
                     {
@@ -733,18 +733,18 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             //	Get the include regular expression text.
             string newIncludeRegexText = textBoxInclude.Text.Trim();
             if (newIncludeRegexText != null && newIncludeRegexText.Length == 0)
-                newIncludeRegexText = String.Empty;
+                newIncludeRegexText = string.Empty;
 
             //	Get the exclude regular expression text.
             string newExcludeRegexText = textBoxExclude.Text.Trim();
             if (newExcludeRegexText != null && newExcludeRegexText.Length == 0)
-                newExcludeRegexText = String.Empty;
+                newExcludeRegexText = string.Empty;
 
             //	Update the include regular expressions.
             if (newIncludeRegexText != includeRegexText)
             {
                 includeRegexText = newIncludeRegexText;
-                if (includeRegexText == String.Empty)
+                if (includeRegexText == string.Empty)
                     includeRegex = null;
                 else
                     includeRegex = new Regex(includeRegexText, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline);
@@ -754,7 +754,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             if (newExcludeRegexText != excludeRegexText)
             {
                 excludeRegexText = newExcludeRegexText;
-                if (excludeRegexText == String.Empty)
+                if (excludeRegexText == string.Empty)
                     excludeRegex = null;
                 else
                     excludeRegex = new Regex(excludeRegexText, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline);

@@ -160,7 +160,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (txtUrl.Text == String.Empty)
+            if (txtUrl.Text == string.Empty)
             {
                 DisplayMessage.Show(MessageId.NoLinkTextSpecified, this);
                 DialogResult = DialogResult.None;

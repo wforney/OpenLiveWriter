@@ -271,7 +271,7 @@ namespace OpenLiveWriter.BlogClient
             get
             {
                 // look for an option override
-                if (BlogClient.Options.ServiceName != String.Empty)
+                if (BlogClient.Options.ServiceName != string.Empty)
                     return BlogClient.Options.ServiceName;
                 else
                     return _settings.ServiceName;
@@ -644,16 +644,16 @@ namespace OpenLiveWriter.BlogClient
             string faultCodePattern = BlogClient.Options.InvalidPostIdFaultCodePattern;
             string faultStringPattern = BlogClient.Options.InvalidPostIdFaultStringPattern;
 
-            if (faultCodePattern != String.Empty && faultStringPattern != String.Empty)
+            if (faultCodePattern != string.Empty && faultStringPattern != string.Empty)
             {
                 return FaultCodeMatchesInvalidPostId(ex.ErrorCode, faultCodePattern) &&
                        FaultStringMatchesInvalidPostId(ex.ErrorString, faultStringPattern);
             }
-            else if (faultCodePattern != String.Empty)
+            else if (faultCodePattern != string.Empty)
             {
                 return FaultCodeMatchesInvalidPostId(ex.ErrorCode, faultCodePattern);
             }
-            else if (faultStringPattern != String.Empty)
+            else if (faultStringPattern != string.Empty)
             {
                 return FaultStringMatchesInvalidPostId(ex.ErrorString, faultStringPattern);
             }
@@ -693,9 +693,9 @@ namespace OpenLiveWriter.BlogClient
 
         private void EnsurePermalink(BlogPost blogPost)
         {
-            if (blogPost.Permalink == String.Empty)
+            if (blogPost.Permalink == string.Empty)
             {
-                if (ClientOptions.PermalinkFormat != String.Empty)
+                if (ClientOptions.PermalinkFormat != string.Empty)
                 {
                     // construct the permalink from a pre-provided pattern
                     blogPost.Permalink = FormatUrl(ClientOptions.PermalinkFormat, blogPost.Id);
@@ -753,7 +753,7 @@ namespace OpenLiveWriter.BlogClient
                 foreach (string filterString in contentFilters)
                 {
                     string contentFilter = filterString.Trim();
-                    if (contentFilter != String.Empty)
+                    if (contentFilter != string.Empty)
                     {
                         IBlogPostContentFilter bpContentFilter = BlogPostContentFilters.CreateContentFilter(contentFilter);
                         if (filterMode == ContentFilterMode.Open)

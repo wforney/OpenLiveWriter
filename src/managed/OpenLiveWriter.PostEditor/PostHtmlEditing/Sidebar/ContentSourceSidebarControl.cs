@@ -30,7 +30,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
         private IContentSourceSidebarContext _contentSourceContext;
         private SmartContentSource _contentSource;
         private EditableSmartContent _editableSmartContent;
-        private String _selectedSmartContentId;
+        private string _selectedSmartContentId;
         private object _currentSelection;
         string _contentSourceId;
         string _contentItemId;
@@ -177,7 +177,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                 _currentEditor = null;
                 //TODO: does this clear cause the current editor to be disposed?  We don't want it to be.
                 Controls.Clear();
-                _sidebarContext.UpdateStatusBar(String.Empty);
+                _sidebarContext.UpdateStatusBar(string.Empty);
             }
         }
 

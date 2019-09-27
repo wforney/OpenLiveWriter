@@ -20,13 +20,13 @@ namespace OpenLiveWriter.CoreServices
 
         public static MimeHelperException ForIllegalEncodingCharacter(char illegalChar, string encodingType, Exception innerException)
         {
-            string message = String.Format(CultureInfo.CurrentCulture, "An illegal character was encountered, with character code: {0} [{1}]", (int)illegalChar, encodingType);
+            string message = string.Format(CultureInfo.CurrentCulture, "An illegal character was encountered, with character code: {0} [{1}]", (int)illegalChar, encodingType);
             return new MimeHelperException(message, innerException);
         }
 
         public static MimeHelperException ForUnableToSetContentType(string encodingType, Exception innerException)
         {
-            string message = String.Format(CultureInfo.CurrentCulture, "Can't set content type: {0}", encodingType);
+            string message = string.Format(CultureInfo.CurrentCulture, "Can't set content type: {0}", encodingType);
             return new MimeHelperException(message, innerException);
         }
 

@@ -65,12 +65,12 @@ namespace OpenLiveWriter.Interop.Windows
 
         public struct URL
         {
-            public const UInt32 ESCAPE_SPACES_ONLY = 0x04000000;
-            public const UInt32 DONT_SIMPLIFY = 0x08000000;
-            public const UInt32 ESCAPE_PERCENT = 0x00001000;
-            public const UInt32 UNESCAPE = 0x10000000;
-            public const UInt32 ESCAPE_UNSAFE = 0x20000000;
-            public const UInt32 PLUGGABLE_PROTOCOL = 0x40000000;
+            public const uint ESCAPE_SPACES_ONLY = 0x04000000;
+            public const uint DONT_SIMPLIFY = 0x08000000;
+            public const uint ESCAPE_PERCENT = 0x00001000;
+            public const uint UNESCAPE = 0x10000000;
+            public const uint ESCAPE_UNSAFE = 0x20000000;
+            public const uint PLUGGABLE_PROTOCOL = 0x40000000;
         }
 
         [DllImport("Shlwapi.dll")]

@@ -9,7 +9,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
     class VideoServiceException : ApplicationException
     {
         public VideoServiceException(string title, string description)
-            : base(String.Format(CultureInfo.InvariantCulture, "{0} - {1}", title, description))
+            : base(string.Format(CultureInfo.InvariantCulture, "{0} - {1}", title, description))
         {
             _title = title;
             _description = description;

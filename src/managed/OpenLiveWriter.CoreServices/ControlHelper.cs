@@ -264,7 +264,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string ToAccessibleName(string val)
         {
-            string accName = _accNameStripChars.Replace(val, String.Empty);
+            string accName = _accNameStripChars.Replace(val, string.Empty);
             return accName;
         }
         private static Regex _accNameStripChars = new Regex("(&|:)");

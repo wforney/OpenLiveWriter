@@ -33,7 +33,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
             StringBuilder sb = new StringBuilder();
             String coords = latitude.ToString(CultureInfo.InvariantCulture) + "~" + longitude.ToString(CultureInfo.InvariantCulture);
-            if (reserved != null && reserved != String.Empty)
+            if (reserved != null && reserved != string.Empty)
                 coords = reserved;
 
             sb.AppendFormat(MAP_QUERY_FORMAT, coords, level, style);
@@ -54,10 +54,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
                         sb.Append("~");
                     }
                     sb.AppendFormat(CultureInfo.InvariantCulture, "aN.{0}_{1}_{2}_{3}", pin.VELatLong.Latitude, pin.VELatLong.Longitude, EncodeQueryValue(pin.Title), EncodeQueryValue(pin.Details));
-                    if (pin.MoreInfoUrl != String.Empty || pin.PhotoUrl != String.Empty)
+                    if (pin.MoreInfoUrl != string.Empty || pin.PhotoUrl != string.Empty)
                     {
                         sb.AppendFormat(CultureInfo.InvariantCulture, "_{0}", EncodeQueryValue(pin.MoreInfoUrl));
-                        if (pin.PhotoUrl != String.Empty)
+                        if (pin.PhotoUrl != string.Empty)
                             sb.AppendFormat(CultureInfo.InvariantCulture, "_{0}", EncodeQueryValue(pin.PhotoUrl));
                     }
                 }
@@ -103,8 +103,8 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         public static string CreateMapUrl(string baseUrl, string address, string style, int level)
         {
-            string queryString = String.Format(CultureInfo.InvariantCulture, MAP_WHERE_QUERY_FORMAT, address, level, style);
-            return String.Format(CultureInfo.InvariantCulture, "{0}?{1}", baseUrl, queryString);
+            string queryString = string.Format(CultureInfo.InvariantCulture, MAP_WHERE_QUERY_FORMAT, address, level, style);
+            return string.Format(CultureInfo.InvariantCulture, "{0}?{1}", baseUrl, queryString);
         }
 
         public static string CreateLiveUrl(float latitude, float longitude, string reserved, string style, int level, VEPushpin[] pushpins, VEBirdseyeScene birdseyeScene)

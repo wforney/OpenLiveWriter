@@ -184,7 +184,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         private static void LaunchUrl(string url)
         {
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
                 return;
 
             ShellHelper.LaunchUrl(url);

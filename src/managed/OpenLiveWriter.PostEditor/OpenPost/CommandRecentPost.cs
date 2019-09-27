@@ -27,7 +27,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 if (openPostForm.ShowDialog(Win32WindowImpl.ForegroundWin32Window) == DialogResult.OK)
                 {
-                    if (String.Empty == caller.LinkText.Trim())
+                    if (string.Empty == caller.LinkText.Trim())
                         caller.LinkText = openPostForm.PostTitle;
                     caller.Hyperlink = openPostForm.PostLink;
                     return true;

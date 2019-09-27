@@ -150,7 +150,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
         {
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             string fileExtension = Path.GetExtension(fileName);
-            string uniqueFileName = String.Format(CultureInfo.InvariantCulture, uniqueFileNameFormat, fileNameWithoutExtension, uniqueToken, fileExtension);
+            string uniqueFileName = string.Format(CultureInfo.InvariantCulture, uniqueFileNameFormat, fileNameWithoutExtension, uniqueToken, fileExtension);
             return uniqueFileName;
         }
         string uniqueFileNameFormat = "{0}_{1}{2}";

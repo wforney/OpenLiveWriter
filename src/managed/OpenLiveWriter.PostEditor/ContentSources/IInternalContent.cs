@@ -11,7 +11,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
     public interface IInternalContent
     {
         DateTime? RefreshCallback { get; set; }
-        Object ObjectState { get; set; }
-        String Id { get; }
+        object ObjectState { get; set; }
+        string Id { get; }
     }
 }

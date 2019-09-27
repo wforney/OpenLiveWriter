@@ -127,7 +127,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             }
         }
 
-        private string _filter = String.Empty;
+        private string _filter = string.Empty;
         private Regex[] _filterSegments;
         public string Filter
         {
@@ -139,7 +139,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 // Don't let the filter get set to null
                 if (value == null)
-                    value = String.Empty;
+                    value = string.Empty;
 
                 // Only set the filter if it is different then the current one
                 if (_filter != value)
@@ -269,7 +269,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
         internal void ClearFilterWithoutUpdate()
         {
-            _filter = String.Empty;
+            _filter = string.Empty;
             _filterSegments = null;
         }
 
@@ -377,7 +377,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
             // post title
             int titleWidth = dateRectangle.Left - leftMargin - ScaleX(DATE_PADDING);
-            string titleString = String.Format(CultureInfo.CurrentCulture, "{0}", postInfo.Title);
+            string titleString = string.Format(CultureInfo.CurrentCulture, "{0}", postInfo.Title);
             int fontHeight = g.MeasureText(titleString, e.Font).Height;
             Rectangle titleRectangle = new Rectangle(leftMargin, topMargin, titleWidth, fontHeight);
 
@@ -397,8 +397,8 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
             // draw post preview
             string postPreview = postInfo.PlainTextContents;
-            if (PostSource.HasMultipleWeblogs && (postInfo.BlogName != String.Empty))
-                postPreview = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", postInfo.BlogName, postPreview);
+            if (PostSource.HasMultipleWeblogs && (postInfo.BlogName != string.Empty))
+                postPreview = string.Format(CultureInfo.CurrentCulture, "{0} - {1}", postInfo.BlogName, postPreview);
 
             g.DrawText(
                 postPreview,
@@ -604,7 +604,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 allPosts.Add(new PostInfoItem(blogPostInfo, this));
             }
-            _filterCache.Add(String.Empty, allPosts.ToArray());
+            _filterCache.Add(string.Empty, allPosts.ToArray());
 
             // Update the listbox
             UpdateListBox();
@@ -629,7 +629,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 if (!string.IsNullOrEmpty(_lastFilter) && Filter.StartsWith(_lastFilter) && _filterCache.ContainsKey(_lastFilter))
                     resultSuperSet = _filterCache[_lastFilter];
                 else
-                    resultSuperSet = _filterCache[String.Empty];
+                    resultSuperSet = _filterCache[string.Empty];
 
                 List<PostInfoItem> items = new List<PostInfoItem>();
                 foreach (PostInfoItem pii in resultSuperSet)
@@ -788,7 +788,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 {
                     string prettyDateDisplay = _postInfo.PrettyDateDisplay;
                     if (prettyDateDisplay != null && prettyDateDisplay.Length > 0)
-                        return String.Format(CultureInfo.CurrentCulture, "{0},{1} {2}", HTMLDocumentHelper.HTMLToPlainText(_postInfo.Title), Res.Get(StringId.Date), prettyDateDisplay);
+                        return string.Format(CultureInfo.CurrentCulture, "{0},{1} {2}", HTMLDocumentHelper.HTMLToPlainText(_postInfo.Title), Res.Get(StringId.Date), prettyDateDisplay);
                     else
                         return HTMLDocumentHelper.HTMLToPlainText(_postInfo.Title);
                 }

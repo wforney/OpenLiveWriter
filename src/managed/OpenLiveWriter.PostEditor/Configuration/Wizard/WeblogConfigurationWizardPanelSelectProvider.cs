@@ -150,7 +150,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return false;
             }
             // validate that we have a post api url
-            else if (textBoxServerApiUrl.Text.Trim() == String.Empty)
+            else if (textBoxServerApiUrl.Text.Trim() == string.Empty)
             {
                 DisplayMessage.Show(MessageId.RequiredFieldOmitted, FindForm(), Res.Get(StringId.CWSelectProviderApiUrl));
                 textBoxServerApiUrl.Focus();
@@ -220,7 +220,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
             else
             {
-                textBoxServerApiUrl.Text = String.Empty;
+                textBoxServerApiUrl.Text = string.Empty;
             }
         }
 

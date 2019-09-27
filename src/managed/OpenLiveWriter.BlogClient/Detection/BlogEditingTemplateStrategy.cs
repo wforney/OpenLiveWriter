@@ -143,7 +143,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         string head = "";
                         //string defaultStyles = "<style>p, h1, h2, h3, h4, h5, h6, blockquote, pre{ padding-top: 1px; }</style>";
                         styleBuilder.Dispose();
-                        head = String.Format(CultureInfo.InvariantCulture, "<head>{0}<style>{1}</style></head>", head, styleBuilder.ToString());
+                        head = string.Format(CultureInfo.InvariantCulture, "<head>{0}<style>{1}</style></head>", head, styleBuilder.ToString());
                         templateHtml = head + templateHtml;
                     }
                 }
@@ -211,12 +211,12 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private string WriteEndTag(IHTMLElement element)
         {
-            return String.Format(CultureInfo.InvariantCulture, "</{0}>", element.tagName);
+            return string.Format(CultureInfo.InvariantCulture, "</{0}>", element.tagName);
         }
 
         private string WrapInHiddenHtml(string className, string html)
         {
-            return String.Format(CultureInfo.InvariantCulture, "<div class='{0}' style='border: 0px; margin 0px; padding: 0px;'>{1}</div>", className, html);
+            return string.Format(CultureInfo.InvariantCulture, "<div class='{0}' style='border: 0px; margin 0px; padding: 0px;'>{1}</div>", className, html);
         }
     }
     internal class NoStyleEditingTemplate : BlogEditingTemplateStrategy
@@ -245,8 +245,8 @@ namespace OpenLiveWriter.BlogClient.Detection
                 templateHtml = titleTemplateText + bodyTemplateText;
             }
 
-            string headHtml = String.Format(CultureInfo.InvariantCulture, "<head><style>{0}</style></head>", styleBuilder.ToString());
-            templateHtml = String.Format(CultureInfo.InvariantCulture, "<html>{0}<body>{1}</body></html>", headHtml, templateHtml);
+            string headHtml = string.Format(CultureInfo.InvariantCulture, "<head><style>{0}</style></head>", styleBuilder.ToString());
+            templateHtml = string.Format(CultureInfo.InvariantCulture, "<html>{0}<body>{1}</body></html>", headHtml, templateHtml);
 
             //prepend the doctype of the document - this prevents styles in the document from rendering improperly
             string docType = HTMLDocumentHelper.GetSpecialHeaders((IHTMLDocument2)doc).DocType;
@@ -274,7 +274,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private string WrapInStyledDiv(string className, string html)
         {
-            return String.Format(CultureInfo.InvariantCulture, "<div class='{0}'>{1}</div>", className, html);
+            return string.Format(CultureInfo.InvariantCulture, "<div class='{0}'>{1}</div>", className, html);
         }
 
         protected void AddTitleStyles(IHTMLElement titleElement, StyleBuilder styleBuilder)
@@ -813,10 +813,10 @@ namespace OpenLiveWriter.BlogClient.Detection
 
                 currElement2 = (IHTMLElement2)currElement;
                 string styleFloat = currElement2.currentStyle.styleFloat;
-                if (!String.IsNullOrEmpty(styleFloat) && !String.IsNullOrEmpty((string)currElement2.currentStyle.width))
+                if (!string.IsNullOrEmpty(styleFloat) && !string.IsNullOrEmpty((string)currElement2.currentStyle.width))
                 {
-                    if (String.Compare(styleFloat, "LEFT", StringComparison.OrdinalIgnoreCase) == 0 ||
-                        String.Compare(styleFloat, "RIGHT", StringComparison.OrdinalIgnoreCase) == 0)
+                    if (string.Compare(styleFloat, "LEFT", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(styleFloat, "RIGHT", StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         preserveClear = true;
                     }
@@ -850,11 +850,11 @@ namespace OpenLiveWriter.BlogClient.Detection
                         {
                             IHTMLElement2 sibling2 = (IHTMLElement2)sibling;
                             string styleClear = sibling2.currentStyle.clear;
-                            if (!String.IsNullOrEmpty(styleClear) && String.Compare(styleClear, "NONE", StringComparison.OrdinalIgnoreCase) != 0)
+                            if (!string.IsNullOrEmpty(styleClear) && string.Compare(styleClear, "NONE", StringComparison.OrdinalIgnoreCase) != 0)
                             {
                                 // Then preserve the clear...
                                 titleTemplateText = titleTemplateText +
-                                                    WriteStartTag(sibling, String.Format(@"clear: {0}", styleClear)) +
+                                                    WriteStartTag(sibling, string.Format(@"clear: {0}", styleClear)) +
                                                     WriteEndTag(sibling);
                             }
                         }
@@ -879,7 +879,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     {
                         string head = elements[0].innerHTML;
                         //string defaultStyles = "<style>p, h1, h2, h3, h4, h5, h6, blockquote, pre{ padding-top: 1px; }</style>";
-                        head = String.Format(CultureInfo.InvariantCulture, "<head>{0}</head>", head);
+                        head = string.Format(CultureInfo.InvariantCulture, "<head>{0}</head>", head);
                         templateHtml = head + templateHtml;
                     }
                 }
@@ -902,7 +902,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             sb.Append("<");
             sb.Append(element.tagName);
 
-            if (style != null && style != String.Empty)
+            if (style != null && style != string.Empty)
             {
                 sb.AppendFormat(" style=\"{0}\"", style);
             }
@@ -957,7 +957,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private string WriteEndTag(IHTMLElement element)
         {
-            return String.Format(CultureInfo.InvariantCulture, "</{0}>", element.tagName);
+            return string.Format(CultureInfo.InvariantCulture, "</{0}>", element.tagName);
         }
 
         private bool IsHeadElement(IHTMLElement e)

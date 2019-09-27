@@ -180,7 +180,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private bool ShouldApplyInlineTagToBlockFreeSelection(MarkupRange blockFreeRange)
         {
-            return !String.IsNullOrEmpty(blockFreeRange.Text) || blockFreeRange.ContainsElements(ElementFilters.INLINE_ELEMENTS);
+            return !string.IsNullOrEmpty(blockFreeRange.Text) || blockFreeRange.ContainsElements(ElementFilters.INLINE_ELEMENTS);
         }
 
         private MarkupRange ApplyInlineTagToBlockFreeSelection(_ELEMENT_TAG_ID tagId, string attributes, MarkupRange blockFreeSelection)

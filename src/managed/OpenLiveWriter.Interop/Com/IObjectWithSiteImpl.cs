@@ -25,7 +25,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Provides the IUnknown site pointer (save for returning in GetSite)
         /// </summary>
         /// <param name="pUnkSite">Browser interface as IUnknown</param>
-        public virtual int SetSite([In, MarshalAs(UnmanagedType.IUnknown)] Object pUnkSite)
+        public virtual int SetSite([In, MarshalAs(UnmanagedType.IUnknown)] object pUnkSite)
         {
             // we are being set with a new site, release reference to existing site
             if (m_IUnkSite != null)
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.Interop.Com
         /// returned in ppvSite</param>
         /// <param name="ppvSite">The last site pointer passed in to SetSite</param>
         public virtual void GetSite(
-            ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out Object ppvSite)
+            ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppvSite)
         {
             // default to returning null
             ppvSite = null;

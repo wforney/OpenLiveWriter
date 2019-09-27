@@ -78,7 +78,7 @@ namespace OpenLiveWriter.PostEditor
             Controls.Add(pictureBoxLogo);
 
             //	Set the dialog text.
-            Text = TextHelper.StripHotkey(String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.AboutAbout), ApplicationEnvironment.ProductNameQualified));
+            Text = TextHelper.StripHotkey(string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.AboutAbout), ApplicationEnvironment.ProductNameQualified));
 #if DEBUG
             string displayVersion = ApplicationEnvironment.ProductDisplayVersion + " " + CultureInfo.CurrentUICulture;
 #else
@@ -86,10 +86,10 @@ namespace OpenLiveWriter.PostEditor
 #endif
 
             labelProduct.Text = ApplicationEnvironment.ProductNameVersioned;
-            labelVersion.Text = String.Format(CultureInfo.CurrentCulture, labelVersion.Text, displayVersion);
+            labelVersion.Text = string.Format(CultureInfo.CurrentCulture, labelVersion.Text, displayVersion);
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            labelConfigVersion.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.AboutConfigurationVersion), version);
+            labelConfigVersion.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.AboutConfigurationVersion), version);
             labelConfigVersion.Visible = false;
 
             copyrightTextbox.Font = Res.GetFont(FontSize.Small, FontStyle.Regular);

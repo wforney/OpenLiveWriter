@@ -146,7 +146,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 if (_previousDownloadInfo.LastModified != DateTime.MinValue)
                     contentRequest.IfModifiedSince = _previousDownloadInfo.LastModified;
 
-                if (_previousDownloadInfo.ETag != String.Empty)
+                if (_previousDownloadInfo.ETag != string.Empty)
                     contentRequest.Headers.Add("If-None-Match", _previousDownloadInfo.ETag);
             }
         }
@@ -174,7 +174,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         public static string DiscoverUrl(string homepageUrl, IHTMLDocument2 weblogDOM)
         {
             if (weblogDOM == null)
-                return String.Empty;
+                return string.Empty;
 
             try
             {
@@ -194,7 +194,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                             string linkRel = linkElement.rel;
                             if (linkRel != null && (linkRel.ToUpperInvariant().Equals("WLWMANIFEST")))
                             {
-                                if (linkElement.href != null && linkElement.href != String.Empty)
+                                if (linkElement.href != null && linkElement.href != string.Empty)
                                     return UrlHelper.UrlCombineIfRelative(homepageUrl, linkElement.href);
                             }
                         }
@@ -207,7 +207,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             }
 
             // couldn't find one
-            return String.Empty;
+            return string.Empty;
         }
 
         public WriterEditingManifestDownloadInfo DownloadInfo
@@ -325,17 +325,17 @@ namespace OpenLiveWriter.BlogClient.Detection
                     {
                         // id
                         string id = XmlHelper.NodeText(buttonNode.SelectSingleNode("m:id", nsmgr));
-                        if (id == String.Empty)
+                        if (id == string.Empty)
                             throw new ArgumentException("Missing id field");
 
                         // title
                         string description = XmlHelper.NodeText(buttonNode.SelectSingleNode("m:text", nsmgr));
-                        if (description == String.Empty)
+                        if (description == string.Empty)
                             throw new ArgumentException("Missing text field");
 
                         // imageUrl
                         string imageUrl = XmlHelper.NodeText(buttonNode.SelectSingleNode("m:imageUrl", nsmgr));
-                        if (imageUrl == String.Empty)
+                        if (imageUrl == string.Empty)
                             throw new ArgumentException("Missing imageUrl field");
 
                         // download the image
@@ -351,7 +351,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         Size contentDisplaySize = XmlHelper.NodeSize(buttonNode.SelectSingleNode("m:contentDisplaySize", nsmgr), Size.Empty);
 
                         // button must have either clickUrl or hasContent
-                        if (clickUrl == String.Empty && contentUrl == String.Empty)
+                        if (clickUrl == string.Empty && contentUrl == string.Empty)
                             throw new ArgumentException("Must either specify a clickUrl or contentUrl");
 
                         // notificationUrl
@@ -404,14 +404,14 @@ namespace OpenLiveWriter.BlogClient.Detection
             if (webLayoutUrlNode != null)
             {
                 string webLayoutUrl = XmlHelper.NodeText(webLayoutUrlNode);
-                if (webLayoutUrl != String.Empty)
+                if (webLayoutUrl != string.Empty)
                     _webLayoutUrl = BlogClientHelper.GetAbsoluteUrl(webLayoutUrl, downloadInfo.SourceUrl);
             }
             XmlNode webPreviewUrlNode = xmlDocument.SelectSingleNode("//m:views/m:view[@type='WebPreview']/@src", nsmgr);
             if (webPreviewUrlNode != null)
             {
                 string webPreviewUrl = XmlHelper.NodeText(webPreviewUrlNode);
-                if (webPreviewUrl != String.Empty)
+                if (webPreviewUrl != string.Empty)
                     _webPreviewUrl = BlogClientHelper.GetAbsoluteUrl(webPreviewUrl, downloadInfo.SourceUrl);
             }
         }
@@ -438,7 +438,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             byte[] imageBytes = null;
             string imageUrl = options[elementName] as string;
-            if (imageUrl != null && imageUrl != String.Empty)
+            if (imageUrl != null && imageUrl != string.Empty)
             {
                 try
                 {
@@ -460,7 +460,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "Unexpected error downloading image from {0}: {1}", imageUrl, ex.ToString()));
+                    Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Unexpected error downloading image from {0}: {1}", imageUrl, ex.ToString()));
                 }
             }
             else
@@ -476,7 +476,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             // non-url base path means embedded resource
             if (!UrlHelper.IsUrl(basePath))
             {
-                string imagePath = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", basePath, imageUrl);
+                string imagePath = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", basePath, imageUrl);
                 Bitmap image = ResourceHelper.LoadAssemblyResourceBitmap(imagePath);
                 if (image != null)
                     return image;

@@ -159,10 +159,10 @@ namespace OpenLiveWriter.BlogClient.Clients
             //note: spec calls for description, htmlURL, rssURL only
             //but tested metaweblog implementers seem to all have title, and at least MSDN blogs has category id
             //thus, the twisted logic here
-            String catID, catName;
+            string catID, catName;
             catID = catName = GetNodeValue(categoryNode, "member[name='description']/value");
             String categoryTitle = GetNodeValue(categoryNode, "member[name='title']/value");
-            if (categoryTitle != String.Empty && categoryTitle != null)
+            if (categoryTitle != string.Empty && categoryTitle != null)
             {
                 catID = catName = categoryTitle;
             }
@@ -173,7 +173,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 categoryId = GetNodeValue(categoryNode, "member[name='categoryId']/value");
 
             // set if we got it
-            if (categoryId != String.Empty && categoryId != null)
+            if (categoryId != string.Empty && categoryId != null)
             {
                 catID = categoryId;
             }
@@ -195,7 +195,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             // optional parent specifier
             string parent = GetNodeValue(categoryNode, "member[name='parentId']/value");
             if (parent == null)
-                parent = String.Empty;
+                parent = string.Empty;
 
             // validate (a null category name downstream will result in unexpected error
             // dialogs -- better to show the user an error here indicating that the
@@ -523,7 +523,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         // page parent
                         string pageParentId = GetNodeValue(pageNode, "member[name='page_parent_id']/value");
                         if (pageParentId == null)
-                            pageParentId = String.Empty;
+                            pageParentId = string.Empty;
 
                         // add page
                         pages.Add(new PageInfo(pageId, pageTitle, pageDatePublished, pageParentId));
@@ -858,7 +858,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     members.Add(new XmlRpcMember("wp_page_parent_id", new XmlRpcString(pageParentId)));
                 }
 
-                if (Options.SupportsPageOrder && (post.PageOrder != String.Empty))
+                if (Options.SupportsPageOrder && (post.PageOrder != string.Empty))
                 {
                     members.Add(new XmlRpcMember("wp_page_order", new XmlRpcString(post.PageOrder)));
                 }
@@ -992,16 +992,16 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             // get node values
             blogPost.Id = NodeText(postNode.SelectSingleNode("member[name='postid']/value"));
-            if (blogPost.Id == String.Empty)
+            if (blogPost.Id == string.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("member[name='page_id']/value"));
 
             SetPostTitleFromXmlValue(blogPost, NodeText(postNode.SelectSingleNode("member[name='title']/value")));
 
             // attempt to discover the permalink
             blogPost.Permalink = NodeText(postNode.SelectSingleNode("member[name='permaLink']/value"));
-            if (blogPost.Permalink == String.Empty)
+            if (blogPost.Permalink == string.Empty)
                 blogPost.Permalink = NodeText(postNode.SelectSingleNode("member[name='permalink']/value"));
-            if (blogPost.Permalink == String.Empty)
+            if (blogPost.Permalink == string.Empty)
                 blogPost.Permalink = NodeText(postNode.SelectSingleNode("member[name='link']/value"));
 
             // contents and extended contents
@@ -1019,7 +1019,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsCommentPolicy)
             {
                 string commentPolicy = NodeText(postNode.SelectSingleNode("member[name='mt_allow_comments']/value"));
-                if (commentPolicy != String.Empty)
+                if (commentPolicy != string.Empty)
                 {
                     switch (commentPolicy)
                     {
@@ -1043,7 +1043,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsPingPolicy)
             {
                 string allowTrackbacks = NodeText(postNode.SelectSingleNode("member[name='mt_allow_pings']/value"));
-                if (allowTrackbacks != String.Empty)
+                if (allowTrackbacks != string.Empty)
                     blogPost.TrackbackPolicy = (allowTrackbacks == "1") ? BlogTrackbackPolicy.Allow : BlogTrackbackPolicy.Deny;
             }
 
@@ -1092,7 +1092,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsSlug)
             {
                 blogPost.Slug = NodeText(postNode.SelectSingleNode("member[name='wp_slug']/value"));
-                if (blogPost.Slug == String.Empty)
+                if (blogPost.Slug == string.Empty)
                     blogPost.Slug = NodeText(postNode.SelectSingleNode("member[name='mt_basename']/value"));
             }
 
@@ -1119,7 +1119,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 string pageParentId = NodeText(postNode.SelectSingleNode("member[name='wp_page_parent_id']/value"));
                 // convert 0 to empty string for parent-id
                 if (pageParentId == "0")
-                    pageParentId = String.Empty;
+                    pageParentId = string.Empty;
 
                 string pageParentTitle = NodeText(postNode.SelectSingleNode("member[name='wp_page_parent_title']/value"));
                 blogPost.PageParent = new PostIdAndNameField(pageParentId, pageParentTitle);

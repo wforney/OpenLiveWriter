@@ -116,12 +116,12 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             string userOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.CHARACTER_SET];
             string homepageOverride = (string)TemporaryBlogSettings.HomePageOverrides[BlogClientOptions.CHARACTER_SET];
 
-            if (!String.IsNullOrEmpty(blogOverride))
-                defaultEncoding = String.Format(CultureInfo.CurrentCulture, defaultEncoding, blogOverride);
-            else if (!String.IsNullOrEmpty(homepageOverride))
-                defaultEncoding = String.Format(CultureInfo.CurrentCulture, defaultEncoding, homepageOverride);
+            if (!string.IsNullOrEmpty(blogOverride))
+                defaultEncoding = string.Format(CultureInfo.CurrentCulture, defaultEncoding, blogOverride);
+            else if (!string.IsNullOrEmpty(homepageOverride))
+                defaultEncoding = string.Format(CultureInfo.CurrentCulture, defaultEncoding, homepageOverride);
             else
-                defaultEncoding = String.Format(CultureInfo.CurrentCulture, defaultEncoding, "UTF-8");
+                defaultEncoding = string.Format(CultureInfo.CurrentCulture, defaultEncoding, "UTF-8");
 
             comboEncoding.Items.Add(new OptionItem(defaultEncoding, null));
             codepages.Sort(new EncodingComparer());
@@ -131,7 +131,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     comboEncoding.Items.Add(new OptionItem(codeName.EncodingName + ": " + codeName.WebName, codeName));
             }
 
-            if (userOverride != null && userOverride != String.Empty)
+            if (userOverride != null && userOverride != string.Empty)
             {
                 Encoding setEncoding = Encoding.GetEncoding(userOverride);
                 comboEncoding.SelectedItem = new OptionItem(setEncoding.EncodingName + ": " + setEncoding.WebName, setEncoding);
@@ -152,7 +152,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
             comboScripts.Items.Add(new SupportsOptionItem(SupportsFeature.No));
             string userScriptOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_SCRIPTS];
-            if (userScriptOverride != null && userScriptOverride != String.Empty)
+            if (userScriptOverride != null && userScriptOverride != string.Empty)
             {
                 switch (userScriptOverride)
                 {
@@ -183,7 +183,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.Unknown));
             comboEmbeds.Items.Add(new SupportsOptionItem(SupportsFeature.No));
             string userEmbedOverride = (string)TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.SUPPORTS_EMBEDS];
-            if (userEmbedOverride != null && userEmbedOverride != String.Empty)
+            if (userEmbedOverride != null && userEmbedOverride != string.Empty)
             {
                 switch (userEmbedOverride)
                 {
@@ -247,7 +247,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         {
             try
             {
-                codepages.Add(Encoding.GetEncoding(Int32.Parse(codePageName, CultureInfo.InvariantCulture)));
+                codepages.Add(Encoding.GetEncoding(int.Parse(codePageName, CultureInfo.InvariantCulture)));
             }
             catch (NotSupportedException) { }
             catch (ArgumentException) { }

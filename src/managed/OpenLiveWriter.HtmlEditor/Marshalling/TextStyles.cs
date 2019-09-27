@@ -134,7 +134,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             {
                 IHTMLElement currentScope = MarkupPointer.CurrentScope;
                 IHTMLCurrentStyle currentStyle = ((IHTMLElement2)currentScope).currentStyle;
-                return String.Compare(currentStyle.fontVariant, "small-caps", StringComparison.OrdinalIgnoreCase) == 0;
+                return string.Compare(currentStyle.fontVariant, "small-caps", StringComparison.OrdinalIgnoreCase) == 0;
             }
         }
 

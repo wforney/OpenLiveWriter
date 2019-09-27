@@ -27,7 +27,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         private class DirectionalButton : MapBitmapButton
         {
             public DirectionalButton(VEOrientation direction, string directionName)
-                : base(String.Format(CultureInfo.InvariantCulture, "BEV{0}", directionName))
+                : base(string.Format(CultureInfo.InvariantCulture, "BEV{0}", directionName))
             {
                 _direction = direction;
             }

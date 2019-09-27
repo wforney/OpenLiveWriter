@@ -151,7 +151,7 @@ namespace OpenLiveWriter.HtmlEditor
                 if (element != null)
                 {
                     // navigate to link
-                    string href = String.Empty;
+                    string href = string.Empty;
                     try
                     {
                         // set flag indicating we have navigated to the current link element
@@ -169,7 +169,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                     catch (Exception e)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "Unexpected failure to navigate to link {0}\r\n{1}", href, e.Message));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "Unexpected failure to navigate to link {0}\r\n{1}", href, e.Message));
                     }
 
                     // suppress event (we handled it)
@@ -371,7 +371,7 @@ namespace OpenLiveWriter.HtmlEditor
                     // set tooltip text
                     string href = (string)currentLinkElement.getAttribute("href", 2); // 2 means don't auto-escape
                     href = StringHelper.Ellipsis(href, 35);
-                    toolTip.SetToolTip(String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkToolTip), href));
+                    toolTip.SetToolTip(string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.LinkToolTip), href));
 
                     // start timer which monitors whether the main frame is still active and
                     // hides the tooltip if it does not

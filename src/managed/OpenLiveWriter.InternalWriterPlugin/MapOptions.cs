@@ -16,14 +16,14 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         public string PushpinUrl
         {
-            get { return _mapOptions.GetString(PUSHPIN_URL, String.Empty); }
+            get { return _mapOptions.GetString(PUSHPIN_URL, string.Empty); }
             set { _mapOptions.SetString(PUSHPIN_URL, value); }
         }
         private const string PUSHPIN_URL = "PushpinUrl";
 
         public string MoreAboutPushpinsUrl
         {
-            get { return _mapOptions.GetString(MORE_ABOUT_PUSHPINS_URL, String.Empty); }
+            get { return _mapOptions.GetString(MORE_ABOUT_PUSHPINS_URL, string.Empty); }
         }
         private const string MORE_ABOUT_PUSHPINS_URL = "MoreAboutPushpinsUrl";
 

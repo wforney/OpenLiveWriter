@@ -115,7 +115,7 @@ namespace OpenLiveWriter.CoreServices
                     // Get the bytes from the stream
                     Stream memoryStream =
                         (Stream)m_dataObject.GetData(DataFormatsEx.FileGroupDescriptorWFormat);
-                    byte[] memoryStreamBytes = new Byte[memoryStream.Length];
+                    byte[] memoryStreamBytes = new byte[memoryStream.Length];
 
                     using (memoryStream)
                     {

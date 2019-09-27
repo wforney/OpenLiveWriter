@@ -443,7 +443,7 @@ namespace OpenLiveWriter.SpellChecker
         /// <param name="e">event args</param>
         private void textBoxChangeTo_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxChangeTo.Text != String.Empty)
+            if (textBoxChangeTo.Text != string.Empty)
             {
                 buttonChange.Enabled = true;
                 buttonChangeAll.Enabled = true;
@@ -466,7 +466,7 @@ namespace OpenLiveWriter.SpellChecker
             if (listBoxSuggestions.SelectedIndex != -1)
                 textBoxChangeTo.Text = listBoxSuggestions.SelectedItem as string;
             else
-                textBoxChangeTo.Text = String.Empty;
+                textBoxChangeTo.Text = string.Empty;
         }
 
         /// <summary>

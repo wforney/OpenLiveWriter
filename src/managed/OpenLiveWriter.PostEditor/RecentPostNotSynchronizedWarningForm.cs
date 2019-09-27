@@ -42,10 +42,10 @@ namespace OpenLiveWriter.PostEditor
             this.Text = Res.Get(StringId.RecentPostNotSyncTitle);
 
             this.labelTitle.Font = Res.GetFont(FontSize.XLarge, FontStyle.Bold);
-            Text = String.Format(CultureInfo.CurrentCulture, this.Text, entityName);
-            labelTitle.Text = String.Format(CultureInfo.CurrentCulture, labelTitle.Text, entityName);
-            labelUnableToRetrieve.Text = String.Format(CultureInfo.CurrentCulture, labelUnableToRetrieve.Text, ApplicationEnvironment.ProductNameQualified, entityName.ToLower(CultureInfo.CurrentCulture));
-            labelCanStillEditLocally.Text = String.Format(CultureInfo.CurrentCulture, labelCanStillEditLocally.Text, entityName.ToLower(CultureInfo.CurrentCulture));
+            Text = string.Format(CultureInfo.CurrentCulture, this.Text, entityName);
+            labelTitle.Text = string.Format(CultureInfo.CurrentCulture, labelTitle.Text, entityName);
+            labelUnableToRetrieve.Text = string.Format(CultureInfo.CurrentCulture, labelUnableToRetrieve.Text, ApplicationEnvironment.ProductNameQualified, entityName.ToLower(CultureInfo.CurrentCulture));
+            labelCanStillEditLocally.Text = string.Format(CultureInfo.CurrentCulture, labelCanStillEditLocally.Text, entityName.ToLower(CultureInfo.CurrentCulture));
 
         }
 

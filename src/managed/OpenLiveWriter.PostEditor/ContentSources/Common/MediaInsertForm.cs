@@ -72,7 +72,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
                 copyrightLinkLabel.Font = Res.GetFont(FontSize.Small, FontStyle.Regular);
                 copyrightLinkLabel.Text = Res.Get(StringId.Plugin_Video_Copyright_Notice);
                 string link = MarketizationOptions.GetFeatureParameter(MarketizationOptions.Feature.VideoCopyright, "Glink");
-                if (link == null || link == String.Empty)
+                if (link == null || link == string.Empty)
                     copyrightLinkLabel.LinkArea = new LinkArea(0, 0);
                 else
                     copyrightLinkLabel.LinkClicked += copyrightLinkLabel_LinkClicked;
@@ -302,7 +302,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
         private void copyrightLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string link = MarketizationOptions.GetFeatureParameter(MarketizationOptions.Feature.VideoCopyright, "Glink");
-            if (link != null && link != String.Empty)
+            if (link != null && link != string.Empty)
             {
                 try
                 {

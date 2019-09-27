@@ -288,7 +288,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             string content = post.MainContents;
             if (post.ExtendedContents != null && post.ExtendedContents.Length > 0)
                 content += "<lj-cut>" + post.ExtendedContents;
-            string blogPostBody = String.Format(CultureInfo.InvariantCulture, "<title>{0}</title>{1}", GetPostTitleForXmlValue(post), content);
+            string blogPostBody = string.Format(CultureInfo.InvariantCulture, "<title>{0}</title>{1}", GetPostTitleForXmlValue(post), content);
             return new XmlRpcBase64(_utf8EncodingNoBOM.GetBytes(blogPostBody));
         }
         private Encoding _utf8EncodingNoBOM = new UTF8Encoding(false);

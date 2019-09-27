@@ -35,7 +35,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                 Invalidate();
             }
         }
-        private string _tipText = String.Empty;
+        private string _tipText = string.Empty;
 
         public bool ShowIcon
         {

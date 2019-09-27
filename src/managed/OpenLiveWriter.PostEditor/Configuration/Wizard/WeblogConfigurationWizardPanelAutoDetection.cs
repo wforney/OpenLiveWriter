@@ -54,7 +54,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     ArrayList list = new ArrayList();
                     for (int i = 1; i <= 26; i++)
                     {
-                        string resourceName = String.Format(CultureInfo.InvariantCulture, "Images.PublishAnimation.post{0:00}.png", i);
+                        string resourceName = string.Format(CultureInfo.InvariantCulture, "Images.PublishAnimation.post{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));

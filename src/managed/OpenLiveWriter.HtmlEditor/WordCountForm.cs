@@ -39,10 +39,10 @@ namespace OpenLiveWriter.HtmlEditor
             labelCharsNoSpaces.Text = Res.Get(StringId.CharNoSpacesCount);
             labelParagraphs.Text = Res.Get(StringId.Paragraphs);
 
-            labelWordCountValue.Text = String.Format(CultureInfo.CurrentCulture, "{0}", wc.Words);
-            labelCharsValue.Text = String.Format(CultureInfo.CurrentCulture, "{0}", wc.Chars);
-            labelCharsNoSpacesValue.Text = String.Format(CultureInfo.CurrentCulture, "{0}", wc.CharsWithoutSpaces);
-            labelParagraphsValue.Text = String.Format(CultureInfo.CurrentCulture, "{0}", wc.Paragraphs);
+            labelWordCountValue.Text = string.Format(CultureInfo.CurrentCulture, "{0}", wc.Words);
+            labelCharsValue.Text = string.Format(CultureInfo.CurrentCulture, "{0}", wc.Chars);
+            labelCharsNoSpacesValue.Text = string.Format(CultureInfo.CurrentCulture, "{0}", wc.CharsWithoutSpaces);
+            labelParagraphsValue.Text = string.Format(CultureInfo.CurrentCulture, "{0}", wc.Paragraphs);
 
             // If the text is not the whole document then show the user a message to tell them
             if (bOnlySelectedText)
@@ -92,7 +92,7 @@ namespace OpenLiveWriter.HtmlEditor
         private readonly static Regex regexParagraph = new Regex(@"(\r\n){1,2}\s*", RegexOptions.Compiled);
         #endregion
 
-        public readonly String countText;
+        public readonly string countText;
         private LazyLoader<int> llWords = null;
         private LazyLoader<int> llChars = null;
         private LazyLoader<int> llCharsWithoutSpaces = null;

@@ -82,7 +82,7 @@ namespace OpenLiveWriter.CoreServices
             // check for a non-existent message
             if (message == null)
             {
-                Debug.Assert(false, String.Format(CultureInfo.InvariantCulture, "Invalid exception type: {0}", type));
+                Debug.Assert(false, string.Format(CultureInfo.InvariantCulture, "Invalid exception type: {0}", type));
                 return "";
             }
 
@@ -95,7 +95,7 @@ namespace OpenLiveWriter.CoreServices
                 // the 'unformatted' message
                 try
                 {
-                    return String.Format(CultureInfo.CurrentCulture, message, arguments);
+                    return string.Format(CultureInfo.CurrentCulture, message, arguments);
                 }
                 catch
                 {

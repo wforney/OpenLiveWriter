@@ -54,7 +54,7 @@ namespace OpenLiveWriter.CoreServices
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class FILE_IN_CABINET_INFO
         {
-            public String NameInCabinet;
+            public string NameInCabinet;
             public uint FileSize;
             public uint Win32Error;
             public ushort DosDate;
@@ -62,7 +62,7 @@ namespace OpenLiveWriter.CoreServices
             public ushort DosAttribs;
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public System.String FullTargetName;
+            public string FullTargetName;
         }
 
         private readonly string _cabinetFilePath;

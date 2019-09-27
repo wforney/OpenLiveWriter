@@ -204,7 +204,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                 }
             }
 
-            Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}\r\nException Details:\r\n{1}\r\n{2}", title, dialogMessage, rootCause.ToString()), ErrText.FailText);
+            Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0}\r\nException Details:\r\n{1}\r\n{2}", title, dialogMessage, rootCause.ToString()), ErrText.FailText);
 
             try
             {
@@ -244,7 +244,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             // format text (substitute arguments)
             string formattedText;
             if (args != null && args.Length != 0)
-                formattedText = String.Format(CultureInfo.CurrentCulture, Text, args);
+                formattedText = string.Format(CultureInfo.CurrentCulture, Text, args);
             else
                 formattedText = Text;
 

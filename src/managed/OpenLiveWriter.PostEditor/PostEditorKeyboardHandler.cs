@@ -524,7 +524,7 @@ namespace OpenLiveWriter.PostEditor
             if (ele == null)
             {
                 blockBoundary = null;
-                return String.Empty;
+                return string.Empty;
             }
 
             blockRange.MoveToElement(ele, false);

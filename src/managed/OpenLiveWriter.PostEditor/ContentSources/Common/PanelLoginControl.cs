@@ -448,13 +448,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
 
             MessageId msg = MessageId.UsernameAndPasswordRequired;
 
-            if (username == String.Empty)
+            if (username == string.Empty)
             {
                 DisplayMessage.Show(msg, this, null);
                 txtUsername.Focus();
                 return;
             }
-            if (password == String.Empty)
+            if (password == string.Empty)
             {
                 DisplayMessage.Show(msg, this, null);
                 txtPassword.Focus();
@@ -475,8 +475,8 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
 
         internal void Clear()
         {
-            txtUsername.Text = String.Empty;
-            txtPassword.Text = String.Empty;
+            txtUsername.Text = string.Empty;
+            txtPassword.Text = string.Empty;
             ckBoxSavePassword.Checked = false;
         }
 

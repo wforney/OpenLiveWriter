@@ -513,7 +513,7 @@ namespace OpenLiveWriter.Mshtml
                 p.MoveToPointer(this);
                 p.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDEND);
                 string rightText = MarkupServices.GetText(this, p);
-                return String.Format(CultureInfo.InvariantCulture, "{0}|{1}", leftText, rightText);
+                return string.Format(CultureInfo.InvariantCulture, "{0}|{1}", leftText, rightText);
             }
         }
 

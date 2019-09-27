@@ -384,7 +384,7 @@ namespace OpenLiveWriter.PostEditor
                     {
                         listString += supportingFile.FileUri + "\r\n";
                     }
-                    Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Reference found to file that does not exist in SupportingFileService \r\nfileReference: {0}\r\n_fileList:\r\n{1}", fileReference, listString));
+                    Trace.Fail(string.Format(CultureInfo.InvariantCulture, "Reference found to file that does not exist in SupportingFileService \r\nfileReference: {0}\r\n_fileList:\r\n{1}", fileReference, listString));
                     return;
                 }
 
@@ -402,7 +402,7 @@ namespace OpenLiveWriter.PostEditor
                         if (uploadUri != null)
                         {
                             file.MarkUploaded(uploadContext, uploadUri);
-                            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture, "File Uploaded: {0}", file.FileName));
+                            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "File Uploaded: {0}", file.FileName));
                         }
                     }
                     else

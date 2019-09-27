@@ -81,7 +81,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <param name="fromPath">the file to retrieve from the destination (relative to basePath)</param>
         /// <param name="toPath">the local location to save the contents of the file (fully-qualified path)</param>
         /// <param name="isBinary">true if the file is binary</param>
-        override public bool GetFile(String fromPath, string toPath, bool isBinary)
+        override public bool GetFile(string fromPath, string toPath, bool isBinary)
         {
             fromPath = Path.Combine(m_path, fromPath);
             FileInfo fromFile = new FileInfo(fromPath);

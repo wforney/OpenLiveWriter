@@ -115,7 +115,7 @@ namespace OpenLiveWriter.CoreServices.Marketization
             if (featuresNode == null)
                 throw new Exception("Invalid marketizationXml.xml file detected");
 
-            string selectionXpath = String.Format(CultureInfo.InvariantCulture, "//features/market[@name='{0}']/feature", market);
+            string selectionXpath = string.Format(CultureInfo.InvariantCulture, "//features/market[@name='{0}']/feature", market);
             XmlNodeList featureNodes = providersDocument.SelectNodes(selectionXpath);
             foreach (XmlNode featureNode in featureNodes)
                 ProcessFeatureXml(featureNode, features);
@@ -171,7 +171,7 @@ namespace OpenLiveWriter.CoreServices.Marketization
             if (node != null)
                 return node.InnerText.Trim();
             else
-                return String.Empty;
+                return string.Empty;
         }
 
         private class FeatureDescription

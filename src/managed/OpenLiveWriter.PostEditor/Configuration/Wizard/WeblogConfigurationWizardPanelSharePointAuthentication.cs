@@ -198,13 +198,13 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             if (!cbUseSystemLogin.Checked)
             {
-                if (textBoxUsername.Text.Trim() == String.Empty)
+                if (textBoxUsername.Text.Trim() == string.Empty)
                 {
                     ShowValidationError(textBoxUsername, MessageId.UsernameAndPasswordRequired);
                     return false;
                 }
 
-                if (textBoxPassword.Text.Trim() == String.Empty)
+                if (textBoxPassword.Text.Trim() == string.Empty)
                 {
                     ShowValidationError(textBoxPassword, MessageId.UsernameAndPasswordRequired);
                     return false;
@@ -277,7 +277,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 textBoxUsername.Text = value.Username;
                 textBoxPassword.Text = value.Password;
-                cbUseSystemLogin.Checked = textBoxUsername.Text == String.Empty && textBoxPassword.Text == String.Empty;
+                cbUseSystemLogin.Checked = textBoxUsername.Text == string.Empty && textBoxPassword.Text == string.Empty;
             }
         }
 

@@ -126,7 +126,7 @@ namespace OpenLiveWriter.CoreServices
                 // Enumerate values
                 foreach (string valueName in key.GetValueNames())
                 {
-                    if (String.IsNullOrEmpty(valueName))
+                    if (string.IsNullOrEmpty(valueName))
                     {
                         Trace.WriteLine(indent + "Default Value: " + key.GetValue(valueName));
                     }
@@ -236,7 +236,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public static string GetKeyString(UIntPtr hkey, string key)
         {
-            return String.Format(CultureInfo.InvariantCulture, @"{0}\{1}", GetHKeyString(hkey), key);
+            return string.Format(CultureInfo.InvariantCulture, @"{0}\{1}", GetHKeyString(hkey), key);
         }
 
         private static string GetHKeyString(UIntPtr hkey)

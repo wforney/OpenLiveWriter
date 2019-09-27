@@ -209,7 +209,7 @@ namespace OpenLiveWriter.PostEditor.Video
 
         public void Reset()
         {
-            videoCode.Text = String.Empty;
+            videoCode.Text = string.Empty;
             lblSize.Text = Res.Get(StringId.Plugin_Video_Web_Video_Size_Blank);
             lblService.Text = Res.Get(StringId.Plugin_Video_Web_Video_Service_Blank);
             videoCode.Focus();
@@ -328,8 +328,8 @@ namespace OpenLiveWriter.PostEditor.Video
 
             if (_video != null)
             {
-                lblSize.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Web_Video_Size), _video.Width, _video.Height);
-                lblService.Text = String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Web_Video_Provider),
+                lblSize.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Web_Video_Size), _video.Width, _video.Height);
+                lblService.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.Plugin_Video_Web_Video_Provider),
                                                 _video.Provider != null ? _video.Provider.ServiceName : Res.Get(StringId.Plugin_Video_Unknown_Provider));
 
                 DisplayHtml(
@@ -366,17 +366,17 @@ namespace OpenLiveWriter.PostEditor.Video
             if (BidiHelper.IsRightToLeft)
                 direction = "rtl";
 
-            return CreateHtml(String.Format(CultureInfo.InvariantCulture, "<div dir='{3}' style='text-align: center;height: {1}px;position: relative;'><div style='position: relative;top: 50%;'><font face=\"{2}\">{0}</font></div></div>", text, previewBox.Height, Res.DefaultFont.Name, direction), "FFFFFF");
+            return CreateHtml(string.Format(CultureInfo.InvariantCulture, "<div dir='{3}' style='text-align: center;height: {1}px;position: relative;'><div style='position: relative;top: 50%;'><font face=\"{2}\">{0}</font></div></div>", text, previewBox.Height, Res.DefaultFont.Name, direction), "FFFFFF");
         }
 
         private string CreateEmbedHtml(string embed)
         {
-            return CreateHtml(String.Format(CultureInfo.InvariantCulture, "<div style='position: relative;top: {1}px;left: {2}px;'>{0}</div>", embed, (previewBox.Height - _video.Height) / 2, (previewBox.Width - _video.Width) / 2), "999999");
+            return CreateHtml(string.Format(CultureInfo.InvariantCulture, "<div style='position: relative;top: {1}px;left: {2}px;'>{0}</div>", embed, (previewBox.Height - _video.Height) / 2, (previewBox.Width - _video.Width) / 2), "999999");
         }
 
         private static string CreateHtml(string html, string color)
         {
-            return String.Format(CultureInfo.InvariantCulture, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><body style='margin: 0; padding: 0;background-color: #{1}'>{0}</body></html>", html, color);
+            return string.Format(CultureInfo.InvariantCulture, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><body style='margin: 0; padding: 0;background-color: #{1}'>{0}</body></html>", html, color);
         }
 
         private void lblService_SizeChanged(object sender, EventArgs e)

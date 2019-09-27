@@ -39,7 +39,7 @@ namespace OpenLiveWriter.Interop.Windows
         [DllImport("dbghelp.dll", ExactSpelling = true, SetLastError = true)]
         public static extern bool MiniDumpWriteDump(
             IntPtr hProcess,
-            Int32 ProcessId,
+            int ProcessId,
             IntPtr hFile,
             MINIDUMP_TYPE DumpType,
             IntPtr ExceptionParam,

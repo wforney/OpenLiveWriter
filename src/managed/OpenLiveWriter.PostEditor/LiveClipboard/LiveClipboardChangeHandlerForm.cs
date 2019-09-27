@@ -52,7 +52,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
             pictureBoxFormatIcon.Image = existingHandler.ContentSource.Image;
             labelFormatName.Text = existingHandler.FormatName;
             labelContentType.Text = existingHandler.FriendlyContentType;
-            labelCaption.Text = String.Format(CultureInfo.CurrentCulture, labelCaption.Text, existingHandler.FormatName);
+            labelCaption.Text = string.Format(CultureInfo.CurrentCulture, labelCaption.Text, existingHandler.FormatName);
 
             // populate the list with content sources that support this format
             ContentSourceInfo[] contentSources = LiveClipboardManager.GetContentSourcesForFormat(existingHandler.Format);

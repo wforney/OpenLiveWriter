@@ -66,7 +66,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     request.Method = "POST";
                     request.AllowAutoRedirect = false;
-                    request.ContentType = String.Format(CultureInfo.InvariantCulture, "{0};charset={1}", MimeHelper.TEXT_XML, encodingToUse.WebName);
+                    request.ContentType = string.Format(CultureInfo.InvariantCulture, "{0};charset={1}", MimeHelper.TEXT_XML, encodingToUse.WebName);
                     if (_requestFilter != null)
                         _requestFilter(request);
                     using (Stream requestStream = request.GetRequestStream())
@@ -150,7 +150,7 @@ namespace OpenLiveWriter.CoreServices
             // set, and ignore ContentEncoding and CharacterSet because they are useless."
 
             string contentType = response.ContentType;
-            if (!String.IsNullOrEmpty(contentType))
+            if (!string.IsNullOrEmpty(contentType))
             {
                 IDictionary values = MimeHelper.ParseContentType(contentType, true);
 
@@ -158,7 +158,7 @@ namespace OpenLiveWriter.CoreServices
                 if (values.Contains(charset))
                 {
                     characterSet = values[charset] as string;
-                    if (!String.IsNullOrEmpty(characterSet))
+                    if (!string.IsNullOrEmpty(characterSet))
                     {
                         Debug.Assert(characterSet.Equals(response.CharacterSet, StringComparison.OrdinalIgnoreCase),
                             "CharacterSet was parsed incorrectly!");
@@ -341,7 +341,7 @@ namespace OpenLiveWriter.CoreServices
         public BloggerXmlRpcFormatTime(DateTime value, string format)
             : base(value)
         {
-            if (String.Empty == format)
+            if (string.Empty == format)
             {
                 formatString = "yyyy-MM-dd'T'HH':'mm':'ss";
             }
@@ -364,7 +364,7 @@ namespace OpenLiveWriter.CoreServices
         public XmlRpcFormatTime(DateTime value, string format)
             : base(value)
         {
-            if (String.Empty == format)
+            if (string.Empty == format)
             {
                 formatString = "yyyyMMdd'T'HH':'mm':'ss";
             }
@@ -541,7 +541,7 @@ namespace OpenLiveWriter.CoreServices
                 return _faultCode;
             }
         }
-        private string _faultCode = String.Empty;
+        private string _faultCode = string.Empty;
 
         public string FaultString
         {
@@ -550,7 +550,7 @@ namespace OpenLiveWriter.CoreServices
                 return _faultString;
             }
         }
-        private string _faultString = String.Empty;
+        private string _faultString = string.Empty;
 
     }
 
