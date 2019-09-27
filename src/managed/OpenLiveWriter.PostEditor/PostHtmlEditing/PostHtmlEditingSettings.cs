@@ -14,6 +14,7 @@ using OpenLiveWriter.CoreServices;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.PostEditor;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
@@ -65,7 +66,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             get
             {
                 SettingsPersisterHelper templates = _editorTemplateSettings.GetSubSettings(EDITOR_TEMPLATES_KEY);
-                string[] templateTypes = templates.GetNames();
+                string[] templateTypes = templates.GetNames().ToArray();
                 BlogEditingTemplateFile[] templateFiles = new BlogEditingTemplateFile[templateTypes.Length];
                 for (int i = 0; i < templateTypes.Length; i++)
                 {
@@ -120,7 +121,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 // Search for an existing X-UA-Compatible tag in the template
                 Regex metatag = new Regex(@"<(?i:meta)(?:\s)+(?i:http-equiv)(?:\s)*=""(?:X-UA-Compatible)""(?:\s)+(?i:content)(?:\s)*=""(\S*)""(?:\s)*/>");
                 Match match = metatag.Match(templateHtml);
-                
+
                 if (match.Success && match.Groups.Count > 1)
                 {
                     // There already exists a 'X-UA-Compatible' meta tag in the template, modify it

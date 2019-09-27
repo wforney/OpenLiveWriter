@@ -1,55 +1,20 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using OpenLiveWriter.Interop.Com;
-using OpenLiveWriter.Interop.Com.StructuredStorage;
-using OpenLiveWriter.Interop.Windows;
-
 namespace OpenLiveWriter.CoreServices
 {
-    /// <summary>
-    /// Definition of file item file contents format
-    /// </summary>
-    internal class FileItemFileContentsFormat : IFileItemFormat
-    {
-        /// <summary>
-        /// Does the passed data object have this format?
-        /// </summary>
-        /// <param name="dataObject">data object</param>
-        /// <returns>true if the data object has the format, otherwise false</returns>
-        public bool CanCreateFrom(IDataObject dataObject)
-        {
-            // GetDataPresent is not always a reliable indicator of what data is
-            // actually available. For Outlook Express, if you call GetDataPresent on
-            // FileGroupDescriptor it returns false however if you actually call GetData
-            // you will get the FileGroupDescriptor! Therefore, we are going to
-            // enumerate the available formats and check that list rather than
-            // checking GetDataPresent
-            ArrayList formats = new ArrayList(dataObject.GetFormats());
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
 
-            // check for FileContents
-            return (formats.Contains(DataFormatsEx.FileGroupDescriptorFormat) ||
-                    formats.Contains(DataFormatsEx.FileGroupDescriptorWFormat))
-                   && formats.Contains(DataFormatsEx.FileContentsFormat);
-        }
-
-        /// <summary>
-        /// Create an array of file items based on the specified data object
-        /// </summary>
-        /// <param name="dataObject">data object</param>
-        /// <returns>array of file items</returns>
-        public FileItem[] CreateFileItems(IDataObject dataObject)
-        {
-            return FileItemFromFileContents.CreateArrayFromDataObject(dataObject);
-        }
-    }
+    using OpenLiveWriter.Interop.Com;
+    using OpenLiveWriter.Interop.Com.StructuredStorage;
+    using OpenLiveWriter.Interop.Windows;
 
     /// <summary>
     /// FileItem that refers to a 'virtual' file as implemented by the ole data
@@ -64,12 +29,12 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="dataObject">data object containing FileContents</param>
         /// <returns>Array of FileItem objects. Returns null if the FileContents
         /// could not be extracted from the passed dataObject</returns>
-        public static FileItem[] CreateArrayFromDataObject(IDataObject dataObject)
+        public static ICollection<FileItem> CreateArrayFromDataObject(IDataObject dataObject)
         {
             try
             {
                 // get the ole data object
-                OleDataObject oleDataObject = OleDataObject.CreateFrom(dataObject);
+                var oleDataObject = OleDataObject.CreateFrom(dataObject);
                 if (oleDataObject == null)
                 {
                     Debug.Fail("Unable to access OleDataObject!");
@@ -77,17 +42,15 @@ namespace OpenLiveWriter.CoreServices
                 }
 
                 // get an array of file descriptors specifying the file contents
-                FileDescriptor[] fileDescriptors =
-                    FileContentsHelper.GetFileDescriptors(dataObject);
+                var fileDescriptors = FileContentsHelper.GetFileDescriptors(dataObject).ToArray();
 
                 // allocate a FileItem object for each descriptor
-                FileItem[] fileItems = new FileItem[fileDescriptors.Length];
+                var fileItems = new FileItem[fileDescriptors.Length];
 
                 // initialize the file items
-                for (int i = 0; i < fileDescriptors.Length; i++)
+                for (var i = 0; i < fileDescriptors.Length; i++)
                 {
-                    fileItems[i] = new FileItemFromFileContents(
-                        fileDescriptors[i], oleDataObject, i);
+                    fileItems[i] = new FileItemFromFileContents(fileDescriptors[i], oleDataObject, i);
                 }
 
                 // return the file items
@@ -124,10 +87,7 @@ namespace OpenLiveWriter.CoreServices
         /// Determines whether this file is a directory. FileContents does not
         /// support directories so this always returns false.
         /// </summary>
-        public override bool IsDirectory
-        {
-            get { return false; }
-        }
+        public override bool IsDirectory => false;
 
         /// <summary>
         /// Path where the contents of the file can be found
@@ -136,13 +96,13 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                if (contentsPath == null)
+                if (this.contentsPath == null)
                 {
-                    string tempDirectory = TempFileManager.Instance.CreateTempDir();
-                    contentsPath = Path.Combine(tempDirectory, FileHelper.GetValidFileName(this.fileDescriptor.fileName));
-                    Write(contentsPath);
+                    var tempDirectory = TempFileManager.Instance.CreateTempDir();
+                    this.contentsPath = Path.Combine(tempDirectory, FileHelper.GetValidFileName(this.fileDescriptor.fileName));
+                    this.Write(this.contentsPath);
                 }
-                return contentsPath;
+                return this.contentsPath;
             }
         }
         private string contentsPath = null;
@@ -154,8 +114,8 @@ namespace OpenLiveWriter.CoreServices
         private void Write(string filePath)
         {
             // get the data in any format that it might be rendered in
-            OleStgMedium storage = (OleStgMedium)oleDataObject.GetData(
-                                                     fileIndex, DataFormatsEx.FileContentsFormat,
+            var storage = this.oleDataObject.GetData(
+                                                     this.fileIndex, DataFormatsEx.FileContentsFormat,
                                                      TYMED.ISTORAGE | TYMED.ISTREAM | TYMED.FILE | TYMED.HGLOBAL);
 
             // check for no storage
@@ -169,36 +129,31 @@ namespace OpenLiveWriter.CoreServices
             using (storage)
             {
                 // structured storage
-                if (storage is OleStgMediumISTORAGE)
+                if (storage is OleStgMediumISTORAGE istorage)
                 {
-                    OleStgMediumISTORAGE istorage = storage as OleStgMediumISTORAGE;
-                    CopyStorageToFile(istorage.Storage, filePath);
+                    this.CopyStorageToFile(istorage.Storage, filePath);
                 }
 
                 // stream
-                else if (storage is OleStgMediumISTREAM)
+                else if (storage is OleStgMediumISTREAM istream)
                 {
-                    OleStgMediumISTREAM istream = storage as OleStgMediumISTREAM;
-                    CopyStreamToFile(istream.Stream, filePath);
+                    this.CopyStreamToFile(istream.Stream, filePath);
                 }
 
                 // temporary file
-                else if (storage is OleStgMediumFILE)
+                else if (storage is OleStgMediumFILE file)
                 {
-                    OleStgMediumFILE file = storage as OleStgMediumFILE;
-                    CopyFileToFile(file.Path, filePath);
+                    this.CopyFileToFile(file.Path, filePath);
                 }
 
                 // global memory
-                else if (storage is OleStgMediumHGLOBAL)
+                else if (storage is OleStgMediumHGLOBAL hglobal)
                 {
-                    OleStgMediumHGLOBAL hglobal = storage as OleStgMediumHGLOBAL;
-                    CopyHGLOBALToFile(hglobal.Handle, filePath);
+                    this.CopyHGLOBALToFile(hglobal.Handle, filePath);
                 }
                 else
                 {
-                    throw new ApplicationException(
-                        "FileContents used unexpected storage type");
+                    throw new ApplicationException("FileContents used unexpected storage type");
                 }
             }
         }
@@ -210,7 +165,7 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="destFileName">file to copy storage into</param>
         private void CopyStorageToFile(Storage storage, string destFileName)
         {
-            Storage destination = new Storage(destFileName, StorageMode.Create, true);
+            var destination = new Storage(destFileName, StorageMode.Create, true);
             using (destination)
             {
                 storage.Copy(destination);
@@ -225,12 +180,11 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="destFileName">file to copy stream into</param>
         private void CopyStreamToFile(Stream stream, string destFileName)
         {
-            FileStream destination =
-                new FileStream(destFileName, FileMode.Create, FileAccess.ReadWrite);
+            var destination = new FileStream(destFileName, FileMode.Create, FileAccess.ReadWrite);
             using (destination)
             {
-                int bytesRead = 0;
-                byte[] ioBuffer = new byte[4096];
+                var bytesRead = 0;
+                var ioBuffer = new byte[4096];
                 while ((bytesRead = stream.Read(ioBuffer, 0, ioBuffer.Length)) != 0)
                 {
                     destination.Write(ioBuffer, 0, bytesRead);
@@ -243,10 +197,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         /// <param name="srcFileName">source file</param>
         /// <param name="destFileName">destination file</param>
-        private void CopyFileToFile(string srcFileName, string destFileName)
-        {
-            File.Copy(srcFileName, destFileName);
-        }
+        private void CopyFileToFile(string srcFileName, string destFileName) => File.Copy(srcFileName, destFileName);
 
         /// <summary>
         /// Copy a global memory block into a file
@@ -255,26 +206,24 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="destFileName">file to copy global memory into</param>
         private void CopyHGLOBALToFile(IntPtr hGlobal, string destFileName)
         {
-            HGlobalLock globalMem = new HGlobalLock(hGlobal);
+            var globalMem = new HGlobalLock(hGlobal);
             using (globalMem)
             {
-                FileStream destination =
-                    new FileStream(destFileName, FileMode.Create, FileAccess.ReadWrite);
+                var destination = new FileStream(destFileName, FileMode.Create, FileAccess.ReadWrite);
                 using (destination)
                 {
                     // use Win32 WriteFile so we can blast the entire unmanaged memory
                     // block in a single call (if we wanted to use managed file io
                     // methods we would have to copy the entire memory block into
                     // unmanaged memory first)
-                    uint bytesWritten;
-                    bool success = Kernel32.WriteFile(
+                    var success = Kernel32.WriteFile(
                         destination.SafeFileHandle, globalMem.Memory, globalMem.Size.ToUInt32(),
-                        out bytesWritten, IntPtr.Zero);
+                        out var bytesWritten, IntPtr.Zero);
                     if (!success)
                     {
-                        throw new Win32Exception(Marshal.GetLastWin32Error(),
-                                                  "Error occured attempting to write file: "
-                                                  + destination.Name);
+                        throw new Win32Exception(
+                            Marshal.GetLastWin32Error(),
+                            $"Error occured attempting to write file: {destination.Name}");
                     }
                 }
             }
@@ -288,11 +237,11 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Underlying OleDataObject that the FileContents will be fetched from
         /// </summary>
-        private OleDataObject oleDataObject;
+        private readonly OleDataObject oleDataObject;
 
         /// <summary>
         /// Index of file to be fetched
         /// </summary>
-        private int fileIndex;
+        private readonly int fileIndex;
     }
 }

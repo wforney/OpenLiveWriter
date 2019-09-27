@@ -482,7 +482,7 @@ namespace OpenLiveWriter.FileDestinations
                     RegistrySettingsPersister reg = new RegistrySettingsPersister(Registry.CurrentUser, @"Software\Microsoft\Ftp");
                     using (reg)
                     {
-                        pasv = (string)reg.Get("Use PASV", typeof(string), "no");
+                        pasv = (string)reg.Get("Use PASV", "no");
                     }
                 }
                 catch (Exception e)

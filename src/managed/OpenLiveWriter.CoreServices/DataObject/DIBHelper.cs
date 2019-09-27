@@ -3,9 +3,9 @@
 
 using System;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+
 using OpenLiveWriter.Interop.Windows;
 
 namespace OpenLiveWriter.CoreServices
@@ -145,23 +145,5 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         private static ImageCodecInfo[] m_codecs = ImageCodecInfo.GetImageEncoders();
 
-    }
-
-    /// <summary>
-    /// Exception thrown by the DIBHelper
-    /// </summary>
-    public class DIBHelperException : Exception
-    {
-        public DIBHelperException() : base()
-        {
-        }
-
-        public DIBHelperException(string message) : base(message)
-        {
-        }
-
-        public DIBHelperException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
     }
 }

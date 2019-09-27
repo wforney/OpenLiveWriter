@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.Localization.Bidi;
 
@@ -116,7 +117,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                 SettingsPersisterHelper replacephraseSettings = Settings.GetSubSettings(PHRASES);
                 using (replacephraseSettings.BatchUpdate())
                 {
-                    ArrayList phrasesToDelete = new ArrayList(replacephraseSettings.GetNames());
+                    ArrayList phrasesToDelete = new ArrayList(replacephraseSettings.GetNames().ToArray());
                     foreach (AutoreplacePhrase replacePhrase in value)
                     {
                         replacephraseSettings.SetString(replacePhrase.Phrase, replacePhrase.ReplaceValue);

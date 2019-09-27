@@ -1,16 +1,18 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Diagnostics;
-using Microsoft.Win32;
-
 namespace OpenLiveWriter.CoreServices.Settings
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
+    using Microsoft.Win32;
+
     public class RegistrySettingsPersister : ISettingsPersister
     {
-        private RegistryKey rootNode;
-        private string keyName;
+        private readonly RegistryKey rootNode;
+        private readonly string keyName;
 
         /// <param name="rootNode">One of the root-level nodes (HKLM, HKCU, etc.)</param>
         /// <param name="keyName">A relative path from the rootNode to the key for this instance</param>
@@ -23,33 +25,30 @@ namespace OpenLiveWriter.CoreServices.Settings
 
         #region ISettingsPersister Members
 
-        public string[] GetNames()
+        public ICollection<string> GetNames()
         {
-            using (RegistryKey key = GetKey(false))
+            using (var key = this.GetKey(false))
             {
-                if (key == null)
-                    return null;
-                else
-                    return key.GetValueNames();
+                return key?.GetValueNames();
             }
         }
 
-        public object Get(string name, Type desiredType, object defaultValue)
+        public T Get<T>(string name, T defaultValue)
         {
-            object savedValue = null;
+            T savedValue = default;
             try
             {
                 // first try to get it from storage
-                savedValue = Get(name, desiredType);
+                savedValue = this.Get<T>(name);
             }
             catch (Exception e)
             {
                 // Since this could get called frequently, try to only log once
-                if (!haveLoggedFailedRead)
+                if (!this.haveLoggedFailedRead)
                 {
                     //Debug.Fail("The setting " + name + " could not be retrieved: " + e.ToString());
-                    Trace.WriteLine("The setting " + name + " could not be retrieved: " + e.ToString());
-                    haveLoggedFailedRead = true;
+                    Trace.WriteLine($"The setting {name} could not be retrieved: {e.ToString()}");
+                    this.haveLoggedFailedRead = true;
                 }
             }
 
@@ -65,16 +64,16 @@ namespace OpenLiveWriter.CoreServices.Settings
                 {
                     try
                     {
-                        Set(name, defaultValue);
+                        this.Set(name, defaultValue);
                     }
                     catch
                     {
                         // Since this could get called frequently, try to only log once
-                        if (!haveLoggedFailedDefault)
+                        if (!this.haveLoggedFailedDefault)
                         {
                             //Debug.Fail("Wasn't able to persist a default value for " + name);
-                            Trace.WriteLine("Wasn't able to persist a default value for " + name);
-                            haveLoggedFailedDefault = true;
+                            Trace.WriteLine($"Wasn't able to persist a default value for {name}");
+                            this.haveLoggedFailedDefault = true;
                         }
                     }
                 }
@@ -88,15 +87,15 @@ namespace OpenLiveWriter.CoreServices.Settings
         private bool haveLoggedFailedGetKey = false;
 
         /// <summary>
-        /// Low-level get (returns null if the value doesn't exist). 
+        /// Low-level get (returns null if the value doesn't exist).
         /// </summary>
         /// <param name="name">name</param>
         /// <returns>value (null if not present)</returns>
         public object Get(string name)
         {
-            using (RegistryKey key = GetKey(false))
+            using (var key = this.GetKey(false))
             {
-                object obj = key.GetValue(name);
+                var obj = key.GetValue(name);
 
                 // HACK: Roundtripping of serializable objects is broken if this isn't included.
                 // For example, this code would assert:
@@ -106,7 +105,9 @@ namespace OpenLiveWriter.CoreServices.Settings
                 // byte[] outBytes = Get("foo", typeof(byte[]));
                 // Trace.Assert(ArrayHelper.Compare(inBytes, outBytes));
                 if (obj is byte[])
+                {
                     obj = RegistryCodec.SerializableCodec.Deserialize((byte[])obj);
+                }
 
                 return obj;
             }
@@ -118,33 +119,34 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// occurs when retrieving from the persisted state.  The overloaded version
         /// of this that takes a default value is much safer.
         /// </summary>
-        protected object Get(string name, Type desiredType)
+        protected T Get<T>(string name)
         {
-            using (RegistryKey key = GetKey(false))
+            using (var key = this.GetKey(false))
             {
                 if (key == null)
-                    return null;
+                {
+                    return default;
+                }
 
-                object registryData = key.GetValue(name);
-                if (registryData != null)
-                    return RegistryCodec.Instance.Decode(registryData, desiredType);
-                else
-                    return null;
+                var registryData = key.GetValue(name);
+                return registryData == null ? (default) : (T)RegistryCodec.Instance.Decode(registryData, typeof(T));
             }
         }
 
-        public void Set(string name, object val)
+        public void Set<T>(string name, T val)
         {
             //	If the value is null, remove the key.  Otherwise, set it.
             if (val == null)
-                Unset(name);
+            {
+                this.Unset(name);
+            }
             else
             {
-                using (RegistryKey key = GetKey(true))
+                using (var key = this.GetKey(true))
                 {
                     if (key != null)
                     {
-                        object registryData = RegistryCodec.Instance.Encode(val);
+                        var registryData = RegistryCodec.Instance.Encode(val);
                         key.SetValue(name, registryData);
                     }
                 }
@@ -153,26 +155,27 @@ namespace OpenLiveWriter.CoreServices.Settings
 
         public void Unset(string name)
         {
-            using (RegistryKey key = GetKey(true))
+            using (var key = this.GetKey(true))
             {
                 if (key != null)
+                {
                     key.DeleteValue(name, false);
+                }
             }
         }
 
         public void UnsetSubSettingsTree(string name)
         {
-            using (RegistryKey key = GetKey(true))
+            using (var key = this.GetKey(true))
             {
                 if (key != null)
+                {
                     key.DeleteSubKeyTree(name);
+                }
             }
         }
 
-        public IDisposable BatchUpdate()
-        {
-            return null;
-        }
+        public IDisposable BatchUpdate() => null;
 
         /// <summary>
         /// Determine whether the specified sub-settings exists
@@ -181,13 +184,14 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// <returns>true if it has them, otherwise false</returns>
         public bool HasSubSettings(string subSettingsName)
         {
-            using (RegistryKey key = GetKey(false))
+            using (var key = this.GetKey(false))
             {
                 if (key == null)
                 {
                     return false;
                 }
-                using (RegistryKey subSettingsKey = key.OpenSubKey(subSettingsName))
+
+                using (var subSettingsKey = key.OpenSubKey(subSettingsName))
                 {
                     return subSettingsKey != null;
                 }
@@ -199,33 +203,25 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// </summary>
         /// <param name="subKeyName">name of subkey</param>
         /// <returns>settings persister</returns>
-        public ISettingsPersister GetSubSettings(string subSettingsName)
-        {
-            return new RegistrySettingsPersister(this.rootNode, keyName + "\\" + subSettingsName);
-        }
+        public ISettingsPersister GetSubSettings(string subSettingsName) =>
+            new RegistrySettingsPersister(this.rootNode, $"{this.keyName}\\{subSettingsName}");
 
         /// <summary>
         /// Enumerate the available sub-settings
         /// </summary>
         /// <returns></returns>
-        public string[] GetSubSettings()
+        public ICollection<string> GetSubSettings()
         {
-            using (RegistryKey key = GetKey(false))
+            using (var key = this.GetKey(false))
             {
-                if (key == null)
-                    return null;
-                else
-                    return key.GetSubKeyNames();
+                return key == null ? null : key.GetSubKeyNames();
             }
         }
 
         /// <summary>
         /// Dispose the settings persister
         /// </summary>
-        public void Dispose()
-        {
-            rootNode.Close();
-        }
+        public void Dispose() => this.rootNode.Close();
 
         #endregion
 
@@ -238,14 +234,14 @@ namespace OpenLiveWriter.CoreServices.Settings
             {
                 if (writable)
                 {
-                    return rootNode.CreateSubKey(keyName);
+                    return this.rootNode.CreateSubKey(this.keyName);
                 }
                 else
                 {
                     // CreateSubKey returns the subkey in read-write mode.  We want to
                     // do the creation but return in read-only mode
 
-                    RegistryKey key = rootNode.OpenSubKey(keyName, false);
+                    var key = this.rootNode.OpenSubKey(this.keyName, false);
                     if (key != null)
                     {
                         // key already exists
@@ -254,23 +250,28 @@ namespace OpenLiveWriter.CoreServices.Settings
                     else
                     {
                         // key does not exist; create it, close it, open it
-                        rootNode.CreateSubKey(keyName).Close();
-                        return rootNode.OpenSubKey(keyName, false);
+                        this.rootNode.CreateSubKey(this.keyName).Close();
+                        return this.rootNode.OpenSubKey(this.keyName, false);
                     }
                 }
             }
             catch (Exception)
             {
                 // Since this could get called frequently, try to only log once
-                if (!haveLoggedFailedGetKey)
+                if (!this.haveLoggedFailedGetKey)
                 {
-                    if (keyName != null && keyName.IndexOf("XDefMan", StringComparison.OrdinalIgnoreCase) >= 0)
-                        Trace.WriteLine("Wasn't able to get key for " + keyName);
-                    haveLoggedFailedGetKey = true;
+                    if (this.keyName != null && this.keyName.IndexOf("XDefMan", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        Trace.WriteLine($"Wasn't able to get key for {this.keyName}");
+                    }
+
+                    this.haveLoggedFailedGetKey = true;
                 }
 
                 return null;
             }
         }
+
+        T ISettingsPersister.Get<T>(string name) => this.Get<T>(name);
     }
 }

@@ -51,6 +51,7 @@
     <Compile Include="HtmlScreenCapture.cs" />
     <Compile Include="HtmlServices.cs" />
     <Compile Include="HtmlType.cs" />
+    <Compile Include="HttpRequestCacheLevel.cs" />
     <Compile Include="IPostInfo.cs" />
     <Compile Include="InsertableContentSourceAttribute.cs" />
     <Compile Include="IProperties.cs" />
@@ -61,6 +62,8 @@
     <Compile Include="PluginDiagnostics.cs" />
     <Compile Include="PluginHttpRequest.cs" />
     <Compile Include="PublishNotificationHook.cs" />
+    <Compile Include="ResizeCapabilities.cs" />
+    <Compile Include="ResizeOptions.cs" />
     <Compile Include="SmartContentEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

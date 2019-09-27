@@ -25,6 +25,7 @@ using OpenLiveWriter.PostEditor.LiveClipboard;
 using OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors;
 using OpenLiveWriter.PostEditor.Tables;
 using OpenLiveWriter.PostEditor.Video;
+using System.Linq;
 
 namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
@@ -42,136 +43,138 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                return _isPlaintextOnly;
+                return this._isPlaintextOnly;
             }
             set
             {
-                _isPlaintextOnly = value;
-                dataFormatRegistry.Clear();
-                dataFormatRegistry.Register(CreateDataFormatFactories());
+                this._isPlaintextOnly = value;
+                this.dataFormatRegistry.Clear();
+                this.dataFormatRegistry.Register(this.CreateDataFormatFactories());
             }
         }
 
         internal ExtendedHtmlEditorMashallingHandler(IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite, IHtmlEditorHost blogEditor, OpenLiveWriter.Interop.Com.IDropTarget unhandledDropTarget)
             : base(editorContext)
         {
-            _insertionSite = sourceSite;
-            _blogEditor = blogEditor;
-            _unhandledDropTarget = unhandledDropTarget;
+            this._insertionSite = sourceSite;
+            this._blogEditor = blogEditor;
+            this._unhandledDropTarget = unhandledDropTarget;
         }
 
         protected override IDataFormatHandlerFactory[] CreateDataFormatFactories()
         {
-            if (IsPlainTextOnly)
+            if (this.IsPlainTextOnly)
+            {
                 return new IDataFormatHandlerFactory[]{
-                new DelegateBasedDataFormatHandlerFactory(CreateEmlMessageFormatHandler, EmlMessageHandler.CanCreateFrom),
-                new DelegateBasedDataFormatHandlerFactory(CreateInternalSmartContentFormatHandler, InternalSmartContentFormatHandler.CanCreateFrom),
-                new DelegateBasedDataFormatHandlerFactory(CreateTextDataFormatHandler, CanCreateFromTextFilter),
-                new DelegateBasedDataFormatHandlerFactory(CreateUnhandledFormatHandler, UnhandledDropTarget.CanCreateFrom) // This always needs to be the last handler
+                new DelegateBasedDataFormatHandlerFactory(this.CreateEmlMessageFormatHandler, EmlMessageHandler.CanCreateFrom),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateInternalSmartContentFormatHandler, InternalSmartContentFormatHandler.CanCreateFrom),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateTextDataFormatHandler, this.CanCreateFromTextFilter),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateUnhandledFormatHandler, UnhandledDropTarget.CanCreateFrom) // This always needs to be the last handler
             };
+            }
 
             return new IDataFormatHandlerFactory[]{
-                new DelegateBasedDataFormatHandlerFactory(CreateEmlMessageFormatHandler, EmlMessageHandler.CanCreateFrom),
-                   new DelegateBasedDataFormatHandlerFactory(CreateInternalSmartContentFormatHandler, InternalSmartContentFormatHandler.CanCreateFrom ),
-                new DelegateBasedDataFormatHandlerFactory(CreateLiveClipboardContentSourceFormatHandler, LiveClipboardContentSourceFormatHandler.CanCreateFrom ),
-                new DelegateBasedDataFormatHandlerFactory(CreateLiveClipboardHtmlFormatHandler, LiveClipboardHtmlFormatHandler.CanCreateFrom ),
-                new DelegateBasedDataFormatHandlerFactory(CreateContentSourceUrlFormatHandler, UrlContentSourcelFormatHandler.CanCreateFrom),
-                new DelegateBasedDataFormatHandlerFactory(CreateUrlDataFormatHandler, CanCreateUrlFormatHandler),
-                new DelegateBasedDataFormatHandlerFactory(CreateImageOnlyHtmlDataFormatHandler, CanCreateImageOnlyHtmlFormatHandler),
-                new DelegateBasedDataFormatHandlerFactory(CreateImageFileFormatHandler, data => !_blogEditor.ShouldComposeHostHandlePhotos() && ImageFileFormatHandler.CanCreateFrom(data)),
-                new DelegateBasedDataFormatHandlerFactory(CreateTableDataFormatHandler, CanCreateTableDataFormatHandler),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateEmlMessageFormatHandler, EmlMessageHandler.CanCreateFrom),
+                   new DelegateBasedDataFormatHandlerFactory(this.CreateInternalSmartContentFormatHandler, InternalSmartContentFormatHandler.CanCreateFrom ),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateLiveClipboardContentSourceFormatHandler, LiveClipboardContentSourceFormatHandler.CanCreateFrom ),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateLiveClipboardHtmlFormatHandler, LiveClipboardHtmlFormatHandler.CanCreateFrom ),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateContentSourceUrlFormatHandler, UrlContentSourcelFormatHandler.CanCreateFrom),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateUrlDataFormatHandler, this.CanCreateUrlFormatHandler),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateImageOnlyHtmlDataFormatHandler, this.CanCreateImageOnlyHtmlFormatHandler),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateImageFileFormatHandler, data => !this._blogEditor.ShouldComposeHostHandlePhotos() && ImageFileFormatHandler.CanCreateFrom(data)),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateTableDataFormatHandler, this.CanCreateTableDataFormatHandler),
 #if SUPPORT_FILES
                 new DelegateBasedDataFormatHandlerFactory(CreateFileDataFormatHandler, new DataObjectFilter(CanCreateFileFormatHandler)),
 #endif
-                new DelegateBasedDataFormatHandlerFactory(CreateHtmlDataFormatHandler, CanCreateHtmlFormatHandler),
-                new DelegateBasedDataFormatHandlerFactory(CreateImageClipboardFormatHandler, CanCreateImageDataFormatHandler),
-                new DelegateBasedDataFormatHandlerFactory(CreateEmbedDataFormatHandler, CanCreateEmbedFormatHandler ),
-                new DelegateBasedDataFormatHandlerFactory(CreateVideoFileFormatHandler, VideoFileFormatHandler.CanCreateFrom),
-                new DelegateBasedDataFormatHandlerFactory(CreateImageFolderFormatHandler, data => !_blogEditor.ShouldComposeHostHandlePhotos() && ImageFolderFormatHandler.CanCreateFrom(data)),
-                new DelegateBasedDataFormatHandlerFactory(CreateTextDataFormatHandler, CanCreateFromTextFilter),
-                new DelegateBasedDataFormatHandlerFactory(CreateUnhandledFormatHandler, UnhandledDropTarget.CanCreateFrom) // This always needs to be the last handler
+                new DelegateBasedDataFormatHandlerFactory(this.CreateHtmlDataFormatHandler, this.CanCreateHtmlFormatHandler),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateImageClipboardFormatHandler, this.CanCreateImageDataFormatHandler),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateEmbedDataFormatHandler, this.CanCreateEmbedFormatHandler ),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateVideoFileFormatHandler, VideoFileFormatHandler.CanCreateFrom),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateImageFolderFormatHandler, data => !this._blogEditor.ShouldComposeHostHandlePhotos() && ImageFolderFormatHandler.CanCreateFrom(data)),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateTextDataFormatHandler, this.CanCreateFromTextFilter),
+                new DelegateBasedDataFormatHandlerFactory(this.CreateUnhandledFormatHandler, UnhandledDropTarget.CanCreateFrom) // This always needs to be the last handler
             };
         }
 
         // special text filter that screens out LiveClipboard data
         private bool CanCreateFromTextFilter(DataObjectMeister dataMeister)
         {
-            return CanCreateTextFormatHandler(dataMeister) && (dataMeister.LiveClipboardData == null);
+            return this.CanCreateTextFormatHandler(dataMeister) && (dataMeister.LiveClipboardData == null);
         }
 
         protected virtual DataFormatHandler CreateLiveClipboardContentSourceFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new LiveClipboardContentSourceFormatHandler(dataMeister, handlerContext, EditorContext, _insertionSite);
+            return new LiveClipboardContentSourceFormatHandler(dataMeister, handlerContext, this.EditorContext, this._insertionSite);
         }
 
         protected virtual DataFormatHandler CreateLiveClipboardHtmlFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new LiveClipboardHtmlFormatHandler(dataMeister, handlerContext, EditorContext, _insertionSite);
+            return new LiveClipboardHtmlFormatHandler(dataMeister, handlerContext, this.EditorContext, this._insertionSite);
         }
 
         protected virtual DataFormatHandler CreateTableDataFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new TableDataFormatHandler(dataMeister, handlerContext, EditorContext);
+            return new TableDataFormatHandler(dataMeister, handlerContext, this.EditorContext);
         }
 
         protected virtual DataFormatHandler CreateInternalSmartContentFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new InternalSmartContentFormatHandler(dataMeister, handlerContext, EditorContext, _insertionSite);
+            return new InternalSmartContentFormatHandler(dataMeister, handlerContext, this.EditorContext, this._insertionSite);
         }
 
         protected virtual DataFormatHandler CreateContentSourceUrlFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new UrlContentSourcelFormatHandler(dataMeister, handlerContext, EditorContext, _insertionSite);
+            return new UrlContentSourcelFormatHandler(dataMeister, handlerContext, this.EditorContext, this._insertionSite);
         }
 
         protected virtual DataFormatHandler CreateImageFileFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new ImageFileFormatHandler(dataMeister, handlerContext, EditorContext, _blogEditor);
+            return new ImageFileFormatHandler(dataMeister, handlerContext, this.EditorContext, this._blogEditor);
         }
 
         protected virtual DataFormatHandler CreateVideoFileFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new VideoFileFormatHandler(dataMeister, handlerContext, EditorContext, _blogEditor);
+            return new VideoFileFormatHandler(dataMeister, handlerContext, this.EditorContext, this._blogEditor);
         }
 
         protected virtual DataFormatHandler CreateImageFolderFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new ImageFolderFormatHandler(dataMeister, handlerContext, EditorContext, _blogEditor);
+            return new ImageFolderFormatHandler(dataMeister, handlerContext, this.EditorContext, this._blogEditor);
         }
 
         protected virtual DataFormatHandler CreateImageClipboardFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new ImageClipboardFormatHandler(dataMeister, handlerContext, EditorContext, _blogEditor);
+            return new ImageClipboardFormatHandler(dataMeister, handlerContext, this.EditorContext, this._blogEditor);
         }
 
         protected virtual DataFormatHandler CreateUnhandledFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new UnhandledDropTarget(dataMeister, handlerContext, _unhandledDropTarget);
+            return new UnhandledDropTarget(dataMeister, handlerContext, this._unhandledDropTarget);
         }
 
         protected virtual DataFormatHandler CreateEmlMessageFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new EmlMessageHandler(dataMeister, handlerContext, _unhandledDropTarget);
+            return new EmlMessageHandler(dataMeister, handlerContext, this._unhandledDropTarget);
         }
 
         protected virtual bool CanCreateEmbedFormatHandler(DataObjectMeister dataObject)
         {
-            return EditorContext.MarshalHtmlSupported && EmbedFormatHandler.CanCreateFrom(dataObject);
+            return this.EditorContext.MarshalHtmlSupported && EmbedFormatHandler.CanCreateFrom(dataObject);
         }
 
         protected virtual DataFormatHandler CreateEmbedDataFormatHandler(DataObjectMeister dataMeister, DataFormatHandlerContext handlerContext)
         {
-            return new EmbedFormatHandler(dataMeister, handlerContext, EditorContext, _insertionSite);
+            return new EmbedFormatHandler(dataMeister, handlerContext, this.EditorContext, this._insertionSite);
         }
 
         protected virtual bool CanCreateTableDataFormatHandler(DataObjectMeister dataObject)
         {
-            return EditorContext.MarshalHtmlSupported && TableDataFormatHandler.CanCreateFrom(dataObject);
+            return this.EditorContext.MarshalHtmlSupported && TableDataFormatHandler.CanCreateFrom(dataObject);
         }
 
         protected virtual bool CanCreateImageDataFormatHandler(DataObjectMeister dataObject)
         {
-            return EditorContext.MarshalImagesSupported && ImageClipboardFormatHandler.CanCreateFrom(dataObject);
+            return this.EditorContext.MarshalImagesSupported && ImageClipboardFormatHandler.CanCreateFrom(dataObject);
         }
 
     }
@@ -187,14 +190,18 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public new static bool CanCreateFrom(DataObjectMeister data)
         {
             if (data.FileData == null)
-                return false;
-
-            foreach (FileItem file in data.FileData.Files)
             {
-                FileInfo fi = new FileInfo(file.ContentsPath);
+                return false;
+            }
+
+            foreach (var file in data.FileData.Files)
+            {
+                var fi = new FileInfo(file.ContentsPath);
 
                 if (fi.Exists && string.Compare(fi.Extension, ".eml", true, CultureInfo.InvariantCulture) == 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -213,8 +220,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public UnhandledDropTarget(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, OpenLiveWriter.Interop.Com.IDropTarget unhandledDropTarget)
             : base(dataObject, handlerContext)
         {
-            _unhandledDropTarget = unhandledDropTarget;
-            _oleDataObject = MshtmlEditorDragAndDropTarget.ExtractOleDataObject(DataMeister.IDataObject);
+            this._unhandledDropTarget = unhandledDropTarget;
+            this._oleDataObject = MshtmlEditorDragAndDropTarget.ExtractOleDataObject(this.DataMeister.IDataObject);
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
@@ -229,47 +236,54 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public override DragDropEffects ProvideDragFeedback(Point screenPoint, int keyState, DragDropEffects supportedEffects)
         {
-            if (_unhandledDropTarget == null)
-                return DragDropEffects.None;
-
-            _mkKeyState = MshtmlEditorDragAndDropTarget.ConvertKeyState(keyState);
-            _effect = MshtmlEditorDragAndDropTarget.ConvertDropEffect(supportedEffects);
-            _point = new POINT();
-            _point.x = screenPoint.X;
-            _point.y = screenPoint.Y;
-
-            // We have to call begin drag here because we need the location and key state which we dont have in BeginDrag()
-            if (!_hasCalledBeginDrag)
+            if (this._unhandledDropTarget == null)
             {
-                _hasCalledBeginDrag = true;
-                _unhandledDropTarget.DragEnter(_oleDataObject, _mkKeyState, _point, ref _effect);
+                return DragDropEffects.None;
             }
 
-            _unhandledDropTarget.DragOver(_mkKeyState, _point, ref _effect);
+            this._mkKeyState = MshtmlEditorDragAndDropTarget.ConvertKeyState(keyState);
+            this._effect = MshtmlEditorDragAndDropTarget.ConvertDropEffect(supportedEffects);
+            this._point = new POINT();
+            this._point.x = screenPoint.X;
+            this._point.y = screenPoint.Y;
 
-            return MshtmlEditorDragAndDropTarget.ConvertDropEffect(_effect);
+            // We have to call begin drag here because we need the location and key state which we dont have in BeginDrag()
+            if (!this._hasCalledBeginDrag)
+            {
+                this._hasCalledBeginDrag = true;
+                this._unhandledDropTarget.DragEnter(this._oleDataObject, this._mkKeyState, this._point, ref this._effect);
+            }
+
+            this._unhandledDropTarget.DragOver(this._mkKeyState, this._point, ref this._effect);
+
+            return MshtmlEditorDragAndDropTarget.ConvertDropEffect(this._effect);
         }
 
         public override void EndDrag()
         {
-            if (_unhandledDropTarget == null)
+            if (this._unhandledDropTarget == null)
+            {
                 return;
-            _unhandledDropTarget.DragLeave();
+            }
+
+            this._unhandledDropTarget.DragLeave();
         }
 
         public override bool DataDropped(DataAction action)
         {
-            if (_unhandledDropTarget == null)
+            if (this._unhandledDropTarget == null)
+            {
                 return false;
+            }
 
-            _unhandledDropTarget.Drop(_oleDataObject, _mkKeyState, _point, ref _effect);
+            this._unhandledDropTarget.Drop(this._oleDataObject, this._mkKeyState, this._point, ref this._effect);
 
-            return _effect != DROPEFFECT.NONE;
+            return this._effect != DROPEFFECT.NONE;
         }
 
         public override bool InsertData(DataAction action, params object[] args)
         {
-            return DataDropped(action);
+            return this.DataDropped(action);
         }
     }
 
@@ -283,13 +297,17 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public override DragDropEffects ProvideDragFeedback(Point screenPoint, int keyState, DragDropEffects supportedEffects)
         {
             // call base to get insertion point behavior
-            DragDropEffects effects = base.ProvideDragFeedback(screenPoint, keyState, supportedEffects);
+            var effects = base.ProvideDragFeedback(screenPoint, keyState, supportedEffects);
 
             // override default effects
             if (effects != DragDropEffects.None)
-                return ProvideCopyAsDefaultWithMoveOverride(keyState, supportedEffects);
+            {
+                return this.ProvideCopyAsDefaultWithMoveOverride(keyState, supportedEffects);
+            }
             else
+            {
                 return effects;
+            }
         }
     }
 
@@ -300,7 +318,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public LiveClipboardContentSourceFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
         {
-            _contentSourceSite = sourceSite;
+            this._contentSourceSite = sourceSite;
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
@@ -312,7 +330,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             // get the live clipboard data
-            LiveClipboardData lcData = DataMeister.LiveClipboardData;
+            var lcData = this.DataMeister.LiveClipboardData;
             if (lcData == null)
             {
                 Trace.Fail("Unexpected failure to get LC data!");
@@ -320,7 +338,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
 
             // lookup the content-source
-            ContentSourceInfo contentSource =
+            var contentSource =
                 LiveClipboardManager.FindContentSourceForLiveClipboard(lcData.Formats);
             if (contentSource == null)
             {
@@ -337,15 +355,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     // Note that we do the same thing below for Images so we can use the common
                     // InsertImages method -- we may want to bake this into core marshalling
                     // or add MarkupRange parameters to the image and content-source routines
-                    EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+                    this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
 
                     if (contentSource.Instance is SmartContentSource)
                     {
-                        return InsertSmartContentFromLiveClipboard(contentSource, lcData.Document);
+                        return this.InsertSmartContentFromLiveClipboard(contentSource, lcData.Document);
                     }
                     else if (contentSource.Instance is ContentSource)
                     {
-                        return InsertSimpleContentFromLiveClipboard(contentSource, lcData.Document);
+                        return this.InsertSimpleContentFromLiveClipboard(contentSource, lcData.Document);
                     }
                     else
                     {
@@ -355,7 +373,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 }
                 catch (Exception ex)
                 {
-                    ContentSourceManager.DisplayContentRetreivalError(EditorContext.FrameWindow, ex, contentSource);
+                    ContentSourceManager.DisplayContentRetreivalError(this.EditorContext.FrameWindow, ex, contentSource);
                     return false;
                 }
             }
@@ -364,7 +382,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSimpleContentFromLiveClipboard(ContentSourceInfo contentSource, XmlDocument lcDocument)
         {
-            ContentSource lcContentSource = contentSource.Instance as ContentSource;
+            var lcContentSource = contentSource.Instance as ContentSource;
             if (lcContentSource == null)
             {
                 Trace.Fail("Unexpected failure to get live clipboard content-source!");
@@ -372,10 +390,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
 
             // create the content
-            string content = string.Empty;
-            if (lcContentSource.CreateContentFromLiveClipboard(EditorContext.FrameWindow, lcDocument, ref content) == DialogResult.OK)
+            var content = string.Empty;
+            if (lcContentSource.CreateContentFromLiveClipboard(this.EditorContext.FrameWindow, lcDocument, ref content) == DialogResult.OK)
             {
-                _contentSourceSite.InsertContent(content, false);
+                this._contentSourceSite.InsertContent(content, false);
                 return true;
             }
             else
@@ -386,7 +404,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSmartContentFromLiveClipboard(ContentSourceInfo contentSource, XmlDocument lcDocument)
         {
-            SmartContentSource smartSource = contentSource.Instance as SmartContentSource;
+            var smartSource = contentSource.Instance as SmartContentSource;
             if (smartSource == null)
             {
                 Trace.Fail("Unexpected failure to get live clipboard content-source!");
@@ -394,15 +412,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
 
             // create the smart content
-            IExtensionData extensionData = _contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
+            var extensionData = this._contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
             ISmartContent smartContent = new SmartContent(extensionData);
-            if (smartSource.CreateContentFromLiveClipboard(EditorContext.FrameWindow, lcDocument, smartContent) == DialogResult.OK)
+            if (smartSource.CreateContentFromLiveClipboard(this.EditorContext.FrameWindow, lcDocument, smartContent) == DialogResult.OK)
             {
                 // generate html and insert it
-                string content = smartSource.GenerateEditorHtml(smartContent, _contentSourceSite);
+                var content = smartSource.GenerateEditorHtml(smartContent, this._contentSourceSite);
                 if (content != null)
                 {
-                    _contentSourceSite.InsertContent(contentSource.Id, content, extensionData);
+                    this._contentSourceSite.InsertContent(contentSource.Id, content, extensionData);
                     return true;
                 }
                 else
@@ -424,7 +442,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public LiveClipboardHtmlFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
         {
-            _contentSourceSite = sourceSite;
+            this._contentSourceSite = sourceSite;
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
@@ -438,13 +456,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 try
                 {
-                    string htmlPresentation = DataMeister.LiveClipboardData.HtmlPresentation;
+                    var htmlPresentation = this.DataMeister.LiveClipboardData.HtmlPresentation;
 
                     // remove document tags and scripts
                     htmlPresentation = HtmlCleaner.RemoveScripts(htmlPresentation);
 
                     // insert the html
-                    EditorContext.InsertHtml(begin, end, htmlPresentation, null);
+                    this.EditorContext.InsertHtml(begin, end, htmlPresentation, null);
                     return true;
                 }
                 catch (Exception e)
@@ -464,7 +482,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public InternalSmartContentFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
         {
-            _contentSourceSite = sourceSite;
+            this._contentSourceSite = sourceSite;
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
@@ -482,40 +500,46 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public override DragDropEffects ProvideDragFeedback(Point screenPoint, int keyState, DragDropEffects supportedEffects)
         {
             // call base to get insertion point behavior
-            DragDropEffects effects = base.ProvideDragFeedback(screenPoint, keyState, supportedEffects);
+            var effects = base.ProvideDragFeedback(screenPoint, keyState, supportedEffects);
 
             // override default effects
             if (effects != DragDropEffects.None)
-                return ProvideMove(keyState, supportedEffects);
+            {
+                return this.ProvideMove(keyState, supportedEffects);
+            }
             else
+            {
                 return effects;
+            }
         }
 
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             // get a reference to the underlying data object
-            IDataObject dataObject = DataMeister.IDataObject;
+            var dataObject = this.DataMeister.IDataObject;
 
-            string dataObjectInstanceId = dataObject.GetData(SmartContentDataObject.INSTANCE_ID_DATAFORMAT) as string;
-            if (EditorContext.EditorId.Equals(dataObjectInstanceId))
+            var dataObjectInstanceId = dataObject.GetData(SmartContentDataObject.INSTANCE_ID_DATAFORMAT) as string;
+            if (this.EditorContext.EditorId.Equals(dataObjectInstanceId))
             {
                 // get the internal items out of the data object
-                string smartContentElementId = (string)dataObject.GetData(SmartContentDataObject.INTERNAL_SMART_CONTENT_DATAFORMAT);
+                var smartContentElementId = (string)dataObject.GetData(SmartContentDataObject.INTERNAL_SMART_CONTENT_DATAFORMAT);
 
-                IHTMLElement element = (EditorContext.HtmlDocument as IHTMLDocument3).getElementById(smartContentElementId);
+                var element = (this.EditorContext.HtmlDocument as IHTMLDocument3).getElementById(smartContentElementId);
                 Debug.Assert(element != null, "Invalid smart content item id detected: " + smartContentElementId);
                 if (element != null)
                 {
-                    MarkupRange elementRange = EditorContext.MarkupServices.CreateMarkupRange(element, true);
-                    MarkupPointer insertionPoint = begin;
+                    var elementRange = this.EditorContext.MarkupServices.CreateMarkupRange(element, true);
+                    var insertionPoint = begin;
                     MarkupPointerMoveHelper.PerformImageBreakout(insertionPoint);
 
                     insertionPoint.PushCling(false);
                     insertionPoint.PushGravity(_POINTER_GRAVITY.POINTER_GRAVITY_Left);
 
                     //verify the insertion point is inside of the same content editable parent (bug 290729)
-                    if (!IsValidInsertionPoint(element, insertionPoint))
+                    if (!this.IsValidInsertionPoint(element, insertionPoint))
+                    {
                         return false;
+                    }
 
                     try
                     {
@@ -524,15 +548,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             // If we are in an edit field, since we strip the content wdown to plain text we have to use
                             // InsertHtml.  However, this means we need to move the content via a string.  This sucks because
                             // we break any markup ranges in that area.  This is why ignore once will not work in edit fields.
-                            EditorContext.MarkupServices.Remove(begin, end);
-                            string html = elementRange.HtmlText;
-                            EditorContext.MarkupServices.Remove(elementRange.Start, elementRange.End);
-                            EditorContext.InsertHtml(insertionPoint, insertionPoint, html, null);
+                            this.EditorContext.MarkupServices.Remove(begin, end);
+                            var html = elementRange.HtmlText;
+                            this.EditorContext.MarkupServices.Remove(elementRange.Start, elementRange.End);
+                            this.EditorContext.InsertHtml(insertionPoint, insertionPoint, html, null);
                         }
                         else
                         {
-                            EditorContext.MarkupServices.Remove(begin, end);
-                            EditorContext.MarkupServices.Move(elementRange.Start, elementRange.End, insertionPoint);
+                            this.EditorContext.MarkupServices.Remove(begin, end);
+                            this.EditorContext.MarkupServices.Move(elementRange.Start, elementRange.End, insertionPoint);
                         }
                         return true;
                     }
@@ -549,27 +573,35 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         private bool IsValidInsertionPoint(IHTMLElement e, MarkupPointer p)
         {
             if (InlineEditField.IsEditField(p.CurrentScope))
+            {
                 return true;
+            }
 
             IHTMLElement contentEditableParent = null;
-            IHTMLElement parent = e;
+            var parent = e;
             while (parent != null)
             {
                 if ((parent as IHTMLElement3).isContentEditable)
+                {
                     contentEditableParent = parent;
+                }
                 else if (contentEditableParent != null)
+                {
                     break; //we hit the top-most editable parent.
+                }
 
                 parent = parent.parentElement;
             }
 
             if (contentEditableParent != null)
             {
-                MarkupRange range = EditorContext.MarkupServices.CreateMarkupRange(contentEditableParent, false);
+                var range = this.EditorContext.MarkupServices.CreateMarkupRange(contentEditableParent, false);
                 return range.InRange(p);
             }
             else
+            {
                 return false;
+            }
         }
     }
 
@@ -580,13 +612,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public UrlContentSourcelFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
         {
-            _contentSourceSite = sourceSite;
+            this._contentSourceSite = sourceSite;
         }
 
         public static new bool CanCreateFrom(DataObjectMeister data)
         {
             if (!GlobalEditorOptions.SupportsFeature(ContentEditorFeature.UrlContentSourcePaste))
+            {
                 return false;
+            }
 
             if (HasUrl(data))
             {
@@ -601,7 +635,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             // lookup the content-source
-            ContentSourceInfo contentSource = ContentSourceManager.FindContentSourceForUrl(Url);
+            var contentSource = ContentSourceManager.FindContentSourceForUrl(this.Url);
 
             if (contentSource != null)
             {
@@ -610,17 +644,17 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 // Note that we do the same thing below for Images so we can use the common
                 // InsertImages method -- we may want to bake this into core marshalling
                 // or add MarkupRange parameters to the image and content-source routines
-                EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+                this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
 
                 try
                 {
                     if (contentSource.Instance is SmartContentSource)
                     {
-                        return InsertSmartContentFromUrl(contentSource, Url);
+                        return this.InsertSmartContentFromUrl(contentSource, this.Url);
                     }
                     else if (contentSource.Instance is ContentSource)
                     {
-                        return InsertSimpleContentFromUrl(contentSource, Url);
+                        return this.InsertSimpleContentFromUrl(contentSource, this.Url);
                     }
                     else
                     {
@@ -643,13 +677,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSimpleContentFromUrl(ContentSourceInfo contentSource, string url)
         {
-            string title = string.Empty;
-            string content = string.Empty;
+            var title = string.Empty;
+            var content = string.Empty;
 
             if (UrlContentRetreivalWithProgress.ExecuteSimpleContentRetreival(
-                EditorContext.FrameWindow, contentSource, url, ref title, ref content))
+                this.EditorContext.FrameWindow, contentSource, url, ref title, ref content))
             {
-                _contentSourceSite.InsertContent(content, false);
+                this._contentSourceSite.InsertContent(content, false);
                 return true;
             }
             else
@@ -660,18 +694,18 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSmartContentFromUrl(ContentSourceInfo contentSource, string url)
         {
-            SmartContentSource smartSource = contentSource.Instance as SmartContentSource;
-            string title = string.Empty;
-            IExtensionData extensionData = _contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
+            var smartSource = contentSource.Instance as SmartContentSource;
+            var title = string.Empty;
+            var extensionData = this._contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
             ISmartContent smartContent = new SmartContent(extensionData);
 
             if (UrlContentRetreivalWithProgress.ExecuteSmartContentRetreival(
-                EditorContext.FrameWindow, contentSource, url, ref title, smartContent))
+                this.EditorContext.FrameWindow, contentSource, url, ref title, smartContent))
             {
-                string content = smartSource.GenerateEditorHtml(smartContent, _contentSourceSite);
+                var content = smartSource.GenerateEditorHtml(smartContent, this._contentSourceSite);
                 if (content != null)
                 {
-                    _contentSourceSite.InsertContent(contentSource.Id, content, extensionData);
+                    this._contentSourceSite.InsertContent(contentSource.Id, content, extensionData);
                 }
                 return true;
             }
@@ -688,7 +722,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public VideoFileFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IHtmlEditorHost blogEditor)
             : base(dataObject, handlerContext, editorContext)
         {
-            _blogEditor = blogEditor;
+            this._blogEditor = blogEditor;
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
@@ -699,14 +733,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             //hack: drive the selection textRange to the caret (before calling InsertImages)
-            EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
-            _blogEditor.InsertSmartContentFromFile(new string[] { DataMeister.FileData.Files[0].ContentsPath }, VideoContentSource.ID, HtmlInsertionOptions.Default, null);
+            this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+            this._blogEditor.InsertSmartContentFromFile(new string[] { this.DataMeister.FileData.Files.First().ContentsPath }, VideoContentSource.ID, HtmlInsertionOptions.Default, null);
             return true;
         }
 
         public override void Dispose()
         {
-            _blogEditor = null;
+            this._blogEditor = null;
             base.Dispose();
         }
     }
@@ -718,21 +752,21 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public ImageBaseFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IHtmlEditorHost blogEditor)
             : base(dataObject, handlerContext, editorContext)
         {
-            _blogEditor = blogEditor;
+            this._blogEditor = blogEditor;
         }
 
         private ImageInsertEntryPoint ImageInsertEntryPoint
         {
             get
             {
-                switch (HandlerContext)
+                switch (this.HandlerContext)
                 {
                     case DataFormatHandlerContext.ClipboardPaste:
                         return ImageInsertEntryPoint.ClipboardPaste;
                     case DataFormatHandlerContext.DragAndDrop:
                         return ImageInsertEntryPoint.DragDrop;
                     default:
-                        Trace.Fail("Unexpected data handler context: " + HandlerContext);
+                        Trace.Fail("Unexpected data handler context: " + this.HandlerContext);
                         return ImageInsertEntryPoint.Inline;
                 }
             }
@@ -740,15 +774,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         protected bool DoInsertDataCore(List<string> files, DataAction action, MarkupPointer begin, MarkupPointer end)
         {
-            IHtmlEditorHost blogEditor = _blogEditor;
-            ImageInsertEntryPoint imageInsertEntryPoint = ImageInsertEntryPoint;
+            var blogEditor = this._blogEditor;
+            var imageInsertEntryPoint = this.ImageInsertEntryPoint;
 
-            EditorContext.Invoke(delegate
+            this.EditorContext.Invoke(delegate
             {
                 //hack: drive the selection textRange to the caret (before calling InsertImages)
-                EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+                this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
 
-                string[] fileArray = files.ToArray();
+                var fileArray = files.ToArray();
                 blogEditor.InsertImages(fileArray, ImageInsertEntryPoint.DragDrop);
             });
 
@@ -757,7 +791,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public override void Dispose()
         {
-            _blogEditor = null;
+            this._blogEditor = null;
             base.Dispose();
         }
     }
@@ -773,10 +807,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public static bool CanCreateFrom(DataObjectMeister data)
         {
             // see if there are files at the top-level of the file data
-            FileData fileData = data.FileData;
-            if (fileData != null && fileData.Files.Length == 1 && fileData.Files[0].IsDirectory)
+            var fileData = data.FileData;
+            if (fileData != null && fileData.Files.Count == 1 && fileData.Files.First().IsDirectory)
             {
-                DirectoryLister lister = new DirectoryLister(fileData.Files[0].ContentsPath, false, true);
+                var lister = new DirectoryLister(fileData.Files.First().ContentsPath, false, true);
                 foreach (string file in lister.GetFiles())
                 {
                     if (PathHelper.IsPathImage(file))
@@ -792,11 +826,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             //hack: drive the selection textRange to the caret (before calling InsertImages)
-            EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+            this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
 
-            List<string> files = new List<string>();
+            var files = new List<string>();
 
-            DirectoryLister lister = new DirectoryLister(DataMeister.FileData.Files[0].ContentsPath, false, true);
+            var lister = new DirectoryLister(this.DataMeister.FileData.Files.First().ContentsPath, false, true);
             foreach (string file in lister.GetFiles())
             {
                 if (PathHelper.IsPathImage(file))
@@ -805,7 +839,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 }
             }
 
-            return DoInsertDataCore(files, action, begin, end);
+            return this.DoInsertDataCore(files, action, begin, end);
         }
     }
 
@@ -820,18 +854,22 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public static bool CanCreateFrom(DataObjectMeister data)
         {
             // see if there are files at the top-level of the file data
-            FileData fileData = data.FileData;
-            int photoFilesFound = 0;
-            if (fileData != null && fileData.Files.Length > 0)
+            var fileData = data.FileData;
+            var photoFilesFound = 0;
+            if (fileData != null && fileData.Files.Count > 0)
             {
                 // if there are any directories in the file data then we can't create from
-                foreach (FileItem file in fileData.Files)
+                foreach (var file in fileData.Files)
                 {
                     if (FileHelper.IsSystemFile(file.ContentsPath))
+                    {
                         continue;
+                    }
 
                     if (!PathHelper.IsPathImage(file.ContentsPath))
+                    {
                         return false;
+                    }
 
                     photoFilesFound++;
                 }
@@ -848,17 +886,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             // get the list of files from the data meister
-            FileItem[] files = DataMeister.FileData.Files;
+            var files = this.DataMeister.FileData.Files;
 
-            List<string> filePaths = new List<string>(DataMeister.FileData.Files.Length);
             // create an array of file entities to insert
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (PathHelper.IsPathImage(files[i].ContentsPath))
-                    filePaths.Add(files[i].ContentsPath);
-            }
+            var filePaths = files
+                .Where(file => PathHelper.IsPathImage(file.ContentsPath))
+                .Select(file => file.ContentsPath)
+                .ToList();
 
-            return DoInsertDataCore(filePaths, action, begin, end);
+            return this.DoInsertDataCore(filePaths, action, begin, end);
         }
     }
 
@@ -868,7 +904,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public ImageClipboardFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IHtmlEditorHost blogEditor)
             : base(dataObject, handlerContext, editorContext)
         {
-            _blogEditor = blogEditor;
+            this._blogEditor = blogEditor;
         }
 
         /// <summary>
@@ -887,13 +923,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// </summary>
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
-            string imagePath = SaveImageDataToTempFile(DataMeister.ImageData);
+            var imagePath = this.SaveImageDataToTempFile(this.DataMeister.ImageData);
             if (imagePath != null)
             {
                 //hack: drive the selection textRange to the caret (before calling InsertImages)
-                EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+                this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
 
-                _blogEditor.InsertImages(new string[] { imagePath }, ImageInsertEntryPoint.DragDrop);
+                this._blogEditor.InsertImages(new string[] { imagePath }, ImageInsertEntryPoint.DragDrop);
                 return true;
             }
             return false;
@@ -912,19 +948,19 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 //save the Bitmap data as a PNG
                 savedImagePath = TempFileManager.Instance.CreateTempFile("image.png");
-                SaveBitmapToFile(imageData.Bitmap, savedImagePath);
+                this.SaveBitmapToFile(imageData.Bitmap, savedImagePath);
             }
             else if (imageData.Dib != null)
             {
                 //save the DIB data as a PNG
                 savedImagePath = TempFileManager.Instance.CreateTempFile("image.png");
-                SaveDibToFile(imageData.Dib, savedImagePath);
+                this.SaveDibToFile(imageData.Dib, savedImagePath);
             }
             else if (imageData.GIF != null)
             {
                 //save the GIF data as a GID file
                 savedImagePath = TempFileManager.Instance.CreateTempFile("image.gif");
-                SaveGifToFile(imageData.GIF, savedImagePath);
+                this.SaveGifToFile(imageData.GIF, savedImagePath);
             }
 
             //return the path to the temp file that the image was saved to.
@@ -958,7 +994,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <param name="filepath"></param>
         private void SaveGifToFile(Stream gif, string filepath)
         {
-            FileStream fileOut = new FileStream(filepath, FileMode.OpenOrCreate);
+            var fileOut = new FileStream(filepath, FileMode.OpenOrCreate);
             using (fileOut)
             {
                 StreamHelper.Transfer(gif, fileOut);
@@ -967,7 +1003,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public override void Dispose()
         {
-            _blogEditor = null;
+            this._blogEditor = null;
             base.Dispose();
         }
     }
@@ -986,13 +1022,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public EmbedFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
         {
-            _contentSourceSite = sourceSite;
+            this._contentSourceSite = sourceSite;
         }
 
         public static bool CanCreateFrom(DataObjectMeister data)
         {
             if (!GlobalEditorOptions.SupportsFeature(ContentEditorFeature.UrlContentSourcePaste))
+            {
                 return false;
+            }
 
             return TextDataContainsEmbed(data);
         }
@@ -1000,15 +1038,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         protected override bool DoInsertData(DataAction action, MarkupPointer begin, MarkupPointer end)
         {
             //might be a video
-            VideoProvider provider = VideoProviderManager.FindProviderFromEmbed(DataMeister.TextData.Text);
+            var provider = VideoProviderManager.FindProviderFromEmbed(this.DataMeister.TextData.Text);
             if (provider != null)
             {
                 // HACK: drive the selection textRange to the caret so we can call generic
                 // content-source routines that work off the current selection
-                EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
+                this.EditorContext.MarkupServices.CreateMarkupRange(begin, end).ToTextRange().select();
                 try
                 {
-                    return InsertSmartContentFromEmbed(DataMeister.TextData.Text);
+                    return this.InsertSmartContentFromEmbed(this.DataMeister.TextData.Text);
                 }
                 catch (Exception ex)
                 {
@@ -1023,7 +1061,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     using (new WaitCursor())
                     {
                         // insert the content
-                        EditorContext.InsertHtml(begin, end, DataMeister.TextData.Text, null);
+                        this.EditorContext.InsertHtml(begin, end, this.DataMeister.TextData.Text, null);
                     }
 
                     return true;
@@ -1038,20 +1076,20 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private bool InsertSmartContentFromEmbed(string embed)
         {
-            ContentSourceInfo contentSource = ContentSourceManager.FindContentSource(typeof(VideoContentSource));
+            var contentSource = ContentSourceManager.FindContentSource(typeof(VideoContentSource));
 
             if (contentSource != null)
             {
-                SmartContentSource smartSource = contentSource.Instance as SmartContentSource;
-                VideoContentSource videoSource = smartSource as VideoContentSource;
-                IExtensionData extensionData = _contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
+                var smartSource = contentSource.Instance as SmartContentSource;
+                var videoSource = smartSource as VideoContentSource;
+                var extensionData = this._contentSourceSite.CreateExtensionData(Guid.NewGuid().ToString());
                 ISmartContent smartContent = new SmartContent(extensionData);
                 videoSource.CreateContentFromEmbed(embed, smartContent);
                 // generate html and insert it
-                string content = videoSource.GenerateEditorHtml(smartContent, _contentSourceSite);
+                var content = videoSource.GenerateEditorHtml(smartContent, this._contentSourceSite);
                 if (content != null)
                 {
-                    _contentSourceSite.InsertContent(VideoContentSource.ID, content, extensionData);
+                    this._contentSourceSite.InsertContent(VideoContentSource.ID, content, extensionData);
                     return true;
                 }
                 else
@@ -1070,7 +1108,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 if (data.TextData != null)
                 {
-                    string textData = data.TextData.Text.Trim().ToLower(CultureInfo.InvariantCulture);
+                    var textData = data.TextData.Text.Trim().ToLower(CultureInfo.InvariantCulture);
                     return ContainsEmbedOrObject(textData);
                 }
                 else
@@ -1090,7 +1128,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             try
             {
                 IElementPredicate predicate = new OrPredicate(new BeginTagPredicate("embed"), new BeginTagPredicate("object"), new BeginTagPredicate("iframe"));
-                HtmlExtractor ex = new HtmlExtractor(html);
+                var ex = new HtmlExtractor(html);
                 return ex.Seek(predicate).Success;
             }
             catch

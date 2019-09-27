@@ -1,28 +1,31 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
+
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace OpenLiveWriter.CoreServices
 {
-    using System.Collections.Generic;
-    using System.Windows.Forms;
-
     /// <summary>
-    /// Generic interface used to represent a file item format
+    /// Definition of file item file drop format
     /// </summary>
-    internal interface IFileItemFormat
+    internal class FileItemFileItemFormat : IFileItemFormat
     {
         /// <summary>
         /// Does the passed data object have this format?
         /// </summary>
         /// <param name="dataObject">data object</param>
         /// <returns>true if the data object has the format, otherwise false</returns>
-        bool CanCreateFrom(IDataObject dataObject);
+        public bool CanCreateFrom(IDataObject dataObject) =>
+            OleDataObjectHelper.GetDataPresentSafe(dataObject, typeof(FileItem[]));
 
         /// <summary>
         /// Create an array of file items based on the specified data object
         /// </summary>
         /// <param name="dataObject">data object</param>
         /// <returns>array of file items</returns>
-        ICollection<FileItem> CreateFileItems(IDataObject dataObject);
+        public ICollection<FileItem> CreateFileItems(IDataObject dataObject) =>
+            FileItemFromFileItem.CreateArrayFromDataObject(dataObject);
     }
 }
+

@@ -1,10 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-
 namespace OpenLiveWriter.CoreServices.Settings
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Defines an interface for persistent settings.
     /// </summary>
@@ -13,24 +14,23 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// <summary>
         /// Get the list of existing settings.
         /// </summary>
-        string[] GetNames();
+        ICollection<string> GetNames();
 
         /// <summary>
         /// Get a persisted value.  The defaultValue will be used if the value does
         /// not exist or if any type of exception occurs.
         /// </summary>
         /// <param name="name">The name of the setting value to get.</param>
-        /// <param name="desiredType">The desired type to return.</param>
         /// <param name="defaultValue">The default value to return if the value does not exist or an exception occurs.</param>
         /// <returns>The value of the setting, or the default value.</returns>
-        object Get(string name, Type desiredType, object defaultValue);
+        T Get<T>(string name, T defaultValue);
 
         /// <summary>
         /// Low-level get (returns null if the value doesn't exist).
         /// </summary>
         /// <param name="name">name</param>
         /// <returns>value (null if not present)</returns>
-        object Get(string name);
+        T Get<T>(string name);
 
         /// <summary>
         /// Persists a value.  The type of the object being persisted should be
@@ -39,7 +39,7 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// </summary>
         /// <param name="name">The name of the setting value to set.</param>
         /// <param name="value">The value to set.</param>
-        void Set(string name, object value);
+        void Set<T>(string name, T value);
 
         /// <summary>
         /// Deletes a value.  Does not delete subsettings.
@@ -90,8 +90,8 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// <summary>
         /// Enumerate the available sub-settings
         /// </summary>
-        /// <returns></returns>
-        string[] GetSubSettings();
+        /// <returns>The available sub-settings</returns>
+        ICollection<string> GetSubSettings();
     }
 
 }

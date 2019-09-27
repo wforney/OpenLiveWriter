@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using OpenLiveWriter.CoreServices;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.Interop.Windows;
@@ -33,7 +34,7 @@ namespace OpenLiveWriter.FileDestinations
             if (key == string.Empty)
                 return false;
 
-            SettingsPersisterHelper settings = SettingsRoot;
+            var settings = SettingsRoot;
             return settings.HasSubSettings(_destinationKey + @"\" + key);
         }
 
@@ -44,13 +45,13 @@ namespace OpenLiveWriter.FileDestinations
         /// <returns></returns>
         public DestinationProfile loadProfile(string key)
         {
-            SettingsPersisterHelper settings = getProfileSettings(key);
+            var settings = getProfileSettings(key);
 
-            if (settings.GetNames().Length == 0)
+            if (settings.GetNames().Count == 0)
             {
                 return null;
             }
-            DestinationProfile profile = new DestinationProfile();
+            var profile = new DestinationProfile();
             profile.Id = key;
             profile.Name = settings.GetString(PROFILE_NAME_KEY, "");
             profile.WebsiteURL = settings.GetString(PROFILE_WEBSITE_URL_KEY, "");
@@ -80,7 +81,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <param name="profile"></param>
         public void saveProfile(string key, DestinationProfile profile)
         {
-            SettingsPersisterHelper settings = getProfileSettings(key);
+            var settings = getProfileSettings(key);
             profile.Id = key;
             settings.SetString(PROFILE_NAME_KEY, profile.Name);
             settings.SetString(PROFILE_WEBSITE_URL_KEY, profile.WebsiteURL);
@@ -108,7 +109,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <param name="key"></param>
         public void deleteProfile(string key)
         {
-            SettingsPersisterHelper settings = SettingsRoot;
+            var settings = SettingsRoot;
             settings = settings.GetSubSettings(_destinationKey);
             settings.SettingsPersister.UnsetSubSettingsTree(key);
         }
@@ -121,14 +122,15 @@ namespace OpenLiveWriter.FileDestinations
         {
             get
             {
-                SettingsPersisterHelper settings = SettingsRoot;
+                var settings = SettingsRoot;
                 settings = settings.GetSubSettings(_destinationKey);
-                string[] keys = settings.GetSubSettingNames();
-                DestinationProfile[] profiles = new DestinationProfile[keys.Length];
-                for (int i = 0; i < profiles.Length; i++)
+                var keys = settings.GetSubSettingNames().ToArray();
+                var profiles = new DestinationProfile[keys.Length];
+                for (var i = 0; i < profiles.Length; i++)
                 {
-                    profiles[i] = loadProfile(keys[i]);
+                    profiles[i] = this.loadProfile(keys[i]);
                 }
+
                 return profiles;
             }
         }
@@ -140,14 +142,14 @@ namespace OpenLiveWriter.FileDestinations
         {
             get
             {
-                SettingsPersisterHelper settings = SettingsRoot;
+                var settings = SettingsRoot;
                 settings = settings.GetSubSettings(_destinationKey);
-                string key = settings.GetString(PROFILE_DEFAULT_PROFILE_KEY, null);
+                var key = settings.GetString(PROFILE_DEFAULT_PROFILE_KEY, null);
                 return key;
             }
             set
             {
-                SettingsPersisterHelper settings = SettingsRoot;
+                var settings = SettingsRoot;
                 settings = settings.GetSubSettings(_destinationKey);
                 settings.SetString(PROFILE_DEFAULT_PROFILE_KEY, value);
             }
@@ -160,7 +162,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <returns></returns>
         private SettingsPersisterHelper getProfileSettings(string profileKey)
         {
-            SettingsPersisterHelper settings = SettingsRoot;
+            var settings = SettingsRoot;
             settings = settings.GetSubSettings(_destinationKey + @"\" + profileKey);
             return settings;
         }

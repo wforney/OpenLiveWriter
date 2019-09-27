@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OpenLiveWriter.CoreServices
@@ -18,7 +19,7 @@ namespace OpenLiveWriter.CoreServices
 
         private FileInfo m_fileInfo;
 
-        public override FileItem[] Children
+        public override ICollection<FileItem> Children
         {
             get
             {

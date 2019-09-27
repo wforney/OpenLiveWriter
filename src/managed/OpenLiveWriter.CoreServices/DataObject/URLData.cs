@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -24,7 +25,7 @@ namespace OpenLiveWriter.CoreServices
         {
             // WinLive Bug 198371: Look at rolling the fix for WinLive 182698 into the OleDataObjectHelper.GetDataPresentSafe method
             // For now, we keep the changes targeted.
-            bool canGetDataPresentDirectlyFromIDataObject = false;
+            var canGetDataPresentDirectlyFromIDataObject = false;
 
             try
             {
@@ -46,13 +47,13 @@ namespace OpenLiveWriter.CoreServices
             {
                 //check to see if the dataObject contains a single .url file,
                 //if so, create the URLData from that.
-                FileData fileData = FileData.Create(iDataObject);
-                if (fileData != null && fileData.Files.Length == 1)
+                var fileData = FileData.Create(iDataObject);
+                if (fileData != null && fileData.Files.Count == 1)
                 {
-                    string filePath = fileData.Files[0].ContentsPath;
+                    var filePath = fileData.Files.First().ContentsPath;
                     if (PathHelper.IsPathUrlFile(filePath))
                     {
-                        URLData urlData = new URLData(iDataObject, UrlHelper.GetUrlFromShortCutFile(filePath), Path.GetFileNameWithoutExtension(filePath));
+                        var urlData = new URLData(iDataObject, UrlHelper.GetUrlFromShortCutFile(filePath), Path.GetFileNameWithoutExtension(filePath));
                         urlData.DateCreated = File.GetCreationTime(filePath);
                         urlData.DateModified = File.GetLastWriteTime(filePath);
                         return urlData;
@@ -74,8 +75,8 @@ namespace OpenLiveWriter.CoreServices
                 if (m_url == null)
                 {
                     // Read the URL into a string
-                    Stream stream = (Stream)m_dataObject.GetData(DataFormatsEx.URLFormat);
-                    StreamReader reader = new StreamReader(stream);
+                    var stream = (Stream)m_dataObject.GetData(DataFormatsEx.URLFormat);
+                    var reader = new StreamReader(stream);
 
                     using (reader)
                     {
@@ -113,9 +114,9 @@ namespace OpenLiveWriter.CoreServices
                 if (m_title == null)
                 {
                     // Get the bytes from the stream
-                    Stream memoryStream =
+                    var memoryStream =
                         (Stream)m_dataObject.GetData(DataFormatsEx.FileGroupDescriptorWFormat);
-                    byte[] memoryStreamBytes = new byte[memoryStream.Length];
+                    var memoryStreamBytes = new byte[memoryStream.Length];
 
                     using (memoryStream)
                     {
@@ -127,10 +128,10 @@ namespace OpenLiveWriter.CoreServices
                     const int FILENAME_OFFSET = 76;
                     const int BYTE_INCREMENT = 2;
                     char currentChar;
-                    StringBuilder sBuilder = new StringBuilder();
+                    var sBuilder = new StringBuilder();
 
                     // Read character by character into a string
-                    int i = FILENAME_OFFSET;
+                    var i = FILENAME_OFFSET;
                     currentChar = BitConverter.ToChar(memoryStreamBytes, i);
                     while (currentChar != (char)0)
                     {

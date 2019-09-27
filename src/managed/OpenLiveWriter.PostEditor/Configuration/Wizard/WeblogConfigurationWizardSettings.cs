@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 using System;
+using System.Linq;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.PostEditor;
 using OpenLiveWriter.PostEditor.BlogProviderButtons;
@@ -31,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             get
             {
-                return _serviceNames.SettingsPersister.GetNames();
+                return _serviceNames.SettingsPersister.GetNames().ToArray();
             }
         }
 

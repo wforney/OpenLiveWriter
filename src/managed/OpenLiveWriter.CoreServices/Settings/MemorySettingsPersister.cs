@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace OpenLiveWriter.CoreServices.Settings
 {
@@ -12,90 +13,75 @@ namespace OpenLiveWriter.CoreServices.Settings
     public class MemorySettingsPersister : ISettingsPersister
     {
         private object defaultVal;
-        private Hashtable data;
-        private DefaultHashtable children;
+        private readonly Hashtable data;
+        private readonly DefaultHashtable children;
 
         public MemorySettingsPersister()
         {
-            defaultVal = null;
-            data = new Hashtable();
-            children = new DefaultHashtable(new DefaultHashtable.DefaultValuePump(MemorySettingsPersisterPump));
+            this.defaultVal = null;
+            this.data = new Hashtable();
+            this.children = new DefaultHashtable(new DefaultHashtable.DefaultValuePump(this.MemorySettingsPersisterPump));
         }
 
-        private object MemorySettingsPersisterPump(object key)
-        {
-            return new MemorySettingsPersister();
-        }
+        private object MemorySettingsPersisterPump(object key) => new MemorySettingsPersister();
 
-        public string[] GetNames()
-        {
-            return CollectionToSortedStringArray(data.Keys);
-        }
+        public ICollection<string> GetNames() => this.CollectionToSortedStringArray(this.data.Keys);
 
-        public object Get(string name, Type desiredType, object defaultValue)
+        public T Get<T>(string name, T defaultValue)
         {
             if (name == null)
             {
                 if (this.defaultVal == null)
+                {
                     this.defaultVal = defaultValue;
-                return this.defaultVal;
+                }
+
+                return (T)this.defaultVal;
             }
 
-            object val = data[name];
-            if (val != null && desiredType.IsAssignableFrom(val.GetType()))
-                return val;
-            data[name] = defaultValue;
+            var val = this.data[name];
+            if (val != null && typeof(T).IsAssignableFrom(val.GetType()))
+            {
+                return (T)val;
+            }
+
+            this.data[name] = defaultValue;
             return defaultValue;
         }
 
-        public object Get(string name)
+        public T Get<T>(string name) => name == null ? (T)this.defaultVal : (T)this.data[name];
+
+        public void Set<T>(string name, T value)
         {
             if (name == null)
-                return this.defaultVal;
-
-            return data[name];
-        }
-
-        public void Set(string name, object value)
-        {
-            if (name == null)
-                defaultVal = value;
+            {
+                this.defaultVal = value;
+            }
             else
-                data[name] = value;
+            {
+                this.data[name] = value;
+            }
         }
 
         public void Unset(string name)
         {
             if (name == null)
-                defaultVal = null;
+            {
+                this.defaultVal = null;
+            }
 
-            data.Remove(name);
+            this.data.Remove(name);
         }
 
-        public void UnsetSubSettingsTree(string name)
-        {
-            children.Remove(name);
-        }
+        public void UnsetSubSettingsTree(string name) => this.children.Remove(name);
 
-        public IDisposable BatchUpdate()
-        {
-            return null;
-        }
+        public IDisposable BatchUpdate() => null;
 
-        public bool HasSubSettings(string subSettingsName)
-        {
-            return children.ContainsKey(subSettingsName);
-        }
+        public bool HasSubSettings(string subSettingsName) => this.children.ContainsKey(subSettingsName);
 
-        public ISettingsPersister GetSubSettings(string subSettingsName)
-        {
-            return (ISettingsPersister)children[subSettingsName];
-        }
+        public ISettingsPersister GetSubSettings(string subSettingsName) => (ISettingsPersister)this.children[subSettingsName];
 
-        public string[] GetSubSettings()
-        {
-            return CollectionToSortedStringArray(children.Keys);
-        }
+        public ICollection<string> GetSubSettings() => this.CollectionToSortedStringArray(this.children.Keys);
 
         public void Dispose()
         {
@@ -103,8 +89,8 @@ namespace OpenLiveWriter.CoreServices.Settings
 
         private string[] CollectionToSortedStringArray(ICollection foo)
         {
-            string[] names = new string[data.Count];
-            int i = 0;
+            var names = new string[this.data.Count];
+            var i = 0;
             foreach (string key in foo)
             {
                 names[i++] = key;

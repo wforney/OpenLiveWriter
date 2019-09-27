@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using OpenLiveWriter.Mshtml;
 using OpenLiveWriter.CoreServices;
+using System.Linq;
 
 namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
 {
@@ -26,7 +27,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
         {
             // see if there are files at the top-level of the file data
             FileData fileData = data.FileData;
-            if (fileData != null && fileData.Files.Length > 0)
+            if (fileData != null && fileData.Files.Count > 0)
             {
                 // if there are any directories in the file data then we can't create from
                 foreach (FileItem file in fileData.Files)
@@ -54,16 +55,12 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 try
                 {
                     // get the list of files from the data meister
-                    FileItem[] files = DataMeister.FileData.Files;
+                    var files = DataMeister.FileData.Files;
 
-                    string[] filePaths = new string[files.Length];
                     // create an array of file entities to insert
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        filePaths[i] = files[i].ContentsPath;
-                    }
+                    var filePaths = files.Cast<FileItem>().Select(file => file.ContentsPath).ToArray();
 
-                    string html = EditorContext.HtmlGenerationService.GenerateHtmlFromFiles(filePaths);
+                    var html = EditorContext.HtmlGenerationService.GenerateHtmlFromFiles(filePaths);
                     EditorContext.InsertHtml(begin, end, html, null);
 
                     //place the caret at the end of the inserted content

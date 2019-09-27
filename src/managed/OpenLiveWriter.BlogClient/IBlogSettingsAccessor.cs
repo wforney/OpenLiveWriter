@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.Extensibility.BlogClient;
 
@@ -87,7 +88,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                return _settings.GetNames();
+                return _settings.GetNames().ToArray();
             }
         }
 

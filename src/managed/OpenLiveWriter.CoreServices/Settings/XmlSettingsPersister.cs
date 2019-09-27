@@ -1,18 +1,18 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Xml;
-
 namespace OpenLiveWriter.CoreServices.Settings
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+
     public abstract class XmlSettingsPersister : ISettingsPersister
     {
         protected internal Hashtable values;
@@ -29,163 +29,132 @@ namespace OpenLiveWriter.CoreServices.Settings
 
         protected internal abstract object SyncRoot { get; }
 
-        public string[] GetNames()
+        public ICollection<string> GetNames()
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                ArrayList nameList = new ArrayList(values.Keys);
+                var nameList = new List<string>(this.values.Keys.Cast<string>());
                 nameList.Sort();
-                return (string[])nameList.ToArray(typeof(string));
+                return nameList;
             }
         }
 
-        public object Get(string name, Type desiredType, object defaultValue)
+        public T Get<T>(string name, T defaultValue)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                object o = Get(name);
-                if (desiredType.IsInstanceOfType(o))
-                    return o;
+                var o = this.Get<T>(name);
+                if (typeof(T).IsInstanceOfType(o))
+                {
+                    return (T)o;
+                }
                 else if (defaultValue != null)
                 {
-                    values[name] = defaultValue;
-                    Persist();
+                    this.values[name] = defaultValue;
+                    this.Persist();
                     return defaultValue;
                 }
                 else
-                    return null;
+                {
+                    return default;
+                }
             }
         }
 
-        public object Get(string name)
+        public T Get<T>(string name)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                return values[name];
+                return (T)this.values[name];
             }
         }
 
-        public void Set(string name, object value)
+        public void Set<T>(string name, T value)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                values[name] = value;
-                Persist();
+                this.values[name] = value;
+                this.Persist();
             }
         }
 
         public void Unset(string name)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                values.Remove(name);
-                Persist();
+                this.values.Remove(name);
+                this.Persist();
             }
         }
 
         public void UnsetSubSettingsTree(string name)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                subsettings.Remove(name);
-                Persist();
+                this.subsettings.Remove(name);
+                this.Persist();
             }
         }
 
         public bool HasSubSettings(string subSettingsName)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                return subsettings.ContainsKey(subSettingsName);
+                return this.subsettings.ContainsKey(subSettingsName);
             }
         }
 
         public ISettingsPersister GetSubSettings(string subSettingsName)
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                if (!subsettings.ContainsKey(subSettingsName))
-                    subsettings[subSettingsName] = new Hashtable[] { new Hashtable(), new Hashtable() };
-                Hashtable[] tables = (Hashtable[])subsettings[subSettingsName];
+                if (!this.subsettings.ContainsKey(subSettingsName))
+                {
+                    this.subsettings[subSettingsName] = new Hashtable[] { new Hashtable(), new Hashtable() };
+                }
+
+                var tables = (Hashtable[])this.subsettings[subSettingsName];
                 return new XmlChildSettingsPersister(this, tables[0], tables[1]);
             }
         }
 
-        public string[] GetSubSettings()
+        public ICollection<string> GetSubSettings()
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                ArrayList keyList = new ArrayList(subsettings.Keys);
+                var keyList = new List<string>(this.subsettings.Keys.Cast<string>());
                 keyList.Sort();
-                return (string[])keyList.ToArray(typeof(string));
+                return keyList;
             }
         }
 
-        public virtual void Dispose()
-        {
-            Dispose(true);
-        }
+        public virtual void Dispose() => this.Dispose(true);
 
-        protected virtual void Dispose(bool disposing)
-        {
-            GC.SuppressFinalize(this);
-        }
+        protected virtual void Dispose(bool disposing) => GC.SuppressFinalize(this);
 
         ~XmlSettingsPersister()
         {
-            Dispose(false);
+            this.Dispose(false);
             //Debug.Fail("Failed to dispose XmlSettingsPersister");
         }
     }
 
-    internal class XmlChildSettingsPersister : XmlSettingsPersister
-    {
-        private readonly XmlSettingsPersister parent;
-
-        public XmlChildSettingsPersister(XmlSettingsPersister parent, Hashtable values, Hashtable subsettings)
-            : base(values, subsettings)
-        {
-            this.parent = parent;
-        }
-
-        protected internal override object SyncRoot
-        {
-            get { return parent.SyncRoot; }
-        }
-
-        public override IDisposable BatchUpdate()
-        {
-            return parent.BatchUpdate();
-        }
-
-        internal override void Persist()
-        {
-            parent.Persist();
-        }
-    }
-
-    public class XmlFileSettingsPersister : XmlSettingsPersister
+    public partial class XmlFileSettingsPersister : XmlSettingsPersister
     {
         private readonly Stream stream;
         private readonly object syncRoot = new object();
         private int batchUpdateRefCount = 0;
 
         private XmlFileSettingsPersister(Stream stream, Hashtable values, Hashtable subsettings)
-            : base(values, subsettings)
-        {
-            this.stream = stream;
-        }
+            : base(values, subsettings) => this.stream = stream;
 
-        protected internal override object SyncRoot
-        {
-            get { return syncRoot; }
-        }
+        protected internal override object SyncRoot => this.syncRoot;
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                stream.Dispose();
+                this.stream.Dispose();
             }
             base.Dispose(false);
 
@@ -200,8 +169,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             }
             else
             {
-                Hashtable values, subsettings;
-                Parse(s, out values, out subsettings);
+                Parse(s, out var values, out var subsettings);
                 return new XmlFileSettingsPersister(s, values, subsettings);
             }
         }
@@ -211,7 +179,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             values = new Hashtable();
             subsettings = new Hashtable();
 
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             try
             {
                 doc.Load(s);
@@ -222,25 +190,25 @@ namespace OpenLiveWriter.CoreServices.Settings
                 Trace.WriteLine(e.ToString());
                 return;
             }
-            System.Xml.XmlElement root = doc.DocumentElement;
+            var root = doc.DocumentElement;
             Parse(root, values, subsettings);
         }
 
         private static void Parse(XmlElement node, Hashtable values, Hashtable subsettings)
         {
-            foreach (System.Xml.XmlElement valueNode in node.SelectNodes("value"))
+            foreach (XmlElement valueNode in node.SelectNodes("value"))
             {
-                string name = valueNode.GetAttribute("name");
-                string type = valueNode.GetAttribute("type");
-                string value = valueNode.InnerText;
+                var name = valueNode.GetAttribute("name");
+                var type = valueNode.GetAttribute("type");
+                var value = valueNode.InnerText;
                 values[name] = ParseValue(type, value);
             }
 
-            foreach (System.Xml.XmlElement settingsNode in node.SelectNodes("settings"))
+            foreach (XmlElement settingsNode in node.SelectNodes("settings"))
             {
-                string name = settingsNode.GetAttribute("name");
-                Hashtable subvalues = new Hashtable();
-                Hashtable subsubsettings = new Hashtable();
+                var name = settingsNode.GetAttribute("name");
+                var subvalues = new Hashtable();
+                var subsubsettings = new Hashtable();
                 Parse(settingsNode, subvalues, subsubsettings);
                 subsettings[name] = new Hashtable[] { subvalues, subsubsettings };
             }
@@ -282,7 +250,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     return DateTime.Parse(value, CultureInfo.InvariantCulture);
                 case (int)ValueType.Rectangle:
                     {
-                        string[] ints = StringHelper.Split(value, ",");
+                        var ints = StringHelper.Split(value, ",");
                         return new Rectangle(
                             int.Parse(ints[0], CultureInfo.InvariantCulture),
                             int.Parse(ints[1], CultureInfo.InvariantCulture),
@@ -292,7 +260,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     }
                 case (int)ValueType.Point:
                     {
-                        string[] ints = StringHelper.Split(value, ",");
+                        var ints = StringHelper.Split(value, ",");
                         return new Point(
                             int.Parse(ints[0], CultureInfo.InvariantCulture),
                             int.Parse(ints[1], CultureInfo.InvariantCulture)
@@ -300,7 +268,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     }
                 case (int)ValueType.Size:
                     {
-                        string[] ints = StringHelper.Split(value, ",");
+                        var ints = StringHelper.Split(value, ",");
                         return new Size(
                             int.Parse(ints[0], CultureInfo.InvariantCulture),
                             int.Parse(ints[1], CultureInfo.InvariantCulture)
@@ -308,7 +276,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     }
                 case (int)ValueType.SizeF:
                     {
-                        string[] floats = StringHelper.Split(value, ",");
+                        var floats = StringHelper.Split(value, ",");
                         return new SizeF(
                             float.Parse(floats[0], CultureInfo.InvariantCulture),
                             float.Parse(floats[1], CultureInfo.InvariantCulture)
@@ -410,7 +378,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             else if (input is Rectangle)
             {
                 valueType = ValueType.Rectangle;
-                Rectangle rect = (Rectangle)input;
+                var rect = (Rectangle)input;
                 output = string.Format(CultureInfo.InvariantCulture,
                                        "{0},{1},{2},{3}",
                                        rect.Left.ToString(CultureInfo.InvariantCulture),
@@ -421,7 +389,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             else if (input is Point)
             {
                 valueType = ValueType.Point;
-                Point pt = (Point)input;
+                var pt = (Point)input;
                 output = string.Format(CultureInfo.InvariantCulture, "{0},{1}",
                                        pt.X,
                                        pt.Y);
@@ -429,7 +397,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             else if (input is Size)
             {
                 valueType = ValueType.Size;
-                Size sz = (Size)input;
+                var sz = (Size)input;
                 output = string.Format(CultureInfo.InvariantCulture, "{0},{1}",
                                        sz.Width,
                                        sz.Height);
@@ -437,7 +405,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             else if (input is SizeF)
             {
                 valueType = ValueType.SizeF;
-                SizeF sz = (SizeF)input;
+                var sz = (SizeF)input;
                 output = string.Format(CultureInfo.InvariantCulture, "{0},{1}",
                                        sz.Width,
                                        sz.Height);
@@ -445,9 +413,8 @@ namespace OpenLiveWriter.CoreServices.Settings
             else if (input is string[])
             {
                 valueType = ValueType.Strings;
-                StringBuilder sb = new StringBuilder();
-                string[] values = new string[((string[])input).Length];
-                for (int i = 0; i < values.Length; i++)
+                var values = new string[((string[])input).Length];
+                for (var i = 0; i < values.Length; i++)
                 {
                     values[i] = ((string[])input)[i].Replace("\\", "\\\\").Replace(",", "\\,");
                 }
@@ -464,118 +431,72 @@ namespace OpenLiveWriter.CoreServices.Settings
             }
         }
 
-        enum ValueType
-        {
-            Char,
-            String,
-            Bool,
-            SByte,
-            Byte,
-            Int16,
-            UInt16,
-            Int32,
-            UInt32,
-            Int64,
-            UInt64,
-            Double,
-            Float,
-            Decimal,
-            DateTime,
-            Rectangle,
-            Point,
-            Size,
-            SizeF,
-            Strings,
-            ByteArray
-        }
-
-        public override IDisposable BatchUpdate()
-        {
-            return new BatchUpdateHelper(this);
-        }
-
-        private class BatchUpdateHelper : IDisposable
-        {
-            private readonly XmlFileSettingsPersister parent;
-            private int disposed = 0;
-
-            public BatchUpdateHelper(XmlFileSettingsPersister parent)
-            {
-                this.parent = parent;
-                parent.BeginUpdate();
-            }
-
-            public void Dispose()
-            {
-                if (Interlocked.CompareExchange(ref disposed, 1, 0) == 0)
-                    parent.EndUpdate();
-            }
-        }
+        public override IDisposable BatchUpdate() => new BatchUpdateHelper(this);
 
         private void BeginUpdate()
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                batchUpdateRefCount++;
+                this.batchUpdateRefCount++;
             }
         }
 
         private void EndUpdate()
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                batchUpdateRefCount--;
-                Persist();
-                Trace.Assert(batchUpdateRefCount >= 0, "batchUpdateRefCount is less than zero");
+                this.batchUpdateRefCount--;
+                this.Persist();
+                Trace.Assert(this.batchUpdateRefCount >= 0, "batchUpdateRefCount is less than zero");
             }
         }
 
         internal override void Persist()
         {
-            lock (SyncRoot)
+            lock (this.SyncRoot)
             {
-                if (batchUpdateRefCount > 0)
+                if (this.batchUpdateRefCount > 0)
+                {
                     return;
+                }
 
-                XmlDocument xmlDoc = new XmlDocument();
-                System.Xml.XmlElement settings = xmlDoc.CreateElement("settings");
+                var xmlDoc = new XmlDocument();
+                var settings = xmlDoc.CreateElement("settings");
                 xmlDoc.AppendChild(settings);
-                ToXml(settings, values, subsettings);
+                ToXml(settings, this.values, this.subsettings);
 
-                stream.Position = 0;
-                stream.SetLength(0);
-                xmlDoc.Save(stream);
-                stream.Flush();
+                this.stream.Position = 0;
+                this.stream.SetLength(0);
+                xmlDoc.Save(this.stream);
+                this.stream.Flush();
             }
         }
 
-        private static void ToXml(System.Xml.XmlElement settings, Hashtable values, Hashtable subsettings)
+        private static void ToXml(XmlElement settings, Hashtable values, Hashtable subsettings)
         {
-            ArrayList valueKeys = new ArrayList(values.Keys);
+            var valueKeys = new ArrayList(values.Keys);
             valueKeys.Sort();
             foreach (string key in valueKeys)
             {
-                System.Xml.XmlElement el = settings.OwnerDocument.CreateElement("value");
+                var el = settings.OwnerDocument.CreateElement("value");
                 el.SetAttribute("name", key);
-                object value = values[key];
+                var value = values[key];
                 if (value != null)
                 {
-                    ValueType valueType;
-                    string output;
-                    UnparseValue(value, out valueType, out output);
+                    UnparseValue(value, out var valueType, out var output);
                     el.SetAttribute("type", valueType.ToString());
                     el.InnerText = output;
                     settings.AppendChild(el);
                 }
             }
 
-            ArrayList subsettingsKeys = new ArrayList(subsettings.Keys);
+            var subsettingsKeys = new ArrayList(subsettings.Keys);
             subsettingsKeys.Sort();
             foreach (string key in subsettingsKeys)
             {
-                System.Xml.XmlElement el = settings.OwnerDocument.CreateElement("settings");
+                var el = settings.OwnerDocument.CreateElement("settings");
                 el.SetAttribute("name", key);
-                Hashtable[] hashtables = (Hashtable[])subsettings[key];
+                var hashtables = (Hashtable[])subsettings[key];
                 if (hashtables != null)
                 {
                     settings.AppendChild(el);

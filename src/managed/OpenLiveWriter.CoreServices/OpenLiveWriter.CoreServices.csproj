@@ -68,6 +68,11 @@
     <Compile Include="CancelableStream.cs" />
     <Compile Include="ConditionVariable.cs" />
     <Compile Include="CryptHelper.cs" />
+    <Compile Include="DataObject\DIBHelperException.cs" />
+    <Compile Include="DataObject\FileDescriptor.cs" />
+    <Compile Include="DataObject\FileItemFileContentsFormat.cs" />
+    <Compile Include="DataObject\FileItemFileDropFormat.cs" />
+    <Compile Include="DataObject\FileItemFileItemFormat.cs" />
     <Compile Include="DelayUpdateHelper.cs" />
     <Compile Include="ColorHelper.cs" />
     <Compile Include="CommandLineHelper.cs" />
@@ -105,6 +110,8 @@
     <Compile Include="Diagnostics\ApplicationPerformance.cs" />
     <Compile Include="Diagnostics\BufferingTraceListener.cs" />
     <Compile Include="Diagnostics\BufferingTraceListenerEntry.cs" />
+    <Compile Include="Diagnostics\COMErrorCodeDynamicExceptionMessage.cs" />
+    <Compile Include="Diagnostics\ErrorCodeDynamicExceptionMessage.cs" />
     <Compile Include="Diagnostics\FileLogger.cs" />
     <Compile Include="Diagnostics\DiagnosticsConsole.cs">
       <SubType>Form</SubType>
@@ -120,6 +127,7 @@
     <Compile Include="Diagnostics\OpenForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Diagnostics\SimpleDynamicExceptionMessage.cs" />
     <Compile Include="Diagnostics\UnexpectedErrorDelegate.cs" />
     <Compile Include="Diagnostics\UnexpectedErrorDialog.cs">
       <SubType>Form</SubType>
@@ -130,6 +138,8 @@
     <Compile Include="Diagnostics\UnhandledExceptionErrorMessage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Diagnostics\UnwindingDynamicExceptionMessage.cs" />
+    <Compile Include="Diagnostics\Win32ErrorCodeDynamicExceptionMessage.cs" />
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisplayableException.cs" />
     <Compile Include="DisplayHelper.cs" />
@@ -219,6 +229,7 @@
     <Compile Include="Progress\JointProgressHosts.cs" />
     <Compile Include="Progress\MultipartAsyncOperation.cs" />
     <Compile Include="Progress\OperationCancelledException.cs" />
+    <Compile Include="Progress\ProgressCategory.cs" />
     <Compile Include="Progress\ProgressHostFilter.cs" />
     <Compile Include="Progress\ProgressTick.cs" />
     <Compile Include="Progress\ProgressWorker.cs" />
@@ -243,8 +254,12 @@
     <Compile Include="Settings\ISettingsPersister.cs" />
     <Compile Include="Settings\MemorySettingsPersister.cs" />
     <Compile Include="Settings\RegistryCodec.cs" />
+    <Compile Include="Settings\RegistryKeySpec.cs" />
     <Compile Include="Settings\RegistrySettingsPersister.cs" />
     <Compile Include="Settings\SettingsPersisterHelper.cs" />
+    <Compile Include="Settings\XmlChildSettingsPersister.cs" />
+    <Compile Include="Settings\XmlFileSettingsPersister.BatchUpdateHelper.cs" />
+    <Compile Include="Settings\XmlFileSettingsPersister.ValueType.cs" />
     <Compile Include="Settings\XmlSettingsPersister.cs" />
     <Compile Include="ShellHelper.cs" />
     <Compile Include="SimpleHeap.cs" />

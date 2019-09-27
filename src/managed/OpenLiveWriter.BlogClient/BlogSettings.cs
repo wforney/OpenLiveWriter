@@ -15,6 +15,7 @@ using OpenLiveWriter.Extensibility.BlogClient;
 using OpenLiveWriter.Interop.Windows;
 using OpenLiveWriter.BlogClient.Providers;
 using OpenLiveWriter.BlogClient.Detection;
+using System.Linq;
 
 namespace OpenLiveWriter.BlogClient
 {
@@ -23,9 +24,9 @@ namespace OpenLiveWriter.BlogClient
     {
         public static string[] GetBlogIds()
         {
-            string[] blogIds = SettingsKey.GetSubSettingNames();
+            var blogIds = SettingsKey.GetSubSettingNames().ToArray();
 
-            for (int i = 0; i < blogIds.Length; i++)
+            for (var i = 0; i < blogIds.Length; i++)
             {
                 if (!BlogIdIsValid(blogIds[i]))
                 {
@@ -38,11 +39,11 @@ namespace OpenLiveWriter.BlogClient
 
         public static BlogDescriptor[] GetBlogs(bool sortByName)
         {
-            string[] ids = GetBlogIds();
-            BlogDescriptor[] blogs = new BlogDescriptor[ids.Length];
-            for (int i = 0; i < ids.Length; i++)
+            var ids = GetBlogIds();
+            var blogs = new BlogDescriptor[ids.Length];
+            for (var i = 0; i < ids.Length; i++)
             {
-                using (BlogSettings settings = BlogSettings.ForBlogId(ids[i]))
+                using (var settings = BlogSettings.ForBlogId(ids[i]))
                     blogs[i] = new BlogDescriptor(ids[i], settings.BlogName, settings.HomepageUrl);
             }
             if (sortByName)
@@ -77,7 +78,7 @@ namespace OpenLiveWriter.BlogClient
             get
             {
                 // try to get an explicitly set default profile id
-                string defaultKey = SettingsKey.GetString(DEFAULT_WEBLOG, string.Empty);
+                var defaultKey = SettingsKey.GetString(DEFAULT_WEBLOG, string.Empty);
 
                 // if a default is specified and the key exists
                 if (BlogIdIsValid(defaultKey))
@@ -88,7 +89,7 @@ namespace OpenLiveWriter.BlogClient
                 // if one is not specified then get the first one stored (if any)
                 // (update the value while doing this so we don't have to repeat
                 // this calculation)
-                string[] blogIds = GetBlogIds();
+                var blogIds = GetBlogIds();
                 if (blogIds != null && blogIds.Length > 0)
                 {
                     DefaultBlogId = blogIds[0];
@@ -122,7 +123,7 @@ namespace OpenLiveWriter.BlogClient
         {
             try
             {
-                Guid guid = new Guid(id);
+                var guid = new Guid(id);
                 _id = guid.ToString();
             }
             catch (FormatException ex)
@@ -219,10 +220,10 @@ namespace OpenLiveWriter.BlogClient
             {
                 lock (_manifestDownloadInfoLock)
                 {
-                    using (SettingsPersisterHelper manifestKey = Settings.GetSubSettings(WRITER_MANIFEST))
+                    using (var manifestKey = Settings.GetSubSettings(WRITER_MANIFEST))
                     {
                         // at a minimum must have a source-url
-                        string sourceUrl = manifestKey.GetString(MANIFEST_SOURCE_URL, string.Empty);
+                        var sourceUrl = manifestKey.GetString(MANIFEST_SOURCE_URL, string.Empty);
                         if (sourceUrl != string.Empty)
                         {
                             return new WriterEditingManifestDownloadInfo(
@@ -244,7 +245,7 @@ namespace OpenLiveWriter.BlogClient
                 {
                     if (value != null)
                     {
-                        using (SettingsPersisterHelper manifestKey = Settings.GetSubSettings(WRITER_MANIFEST))
+                        using (var manifestKey = Settings.GetSubSettings(WRITER_MANIFEST))
                         {
                             manifestKey.SetString(MANIFEST_SOURCE_URL, value.SourceUrl);
                             manifestKey.SetDateTime(MANIFEST_EXPIRES, value.Expires);
@@ -284,7 +285,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                string providerId = Settings.GetString(PROVIDER_ID, string.Empty);
+                var providerId = Settings.GetString(PROVIDER_ID, string.Empty);
                 if (providerId == "16B3FA3F-DAD7-4c93-A407-81CAE076883E")
                     return "5FD58F3F-A36E-4aaf-8ABE-764248961FA0";
                 else
@@ -303,7 +304,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                string clientType = Settings.GetString(CLIENT_TYPE, string.Empty);
+                var clientType = Settings.GetString(CLIENT_TYPE, string.Empty);
 
                 // temporary hack for migration of MovableType blogs
                 // TODO: is there a cleaner place to do this?
@@ -352,9 +353,9 @@ namespace OpenLiveWriter.BlogClient
                     // these settings for the first time.
                     if (Settings.HasSubSettings(HOMEPAGE_OPTION_OVERRIDES))
                     {
-                        using (SettingsPersisterHelper homepageOptionOverridesKey = Settings.GetSubSettings(HOMEPAGE_OPTION_OVERRIDES))
+                        using (var homepageOptionOverridesKey = Settings.GetSubSettings(HOMEPAGE_OPTION_OVERRIDES))
                         {
-                            foreach (string optionName in homepageOptionOverridesKey.GetNames())
+                            foreach (var optionName in homepageOptionOverridesKey.GetNames())
                                 homepageOptionOverrides.Add(optionName, homepageOptionOverridesKey.GetString(optionName, string.Empty));
                         }
                     }
@@ -369,7 +370,7 @@ namespace OpenLiveWriter.BlogClient
                     Settings.UnsetSubsettingTree(HOMEPAGE_OPTION_OVERRIDES);
 
                     // re-write overrides
-                    using (SettingsPersisterHelper homepageOptionOverridesKey = Settings.GetSubSettings(HOMEPAGE_OPTION_OVERRIDES))
+                    using (var homepageOptionOverridesKey = Settings.GetSubSettings(HOMEPAGE_OPTION_OVERRIDES))
                     {
                         foreach (DictionaryEntry entry in value)
                             homepageOptionOverridesKey.SetString(entry.Key.ToString(), entry.Value.ToString());
@@ -387,9 +388,9 @@ namespace OpenLiveWriter.BlogClient
                 lock (_optionOverridesLock)
                 {
                     IDictionary optionOverrides = new Hashtable();
-                    using (SettingsPersisterHelper optionOverridesKey = Settings.GetSubSettings(OPTION_OVERRIDES))
+                    using (var optionOverridesKey = Settings.GetSubSettings(OPTION_OVERRIDES))
                     {
-                        foreach (string optionName in optionOverridesKey.GetNames())
+                        foreach (var optionName in optionOverridesKey.GetNames())
                             optionOverrides.Add(optionName, optionOverridesKey.GetString(optionName, string.Empty));
                     }
                     return optionOverrides;
@@ -403,7 +404,7 @@ namespace OpenLiveWriter.BlogClient
                     Settings.UnsetSubsettingTree(OPTION_OVERRIDES);
 
                     // re-write overrides
-                    using (SettingsPersisterHelper optionOverridesKey = Settings.GetSubSettings(OPTION_OVERRIDES))
+                    using (var optionOverridesKey = Settings.GetSubSettings(OPTION_OVERRIDES))
                     {
                         foreach (DictionaryEntry entry in value)
                             optionOverridesKey.SetString(entry.Key.ToString(), entry.Value.ToString());
@@ -421,9 +422,9 @@ namespace OpenLiveWriter.BlogClient
                 lock (_userOptionOverridesLock)
                 {
                     IDictionary userOptionOverrides = new Hashtable();
-                    using (SettingsPersisterHelper userOptionOverridesKey = Settings.GetSubSettings(USER_OPTION_OVERRIDES))
+                    using (var userOptionOverridesKey = Settings.GetSubSettings(USER_OPTION_OVERRIDES))
                     {
-                        foreach (string optionName in userOptionOverridesKey.GetNames())
+                        foreach (var optionName in userOptionOverridesKey.GetNames())
                             userOptionOverrides.Add(optionName, userOptionOverridesKey.GetString(optionName, string.Empty));
                     }
                     return userOptionOverrides;
@@ -437,7 +438,7 @@ namespace OpenLiveWriter.BlogClient
                     Settings.UnsetSubsettingTree(USER_OPTION_OVERRIDES);
 
                     // re-write overrides
-                    using (SettingsPersisterHelper userOptionOverridesKey = Settings.GetSubSettings(USER_OPTION_OVERRIDES))
+                    using (var userOptionOverridesKey = Settings.GetSubSettings(USER_OPTION_OVERRIDES))
                     {
                         foreach (DictionaryEntry entry in value)
                             userOptionOverridesKey.SetString(entry.Key.ToString(), entry.Value.ToString());
@@ -470,7 +471,7 @@ namespace OpenLiveWriter.BlogClient
             {
                 if (_blogCredentials == null)
                 {
-                    CredentialsDomain credentialsDomain = new CredentialsDomain(ServiceName, BlogName, FavIcon, Image);
+                    var credentialsDomain = new CredentialsDomain(ServiceName, BlogName, FavIcon, Image);
                     _blogCredentials = new BlogCredentials(Settings, credentialsDomain);
                 }
                 return _blogCredentials;
@@ -488,12 +489,12 @@ namespace OpenLiveWriter.BlogClient
             {
                 lock (_buttonsLock)
                 {
-                    ArrayList buttonDescriptions = new ArrayList();
-                    using (SettingsPersisterHelper providerButtons = Settings.GetSubSettings(BUTTONS_KEY))
+                    var buttonDescriptions = new ArrayList();
+                    using (var providerButtons = Settings.GetSubSettings(BUTTONS_KEY))
                     {
-                        foreach (string buttonId in providerButtons.GetSubSettingNames())
+                        foreach (var buttonId in providerButtons.GetSubSettingNames())
                         {
-                            using (SettingsPersisterHelper buttonKey = providerButtons.GetSubSettings(buttonId))
+                            using (var buttonKey = providerButtons.GetSubSettings(buttonId))
                                 buttonDescriptions.Add(new BlogProviderButtonDescriptionFromSettings(buttonKey));
                         }
                     }
@@ -505,18 +506,20 @@ namespace OpenLiveWriter.BlogClient
                 lock (_buttonsLock)
                 {
                     // write button descriptions
-                    using (SettingsPersisterHelper providerButtons = Settings.GetSubSettings(BUTTONS_KEY))
+                    using (var providerButtons = Settings.GetSubSettings(BUTTONS_KEY))
                     {
                         // track buttons that have been deleted (assume all have been deleted and then
                         // remove deleted buttons from the list as they are referenced)
-                        ArrayList deletedButtons = new ArrayList(providerButtons.GetSubSettingNames());
+                        var deletedButtons = new ArrayList(providerButtons.GetSubSettingNames().ToArray());
 
                         // write the descriptions
-                        foreach (IBlogProviderButtonDescription buttonDescription in value)
+                        foreach (var buttonDescription in value)
                         {
                             // write
-                            using (SettingsPersisterHelper buttonKey = providerButtons.GetSubSettings(buttonDescription.Id))
+                            using (var buttonKey = providerButtons.GetSubSettings(buttonDescription.Id))
+                            {
                                 BlogProviderButtonDescriptionFromSettings.SaveFrameButtonDescriptionToSettings(buttonDescription, buttonKey);
+                            }
 
                             // note that this button should not be deleted
                             deletedButtons.Remove(buttonDescription.Id);
@@ -551,7 +554,7 @@ namespace OpenLiveWriter.BlogClient
             get { return Settings.GetByteArray(IMAGE, null); }
             set
             {
-                byte[] imageBytes = value;
+                var imageBytes = value;
                 if (imageBytes != null && imageBytes.Length == 0)
                     imageBytes = null;
                 Settings.SetByteArray(IMAGE, imageBytes);
@@ -564,7 +567,7 @@ namespace OpenLiveWriter.BlogClient
             get { return Settings.GetByteArray(WATERMARK_IMAGE, null); }
             set
             {
-                byte[] watermarkBytes = value;
+                var watermarkBytes = value;
                 if (watermarkBytes != null && watermarkBytes.Length == 0)
                     watermarkBytes = null;
                 Settings.SetByteArray(WATERMARK_IMAGE, watermarkBytes);
@@ -579,15 +582,15 @@ namespace OpenLiveWriter.BlogClient
                 lock (_categoriesLock)
                 {
                     // get the categories
-                    ArrayList categories = new ArrayList();
-                    using (SettingsPersisterHelper categoriesKey = Settings.GetSubSettings(CATEGORIES))
+                    var categories = new ArrayList();
+                    using (var categoriesKey = Settings.GetSubSettings(CATEGORIES))
                     {
-                        foreach (string id in categoriesKey.GetSubSettingNames())
+                        foreach (var id in categoriesKey.GetSubSettingNames())
                         {
-                            using (SettingsPersisterHelper categoryKey = categoriesKey.GetSubSettings(id))
+                            using (var categoryKey = categoriesKey.GetSubSettings(id))
                             {
-                                string name = categoryKey.GetString(CATEGORY_NAME, id);
-                                string parent = categoryKey.GetString(CATEGORY_PARENT, string.Empty);
+                                var name = categoryKey.GetString(CATEGORY_NAME, id);
+                                var parent = categoryKey.GetString(CATEGORY_PARENT, string.Empty);
                                 categories.Add(new BlogPostCategory(id, name, parent));
                             }
                         }
@@ -605,17 +608,17 @@ namespace OpenLiveWriter.BlogClient
                 lock (_categoriesLock)
                 {
                     // delete existing categories
-                    SettingsPersisterHelper settings = Settings;
+                    var settings = Settings;
                     using (settings.BatchUpdate())
                     {
                         settings.UnsetSubsettingTree(CATEGORIES);
 
                         // re-write categories
-                        using (SettingsPersisterHelper categoriesKey = settings.GetSubSettings(CATEGORIES))
+                        using (var categoriesKey = settings.GetSubSettings(CATEGORIES))
                         {
-                            foreach (BlogPostCategory category in value)
+                            foreach (var category in value)
                             {
-                                using (SettingsPersisterHelper categoryKey = categoriesKey.GetSubSettings(category.Id))
+                                using (var categoryKey = categoriesKey.GetSubSettings(category.Id))
                                 {
                                     categoryKey.SetString(CATEGORY_NAME, category.Name);
                                     categoryKey.SetString(CATEGORY_PARENT, category.Parent);
@@ -654,16 +657,16 @@ namespace OpenLiveWriter.BlogClient
                 lock (_keywordsLock)
                 {
 
-                    ArrayList keywords = new ArrayList();
+                    var keywords = new ArrayList();
                     // Get all of the keyword subkeys
-                    using (XmlSettingsPersister keywordsKey = (XmlSettingsPersister)KeywordPersister.GetSubSettings(KEYWORDS))
+                    using (var keywordsKey = (XmlSettingsPersister)KeywordPersister.GetSubSettings(KEYWORDS))
                     {
                         // Read the name out of the subkey
-                        foreach (string id in keywordsKey.GetSubSettings())
+                        foreach (var id in keywordsKey.GetSubSettings())
                         {
-                            using (ISettingsPersister categoryKey = keywordsKey.GetSubSettings(id))
+                            using (var categoryKey = keywordsKey.GetSubSettings(id))
                             {
-                                string name = (string)categoryKey.Get(KEYWORD_NAME, typeof(string), id);
+                                var name = (string)categoryKey.Get(KEYWORD_NAME, id);
                                 keywords.Add(new BlogPostKeyword(name));
                             }
                         }
@@ -681,17 +684,17 @@ namespace OpenLiveWriter.BlogClient
                 lock (_keywordsLock)
                 {
                     // safely delete existing categories
-                    XmlSettingsPersister keywordPersister = KeywordPersister;
+                    var keywordPersister = KeywordPersister;
                     using (keywordPersister.BatchUpdate())
                     {
                         keywordPersister.UnsetSubSettingsTree(KEYWORDS);
 
                         // re-write keywords
-                        using (ISettingsPersister keywordsKey = keywordPersister.GetSubSettings(KEYWORDS))
+                        using (var keywordsKey = keywordPersister.GetSubSettings(KEYWORDS))
                         {
-                            foreach (BlogPostKeyword keyword in value)
+                            foreach (var keyword in value)
                             {
-                                using (ISettingsPersister keywordKey = keywordsKey.GetSubSettings(keyword.Name))
+                                using (var keywordKey = keywordsKey.GetSubSettings(keyword.Name))
                                 {
                                     keywordKey.Set(KEYWORD_NAME, keyword.Name);
                                 }
@@ -715,7 +718,7 @@ namespace OpenLiveWriter.BlogClient
             {
                 if (string.IsNullOrEmpty(_keywordPath))
                 {
-                    string folderPath = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "Keywords");
+                    var folderPath = Path.Combine(ApplicationEnvironment.ApplicationDataDirectory, "Keywords");
                     if (!Directory.Exists(folderPath))
                         Directory.CreateDirectory(folderPath);
                     _keywordPath = Path.Combine(folderPath, string.Format(CultureInfo.InvariantCulture, "keywords_{0}.xml", Id));
@@ -728,10 +731,10 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                ArrayList categories = new ArrayList();
-                using (SettingsPersisterHelper categoriesKey = Settings.GetSubSettings(CATEGORIES))
+                var categories = new ArrayList();
+                using (var categoriesKey = Settings.GetSubSettings(CATEGORIES))
                 {
-                    foreach (string id in categoriesKey.GetNames())
+                    foreach (var id in categoriesKey.GetNames())
                         categories.Add(new BlogPostCategory(id, categoriesKey.GetString(id, id)));
                 }
                 return (BlogPostCategory[])categories.ToArray(typeof(BlogPostCategory));
@@ -745,14 +748,14 @@ namespace OpenLiveWriter.BlogClient
                 lock (_authorsLock)
                 {
                     // get the authors
-                    ArrayList authors = new ArrayList();
-                    using (SettingsPersisterHelper authorsKey = Settings.GetSubSettings(AUTHORS))
+                    var authors = new ArrayList();
+                    using (var authorsKey = Settings.GetSubSettings(AUTHORS))
                     {
-                        foreach (string id in authorsKey.GetSubSettingNames())
+                        foreach (var id in authorsKey.GetSubSettingNames())
                         {
-                            using (SettingsPersisterHelper authorKey = authorsKey.GetSubSettings(id))
+                            using (var authorKey = authorsKey.GetSubSettings(id))
                             {
-                                string name = authorKey.GetString(AUTHOR_NAME, string.Empty);
+                                var name = authorKey.GetString(AUTHOR_NAME, string.Empty);
                                 if (name != string.Empty)
                                     authors.Add(new AuthorInfo(id, name));
                                 else
@@ -769,17 +772,17 @@ namespace OpenLiveWriter.BlogClient
                 lock (_authorsLock)
                 {
                     // safely delete existing
-                    SettingsPersisterHelper settings = Settings;
+                    var settings = Settings;
                     using (settings.BatchUpdate())
                     {
                         settings.UnsetSubsettingTree(AUTHORS);
 
                         // re-write
-                        using (SettingsPersisterHelper authorsKey = settings.GetSubSettings(AUTHORS))
+                        using (var authorsKey = settings.GetSubSettings(AUTHORS))
                         {
-                            foreach (AuthorInfo author in value)
+                            foreach (var author in value)
                             {
-                                using (SettingsPersisterHelper authorKey = authorsKey.GetSubSettings(author.Id))
+                                using (var authorKey = authorsKey.GetSubSettings(author.Id))
                                 {
                                     authorKey.SetString(AUTHOR_NAME, author.Name);
                                 }
@@ -800,16 +803,16 @@ namespace OpenLiveWriter.BlogClient
                 lock (_pagesLock)
                 {
                     // get the authors
-                    ArrayList pages = new ArrayList();
-                    using (SettingsPersisterHelper pagesKey = Settings.GetSubSettings(PAGES))
+                    var pages = new ArrayList();
+                    using (var pagesKey = Settings.GetSubSettings(PAGES))
                     {
-                        foreach (string id in pagesKey.GetSubSettingNames())
+                        foreach (var id in pagesKey.GetSubSettingNames())
                         {
-                            using (SettingsPersisterHelper pageKey = pagesKey.GetSubSettings(id))
+                            using (var pageKey = pagesKey.GetSubSettings(id))
                             {
-                                string title = pageKey.GetString(PAGE_TITLE, string.Empty);
-                                DateTime datePublished = pageKey.GetDateTime(PAGE_DATE_PUBLISHED, DateTime.MinValue);
-                                string parentId = pageKey.GetString(PAGE_PARENT_ID, string.Empty);
+                                var title = pageKey.GetString(PAGE_TITLE, string.Empty);
+                                var datePublished = pageKey.GetDateTime(PAGE_DATE_PUBLISHED, DateTime.MinValue);
+                                var parentId = pageKey.GetString(PAGE_PARENT_ID, string.Empty);
                                 pages.Add(new PageInfo(id, title, datePublished, parentId));
                             }
                         }
@@ -823,17 +826,17 @@ namespace OpenLiveWriter.BlogClient
                 lock (_pagesLock)
                 {
                     // safely delete existing
-                    SettingsPersisterHelper settings = Settings;
+                    var settings = Settings;
                     using (settings.BatchUpdate())
                     {
                         settings.UnsetSubsettingTree(PAGES);
 
                         // re-write
-                        using (SettingsPersisterHelper pagesKey = settings.GetSubSettings(PAGES))
+                        using (var pagesKey = settings.GetSubSettings(PAGES))
                         {
-                            foreach (PageInfo page in value)
+                            foreach (var page in value)
                             {
-                                using (SettingsPersisterHelper pageKey = pagesKey.GetSubSettings(page.Id))
+                                using (var pageKey = pagesKey.GetSubSettings(page.Id))
                                 {
                                     pageKey.SetString(PAGE_TITLE, page.Title);
                                     pageKey.SetDateTime(PAGE_DATE_PUBLISHED, page.DatePublished);
@@ -855,7 +858,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                int intVal = Settings.GetInt32(FILE_UPLOAD_SUPPORT, (int)FileUploadSupport.Weblog);
+                var intVal = Settings.GetInt32(FILE_UPLOAD_SUPPORT, (int)FileUploadSupport.Weblog);
                 switch (intVal)
                 {
                     case (int)FileUploadSupport.FTP:
@@ -1105,9 +1108,9 @@ namespace OpenLiveWriter.BlogClient
         {
             get
             {
-                ArrayList customValues = new ArrayList();
-                string[] names = CredentialsSettings.GetNames();
-                foreach (string name in names)
+                var customValues = new ArrayList();
+                var names = CredentialsSettings.GetNames().ToArray();
+                foreach (var name in names)
                     if (name != USERNAME && name != PASSWORD)
                         customValues.Add(name);
                 return customValues.ToArray(typeof(string)) as string[];
@@ -1128,7 +1131,7 @@ namespace OpenLiveWriter.BlogClient
         {
             Username = string.Empty;
             Password = string.Empty;
-            foreach (string name in CredentialsSettings.GetNames())
+            foreach (var name in CredentialsSettings.GetNames())
                 CredentialsSettings.SetString(name, null);
         }
 
@@ -1163,7 +1166,7 @@ namespace OpenLiveWriter.BlogClient
         /// <returns></returns>
         private string GetUsername()
         {
-            string username = CredentialsSettings.GetString(USERNAME, null);
+            var username = CredentialsSettings.GetString(USERNAME, null);
             if (username != null)
                 return username;
             else
@@ -1178,7 +1181,7 @@ namespace OpenLiveWriter.BlogClient
         /// <returns></returns>
         private string GetPassword()
         {
-            string password = CredentialsSettings.GetEncryptedString(PASSWORD);
+            var password = CredentialsSettings.GetEncryptedString(PASSWORD);
             if (password != null)
                 return password;
             else
@@ -1208,7 +1211,7 @@ namespace OpenLiveWriter.BlogClient
 
         public string[] Names
         {
-            get { return _settings.GetNames(); }
+            get { return _settings.GetNames().ToArray(); }
         }
 
         public void Dispose()

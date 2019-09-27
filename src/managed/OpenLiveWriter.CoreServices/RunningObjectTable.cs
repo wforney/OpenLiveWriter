@@ -132,7 +132,7 @@ namespace OpenLiveWriter.CoreServices
             // least once because this means we wrote the HKLM registry entries to allow passing the
             // ROTFLAGS_ALLOWANYCLIENT flag.
             var exeRegistrySettings = new RegistrySettingsPersister(Registry.CurrentUser, EXE_REGISTRY_PATH);
-            bool allowAnyClient = (bool)exeRegistrySettings.Get(ALLOW_ANY_CLIENT, typeof(bool), false);
+            bool allowAnyClient = (bool)exeRegistrySettings.Get(ALLOW_ANY_CLIENT, false);
             int rotRegistrationFlags = allowAnyClient ?
                 (int)(RunningObjectTableFlags.RegistrationKeepsAlive | RunningObjectTableFlags.AllowAnyClient) :
                 (int)(RunningObjectTableFlags.RegistrationKeepsAlive);

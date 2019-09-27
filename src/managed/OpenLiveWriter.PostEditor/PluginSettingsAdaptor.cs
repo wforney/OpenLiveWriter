@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
 using OpenLiveWriter.Api;
 using OpenLiveWriter.CoreServices.Settings;
 
@@ -97,19 +98,19 @@ namespace OpenLiveWriter.PostEditor
 
         public string[] Names
         {
-            get { return SettingsHelper.GetNames(); }
+            get { return SettingsHelper.GetNames().ToArray(); }
         }
 
         public bool Contains(string key)
         {
-            return Array.IndexOf(SettingsHelper.GetNames(), key) > -1;
+            return Array.IndexOf(SettingsHelper.GetNames().ToArray(), key) > -1;
         }
 
         public string[] SubPropertyNames
         {
             get
             {
-                return SettingsHelper.GetSubSettingNames();
+                return SettingsHelper.GetSubSettingNames().ToArray();
             }
         }
 
