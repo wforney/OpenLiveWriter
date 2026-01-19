@@ -147,7 +147,7 @@
       <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="OpenLiveWriter.exe.manifest">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
