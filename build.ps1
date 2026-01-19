@@ -112,6 +112,22 @@ if (-Not (Test-Path env:OLW_CONFIG))
 @"
 
 =======================================================
+ Setting Framework Path Override
+=======================================================
+"@
+
+# Set FrameworkPathOverride to ensure .NET Framework 4.6.1 reference assemblies are found
+$frameworkPath = "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1"
+if (Test-Path $frameworkPath) {
+    $env:FrameworkPathOverride = $frameworkPath
+    "FrameworkPathOverride set to: '$frameworkPath'"
+} else {
+    "Warning: .NET Framework 4.6.1 reference assemblies not found at expected location"
+}
+
+@"
+
+=======================================================
  Starting build
 =======================================================
 "@
