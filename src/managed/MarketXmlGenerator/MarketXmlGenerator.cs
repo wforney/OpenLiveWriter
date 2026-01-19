@@ -27,6 +27,7 @@ namespace MarketXmlGenerator
                 Console.WriteLine("incorrect number of arguments. Correct usage: xxx {inputFilePath} {outputFile}");
                 Environment.Exit(1);
             }
+
             inputFilePath = args[0];
             outputFile = args[1];
 

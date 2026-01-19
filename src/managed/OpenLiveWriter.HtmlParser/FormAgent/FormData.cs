@@ -56,6 +56,7 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                     output.Append(HttpUtility.UrlEncode(pair.Value));
                 }
             }
+
             return output.ToString();
         }
 
@@ -96,6 +97,5 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                 Value = value;
             }
         }
-
     }
 }

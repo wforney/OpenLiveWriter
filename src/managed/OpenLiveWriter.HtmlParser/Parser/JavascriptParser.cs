@@ -42,15 +42,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 case '"':
                     {
                         int literalPos = pos;
-                        int literalEnd;
-                        ParseMethods.MatchDoubleQuotedLiteral(data, ref pos, end, out literalEnd);
+                        ParseMethods.MatchDoubleQuotedLiteral(data, ref pos, end, out int literalEnd);
                         return new ScriptLiteral(data, start, pos - start, literalPos, literalEnd - literalPos, '"');
                     }
                 case '\'':
                     {
                         int literalPos = pos;
-                        int literalEnd;
-                        ParseMethods.MatchSingleQuotedLiteral(data, ref pos, end, out literalEnd);
+                        ParseMethods.MatchSingleQuotedLiteral(data, ref pos, end, out int literalEnd);
                         return new ScriptLiteral(data, start, pos - start, literalPos, literalEnd - literalPos, '\'');
                     }
                 case '/':
@@ -66,6 +64,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchMultiLineComment(data, ref pos, end);
                         return new ScriptComment(data, start, pos - start);
                     }
+
                     goto default;
                 case '<':
                     if (ParseMethods.SubstringMatch(data, pos - 1, end, "<!--"))
@@ -74,6 +73,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchSingleLineComment(data, ref pos, end);
                         return new ScriptComment(data, start, pos - start);
                     }
+
                     goto default;
                 case '-':
                     if (ParseMethods.SubstringMatch(data, pos - 1, end, "-->"))
@@ -82,12 +82,12 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchSingleLineComment(data, ref pos, end);
                         return new ScriptComment(data, start, pos - start);
                     }
+
                     goto default;
                 default:
                     MatchNormal(data, ref pos, end);
                     return new ScriptText(data, start, pos - start);
             }
-
         }
 
         private static void MatchNormal(string data, ref int pos, int end)
@@ -110,6 +110,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                     return;
                             }
                         }
+
                         break;
                     case '<':
                         if (ParseMethods.SubstringMatch(data, pos, end, "<!--"))
@@ -122,6 +123,5 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 }
             }
         }
-
     }
 }

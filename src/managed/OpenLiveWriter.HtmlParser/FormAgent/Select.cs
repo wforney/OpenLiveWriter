@@ -7,21 +7,17 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class Select : FormElement, IEnumerable
     {
-        private readonly bool multiple;
         private readonly Option[] options;
 
         public Select(HtmlForm parentForm, string name, bool multiple, OptionInfo[] optionInfos) : base(parentForm, name)
         {
-            this.multiple = multiple;
+            Multiple = multiple;
             this.options = new Option[optionInfos.Length];
             for (int i = 0; i < optionInfos.Length; i++)
                 this.options[i] = new Option(this, optionInfos[i]);
         }
 
-        public bool Multiple
-        {
-            get { return multiple; }
-        }
+        public bool Multiple { get; }
 
         public Option GetOptionByIndex(int index)
         {
@@ -35,6 +31,7 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                 if (opt.Value == value)
                     return opt;
             }
+
             return null;
         }
 
@@ -47,6 +44,7 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                     if (opt.Selected)
                         return true;
                 }
+
                 return false;
             }
         }
@@ -64,6 +62,5 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
         {
             return options.GetEnumerator();
         }
-
     }
 }

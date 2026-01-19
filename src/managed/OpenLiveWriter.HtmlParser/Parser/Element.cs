@@ -9,16 +9,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
 {
     public abstract class Element
     {
-        private readonly string data;
-        private readonly int offset;
-        private readonly int len;
         private string rawText;
 
         protected Element(string data, int offset, int len)
         {
-            this.data = data;
-            this.offset = offset;
-            this.len = len;
+            Data = data;
+            Offset = offset;
+            Length = len;
         }
 
         public virtual string RawText
@@ -26,25 +23,16 @@ namespace OpenLiveWriter.HtmlParser.Parser
             get
             {
                 if (rawText == null)
-                    rawText = data.Substring(offset, len);
+                    rawText = Data.Substring(Offset, Length);
                 return rawText;
             }
         }
 
-        protected string Data
-        {
-            get { return data; }
-        }
+        protected string Data { get; }
 
-        public int Offset
-        {
-            get { return offset; }
-        }
+        public int Offset { get; }
 
-        public int Length
-        {
-            get { return len; }
-        }
+        public int Length { get; }
 
         public override string ToString()
         {
@@ -318,14 +306,12 @@ namespace OpenLiveWriter.HtmlParser.Parser
     /// </summary>
     public abstract class Tag : Element
     {
-        private readonly string name;
-
         public Tag(string data, int offset, int len, string name) : base(data, offset, len)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            this.name = name;
+            Name = name;
         }
 
         /// <summary>
@@ -333,10 +319,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// was used in the HTML (for case-insensitive equality
         /// testing, use the NameEquals method).
         /// </summary>
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Case-insensitive equality testing of the tag's name and
@@ -344,7 +327,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </summary>
         public bool NameEquals(string name)
         {
-            return string.Compare(name, this.name, StringComparison.OrdinalIgnoreCase) == 0;
+            return string.Compare(name, Name, StringComparison.OrdinalIgnoreCase) == 0;
         }
     }
 
@@ -359,8 +342,6 @@ namespace OpenLiveWriter.HtmlParser.Parser
         private bool complete;
 
         private bool modified = false;
-
-        private readonly Attr[] _attributes;
         private readonly LazySubstring extraResidue;
 
         public BeginTag(string data, int offset, int len, string name, Attr[] attributes, bool complete, string extraResidue) : this(data, offset, len, name, attributes, complete, LazySubstring.MaybeCreate(extraResidue))
@@ -370,14 +351,11 @@ namespace OpenLiveWriter.HtmlParser.Parser
         internal BeginTag(string data, int offset, int len, string name, Attr[] attributes, bool complete, LazySubstring extraResidue) : base(data, offset, len, name)
         {
             this.complete = complete;
-            _attributes = attributes == null ? new Attr[0] : attributes;
+            Attributes = attributes == null ? new Attr[0] : attributes;
             this.extraResidue = extraResidue;
         }
 
-        public Attr[] Attributes
-        {
-            get { return _attributes; }
-        }
+        public Attr[] Attributes { get; }
 
         public bool Complete
         {
@@ -543,25 +521,20 @@ namespace OpenLiveWriter.HtmlParser.Parser
     /// </summary>
     public class EndTag : Tag
     {
-        private readonly bool implied;
-
         public EndTag(string data, int offset, int len, string name) : this(data, offset, len, name, false)
         {
         }
 
         public EndTag(string data, int offset, int len, string name, bool implied) : base(data, offset, len, name)
         {
-            this.implied = implied;
+            Implicit = implied;
         }
 
-        public bool Implicit
-        {
-            get { return implied; }
-        }
+        public bool Implicit { get; }
 
         public override string ToString()
         {
-            if (implied)
+            if (Implicit)
                 return string.Empty;
             return string.Format(CultureInfo.InvariantCulture, "</{0}>", Name);
         }
@@ -575,7 +548,6 @@ namespace OpenLiveWriter.HtmlParser.Parser
         private readonly LazySubstring name;
         private readonly LazySubstring value;
         private string overrideValue;
-        private bool modified;
 
         internal Attr(LazySubstring name, LazySubstring value)
         {
@@ -584,7 +556,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
             this.name = name;
             this.value = value;
-            this.modified = false;
+            Modified = false;
         }
 
         public string Name
@@ -596,7 +568,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         {
             get
             {
-                if (modified)
+                if (Modified)
                     return overrideValue;
 
                 // Attributes like 'Nowrap' can have no value
@@ -607,20 +579,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
             }
             set
             {
-                modified = true;
+                Modified = true;
                 overrideValue = value;
             }
         }
 
-        public bool Modified
-        {
-            get { return modified; }
-        }
+        public bool Modified { get; private set; }
 
         public override string ToString()
         {
             string valToUse = null;
-            if (modified)
+            if (Modified)
                 valToUse = overrideValue == null ? null : HtmlUtils.EscapeEntities(overrideValue);
             else
                 valToUse = value == null ? null : value.Value;

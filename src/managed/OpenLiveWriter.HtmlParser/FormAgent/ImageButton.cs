@@ -5,17 +5,12 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class ImageButton : SubmitButton
     {
-        private readonly string src;
-
         public ImageButton(HtmlForm parentForm, string name, string value, string src) : base(parentForm, name, value)
         {
-            this.src = src;
+            Src = src;
         }
 
-        public string Src
-        {
-            get { return src; }
-        }
+        public string Src { get; }
 
         public override void AddData(FormData data)
         {
@@ -29,6 +24,7 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                 data.Add("x", "1");
                 data.Add("y", "1");
             }
+
             base.AddData(data);
         }
     }

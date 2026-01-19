@@ -10,7 +10,7 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class FormFactory
     {
-        private SimpleHtmlParser parser;
+        private readonly SimpleHtmlParser parser;
 
         public FormFactory(string html)
         {
@@ -30,13 +30,13 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
             Element el;
             while (null != (el = parser.Next()))
             {
-                BeginTag tag = el as BeginTag;
-                if (tag == null)
+                if (!(el is BeginTag tag))
                     continue;
 
                 if (tag.NameEquals("form"))
                     return HandleForm(tag);
             }
+
             return null;
         }
 
@@ -51,23 +51,22 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
             Element el;
             while (null != (el = parser.Next()))
             {
-                if (el is EndTag && ((EndTag)el).NameEquals("form"))
+                if (el is EndTag endTag && endTag.NameEquals("form"))
                     break;
 
-                BeginTag tag = el as BeginTag;
-                if (tag == null)
+                if (!(el is BeginTag beginTag))
                     continue;
 
-                switch (tag.Name.ToLowerInvariant())
+                switch (beginTag.Name.ToLowerInvariant())
                 {
                     case "input":
-                        HandleInput(htmlForm, tag);
+                        HandleInput(htmlForm, beginTag);
                         break;
                     case "select":
-                        HandleSelect(htmlForm, tag);
+                        HandleSelect(htmlForm, beginTag);
                         break;
                     case "textarea":
-                        HandleTextarea(htmlForm, tag);
+                        HandleTextarea(htmlForm, beginTag);
                         break;
                 }
             }
@@ -92,16 +91,14 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 
                 case "checkbox":
                     {
-                        int dummy;
-                        bool isChecked = inputTag.GetAttribute("checked", true, 0, out dummy) != null;
+                        bool isChecked = inputTag.GetAttribute("checked", true, 0, out _) != null;
                         new Checkbox(parentForm, name, value, isChecked);
                         break;
                     }
 
                 case "radio":
                     {
-                        int dummy;
-                        bool isChecked = inputTag.GetAttribute("checked", true, 0, out dummy) != null;
+                        bool isChecked = inputTag.GetAttribute("checked", true, 0, out _) != null;
                         new Radio(parentForm, name, value, isChecked);
                         break;
                     }
@@ -128,19 +125,17 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
         private void HandleSelect(HtmlForm parentForm, BeginTag selectTag)
         {
             string name = selectTag.GetAttributeValue("name");
-            int dummy;
-            bool multiple = selectTag.GetAttribute("multiple", true, 0, out dummy) != null;
+            bool multiple = selectTag.GetAttribute("multiple", true, 0, out _) != null;
 
             ArrayList optionInfos = new ArrayList();
 
             Element el = parser.Next();
             while (el != null)
             {
-                BeginTag tag = el as BeginTag;
-                if (tag != null && tag.NameEquals("option"))
+                if (el is BeginTag beginTag && beginTag.NameEquals("option"))
                 {
-                    string value = tag.GetAttributeValue("value");
-                    bool isSelected = tag.GetAttribute("selected", true, 0, out dummy) != null;
+                    string value = beginTag.GetAttributeValue("value");
+                    bool isSelected = beginTag.GetAttribute("selected", true, 0, out _) != null;
 
                     string label = string.Empty;
                     el = parser.Next();
@@ -149,11 +144,12 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                         label = HtmlUtils.UnEscapeEntities(el.ToString(), HtmlUtils.UnEscapeMode.NonMarkupText).TrimEnd(' ', '\r', '\n', '\t');
                         el = parser.Next();
                     }
+
                     optionInfos.Add(new OptionInfo(value, label, isSelected));
                     continue;
                 }
 
-                if (el is EndTag && ((EndTag)el).NameEquals("select"))
+                if (el is EndTag endTag && endTag.NameEquals("select"))
                 {
                     new Select(parentForm, name, multiple, (OptionInfo[])optionInfos.ToArray(typeof(OptionInfo)));
                     return;

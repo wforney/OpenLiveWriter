@@ -76,14 +76,17 @@ namespace BlogRunnerReporter
                                 if (reportStream != null)
                                     msg.Attachments.Add(new Attachment(reportStream, "diff.htm", "text/html"));
                             }
+
                             if (errorsStream != null)
                                 msg.Attachments.Add(new Attachment(errorsStream, "errors.txt", "text/plain"));
 
                             msg.Subject = "Blog provider " + notificationType + " detected";
                             msg.Body = notificationType + " detected while running blog provider tests. Please see attached.";
 
-                            SmtpClient client = new SmtpClient();
-                            client.DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis;
+                            SmtpClient client = new SmtpClient
+                            {
+                                DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis
+                            };
                             client.Send(msg);
                         }
                     }

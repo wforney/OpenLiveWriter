@@ -8,33 +8,21 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class HtmlForm : IEnumerable
     {
-        private readonly string name;
-        private readonly string action;
-        private readonly string method;
         private readonly ArrayList elements;
 
         public HtmlForm(string name, string action, string method)
         {
-            this.name = name;
-            this.action = action;
-            this.method = method;
+            Name = name;
+            Action = action;
+            Method = method;
             this.elements = new ArrayList();
         }
 
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; }
 
-        public string Action
-        {
-            get { return action; }
-        }
+        public string Action { get; }
 
-        public string Method
-        {
-            get { return method; }
-        }
+        public string Method { get; }
 
         internal void Add(FormElement el)
         {
@@ -63,16 +51,14 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                 if (el.Name != null && el.Name.ToLowerInvariant() == name)
                     results.Add(el);
             }
+
             return (FormElement[])results.ToArray(typeof(FormElement));
         }
 
         public FormElement GetSingleElementByName(string name)
         {
             FormElement[] results = GetElementsByName(name);
-            if (results.Length == 0)
-                return null;
-            else
-                return results[0];
+            return results.Length == 0 ? null : results[0];
         }
 
         public IEnumerator GetEnumerator()
@@ -94,6 +80,5 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 
             return formData;
         }
-
     }
 }

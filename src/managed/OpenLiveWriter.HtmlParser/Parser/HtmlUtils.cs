@@ -39,9 +39,8 @@ namespace OpenLiveWriter.HtmlParser.Parser
             Element el;
             while ((el = parser.Next()) != null)
             {
-                if (el is BeginTag)
+                if (el is BeginTag beginTag)
                 {
-                    BeginTag beginTag = (BeginTag)el;
                     string tagName = beginTag.Name;
 
                     // Close any implicitly closed tags before adding this new tag
@@ -55,9 +54,8 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         openTags.Add(tagName);
                     }
                 }
-                else if (el is EndTag)
+                else if (el is EndTag endTag)
                 {
-                    EndTag endTag = (EndTag)el;
                     CloseTagsUntilMatch(result, openTags, endTag.Name);
                     result.Append(el.RawText);
                 }
@@ -265,6 +263,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         break;
                     }
                 }
+
                 return;
             }
 
@@ -433,10 +432,9 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         output.Append(c);
                         break;
                 }
-
             }
-            return output.ToString();
 
+            return output.ToString();
         }
 
         private static void AppendNumericEntity(char c, StringBuilder output)
@@ -456,6 +454,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
             {
                 output.Append(EntityEscaper.Char(c));
             }
+
             return output.ToString();
         }
 
@@ -568,15 +567,18 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                                                 semicolonTerminated = true;
                                                             break;
                                                         }
+
                                                         charVal *= 16;
                                                         charVal += hexVal;
                                                     }
+
                                                     if (semicolonTerminated && charVal != 0)
                                                     {
                                                         i = j;
                                                         output.Append((char)charVal);
                                                         continue;
                                                     }
+
                                                     // if total is 0, continue
                                                     break;
                                                 }
@@ -609,19 +611,23 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                                         charVal *= 10;
                                                         charVal += cVal;
                                                     }
+
                                                     if (charVal != 0)
                                                     {
                                                         i = j - 1;
                                                         output.Append((char)charVal);
                                                         continue;
                                                     }
+
                                                     // if total is 0, continue
                                                     break;
                                                 }
                                         }
                                     }
+
                                     break;
                                 }
+
                             default:
                                 {
                                     int j;
@@ -681,8 +687,10 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         }
                     }
                 }
+
                 output.Append(c0);
             }
+
             return output.ToString();
         }
 
@@ -714,7 +722,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         private class TidyNbspsHelper
         {
-            private string _html;
+            private readonly string _html;
 
             public TidyNbspsHelper(string html)
             {
@@ -728,15 +736,10 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 if (count == 1) // special case for standalone &nbsp;
                 {
                     // watch out for special case: <p>&nbsp;</p>, <td>&nbsp;</td>, etc.
-                    if (match.Index > 0 && _html[match.Index - 1] == '>'
-                        && match.Index + match.Length < _html.Length - 1 && _html[match.Index + match.Length] == '<')
-                    {
-                        return "&nbsp;";
-                    }
-                    else
-                    {
-                        return " ";
-                    }
+                    return match.Index > 0 && _html[match.Index - 1] == '>'
+                        && match.Index + match.Length < _html.Length - 1 && _html[match.Index + match.Length] == '<'
+                        ? "&nbsp;"
+                        : " ";
                 }
 
                 int strLen = ("&nbsp;".Length * (count - 1)) + 1;
@@ -1045,11 +1048,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         public static int Code(string name, bool unterminated)
         {
             Dictionary<string, int> codesToUse = unterminated ? basicCodes : codes;
-            int retVal;
-            if (codesToUse.TryGetValue(name, out retVal))
-                return retVal;
-            else
-                return -1;
+            return codesToUse.TryGetValue(name, out int retVal) ? retVal : -1;
         }
 
         public static bool HasChar(char c)
@@ -1059,11 +1058,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public static string Char(char c)
         {
-            if (rcodes.ContainsKey(c))
-                return "&" + rcodes[c] + ";";
-            else
-                return c.ToString();
+            return rcodes.ContainsKey(c) ? "&" + rcodes[c] + ";" : c.ToString();
         }
     }
-
 }

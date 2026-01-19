@@ -5,11 +5,9 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public abstract class FormElementWithValue : FormElement
     {
-        private string value;
-
         public FormElementWithValue(HtmlForm parentForm, string name, string value) : base(parentForm, name)
         {
-            this.value = value;
+            Value = value;
         }
 
         public override void AddData(FormData data)
@@ -18,10 +16,6 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                 data.Add(Name, Value);
         }
 
-        public string Value
-        {
-            get { return this.value; }
-            set { this.value = value; }
-        }
+        public string Value { get; set; }
     }
 }

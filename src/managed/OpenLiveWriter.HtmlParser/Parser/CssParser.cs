@@ -40,15 +40,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 case '"':
                     {
                         int literalPos = pos;
-                        int literalEnd;
-                        ParseMethods.MatchDoubleQuotedLiteral(data, ref pos, end, out literalEnd);
+                        ParseMethods.MatchDoubleQuotedLiteral(data, ref pos, end, out int literalEnd);
                         return new StyleLiteral(data, start, pos - start, literalPos, literalEnd - literalPos, '"');
                     }
                 case '\'':
                     {
                         int literalPos = pos;
-                        int literalEnd;
-                        ParseMethods.MatchSingleQuotedLiteral(data, ref pos, end, out literalEnd);
+                        ParseMethods.MatchSingleQuotedLiteral(data, ref pos, end, out int literalEnd);
                         return new StyleLiteral(data, start, pos - start, literalPos, literalEnd - literalPos, '\'');
                     }
                 case '/':
@@ -64,6 +62,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchMultiLineComment(data, ref pos, end);
                         return new StyleComment(data, start, pos - start);
                     }
+
                     goto default;
                 case '<':
                     if (ParseMethods.SubstringMatch(data, pos - 1, end, "<!--"))
@@ -72,6 +71,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchSingleLineComment(data, ref pos, end);
                         return new StyleComment(data, start, pos - start);
                     }
+
                     goto default;
                 case '-':
                     if (ParseMethods.SubstringMatch(data, pos - 1, end, "-->"))
@@ -80,20 +80,18 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         ParseMethods.MatchSingleLineComment(data, ref pos, end);
                         return new StyleComment(data, start, pos - start);
                     }
+
                     goto default;
                 case 'u':
                 case 'U':
                     {
                         if (ParseMethods.SubstringMatchIgnoreCase(data, pos - 1, end, "url("))
                         {
-                            int literalPos;
-                            int literalEnd;
-                            char quotChar;
-
                             pos += 3;
-                            MatchUrl(data, ref pos, end, out literalPos, out literalEnd, out quotChar);
+                            MatchUrl(data, ref pos, end, out int literalPos, out int literalEnd, out char quotChar);
                             return new StyleUrl(data, start, pos - start, literalPos, literalEnd - literalPos, quotChar);
                         }
+
                         goto default;
                     }
                 case '@':
@@ -117,21 +115,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                 else
                                     goto default;  // per note above, treat as normal text
 
-                                int literalPos;
-                                int literalEnd;
-                                char quotChar;
-
-                                MatchImport(data, ref pos, end, out literalPos, out literalEnd, out quotChar);
+                                MatchImport(data, ref pos, end, out int literalPos, out int literalEnd, out char quotChar);
                                 return new StyleImport(data, start, pos - start, literalPos, literalEnd - literalPos, quotChar);
                             }
                         }
+
                         goto default;
                     }
                 default:
                     MatchNormal(data, ref pos, end);
                     return new StyleText(data, start, pos - start);
             }
-
         }
 
         private static void MatchNormal(string data, ref int pos, int end)
@@ -154,6 +148,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                     return;
                             }
                         }
+
                         break;
                     case '<':
                         if (ParseMethods.SubstringMatch(data, pos, end, "<!--"))

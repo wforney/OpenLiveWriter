@@ -46,6 +46,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                                 }
                             }
                         }
+
                         output.Append(literal[i]);
                         break;
                 }
@@ -85,45 +86,43 @@ namespace OpenLiveWriter.HtmlParser.Parser
                             goto default;
 
                         break;
+
                     default:
                         // TODO: What characters need to be Unicode escaped??
                         output.Append(literal[i]);
                         break;
                 }
             }
+
             return output.ToString();
         }
 
         public static string CssUnescape(string data)
         {
             Regex r = new Regex(@"\\((?<hex>[a-fA-F0-9]{1,6}\s?)|(?<lf>\r?\n)|(?<other>.))");
-            return r.Replace(data, new MatchEvaluator(_CssUnescapeEvaluator));
+            return r.Replace(data, new MatchEvaluator(CssUnescapeEvaluator));
         }
 
-        private static string _CssUnescapeEvaluator(Match match)
+        private static string CssUnescapeEvaluator(Match match)
         {
             if (match.Groups["hex"].Success)
             {
                 string hexValue = match.Groups["hex"].Value;
                 return ((char)int.Parse(hexValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
             }
-            else if (match.Groups["lf"].Success)
-            {
-                return string.Empty;
-            }
             else
             {
-                return match.Groups["other"].Value;
+                return match.Groups["lf"].Success ? string.Empty : match.Groups["other"].Value;
             }
         }
 
         public static string JsUnescape(string s)
         {
             Regex r = new Regex(@"\\((?<single>[\'\""\\bfnrtv])|(?<nul>0(?![0-9]))|(?<hex>x[a-fA-F0-9]{2})|(?<unicode>u[a-fA-F0-9]{4})|(?<lf>\r?\n)|(?<other>.))");
-            return r.Replace(s, new MatchEvaluator(_JsUnescapeEvaluator));
+            return r.Replace(s, new MatchEvaluator(JsUnescapeEvaluator));
         }
 
-        private static string _JsUnescapeEvaluator(Match match)
+        private static string JsUnescapeEvaluator(Match match)
         {
             if (match.Groups["single"].Success)
             {
@@ -157,13 +156,9 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 string hexValue = match.Groups["unicode"].Value.Substring(1);
                 return ((char)int.Parse(hexValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture)).ToString();
             }
-            else if (match.Groups["lf"].Success)
-            {
-                return string.Empty;
-            }
             else
             {
-                return match.Groups["other"].Value;
+                return match.Groups["lf"].Success ? string.Empty : match.Groups["other"].Value;
             }
         }
     }

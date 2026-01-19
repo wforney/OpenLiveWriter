@@ -23,6 +23,5 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
             else
                 data.Add(Name, Value);
         }
-
     }
 }

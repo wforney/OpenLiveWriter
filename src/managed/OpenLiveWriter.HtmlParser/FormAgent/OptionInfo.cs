@@ -5,31 +5,17 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class OptionInfo
     {
-        private readonly string value;
-        private readonly string label;
-        private bool selected;
-
         public OptionInfo(string value, string label, bool selected)
         {
-            this.value = value;
-            this.label = label;
-            this.selected = selected;
+            Value = value;
+            Label = label;
+            Selected = selected;
         }
 
-        public string Value
-        {
-            get { return this.value; }
-        }
+        public string Value { get; }
 
-        public string Label
-        {
-            get { return label; }
-        }
+        public string Label { get; }
 
-        public bool Selected
-        {
-            get { return selected; }
-            set { selected = value; }
-        }
+        public bool Selected { get; set; }
     }
 }

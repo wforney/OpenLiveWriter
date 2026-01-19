@@ -5,14 +5,11 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public abstract class FormElement
     {
-        private readonly HtmlForm parentForm;
-        private readonly string name;
-
         public FormElement(HtmlForm parentForm, string name)
         {
-            this.parentForm = parentForm;
-            this.name = name;
-            this.parentForm.Add(this);
+            ParentForm = parentForm;
+            Name = name;
+            ParentForm.Add(this);
         }
 
         /// <summary>
@@ -22,14 +19,8 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 
         public abstract void AddData(FormData data);
 
-        public HtmlForm ParentForm
-        {
-            get { return parentForm; }
-        }
+        public HtmlForm ParentForm { get; }
 
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; }
     }
 }

@@ -7,42 +7,30 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class Option
     {
-        private readonly Select parentSelect;
-        private readonly string value;
-        private readonly string label;
         private bool selected;
 
         public Option(Select parentSelect, OptionInfo optionInfo)
         {
-            this.parentSelect = parentSelect;
-            this.label = optionInfo.Label;
-            this.value = optionInfo.Value;
-            if (this.value == null)
-                this.value = this.label;
+            ParentSelect = parentSelect;
+            Label = optionInfo.Label;
+            Value = optionInfo.Value;
+            if (Value == null)
+                Value = Label;
             this.selected = optionInfo.Selected;
         }
 
-        public Select ParentSelect
-        {
-            get { return parentSelect; }
-        }
+        public Select ParentSelect { get; }
 
-        public string Value
-        {
-            get { return this.value; }
-        }
+        public string Value { get; }
 
-        public string Label
-        {
-            get { return label; }
-        }
+        public string Label { get; }
 
         public bool Selected
         {
             get { return selected; }
             set
             {
-                if (parentSelect.Multiple)
+                if (ParentSelect.Multiple)
                     selected = value;
                 else
                 {
@@ -52,10 +40,11 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
                     }
                     else
                     {
-                        foreach (Option opt in parentSelect)
+                        foreach (Option opt in ParentSelect)
                         {
                             opt.selected = false;
                         }
+
                         selected = true;
                     }
                 }

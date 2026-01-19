@@ -5,35 +5,30 @@ namespace OpenLiveWriter.HtmlParser.Parser.FormAgent
 {
     public class Radio : FormElementWithValue
     {
-        private bool isChecked;
-
         public Radio(HtmlForm parentForm, string name, string value, bool isChecked) : base(parentForm, name, value)
         {
-            this.isChecked = isChecked;
+            Checked = isChecked;
         }
 
-        public bool Checked
-        {
-            get { return isChecked; }
-        }
+        public bool Checked { get; private set; }
 
         public void Select()
         {
-            if (isChecked)
+            if (Checked)
                 return;
 
             foreach (FormElement el in ParentForm.GetElementsByName(Name))
             {
-                if (el is Radio && ((Radio)el).Checked)
-                    ((Radio)el).isChecked = false;
+                if (el is Radio radio && radio.Checked)
+                    radio.Checked = false;
             }
 
-            isChecked = true;
+            Checked = true;
         }
 
         public override bool IsSuccessful
         {
-            get { return isChecked; }
+            get { return Checked; }
         }
     }
 }

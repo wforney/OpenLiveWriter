@@ -15,9 +15,9 @@
         {
           "Documents": [
             {
-              "FilePath": "C:\\Users\\WilliamForney\\source\\repos\\wforney\\OpenLiveWriter\\src\\managed\\OpenLiveWriter.UnitTest\\app.config",
-              "RelativePath": "..\\..\\OpenLiveWriter.UnitTest\\app.config",
-              "FullName": "app.config",
+              "FilePath": "C:\\Users\\WilliamForney\\source\\repos\\wforney\\OpenLiveWriter\\src\\managed\\OpenLiveWriter.HtmlParser\\Parser\\Element.cs",
+              "RelativePath": "..\\..\\OpenLiveWriter.HtmlParser\\Parser\\Element.cs",
+              "FullName": "Element.cs",
               "DockedHeight": {
                 "UnitType": "Stretch",
                 "Value": 200
@@ -26,8 +26,8 @@
                 "UnitType": "Stretch",
                 "Value": 259
               },
-              "Line": 35,
-              "Column": 1,
+              "Line": 600,
+              "Column": 48,
               "IsPinned": false,
               "IsActive": true,
               "IsSelected": true

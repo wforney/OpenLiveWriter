@@ -15,9 +15,6 @@ namespace OpenLiveWriter.HtmlParser.Parser
     public class HtmlExtractor
     {
         private readonly string html;
-        private SimpleHtmlParser parser;
-
-        private Element lastMatch = null;
 
         public HtmlExtractor(Stream data) : this(data, Encoding.UTF8)
         {
@@ -27,22 +24,19 @@ namespace OpenLiveWriter.HtmlParser.Parser
         {
             using (StreamReader reader = new StreamReader(data, encoding))
                 html = reader.ReadToEnd();
-            this.parser = new SimpleHtmlParser(html);
+            Parser = new SimpleHtmlParser(html);
         }
 
         public HtmlExtractor(string html)
         {
             this.html = html;
-            this.parser = new SimpleHtmlParser(html);
+            Parser = new SimpleHtmlParser(html);
         }
 
         /// <summary>
         /// Returns the underlying parser that the HtmlExtractor is wrapping.
         /// </summary>
-        public SimpleHtmlParser Parser
-        {
-            get { return parser; }
-        }
+        public SimpleHtmlParser Parser { get; private set; }
 
         /// <summary>
         /// Indicates whether the last match succeeded.
@@ -51,7 +45,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         {
             get
             {
-                return lastMatch != null;
+                return Element != null;
             }
         }
 
@@ -59,13 +53,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// Gets the element that was last matched. If the last
         /// match failed, then returns null.
         /// </summary>
-        public Element Element
-        {
-            get
-            {
-                return lastMatch;
-            }
-        }
+        public Element Element { get; private set; } = null;
 
         /// <summary>
         /// Reposition the extractor back to the beginning of the
@@ -78,14 +66,14 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </returns>
         public HtmlExtractor Reset()
         {
-            lastMatch = null;
-            parser = new SimpleHtmlParser(html);
+            Element = null;
+            Parser = new SimpleHtmlParser(html);
             return this;
         }
 
         public HtmlExtractor Seek(IElementPredicate predicate)
         {
-            lastMatch = null;
+            Element = null;
 
             SeekWithin(predicate, null);
             return this;
@@ -93,16 +81,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public HtmlExtractor SeekWithin(IElementPredicate predicate, IElementPredicate withinPredicate)
         {
-            lastMatch = null;
+            Element = null;
 
             Element e;
-            while (null != (e = parser.Next()))
+            while (null != (e = Parser.Next()))
             {
                 if (predicate.IsMatch(e))
                 {
-                    lastMatch = e;
+                    Element = e;
                     break;
                 }
+
                 if (withinPredicate != null && withinPredicate.IsMatch(e))
                     break;
             }
@@ -135,7 +124,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </param>
         public HtmlExtractor Seek(string criterion)
         {
-            lastMatch = null;
+            Element = null;
 
             SeekWithin(Parse(criterion), null);
             return this;
@@ -143,7 +132,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public HtmlExtractor SeekWithin(string criterion, string withinCriterion)
         {
-            lastMatch = null;
+            Element = null;
 
             SeekWithin(Parse(criterion), Parse(withinCriterion));
             return this;
@@ -151,17 +140,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public HtmlExtractor MatchNext(IElementPredicate predicate, bool ignoreWhitespace)
         {
-            lastMatch = null;
+            Element = null;
 
             Element e;
             do
             {
-                e = parser.Next();
+                e = Parser.Next();
             }
             while (e != null && ignoreWhitespace && IsWhitespaceOrZeroLengthText(e));
 
             if (e != null && predicate.IsMatch(e))
-                lastMatch = e;
+                Element = e;
 
             return this;
         }
@@ -173,7 +162,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public HtmlExtractor MatchNext(string criterion, bool ignoreWhitespace)
         {
-            lastMatch = null;
+            Element = null;
 
             MatchNext(Parse(criterion), ignoreWhitespace);
             return this;
@@ -185,7 +174,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         /// </summary>
         public string CollectTextUntil(string endTagName)
         {
-            return HtmlUtils.HTMLToPlainText(parser.CollectHtmlUntil(endTagName));
+            return HtmlUtils.HTMLToPlainText(Parser.CollectHtmlUntil(endTagName));
             /*
 
                         string text = parser.CollectTextUntil(endTagName);
@@ -225,6 +214,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                     break;
                 result.Append(html, el.Offset, el.Length);
             }
+
             return result.ToString();
         }
 
@@ -238,7 +228,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
             Element e;
             do
             {
-                e = parser.Next();
+                e = Parser.Next();
             }
             while (e != null && ignoreWhitespace && IsWhitespaceOrZeroLengthText(e));
             return e;
@@ -253,30 +243,29 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 Trace.Fail("Criterion was null");
                 throw new ArgumentException("Criterion was null");
             }
+
             if (parser.Next() != null)
             {
                 Trace.Fail("Too many criteria");
                 throw new ArgumentException("Too many criteria");
             }
 
-            if (el is BeginTag)
+            if (el is BeginTag beginTag)
             {
-                BeginTag tag = (BeginTag)el;
-
-                if (tag.HasResidue || tag.Unterminated)
+                if (beginTag.HasResidue || beginTag.Unterminated)
                 {
                     Trace.Fail("Malformed criterion");
                     throw new ArgumentException("Malformed criterion");
                 }
 
-                RequiredAttribute[] attributes = new RequiredAttribute[tag.Attributes.Length];
+                RequiredAttribute[] attributes = new RequiredAttribute[beginTag.Attributes.Length];
                 for (int i = 0; i < attributes.Length; i++)
-                    attributes[i] = new RequiredAttribute(tag.Attributes[i].Name, tag.Attributes[i].Value);
-                return new BeginTagPredicate(tag.Name, attributes);
+                    attributes[i] = new RequiredAttribute(beginTag.Attributes[i].Name, beginTag.Attributes[i].Value);
+                return new BeginTagPredicate(beginTag.Name, attributes);
             }
-            else if (el is EndTag)
+            else if (el is EndTag endTag)
             {
-                return new EndTagPredicate(((EndTag)el).Name);
+                return new EndTagPredicate(endTag.Name);
             }
             else if (el is Text)
             {
@@ -303,6 +292,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 if (!char.IsWhiteSpace(html[i]))
                     return false;
             }
+
             return true;
         }
     }
@@ -314,31 +304,15 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
     public class PredicatePair
     {
-        private readonly IElementPredicate _match;
-        private readonly IElementPredicate _stop;
-
         public PredicatePair(IElementPredicate match, IElementPredicate stop)
         {
-            _match = match;
-            _stop = stop;
+            Match = match;
+            Stop = stop;
         }
 
-        public IElementPredicate Match
-        {
-            get
-            {
-                return _match;
-            }
-        }
+        public IElementPredicate Match { get; }
 
-        public IElementPredicate Stop
-        {
-            get
-            {
-                return _stop;
-            }
-        }
-
+        public IElementPredicate Stop { get; }
     }
 
     public class AndPredicate : IElementPredicate
@@ -388,17 +362,14 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public bool IsMatch(Element e)
         {
-            EndTag tag = e as EndTag;
-            if (tag == null)
-                return false;
-            return tag.NameEquals(tagName);
+            return e is EndTag endTag && endTag.NameEquals(tagName);
         }
     }
 
     public class BeginTagPredicate : IElementPredicate
     {
-        private string tagName;
-        private RequiredAttribute[] attrs;
+        private readonly string tagName;
+        private readonly RequiredAttribute[] attrs;
 
         public BeginTagPredicate(string tagName, params RequiredAttribute[] attrs)
         {
@@ -408,17 +379,15 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public bool IsMatch(Element e)
         {
-            BeginTag tag = e as BeginTag;
-            if (tag == null)
+            if (!(e is BeginTag beginTag))
                 return false;
 
-            if (tagName != null && !tag.NameEquals(tagName))
+            if (tagName != null && !beginTag.NameEquals(tagName))
                 return false;
 
             foreach (RequiredAttribute reqAttr in attrs)
             {
-                int foundAt;
-                Attr attr = tag.GetAttribute(reqAttr.Name, true, 0, out foundAt);
+                Attr attr = beginTag.GetAttribute(reqAttr.Name, true, 0, out _);
                 if (attr == null)
                     return false;
                 if (reqAttr.Value != null && reqAttr.Value != attr.Value)
@@ -440,10 +409,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public bool IsMatch(Element e)
         {
-            Text text = e as Text;
-            if (text == null)
-                return false;
-            return text.RawText == textToMatch;
+            return e is Text text && text.RawText == textToMatch;
         }
     }
 
@@ -458,10 +424,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public bool IsMatch(Element e)
         {
-            Comment comment = e as Comment;
-            if (comment == null)
-                return false;
-            return comment.RawText == textToMatch;
+            return e is Comment comment && comment.RawText == textToMatch;
         }
     }
 
@@ -497,36 +460,24 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public bool IsMatch(Element e)
         {
-            if (!allowSubtypes)
-                return e.GetType().Equals(type);
-            else
-                return type.IsInstanceOfType(e);
+            return allowSubtypes ? type.IsInstanceOfType(e) : e.GetType().Equals(type);
         }
     }
 
     public class RequiredAttribute
     {
-        private readonly string name;
-        private readonly string value;
-
         public RequiredAttribute(string name) : this(name, null)
         {
         }
 
         public RequiredAttribute(string name, string value)
         {
-            this.name = name;
-            this.value = value;
+            Name = name;
+            Value = value;
         }
 
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; }
 
-        public string Value
-        {
-            get { return this.value; }
-        }
+        public string Value { get; }
     }
 }

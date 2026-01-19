@@ -4,11 +4,13 @@
         <id>OpenLiveWriter</id>
         <version>0.0.0.0</version>
         <authors>Open Live Writer</authors>
-        <licenseUrl>https://github.com/OpenLiveWriter/OpenLiveWriter/blob/master/license.txt?raw=true</licenseUrl>
-        <iconUrl>http://openlivewriter.github.io/favicon.ico</iconUrl>
+        <license type="expression">MIT</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>Open Live Writer</description>
         <summary>Open Live Writer makes it easy to write, preview and post to your blog.</summary>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5.1" />
+        </dependencies>
     </metadata>
     <files>
         <file src="DeltaCompressionDotNet.dll" target="lib\net451\DeltaCompressionDotNet.dll" />
