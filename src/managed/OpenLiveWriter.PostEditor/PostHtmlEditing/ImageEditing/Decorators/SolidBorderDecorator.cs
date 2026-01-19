@@ -35,8 +35,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     g.FillRectangle(b, borderWidth, bitmap.Height - borderWidth, bitmap.Width - borderWidth, borderWidth);
                     g.FillRectangle(b, bitmap.Width - borderWidth, borderWidth, borderWidth, bitmap.Height - borderWidth * 2);
                 }
+
                 g.DrawImage(context.Image, borderWidth, borderWidth, context.Image.Width, context.Image.Height);
             }
+
             context.Image = bitmap;
             context.BorderMargin =
                 new ImageBorderMargin(borderWidth * 2, borderWidth * 2, new BorderCalculation(borderWidth * 2, borderWidth * 2));

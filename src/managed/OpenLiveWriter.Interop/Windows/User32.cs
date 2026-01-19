@@ -861,17 +861,18 @@ namespace OpenLiveWriter.Interop.Windows
 
         public static implicit operator RECT(Rectangle rectangle)
         {
-            RECT rect = new RECT();
-            rect.left = rectangle.Left;
-            rect.top = rectangle.Top;
-            rect.right = rectangle.Right;
-            rect.bottom = rectangle.Bottom;
+            RECT rect = new RECT
+            {
+                left = rectangle.Left,
+                top = rectangle.Top,
+                right = rectangle.Right,
+                bottom = rectangle.Bottom
+            };
             return rect;
         }
 
         public int Width { get { return right - left; } }
         public int Height { get { return bottom - top; } }
-
     }
 
     /// <summary>

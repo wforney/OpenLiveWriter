@@ -17,7 +17,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     internal class PostBodyEditingElementBehavior : EditableRegionElementBehavior
     {
-        BlogPostHtmlEditorControl _editor;
+        readonly BlogPostHtmlEditorControl _editor;
         public PostBodyEditingElementBehavior(BlogPostHtmlEditorControl editor, IHtmlEditorComponentContext editorContext, IHTMLElement prevEditableRegion, IHTMLElement nextEditableRegion)
             : base(editorContext, prevEditableRegion, nextEditableRegion)
         {
@@ -82,6 +82,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 _editor.SelectControlElement((IHTMLControlElement)htmlElement);
             }
+
             if (htmlElement != null)
                 htmlElement.scrollIntoView(!forward);
         }
@@ -116,6 +117,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 else
                     start.Left(true, moveResult);
             }
+
             return null;
         }
 
@@ -188,6 +190,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     if (ElementFilters.IsVisibleEmptyElement(context.Element))
                         return false; //there is a visible empty element (like an image), so this is not the beginning
                 }
+
                 range.Start.Right(true, context);
             }
 
@@ -214,11 +217,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             output.Append(BlogPost.ExtendedEntryBreak);
                             parser.Next();
                         }
-
                     }
                     else
                         output.Append(html, el.Offset, el.Length);
                 }
+
                 args.Html = output.ToString();
             }
         }
@@ -255,6 +258,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         selection.End.MoveToPointer(insertionPoint);
                         selection.ToTextRange().select();
                     }
+
                     undo.Commit();
                 }
             }
@@ -296,7 +300,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             return entryBreakDiv;
         }
-        private static string EXTENDED_ENTRY_HTML = String.Format(CultureInfo.InvariantCulture, "<div id='{0}' name='{0}'></div>", EXTENDED_ENTRY_ID);
+        private static readonly string EXTENDED_ENTRY_HTML = String.Format(CultureInfo.InvariantCulture, "<div id='{0}' name='{0}'></div>", EXTENDED_ENTRY_ID);
         public const string EXTENDED_ENTRY_ID = "extendedEntryBreak";
 
         private void DeleteInsertionTargetBlockIfEmpty(MarkupPointer insertionPoint)

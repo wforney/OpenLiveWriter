@@ -28,7 +28,7 @@ namespace OpenLiveWriter.FileDestinations
                 return id;
             }
         }
-        private string id;
+        private readonly string id;
 
         /// <summary>
         /// Is the destination valid?
@@ -77,6 +77,7 @@ namespace OpenLiveWriter.FileDestinations
                         destinationProfile = DestinationProfileManager.loadProfile(Id);
 
                 }
+
                 return destinationProfile;
             }
         }

@@ -239,6 +239,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 if (!ignoreErrors)
                     DisplayableExceptionDisplayForm.Show(_parentFrame, ex);
             }
+
             return _targetBlog.Categories;
         }
 
@@ -272,8 +273,10 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             */
 
             Point anchor = PointToScreen(new Point(RightToLeft == RightToLeft.Yes ? 0 : ClientSize.Width, ClientSize.Height));
-            _categoryDisplayForm = new CategoryDisplayFormW3M1(_categoryContext, anchor);
-            _categoryDisplayForm.SelfDispose = true;
+            _categoryDisplayForm = new CategoryDisplayFormW3M1(_categoryContext, anchor)
+            {
+                SelfDispose = true
+            };
             IMiniFormOwner miniFormOwner = FindForm() as IMiniFormOwner;
             if (miniFormOwner != null)
                 _categoryDisplayForm.FloatAboveOwner(miniFormOwner);
@@ -382,6 +385,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -435,7 +439,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
         private IWin32Window _parentFrame;
         private System.ComponentModel.IContainer components;
         private CategoryContext _categoryContext;
-        private Bitmap _icon = null;
+        private readonly Bitmap _icon = null;
 
         public void OnClosed() { }
         public void OnPostClosed() { }

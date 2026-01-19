@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public WeblogConfigurationWizardHeader(StringId label)
         {
@@ -62,11 +62,12 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
-        private string _label;
-        private Image _headerImage =
+        private readonly string _label;
+        private readonly Image _headerImage =
             BidiHelper.Mirror(ResourceHelper.LoadAssemblyResourceBitmap("Configuration.Wizard.Images.WeblogWizardHeader.png"));
 
         #region Component Designer generated code

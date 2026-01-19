@@ -123,7 +123,7 @@ namespace OpenLiveWriter.BlogClient.Providers
             return _options[optionName] as string;
         }
 
-        private Hashtable _options = new Hashtable();
+        private readonly Hashtable _options = new Hashtable();
 
         private static string NodeText(XmlNode node)
         {
@@ -132,7 +132,6 @@ namespace OpenLiveWriter.BlogClient.Providers
             else
                 return String.Empty;
         }
-
     }
 }
 

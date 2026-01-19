@@ -19,7 +19,7 @@ namespace BlogRunner.Core
     {
         public delegate void Func(string key, string val);
 
-        private Dictionary<string, string> results = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> results = new Dictionary<string, string>();
 
         public void AddResult(string key, string value)
         {

@@ -23,12 +23,12 @@ namespace BlogRunnerGui
             InitializeComponent();
         }
 
-        private void fileBlogProviders_PathChanged(object sender, EventArgs e)
+        private void FileBlogProviders_PathChanged(object sender, EventArgs e)
         {
             UpdateCommand();
         }
 
-        private void fileConfig_PathChanged(object sender, EventArgs e)
+        private void FileConfig_PathChanged(object sender, EventArgs e)
         {
             listProviders.Items.Clear();
 
@@ -59,24 +59,24 @@ namespace BlogRunnerGui
             UpdateCommand();
         }
 
-        private void fileOutput_PathChanged(object sender, EventArgs e)
+        private void FileOutput_PathChanged(object sender, EventArgs e)
         {
             UpdateCommand();
         }
 
-        private void btnSelectAll_Click(object sender, EventArgs e)
+        private void BtnSelectAll_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < listProviders.Items.Count; i++)
                 listProviders.SetItemChecked(i, true);
         }
 
-        private void btnSelectNone_Click(object sender, EventArgs e)
+        private void BtnSelectNone_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < listProviders.Items.Count; i++)
                 listProviders.SetItemChecked(i, false);
         }
 
-        private void listProviders_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void ListProviders_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             List<BlogProviderItem> checkedItems = new List<BlogProviderItem>(SelectedProviders);
 
@@ -89,7 +89,7 @@ namespace BlogRunnerGui
             UpdateCommand(checkedItems);
         }
 
-        private void chkVerbose_CheckedChanged(object sender, EventArgs e)
+        private void ChkVerbose_CheckedChanged(object sender, EventArgs e)
         {
             UpdateCommand();
         }
@@ -125,11 +125,12 @@ namespace BlogRunnerGui
             if (ids.Count == listProviders.Items.Count)
                 ids.Clear();
 
-            List<string> args = new List<string>();
-            args.Add("BlogRunner.exe");
-
-            args.Add("/" + BlogRunnerCommandLineOptions.OPTION_PROVIDERS + ":" + fileBlogProviders.Path);
-            args.Add("/" + BlogRunnerCommandLineOptions.OPTION_CONFIG + ":" + fileConfig.Path);
+            List<string> args = new List<string>
+            {
+                "BlogRunner.exe",
+                $"/{BlogRunnerCommandLineOptions.OPTION_PROVIDERS}:{fileBlogProviders.Path}",
+                $"/{BlogRunnerCommandLineOptions.OPTION_CONFIG}:{fileConfig.Path}"
+            };
             if (fileOutput.Path.Length > 0)
                 args.Add("/" + BlogRunnerCommandLineOptions.OPTION_OUTPUT + ":" + fileOutput.Path);
 
@@ -145,9 +146,7 @@ namespace BlogRunnerGui
 
         private string MaybeQuote(string str)
         {
-            if (str.Contains(" "))
-                return "\"" + str + "\"";
-            return str;
+            return str.Contains(" ") ? $"\"{str}\"" : str;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -156,7 +155,7 @@ namespace BlogRunnerGui
             UpdateCommand();
         }
 
-        private void btnRun_Click(object sender, EventArgs e)
+        private void BtnRun_Click(object sender, EventArgs e)
         {
             string cmdLine = textBox1.Text;
             if (cmdLine.Length == 0)
@@ -215,17 +214,13 @@ namespace BlogRunnerGui
 
             public override bool Equals(object obj)
             {
-                BlogProviderItem other = obj as BlogProviderItem;
-                if (other == null)
-                    return false;
-                return string.Equals(Id, other.Id, StringComparison.Ordinal);
+                return obj is BlogProviderItem other && string.Equals(Id, other.Id, StringComparison.Ordinal);
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void BtnClose_Click(object sender, EventArgs e)
         {
             Close();
         }
-
     }
 }

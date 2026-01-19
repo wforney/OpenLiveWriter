@@ -20,13 +20,13 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _newUrl; }
         }
-        private string _newUrl;
+        private readonly string _newUrl;
 
         public string oldUrl
         {
             get { return _oldUrl; }
         }
-        private string _oldUrl;
+        private readonly string _oldUrl;
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        private LightWeightHTMLMetaData _metaData = null;
+        private readonly LightWeightHTMLMetaData _metaData = null;
 
         public void AddUrlToReplace(UrlToReplace urlToReplace)
         {
@@ -68,9 +68,9 @@ namespace OpenLiveWriter.CoreServices
             if (!_substitutionUrls.ContainsKey(substitutionUrl.newUrl))
                 _substitutionUrls[substitutionUrl.newUrl] = substitutionUrl.oldUrl;
         }
-        private Hashtable _substitutionUrls = new Hashtable();
+        private readonly Hashtable _substitutionUrls = new Hashtable();
 
-        private ArrayList _urlsToReplace = new ArrayList();
+        private readonly ArrayList _urlsToReplace = new ArrayList();
 
         public string DoReplace()
         {
@@ -87,7 +87,7 @@ namespace OpenLiveWriter.CoreServices
                 return _url;
             }
         }
-        private string _url = null;
+        private readonly string _url = null;
 
         protected virtual string InsertSpecialHeaders(string html)
         {
@@ -157,6 +157,7 @@ namespace OpenLiveWriter.CoreServices
                     if (href != null)
                         href.Value = _metaData.Base;
                 }
+
                 _emittedMetaData.Add(HTMLTokens.Base);
             }
 
@@ -179,7 +180,7 @@ namespace OpenLiveWriter.CoreServices
         private bool _seenHead = false;
         private bool _seenBody = false;
 
-        private ArrayList _emittedTagsToClose = new ArrayList();
+        private readonly ArrayList _emittedTagsToClose = new ArrayList();
 
         private void EmitTag(string tagName)
         {
@@ -403,7 +404,7 @@ namespace OpenLiveWriter.CoreServices
                     return true;
             return false;
         }
-        private static string[] _jscriptAttributes = new string[] { "onload", "onclick", "onblur", "onchange", "onerror", "onfocus", "onmouseout", "onmouseover", "onreset", "onsubmit", "onselect", "onunload", "onmousedown", "onmouseup", "ondblclick", "onmousemove", "onkeypress", "onkeydown", "onkeyup", };
+        private static readonly string[] _jscriptAttributes = new string[] { "onload", "onclick", "onblur", "onchange", "onerror", "onfocus", "onmouseout", "onmouseover", "onreset", "onsubmit", "onselect", "onunload", "onmousedown", "onmouseup", "ondblclick", "onmousemove", "onkeypress", "onkeydown", "onkeyup", };
 
         private void ModifyMetaDataAsNecessary(BeginTag tag)
         {
@@ -448,6 +449,7 @@ namespace OpenLiveWriter.CoreServices
                         ModifyMetaDataAttribute(tag, HTMLTokens.Content, _metaData.Robots);
                         break;
                 }
+
                 _emittedMetaData.Add(nameAttr.Value.ToUpper(CultureInfo.InvariantCulture));
             }
         }
@@ -459,7 +461,7 @@ namespace OpenLiveWriter.CoreServices
                 valueAttr.Value = valueToChangeTo;
         }
 
-        private ArrayList _emittedMetaData = new ArrayList();
+        private readonly ArrayList _emittedMetaData = new ArrayList();
 
         private void EmitAdditionalMetaData()
         {
@@ -500,7 +502,6 @@ namespace OpenLiveWriter.CoreServices
 
         private StringBuilder _htmlBuilder = new StringBuilder();
 
-        private static string[] _permittedBeforeBody = new string[] { HTMLTokens.Html, HTMLTokens.Head, HTMLTokens.Title, HTMLTokens.Script, HTMLTokens.Style, HTMLTokens.Meta, HTMLTokens.Link, HTMLTokens.Object, HTMLTokens.Base, HTMLTokens.Frame, HTMLTokens.FrameSet, HTMLTokens.NoScript };
+        private static readonly string[] _permittedBeforeBody = new string[] { HTMLTokens.Html, HTMLTokens.Head, HTMLTokens.Title, HTMLTokens.Script, HTMLTokens.Style, HTMLTokens.Meta, HTMLTokens.Link, HTMLTokens.Object, HTMLTokens.Base, HTMLTokens.Frame, HTMLTokens.FrameSet, HTMLTokens.NoScript };
     }
-
 }

@@ -43,7 +43,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 Trace.Fail("Unexpected exception adding Content Filter: " + ex.ToString());
             }
         }
-        private static Hashtable _contentFilters = new Hashtable();
+        private static readonly Hashtable _contentFilters = new Hashtable();
 
         private class ContentFilterTypeDefinition
         {
@@ -71,19 +71,19 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 get { return _name; }
             }
-            private string _name;
+            private readonly string _name;
 
             public ConstructorInfo Constructor
             {
                 get { return _constructor; }
             }
-            private ConstructorInfo _constructor;
+            private readonly ConstructorInfo _constructor;
 
             public Type Type
             {
                 get { return _type; }
             }
-            private Type _type;
+            private readonly Type _type;
         }
     }
 }

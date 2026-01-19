@@ -58,18 +58,18 @@ namespace OpenLiveWriter.PostEditor.Video
             return Id.GetHashCode();
         }
 
-        private string _id = String.Empty;
-        private string _embed = String.Empty;
-        private VideoProvider _provider = null;
-        private string _url = String.Empty;
-        private string _thumbnailUrl = String.Empty;
+        private readonly string _id = String.Empty;
+        private readonly string _embed = String.Empty;
+        private readonly VideoProvider _provider = null;
+        private readonly string _url = String.Empty;
+        private readonly string _thumbnailUrl = String.Empty;
         private string _permission = String.Empty;
-        private int _width = 425;
-        private int _height = 350;
+        private readonly int _width = 425;
+        private readonly int _height = 350;
         private bool _isUploading = false;
         private IStatusWatcher _statusWatcher = null;
         private string _username = String.Empty;
-        private string _editorFormat = String.Empty;
+        private readonly string _editorFormat = String.Empty;
         private Bitmap _snapshot;
     }
 }

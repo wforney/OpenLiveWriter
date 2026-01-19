@@ -74,8 +74,7 @@ namespace OpenLiveWriter.CoreServices
         /// <returns>path to file or null if it could not be downloaded</returns>
         public static Stream SafeDownloadFile(string fileUrl)
         {
-            string responseUri;
-            return SafeDownloadFile(fileUrl, out responseUri, null);
+            return SafeDownloadFile(fileUrl, out string responseUri, null);
         }
 
         public static Stream SafeDownloadFile(string fileUrl, out string responseUri)
@@ -191,6 +190,7 @@ namespace OpenLiveWriter.CoreServices
                 ICredentials proxyCredentials = CreateHttpCredentials(WebProxySettings.Username, WebProxySettings.Password, proxyServerUrl);
                 proxy = new WebProxy(proxyServerUrl, false, new string[0], proxyCredentials);
             }
+
             return proxy;
         }
 
@@ -234,8 +234,10 @@ namespace OpenLiveWriter.CoreServices
                     credentialCache.Add(new Uri(url), "Negotiate", new NetworkCredential(username, password, userDomain));
                     credentialCache.Add(new Uri(url), "Kerberos", new NetworkCredential(username, password, userDomain));
                 }
+
                 credentials = credentialCache;
             }
+
             return credentials;
         }
 
@@ -295,9 +297,11 @@ namespace OpenLiveWriter.CoreServices
                 {
                     sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, resp.Headers[key]));
                 }
+
                 sw.WriteLine("");
                 sw.WriteLine(DecodeBody(resp));
             }
+
             return sb.ToString();
         }
 
@@ -312,6 +316,7 @@ namespace OpenLiveWriter.CoreServices
                     sw.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, req.Headers[key]));
                 }
             }
+
             return sb.ToString();
         }
 
@@ -414,6 +419,7 @@ namespace OpenLiveWriter.CoreServices
                         }
                 }
             }
+
             return "";
         }
 
@@ -445,10 +451,10 @@ namespace OpenLiveWriter.CoreServices
             request.Credentials = HttpRequestHelper.CreateHttpCredentials(_username, _password, _url, _digestOnly);
         }
 
-        private string _username;
-        private string _password;
-        private string _url;
-        private bool _digestOnly;
+        private readonly string _username;
+        private readonly string _password;
+        private readonly string _url;
+        private readonly bool _digestOnly;
     }
 
     /// <summary>
@@ -472,7 +478,7 @@ namespace OpenLiveWriter.CoreServices
                 filter(request);
         }
 
-        private HttpRequestFilter[] _filters;
+        private readonly HttpRequestFilter[] _filters;
     }
 
     /// <summary>

@@ -17,16 +17,16 @@ namespace OpenLiveWriter.ApplicationFramework
     public class ColorPopup : System.Windows.Forms.UserControl
     {
         private Color m_color = Color.Empty;
-        private Bitmap m_dropDownArrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.BlackDropArrow.png");
-        private Bitmap m_buttonOutlineHover = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonHover.png");
-        private Bitmap m_buttonOutlinePressed = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonPressed.png");
+        private readonly Bitmap m_dropDownArrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.BlackDropArrow.png");
+        private readonly Bitmap m_buttonOutlineHover = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonHover.png");
+        private readonly Bitmap m_buttonOutlinePressed = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.ToolbarButtonPressed.png");
         private bool m_hover = false;
         private bool m_pressed = false;
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public ColorPopup()
         {
@@ -76,6 +76,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -100,8 +101,10 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             using (Graphics g = Graphics.FromHwnd(User32.GetDesktopWindow()))
             {
-                StringFormat sf = new StringFormat(StringFormat.GenericDefault);
-                sf.HotkeyPrefix = ShowKeyboardCues ? HotkeyPrefix.Show : HotkeyPrefix.Hide;
+                StringFormat sf = new StringFormat(StringFormat.GenericDefault)
+                {
+                    HotkeyPrefix = ShowKeyboardCues ? HotkeyPrefix.Show : HotkeyPrefix.Hide
+                };
                 SizeF size = g.MeasureString(Text, Font, new PointF(0, 0), sf);
                 Width = PADDING * 2 + GUTTER_SIZE * 2 + COLOR_SIZE + (int)Math.Ceiling(size.Width) + m_dropDownArrow.Width;
                 Height = PADDING * 2 + COLOR_SIZE;
@@ -175,8 +178,10 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             base.OnMouseDown(e);
 
-            ColorPickerForm form = new ColorPickerForm();
-            form.Color = Color;
+            ColorPickerForm form = new ColorPickerForm
+            {
+                Color = Color
+            };
             form.ColorSelected += new ColorSelectedEventHandler(form_ColorSelected);
             form.Closed += new EventHandler(form_Closed);
             form.TopMost = true;

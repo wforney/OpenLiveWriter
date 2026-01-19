@@ -35,7 +35,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public WeblogConfigurationWizardPanelStaticSiteInitial()
         {
@@ -114,6 +114,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -190,9 +191,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         private void BtnLocalSiteBrowse_Click(object sender, EventArgs args)
         {
-            var folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.ShowNewFolderButton = false;
-            folderBrowserDialog.Description = Res.Get(StringId.CWStaticSiteLocalSiteFolderPicker);
+            var folderBrowserDialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = false,
+                Description = Res.Get(StringId.CWStaticSiteLocalSiteFolderPicker)
+            };
             var result = folderBrowserDialog.ShowDialog();
 
             if (result == DialogResult.OK)
@@ -200,6 +203,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 textBoxLocalSitePath.Text = folderBrowserDialog.SelectedPath;
             }
         }
-
     }
 }

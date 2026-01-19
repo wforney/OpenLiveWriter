@@ -28,12 +28,14 @@ namespace OpenLiveWriter.CoreServices.Threading
 
                 if (parkingWindow == null)
                 {
-                    parkingWindow = new Form();
-                    parkingWindow.Text = String.Format(CultureInfo.InvariantCulture, "{0} Task Window", ApplicationEnvironment.ProductName);
-                    parkingWindow.FormBorderStyle = FormBorderStyle.None;
-                    parkingWindow.MinimumSize = new Size(1, 1);
-                    parkingWindow.Size = new Size(1, 1);
-                    parkingWindow.Location = new Point(-32000, -32000);
+                    parkingWindow = new Form
+                    {
+                        Text = String.Format(CultureInfo.InvariantCulture, "{0} Task Window", ApplicationEnvironment.ProductName),
+                        FormBorderStyle = FormBorderStyle.None,
+                        MinimumSize = new Size(1, 1),
+                        Size = new Size(1, 1),
+                        Location = new Point(-32000, -32000)
+                    };
                     // DO NOT set ShowInTaskbar to false. It causes the window to be destroyed when an entity is deleted. (!?!?!?!?!?)
                     //					parkingWindow.ShowInTaskbar = false;
                     //					parkingWindow.Opacity = 0.0;
@@ -42,6 +44,7 @@ namespace OpenLiveWriter.CoreServices.Threading
                     IntPtr frcCreate = parkingWindow.Handle;
                     parkingWindow.Visible = false;
                 }
+
                 return parkingWindow;
             }
         }

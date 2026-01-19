@@ -191,24 +191,13 @@ namespace OpenLiveWriter.Api
         /// the Size parameters passed to the OnResize methods refer to the size of this element rather than to
         /// the size of the entire SmartContent object.
         /// </summary>
-        public string ResizeableElementId
-        {
-            get { return _resizableElementId; }
-            set { _resizableElementId = value; }
-        }
-        private string _resizableElementId = null;
+        public string ResizeableElementId { get; set; } = null;
 
         /// <summary>
         /// Aspect ratio to be enforced if the ResizeCapabilities.PreserveAspectRatio flag is specified. If the
         /// desired aspect ratio is statically known it is highly recommended that this ratio be specified within
         /// the OnResizeStart method (will eliminate the problem of "creeping" change to the aspect ratios with continued resizing).
         /// </summary>
-        public double AspectRatio
-        {
-            get { return _aspectRatio; }
-            set { _aspectRatio = value; }
-        }
-        private double _aspectRatio = 0;
+        public double AspectRatio { get; set; } = 0;
     }
-
 }

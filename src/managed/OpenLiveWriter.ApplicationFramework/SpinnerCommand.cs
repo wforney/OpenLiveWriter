@@ -17,13 +17,13 @@ namespace OpenLiveWriter.ApplicationFramework
 
     public class SpinnerCommand : Command, IRepresentativeString
     {
-        private decimal _minValue;
-        private decimal _maxValue;
+        private readonly decimal _minValue;
+        private readonly decimal _maxValue;
         private decimal _value;
-        private decimal _increment;
-        private uint _decimalPlaces;
-        private string _representativeString;
-        private string _formatString;
+        private readonly decimal _increment;
+        private readonly uint _decimalPlaces;
+        private readonly string _representativeString;
+        private readonly string _formatString;
 
         public SpinnerCommand(CommandId commandId, decimal minValue, decimal maxValue, decimal initialValue, decimal increment, uint decimalPlaces, string representativeString, string formatString)
             : base(commandId)

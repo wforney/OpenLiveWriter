@@ -12,7 +12,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
     public class JumpListCustomCategoryCollection
         : ICollection<JumpListCustomCategory>
     {
-        private List<JumpListCustomCategory> categories = new List<JumpListCustomCategory>();
+        private readonly List<JumpListCustomCategory> categories = new List<JumpListCustomCategory>();
 
         /// <summary>
         /// Determines if this collection is read-only

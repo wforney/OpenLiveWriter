@@ -71,7 +71,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         /// <summary>
         /// Initializes a new instance of the message class.
@@ -109,6 +109,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -191,8 +192,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             bool isUnexpected = true;
 
             //check for special error message type
-            ExceptionMessage dynamicMessage;
-            if (DynamicExceptionMessageRegistry.Instance.GetMessage(out dynamicMessage, rootCause))
+            if (DynamicExceptionMessageRegistry.Instance.GetMessage(out ExceptionMessage dynamicMessage, rootCause))
             {
                 if (dynamicMessage == null)
                     return;

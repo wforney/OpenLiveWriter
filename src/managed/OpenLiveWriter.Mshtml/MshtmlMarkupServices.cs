@@ -37,8 +37,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns>a clone of the element</returns>
         public IHTMLElement CloneElement(IHTMLElement e)
         {
-            IHTMLElement clone;
-            MarkupServices.CloneElement(e, out clone);
+            MarkupServices.CloneElement(e, out IHTMLElement clone);
             return clone;
         }
 
@@ -61,8 +60,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns>the newly created element</returns>
         public IHTMLElement CreateElement(_ELEMENT_TAG_ID tagID, string attributes)
         {
-            IHTMLElement element;
-            MarkupServices.CreateElement(tagID, attributes, out element);
+            MarkupServices.CreateElement(tagID, attributes, out IHTMLElement element);
             return element;
         }
 
@@ -72,8 +70,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns>An empty MarkupContainer</returns>
         public MarkupContainer CreateMarkupContainer()
         {
-            IMarkupContainerRaw container;
-            MarkupServices.CreateMarkupContainer(out container);
+            MarkupServices.CreateMarkupContainer(out IMarkupContainerRaw container);
             return new MarkupContainer(this, container);
         }
 
@@ -83,8 +80,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public MarkupPointer CreateMarkupPointer()
         {
-            IMarkupPointerRaw pointer;
-            MarkupServices.CreateMarkupPointer(out pointer);
+            MarkupServices.CreateMarkupPointer(out IMarkupPointerRaw pointer);
             return new MarkupPointer(this, pointer);
         }
 
@@ -94,8 +90,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public MarkupPointer CreateMarkupPointer(IMarkupPointerRaw rawPtr)
         {
-            IMarkupPointerRaw pointer;
-            MarkupServices.CreateMarkupPointer(out pointer);
+            MarkupServices.CreateMarkupPointer(out IMarkupPointerRaw pointer);
             pointer.MoveToPointer(rawPtr);
             return new MarkupPointer(this, pointer);
         }
@@ -164,7 +159,6 @@ namespace OpenLiveWriter.Mshtml
             {
                 return null;
             }
-
         }
 
         /// <summary>
@@ -260,8 +254,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public _ELEMENT_TAG_ID GetElementTagId(IHTMLElement e)
         {
-            _ELEMENT_TAG_ID tagId;
-            MarkupServices.GetElementTagId(e, out tagId);
+            MarkupServices.GetElementTagId(e, out _ELEMENT_TAG_ID tagId);
             return tagId;
         }
 
@@ -272,8 +265,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public string GetNameForTagId(_ELEMENT_TAG_ID tagId)
         {
-            IntPtr p;
-            MarkupServices.GetNameForTagID(tagId, out p);
+            MarkupServices.GetNameForTagID(tagId, out IntPtr p);
             return Marshal.PtrToStringBSTR(p);
         }
 
@@ -410,8 +402,7 @@ namespace OpenLiveWriter.Mshtml
                 start = CreateMarkupPointer();
             if (end == null)
                 end = CreateMarkupPointer();
-            IMarkupContainerRaw container;
-            MarkupServices.ParseString(html, 0, out container, start.PointerRaw, end.PointerRaw);
+            MarkupServices.ParseString(html, 0, out IMarkupContainerRaw container, start.PointerRaw, end.PointerRaw);
             return new MarkupContainer(this, container);
         }
 

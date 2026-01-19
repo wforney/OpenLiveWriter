@@ -116,6 +116,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                                 // Insert wlCopySrcUrl attribute
                                 html = ImageCopyFixupHelper.FixupSourceUrlForCopy(html);
                             }
+
                             html = EditorContext.FixImageReferences(html, htmlData.SourceURL);
                         }
                     }

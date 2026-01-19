@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Label labelCaption1;
@@ -65,6 +65,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

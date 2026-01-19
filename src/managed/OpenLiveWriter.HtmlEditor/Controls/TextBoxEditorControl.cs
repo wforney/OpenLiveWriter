@@ -46,6 +46,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
                             x = newPoint.X;
                             y = newPoint.Y;
                         }
+
                         OnContextMenuTriggered(new ContextMenuTriggeredEventArgs(x, y));
 
                         //	Done!

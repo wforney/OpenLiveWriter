@@ -159,10 +159,10 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             return new PageInfo(Id, Title, DatePublished, ParentId);
         }
 
-        private string _id;
-        private string _title;
-        private DateTime _datePublished;
-        private string _parentId;
+        private readonly string _id;
+        private readonly string _title;
+        private readonly DateTime _datePublished;
+        private readonly string _parentId;
     }
 
     public class AuthorInfo : ICloneable
@@ -185,8 +185,8 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             return new AuthorInfo(Id, Name);
         }
 
-        private string _id;
-        private string _name;
+        private readonly string _id;
+        private readonly string _name;
 
     }
 }

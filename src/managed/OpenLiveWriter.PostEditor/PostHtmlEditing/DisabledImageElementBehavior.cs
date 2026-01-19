@@ -15,7 +15,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     internal class DisabledImageElementBehavior : ElementControlBehavior
     {
-        private BehaviorDragAndDropSource _dragDropController;
+        private readonly BehaviorDragAndDropSource _dragDropController;
 
         public DisabledImageElementBehavior(IHtmlEditorComponentContext editorContext)
             : base(editorContext)

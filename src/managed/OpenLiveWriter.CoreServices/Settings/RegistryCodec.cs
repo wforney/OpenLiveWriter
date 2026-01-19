@@ -17,7 +17,7 @@ namespace OpenLiveWriter.CoreServices.Settings
     public class RegistryCodec
     {
         #region Singleton
-        private static RegistryCodec singleton = new RegistryCodec();
+        private static readonly RegistryCodec singleton = new RegistryCodec();
 
         private RegistryCodec() { }
 
@@ -34,7 +34,7 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// The available codecs, in order of priority (highest priority first).
         /// Any <c>Codec</c> that is not part of this list will never get called.
         /// </summary>
-        private Codec[] codecs = {
+        private readonly Codec[] codecs = {
                                      // common types up top
                                      new StringCodec(),
                                      new BooleanCodec(),
@@ -66,7 +66,7 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// A cache of previously matched type/codec pairs.
         /// Keys are <c>Types</c>, values are <c>Codecs</c>.
         /// </summary>
-        private Hashtable codecCache = new Hashtable();
+        private readonly Hashtable codecCache = new Hashtable();
 
         /// <summary>
         /// Take a native value and return a registry-ready representation.
@@ -223,7 +223,6 @@ namespace OpenLiveWriter.CoreServices.Settings
             {
                 return typeof(string[]);
             }
-
         }
 
         class BooleanCodec : Codec
@@ -391,7 +390,6 @@ namespace OpenLiveWriter.CoreServices.Settings
                     return null;
                 }
             }
-
         }
 
         /// <summary>
@@ -427,7 +425,6 @@ namespace OpenLiveWriter.CoreServices.Settings
                     return null;
                 }
             }
-
         }
 
         /// <summary>
@@ -463,7 +460,6 @@ namespace OpenLiveWriter.CoreServices.Settings
                     return null;
                 }
             }
-
         }
 
         /// <summary>
@@ -499,7 +495,6 @@ namespace OpenLiveWriter.CoreServices.Settings
                     return null;
                 }
             }
-
         }
 
         /// <summary>
@@ -525,6 +520,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     formatter.Serialize(ms, val);
                     data = ms.ToArray();
                 }
+
                 return data;
             }
 
@@ -542,6 +538,5 @@ namespace OpenLiveWriter.CoreServices.Settings
                 }
             }
         }
-
     }
 }

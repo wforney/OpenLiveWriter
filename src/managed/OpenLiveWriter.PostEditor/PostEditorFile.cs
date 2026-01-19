@@ -132,16 +132,18 @@ namespace OpenLiveWriter.PostEditor
                 // get post
                 using (Storage postStorage = new Storage(file.FullName, StorageMode.Open, false))
                 {
-                    PostInfo postInfo = new PostInfo();
-                    postInfo.Id = file.FullName;
-                    postInfo.Title = ReadString(postStorage, POST_TITLE);
-                    postInfo.Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty);
-                    postInfo.IsPage = SafeReadBoolean(postStorage, POST_ISPAGE, false);
-                    postInfo.BlogName = ReadBlogName(postStorage);
-                    postInfo.BlogId = ReadString(postStorage, DESTINATION_BLOG_ID);
-                    postInfo.BlogPostId = ReadString(postStorage, POST_ID);
-                    postInfo.Contents = ReadStringUtf8(postStorage, POST_CONTENTS);
-                    postInfo.DateModified = file.LastWriteTimeUtc;
+                    PostInfo postInfo = new PostInfo
+                    {
+                        Id = file.FullName,
+                        Title = ReadString(postStorage, POST_TITLE),
+                        Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty),
+                        IsPage = SafeReadBoolean(postStorage, POST_ISPAGE, false),
+                        BlogName = ReadBlogName(postStorage),
+                        BlogId = ReadString(postStorage, DESTINATION_BLOG_ID),
+                        BlogPostId = ReadString(postStorage, POST_ID),
+                        Contents = ReadStringUtf8(postStorage, POST_CONTENTS),
+                        DateModified = file.LastWriteTimeUtc
+                    };
                     return postInfo;
                 }
             }
@@ -190,7 +192,6 @@ namespace OpenLiveWriter.PostEditor
                 {
                     return false;
                 }
-
             }
             catch (Exception ex)
             {
@@ -333,23 +334,25 @@ namespace OpenLiveWriter.PostEditor
                     string serverSupportingFileDirectory = ReadString(postStorage, SERVER_SUPPORTING_FILE_DIR);
 
                     // blog post
-                    BlogPost blogPost = new BlogPost();
-                    blogPost.Id = ReadString(postStorage, POST_ID);
-                    blogPost.IsPage = SafeReadBoolean(postStorage, POST_ISPAGE, false);
-                    blogPost.Title = ReadString(postStorage, POST_TITLE);
-                    blogPost.Categories = (BlogPostCategory[])ReadXml(postStorage, POST_CATEGORIES, new XmlReadHandler(ReadCategories));
-                    blogPost.NewCategories = (BlogPostCategory[])SafeReadXml(postStorage, POST_NEW_CATEGORIES, new XmlReadHandler(ReadCategories), new BlogPostCategory[] { });
-                    blogPost.DatePublished = ReadDateTime(postStorage, POST_DATEPUBLISHED);
-                    blogPost.DatePublishedOverride = ReadDateTime(postStorage, POST_DATEPUBLISHED_OVERRIDE);
-                    blogPost.CommentPolicy = ReadCommentPolicy(postStorage);
-                    blogPost.TrackbackPolicy = ReadTrackbackPolicy(postStorage);
-                    blogPost.Keywords = ReadString(postStorage, POST_KEYWORDS);
-                    blogPost.Excerpt = ReadString(postStorage, POST_EXCERPT);
-                    blogPost.Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty);
-                    blogPost.PingUrlsPending = (string[])ReadXml(postStorage, POST_PINGURLS_PENDING, new XmlReadHandler(ReadPingUrls));
-                    blogPost.PingUrlsSent = (string[])SafeReadXml(postStorage, POST_PINGURLS_SENT, new XmlReadHandler(ReadPingUrls), new string[0]);
-                    blogPost.Slug = SafeReadString(postStorage, POST_SLUG, String.Empty);
-                    blogPost.Password = SafeReadString(postStorage, POST_PASSWORD, String.Empty);
+                    BlogPost blogPost = new BlogPost
+                    {
+                        Id = ReadString(postStorage, POST_ID),
+                        IsPage = SafeReadBoolean(postStorage, POST_ISPAGE, false),
+                        Title = ReadString(postStorage, POST_TITLE),
+                        Categories = (BlogPostCategory[])ReadXml(postStorage, POST_CATEGORIES, new XmlReadHandler(ReadCategories)),
+                        NewCategories = (BlogPostCategory[])SafeReadXml(postStorage, POST_NEW_CATEGORIES, new XmlReadHandler(ReadCategories), new BlogPostCategory[] { }),
+                        DatePublished = ReadDateTime(postStorage, POST_DATEPUBLISHED),
+                        DatePublishedOverride = ReadDateTime(postStorage, POST_DATEPUBLISHED_OVERRIDE),
+                        CommentPolicy = ReadCommentPolicy(postStorage),
+                        TrackbackPolicy = ReadTrackbackPolicy(postStorage),
+                        Keywords = ReadString(postStorage, POST_KEYWORDS),
+                        Excerpt = ReadString(postStorage, POST_EXCERPT),
+                        Permalink = SafeReadString(postStorage, POST_PERMALINK, String.Empty),
+                        PingUrlsPending = (string[])ReadXml(postStorage, POST_PINGURLS_PENDING, new XmlReadHandler(ReadPingUrls)),
+                        PingUrlsSent = (string[])SafeReadXml(postStorage, POST_PINGURLS_SENT, new XmlReadHandler(ReadPingUrls), new string[0]),
+                        Slug = SafeReadString(postStorage, POST_SLUG, String.Empty),
+                        Password = SafeReadString(postStorage, POST_PASSWORD, String.Empty)
+                    };
                     string authorId = SafeReadString(postStorage, POST_AUTHOR_ID, String.Empty);
                     string authorName = SafeReadString(postStorage, POST_AUTHOR_NAME, String.Empty);
                     blogPost.Author = new PostIdAndNameField(authorId, authorName);
@@ -395,8 +398,7 @@ namespace OpenLiveWriter.PostEditor
                         blogPost.Contents = supportingFilePersister.FixupHtmlReferences(ReadStringUtf8(postStorage, POST_CONTENTS));
 
                         string originalSourcePath = SafeReadString(postStorage, ORIGINAL_SOURCE_PATH, null);
-                        PostEditorFile autoSaveFile;
-                        PostEditorFile file = GetFileFromSourcePath(originalSourcePath, out autoSaveFile);
+                        PostEditorFile file = GetFileFromSourcePath(originalSourcePath, out PostEditorFile autoSaveFile);
 
                         // return init params
                         return new BlogPostEditingContext(destinationBlogId, blogPost, file, autoSaveFile, serverSupportingFileDirectory, supportingFileStorage, imageDataList, extensionDataList, supportingFileService);
@@ -596,6 +598,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     TargetFile.Delete();
                 }
+
                 TargetFile = null;
             }
             catch (IOException ex)
@@ -721,8 +724,8 @@ namespace OpenLiveWriter.PostEditor
 
         #region Helpers for reading and writing data
 
-        private static Encoding ucs16Encoding = new UnicodeEncoding(false, true);
-        private static Encoding utf8Encoding = new UTF8Encoding(true, false);
+        private static readonly Encoding ucs16Encoding = new UnicodeEncoding(false, true);
+        private static readonly Encoding utf8Encoding = new UTF8Encoding(true, false);
 
         private static void WriteString(Storage postStorage, string fieldName, string fieldValue)
         {
@@ -931,6 +934,7 @@ namespace OpenLiveWriter.PostEditor
                 writer.WriteString(pingUrl);
                 writer.WriteEndElement();
             }
+
             writer.WriteEndElement();
         }
 
@@ -942,6 +946,7 @@ namespace OpenLiveWriter.PostEditor
                 if (reader.NodeType == XmlNodeType.Element && reader.LocalName == PING_URL_ELEMENT)
                     pingUrls.Add(reader.ReadString());
             }
+
             return pingUrls.ToArray(typeof(string)) as string[];
         }
 
@@ -956,6 +961,7 @@ namespace OpenLiveWriter.PostEditor
                 writer.WriteAttributeString(CATEGORY_PARENT_ATTRIBUTE, category.Parent);
                 writer.WriteEndElement();
             }
+
             writer.WriteEndElement();
         }
 
@@ -983,15 +989,17 @@ namespace OpenLiveWriter.PostEditor
                                 break;
                         }
                     }
+
                     categories.Add(new BlogPostCategory(id, name, parent));
                 }
             }
+
             return categories.ToArray(typeof(BlogPostCategory));
         }
 
         private class AttachedImageListWriter
         {
-            SupportingFileReferenceList _referenceList;
+            readonly SupportingFileReferenceList _referenceList;
             public AttachedImageListWriter(SupportingFileReferenceList referenceList)
             {
                 _referenceList = referenceList;
@@ -1007,6 +1015,7 @@ namespace OpenLiveWriter.PostEditor
                         return true;
                     }
                 }
+
                 return false;
             }
             public void WriteImageFiles(XmlTextWriter writer, object imageFiles)
@@ -1041,14 +1050,15 @@ namespace OpenLiveWriter.PostEditor
                         writer.WriteEndElement(); //end IMAGE_FILE_ELEMENT
                     }
                 }
+
                 writer.WriteEndElement();	//end IMAGE_FILES_ELEMENT
             }
         }
 
         class ImageListReader
         {
-            private SupportingFileService _fileService;
-            SupportingFilePersister _supportingFilePersister;
+            private readonly SupportingFileService _fileService;
+            readonly SupportingFilePersister _supportingFilePersister;
             public ImageListReader(SupportingFilePersister supportingFilePersister, SupportingFileService fileService)
             {
                 _supportingFilePersister = supportingFilePersister;
@@ -1134,6 +1144,7 @@ namespace OpenLiveWriter.PostEditor
                                     imageFileData = null;
                                 }
                             }
+
                             if (imageFileData != null)
                             {
                                 if (imageFileData.Relationship == ImageFileRelationship.Inline)
@@ -1186,14 +1197,15 @@ namespace OpenLiveWriter.PostEditor
                         blogPostImageData = null;
                     }
                 }
+
                 return imageFiles;
             }
         }
 
         private class ExtensionDataListWriter
         {
-            SupportingFilePersister _supportingFilePersister;
-            string _content;
+            readonly SupportingFilePersister _supportingFilePersister;
+            readonly string _content;
             public ExtensionDataListWriter(SupportingFilePersister supportingFilePersister, string content)
             {
                 _supportingFilePersister = supportingFilePersister;
@@ -1227,15 +1239,16 @@ namespace OpenLiveWriter.PostEditor
 
                     writer.WriteEndElement();
                 }
+
                 writer.WriteEndElement();
             }
         }
 
         private class ExtensionDataListReader
         {
-            BlogPostExtensionDataList _extensionDataList;
-            SupportingFilePersister _supportingFilePersister;
-            SupportingFileService _fileService;
+            readonly BlogPostExtensionDataList _extensionDataList;
+            readonly SupportingFilePersister _supportingFilePersister;
+            readonly SupportingFileService _fileService;
             public ExtensionDataListReader(BlogPostExtensionDataList extensionDataList, SupportingFilePersister supportingFilePersister, SupportingFileService fileService)
             {
                 _extensionDataList = extensionDataList;
@@ -1268,6 +1281,7 @@ namespace OpenLiveWriter.PostEditor
 
                     Trace.Assert(extensionErrors == null, "Failure(s) while to read extension data");
                 }
+
                 return null;
             }
 
@@ -1316,6 +1330,7 @@ namespace OpenLiveWriter.PostEditor
 
                                 extensionData.AddStorageFileMapping(fileId, supportingFile);
                             }
+
                             if (isEmptyElement)
                                 depth--;
                         }
@@ -1328,6 +1343,7 @@ namespace OpenLiveWriter.PostEditor
                             break;
                     }
                 }
+
                 Debug.Assert(depth == 0 && reader.LocalName == EXTENSION_DATA_ELEMENT, "Xmlreader is unexpectedly positioned (probably read to far!)");
                 return extensionData;
             }
@@ -1349,9 +1365,9 @@ namespace OpenLiveWriter.PostEditor
         public static string ATTACHED_FILE_URI_ATTRIBUTE = "FileUri";
         private class AttachedFileListWriter
         {
-            SupportingFilePersister _supportingFilePersister;
-            IBlogPostEditingContext _editingContext;
-            SupportingFileReferenceList _referenceList;
+            readonly SupportingFilePersister _supportingFilePersister;
+            readonly IBlogPostEditingContext _editingContext;
+            readonly SupportingFileReferenceList _referenceList;
             public AttachedFileListWriter(SupportingFilePersister supportingFilePersister, IBlogPostEditingContext editingContext, SupportingFileReferenceList referenceList)
             {
                 _supportingFilePersister = supportingFilePersister;
@@ -1412,14 +1428,15 @@ namespace OpenLiveWriter.PostEditor
                         writer.WriteEndElement(); //end ATTACHED_FILE_ELEMENT
                     }
                 }
+
                 writer.WriteEndElement();
             }
         }
 
         private class AttachedFileListReader
         {
-            SupportingFileService _fileService;
-            SupportingFilePersister _supportingFilePersister;
+            readonly SupportingFileService _fileService;
+            readonly SupportingFilePersister _supportingFilePersister;
             public AttachedFileListReader(SupportingFileService supportingFileService, SupportingFilePersister supportingFilePersister)
             {
                 _fileService = supportingFileService;
@@ -1496,6 +1513,7 @@ namespace OpenLiveWriter.PostEditor
                                 depth--;
                                 continue;
                             }
+
                             if (isEmptyElement)
                                 depth--;
                         }
@@ -1545,6 +1563,7 @@ namespace OpenLiveWriter.PostEditor
                                 depth--;
                                 continue;
                             }
+
                             if (isEmptyElement)
                                 depth--;
                         }
@@ -1606,6 +1625,7 @@ namespace OpenLiveWriter.PostEditor
                                 depth--;
                                 continue;
                             }
+
                             if (isEmptyElement)
                                 depth--;
                         }
@@ -1689,8 +1709,10 @@ namespace OpenLiveWriter.PostEditor
                                         break;
                                 }
                             }
+
                             settings[settingName] = settingValue;
                         }
+
                         if (isEmptyElement)
                             depth--;
                     }
@@ -1703,6 +1725,7 @@ namespace OpenLiveWriter.PostEditor
                         break;
                 }
             }
+
             Debug.Assert(depth == 0 && reader.LocalName == SETTINGS_BAG_ELEMENT, "Xmlreader is unexpectedly positioned (probably read to far!)");
             return settingsBagName;
         }
@@ -1821,7 +1844,7 @@ namespace OpenLiveWriter.PostEditor
         /// </summary>
         private class SupportingFilePersister
         {
-            Hashtable referencesTable = new Hashtable();
+            readonly Hashtable referencesTable = new Hashtable();
             public SupportingFilePersister(Storage fileSubStorage)
             {
                 _fileSubStorage = fileSubStorage;
@@ -1851,6 +1874,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     fixedReferences[i] = SaveToStorageReferenceFixer(references[i]);
                 }
+
                 _fileSubStorage.Commit();
 
                 return fixedReferences;
@@ -1864,6 +1888,7 @@ namespace OpenLiveWriter.PostEditor
                     if (referencesTable.ContainsKey(referenceUri))
                         return (string)referencesTable[referenceUri];
                 }
+
                 return reference;
             }
 
@@ -1900,7 +1925,6 @@ namespace OpenLiveWriter.PostEditor
                     referencesTable[referenceUri] = fixedReference;
                     return fixedReference;
                 }
-
             }
 
             public string[] LoadFilesAndFixupReferences(string[] references)
@@ -1943,8 +1967,8 @@ namespace OpenLiveWriter.PostEditor
                 }
             }
 
-            private Storage _fileSubStorage;
-            private BlogPostSupportingFileStorage _supportingFileStorage;
+            private readonly Storage _fileSubStorage;
+            private readonly BlogPostSupportingFileStorage _supportingFileStorage;
 
             public const string SUPPORTING_FILE_PREFIX = "SupportingFileReference://";
             private const string SUPPORTING_FILE_NAME = "SupportingFileName";

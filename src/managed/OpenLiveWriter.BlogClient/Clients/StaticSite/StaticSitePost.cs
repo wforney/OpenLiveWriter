@@ -17,7 +17,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         // Matches the published slug out of a on-disk post
         // 2014-02-02-test.html -> test
         // _posts\2014-02-02-my-post-test.html -> my-post-test
-        private static Regex FILENAME_SLUG_REGEX = new Regex(@"^(?:(?:.*?)(?:\\|\/))*(?:\d\d\d\d-\d\d-\d\d-)(.*?)\" + PUBLISH_FILE_EXTENSION + "$");
+        private static readonly Regex FILENAME_SLUG_REGEX = new Regex(@"^(?:(?:.*?)(?:\\|\/))*(?:\d\d\d\d-\d\d-\d\d-)(.*?)\" + PUBLISH_FILE_EXTENSION + "$");
 
         public StaticSitePost(StaticSiteConfig config) : base(config)
         {

@@ -51,5 +51,4 @@ namespace OpenLiveWriter.Interop.Com
             [In, MarshalAs(UnmanagedType.IUnknown)] Object punkToolbarSite,
             bool fReserved);
     }
-
 }

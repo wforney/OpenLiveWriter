@@ -20,5 +20,4 @@ namespace OpenLiveWriter.Interop.Com.ActiveDocuments
         void ActivateMe(
             [In] IOleDocumentView pViewToActivate);
     }
-
 }

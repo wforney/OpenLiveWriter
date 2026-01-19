@@ -322,7 +322,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
 
     public static class PropertyKeyExtensions
     {
-        private static int MAX_KEYS = 13;
+        private static readonly int MAX_KEYS = 13;
         private static Dictionary<PropertyKey, CommandInvalidationFlags> commandInvalidationFlags = null;
         public static CommandInvalidationFlags GetCommandInvalidationFlags(PropertyKey key)
         {
@@ -349,8 +349,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
                 Debug.Assert(commandInvalidationFlags.Count == MAX_KEYS);
             }
 
-            CommandInvalidationFlags flags;
-            if (commandInvalidationFlags.TryGetValue(key, out flags))
+            if (commandInvalidationFlags.TryGetValue(key, out CommandInvalidationFlags flags))
                 return flags;
             return CommandInvalidationFlags.Property;
         }

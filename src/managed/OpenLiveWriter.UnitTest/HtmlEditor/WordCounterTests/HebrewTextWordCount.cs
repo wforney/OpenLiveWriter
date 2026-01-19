@@ -100,9 +100,5 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
         {
             CountText("اللغة العربية هي أكثر اللغات تحدثاً", 6);
         }
-
-
-
-
     }
 }

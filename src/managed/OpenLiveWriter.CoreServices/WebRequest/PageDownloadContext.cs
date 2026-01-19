@@ -181,7 +181,7 @@ namespace OpenLiveWriter.CoreServices
             if (!TimedOutHosts.Contains(url))
                 TimedOutHosts.Add(UrlHelper.GetHostName(url));
         }
-        private ArrayList TimedOutHosts = new ArrayList();
+        private readonly ArrayList TimedOutHosts = new ArrayList();
 
         public static PageDownloadContext OnlyThisPage
         {
@@ -191,5 +191,4 @@ namespace OpenLiveWriter.CoreServices
             }
         }
     }
-
 }

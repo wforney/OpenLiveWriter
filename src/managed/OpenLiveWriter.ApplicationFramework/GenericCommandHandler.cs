@@ -29,6 +29,7 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 return RibbonHelper.CreateImage(bitmap.GetHbitmap(), ImageCreationOptions.Transfer);
             }
+
             return null;
         }
 
@@ -46,6 +47,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 case CommandExecutionVerb.CancelPreview:
                     break;
             }
+
             return HRESULT.S_OK;
         }
 
@@ -236,5 +238,4 @@ namespace OpenLiveWriter.ApplicationFramework
             return HRESULT.S_OK;
         }
     }
-
 }

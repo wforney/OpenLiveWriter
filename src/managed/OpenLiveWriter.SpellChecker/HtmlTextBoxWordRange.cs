@@ -158,7 +158,7 @@ namespace OpenLiveWriter.SpellChecker
                 IncludedBreakChar = 0x20 // counts as a break, but is also included in the word
             }
 
-            private HtmlTextSource _src;
+            private readonly HtmlTextSource _src;
 
             private TextWithOffsetAndLen _curr;
             private int _offset = 0;
@@ -197,8 +197,7 @@ namespace OpenLiveWriter.SpellChecker
                     int endOfWord = _offset;
                     do
                     {
-                        int charsToConsume;
-                        CharClass charClass = ClassifyChar(_curr.Text, _offset, out charsToConsume);
+                        CharClass charClass = ClassifyChar(_curr.Text, _offset, out int charsToConsume);
                         if (Test(charClass, CharClass.Break))
                             break;
                         _offset += charsToConsume;
@@ -207,6 +206,7 @@ namespace OpenLiveWriter.SpellChecker
                             endOfWord = _offset;
                             break;
                         }
+
                         if (Test(charClass, CharClass.LetterOrNumber))
                             endOfWord = _offset;
                     } while (!EOS());
@@ -225,8 +225,7 @@ namespace OpenLiveWriter.SpellChecker
 
             private void AdvanceUntilWordStart()
             {
-                int charsToConsume;
-                while (!EOS() && !Test(ClassifyChar(_curr.Text, _offset, out charsToConsume), CharClass.LetterOrNumber))
+                while (!EOS() && !Test(ClassifyChar(_curr.Text, _offset, out int charsToConsume), CharClass.LetterOrNumber))
                     _offset += charsToConsume;
             }
 
@@ -277,7 +276,7 @@ namespace OpenLiveWriter.SpellChecker
 
         private class HtmlTextSource
         {
-            private SimpleHtmlParser _parser;
+            private readonly SimpleHtmlParser _parser;
 
             public HtmlTextSource(SimpleHtmlParser parser)
             {
@@ -292,6 +291,7 @@ namespace OpenLiveWriter.SpellChecker
                     if (e is Text)
                         return new TextWithOffsetAndLen(e.RawText, e.Offset, e.Length);
                 }
+
                 return null;
             }
         }

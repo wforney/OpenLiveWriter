@@ -99,10 +99,12 @@ namespace OpenLiveWriter.BlogClient.Clients
                     catch
                     {
                     }
+
                     if (!success)
                         throw;  // rethrow the exception from the update, not the post
                 }
             }
+
             uploadContext.Settings.SetString(EDIT_MEDIA_LINK, editUri);
             uploadContext.Settings.SetString(EDIT_MEDIA_ENTRY_LINK, editEntryUri);
             uploadContext.Settings.SetString(MEDIA_ETAG, null);
@@ -136,11 +138,8 @@ namespace OpenLiveWriter.BlogClient.Clients
                 response = RedirectHelper.GetResponse(mediaCollectionUri,
                 new RedirectHelper.RequestFactory(new ImageUploadHelper(this, path, "POST", null, allowWriteStreamBuffering).Create));
 
-                string entryUri;
-                string etag;
-                string selfPage;
-                XmlDocument xmlDoc = GetCreatedEntity(response, out entryUri, out etag);
-                ParseResponse(xmlDoc, out srcUrl, out editMediaUri, out editEntryUri, out selfPage);
+                XmlDocument xmlDoc = GetCreatedEntity(response, out string entryUri, out string etag);
+                ParseResponse(xmlDoc, out srcUrl, out editMediaUri, out editEntryUri, out string selfPage);
             }
             catch (WebException we)
             {
@@ -172,8 +171,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 Uri uri = postResponse.ResponseUri;
                 if (!string.IsNullOrEmpty(editUri))
                     uri = new Uri(editUri);
-                WebHeaderCollection responseHeaders;
-                XmlDocument doc = xmlRestRequestHelper.Get(ref uri, _requestFilter, out responseHeaders);
+                XmlDocument doc = xmlRestRequestHelper.Get(ref uri, _requestFilter, out WebHeaderCollection responseHeaders);
                 etag = responseHeaders["ETag"];
                 return doc;
             }
@@ -190,18 +188,14 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         protected virtual void UpdateImage(ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl)
         {
-            string thumbnailSmall;
-            string thumbnailLarge;
 
-            UpdateImage(false, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out thumbnailSmall, out thumbnailLarge);
+            UpdateImage(false, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out string thumbnailSmall, out string thumbnailLarge);
         }
 
         protected virtual void UpdateImage(bool allowWriteStreamBuffering, ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl)
         {
-            string thumbnailSmall;
-            string thumbnailLarge;
 
-            UpdateImage(allowWriteStreamBuffering, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out thumbnailSmall, out thumbnailLarge);
+            UpdateImage(allowWriteStreamBuffering, ref editMediaUri, path, editEntryUri, etag, getEditInfo, out srcUrl, out string thumbnailSmall, out string thumbnailLarge);
         }
 
         protected virtual void UpdateImage(bool allowWriteStreamBuffering, ref string editMediaUri, string path, string editEntryUri, string etag, bool getEditInfo, out string srcUrl, out string thumbnailSmall, out string thumbnailLarge)
@@ -251,6 +245,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         recovered = true;
                     }
                 }
+
                 if (!recovered)
                     throw;
             }
@@ -260,10 +255,9 @@ namespace OpenLiveWriter.BlogClient.Clients
             // we don't need the information and it can saves an http request.
             if (getEditInfo)
             {
-                string selfPage;
                 Uri uri = new Uri(editEntryUri);
                 XmlDocument mediaLinkEntry = xmlRestRequestHelper.Get(ref uri, _requestFilter);
-                ParseResponse(mediaLinkEntry, out srcUrl, out editMediaUri, out editEntryUri, out selfPage, out thumbnailSmall, out thumbnailLarge);
+                ParseResponse(mediaLinkEntry, out srcUrl, out editMediaUri, out editEntryUri, out string selfPage, out thumbnailSmall, out thumbnailLarge);
             }
             else
             {
@@ -344,7 +338,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                 return request;
             }
         }
-
     }
 
     public class MultipartMimeRequestHelper

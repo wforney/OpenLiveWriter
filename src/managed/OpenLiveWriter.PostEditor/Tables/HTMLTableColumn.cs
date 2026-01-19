@@ -93,7 +93,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         private class CellBackgroundColorReader : IColumnCellProcessor
         {
             bool _firstCellProcessed = false;
-            private CellColor _backgroundColor = new CellColor();
+            private readonly CellColor _backgroundColor = new CellColor();
 
             public void ProcessCell(IHTMLTableCell cell)
             {
@@ -187,7 +187,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         private class CellBackgroundColorWriter : IColumnCellProcessor
         {
-            private CellColor _backgroundColor;
+            private readonly CellColor _backgroundColor;
             public CellBackgroundColorWriter(CellColor backgroundColor) { _backgroundColor = backgroundColor; }
 
             public void ProcessCell(IHTMLTableCell cell)
@@ -209,7 +209,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         private class CellAlignmentWriter : IColumnCellProcessor
         {
-            private HorizontalAlignment _alignment;
+            private readonly HorizontalAlignment _alignment;
             public CellAlignmentWriter(HorizontalAlignment alignment) { _alignment = alignment; }
 
             public void ProcessCell(IHTMLTableCell cell)
@@ -227,7 +227,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         private class CellVAlignmentWriter : IColumnCellProcessor
         {
-            private VerticalAlignment _alignment;
+            private readonly VerticalAlignment _alignment;
             public CellVAlignmentWriter(VerticalAlignment alignment) { _alignment = alignment; }
 
             public void ProcessCell(IHTMLTableCell cell)
@@ -280,9 +280,8 @@ namespace OpenLiveWriter.PostEditor.Tables
             }
         }
 
-        private IHTMLTable _table;
-        private IHTMLTableCell _baseCell;
-        private int _index;
+        private readonly IHTMLTable _table;
+        private readonly IHTMLTableCell _baseCell;
+        private readonly int _index;
     }
-
 }

@@ -32,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
     {
         // The maximum number of characters permitted in a path
         private const int _MAX_PATH = 260;
-        private static UIntPtr _UINT_MAX_PATH_PLUS_NULL = new UIntPtr(_MAX_PATH + 1);
+        private static readonly UIntPtr _UINT_MAX_PATH_PLUS_NULL = new UIntPtr(_MAX_PATH + 1);
 
         // The "control ID" of various windows inside the OpenFileDialog
         private const int _CONTENT_PANEL_ID = 0x0461;
@@ -63,7 +63,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         private TabLightweightControl tabs;
 
         //image source info for non local file images
-        private InsertImageSource[] imageSources = new InsertImageSource[] { new WebImageSource() };
+        private readonly InsertImageSource[] imageSources = new InsertImageSource[] { new WebImageSource() };
         private InsertImageSource activeImageSource = null;
 
         //panel for other image sources
@@ -76,12 +76,12 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         private bool IsRTL = false;
 
         private STATE state;
-        private List<string> _chosenImage = new List<string>();
+        private readonly List<string> _chosenImage = new List<string>();
         private string _errorFileName;
         private bool _insertFile = false;
 
         private CommandListener listener;
-        private ThumbnailReadinessListener thumbListener;
+        private readonly ThumbnailReadinessListener thumbListener;
 
         private TabbingHookProc tabKeyboardHook;
 
@@ -91,18 +91,18 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
         }
 
         //keeps a list of all the controls we find on the form...?
-        private ArrayList controlsToShowHideOnTabSwitch = new ArrayList();
+        private readonly ArrayList controlsToShowHideOnTabSwitch = new ArrayList();
 
         // unmanaged memory buffers to hold the file name (with and without full path) and dir
-        private IntPtr _fileNameBuffer;
-        private IntPtr _fileTitleBuffer;
-        private IntPtr _directoryBuffer;
+        private readonly IntPtr _fileNameBuffer;
+        private readonly IntPtr _fileTitleBuffer;
+        private readonly IntPtr _directoryBuffer;
 
         // the OPENFILENAME structure, used to control the appearance and behaviour of the OpenFileDialog
         private OpenFileName _ofn;
 
         // unmanaged memory buffer that holds the Win32 dialog template
-        private IntPtr _ipTemplate;
+        private readonly IntPtr _ipTemplate;
 
         /// <summary>
         /// Sets up the data structures necessary to display the OpenFileDialog
@@ -276,16 +276,20 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                             mainTabControl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                             mainTabControl.Size = new Size(rcClient.Width, TABS_HEIGHT);
 
-                            tabs = new TabLightweightControl();
-                            tabs.ColorizeBorder = false;
-                            tabs.VirtualBounds = new Rectangle(0, 0, rcClient.Width, TABS_HEIGHT);
-                            tabs.LightweightControlContainerControl = mainTabControl;
-                            tabs.DrawSideAndBottomTabPageBorders = false;
+                            tabs = new TabLightweightControl
+                            {
+                                ColorizeBorder = false,
+                                VirtualBounds = new Rectangle(0, 0, rcClient.Width, TABS_HEIGHT),
+                                LightweightControlContainerControl = mainTabControl,
+                                DrawSideAndBottomTabPageBorders = false
+                            };
 
-                            InsertImageTabControl tabFromFile = new InsertImageTabControl();
-                            tabFromFile.TabText = Res.Get(StringId.InsertImageInsertFromFile);
-                            tabFromFile.TabBitmap = ResourceHelper.LoadAssemblyResourceBitmap("ImageInsertion.Images.TabInsertFromFile.png");
-                            tabFromFile.BackColor = SystemColors.Control;
+                            InsertImageTabControl tabFromFile = new InsertImageTabControl
+                            {
+                                TabText = Res.Get(StringId.InsertImageInsertFromFile),
+                                TabBitmap = ResourceHelper.LoadAssemblyResourceBitmap("ImageInsertion.Images.TabInsertFromFile.png"),
+                                BackColor = SystemColors.Control
+                            };
                             User32.SetParent(tabFromFile.Handle, _hWndParent);
                             tabs.SetTab(0, tabFromFile);
 
@@ -295,10 +299,12 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                             int i = 1;
                             foreach (InsertImageSource imageSource in imageSources)
                             {
-                                InsertImageTabControl tab = new InsertImageTabControl();
-                                tab.TabText = imageSource.TabName;
-                                tab.TabBitmap = imageSource.TabBitmap;
-                                tab.BackColor = SystemColors.Control;
+                                InsertImageTabControl tab = new InsertImageTabControl
+                                {
+                                    TabText = imageSource.TabName,
+                                    TabBitmap = imageSource.TabBitmap,
+                                    BackColor = SystemColors.Control
+                                };
                                 tabs.SetTab(i++, tab);
                             }
 
@@ -309,12 +315,14 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                             tabKeyboardHook.Install(_hWndParent);
 
                             //add other image source panels
-                            _panelImage = new Panel();
-                            _panelImage.Location = new Point(0, mainTabControl.Size.Height);
-                            _panelImage.BorderStyle = BorderStyle.None;
-                            _panelImage.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-                            _panelImage.Size = new Size(rcClient.Width, rcClient.Height - TABS_HEIGHT - BUTTONS_HEIGHT - _extraWindowHeight);
-                            _panelImage.Visible = false;
+                            _panelImage = new Panel
+                            {
+                                Location = new Point(0, mainTabControl.Size.Height),
+                                BorderStyle = BorderStyle.None,
+                                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom,
+                                Size = new Size(rcClient.Width, rcClient.Height - TABS_HEIGHT - BUTTONS_HEIGHT - _extraWindowHeight),
+                                Visible = false
+                            };
 
                             User32.SetParent(_panelImage.Handle, _hWndParent);
 
@@ -327,6 +335,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                                 foreach (Control childControl in c.Controls)
                                     DisplayHelper.Scale(childControl);
                             }
+
                             DisplayHelper.Scale(_panelImage);
 
                             //special cancel button
@@ -335,8 +344,10 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                             _buttonPanel.Size = new Size(75, 23);
                             _buttonPanel.BorderStyle = BorderStyle.None;
 
-                            _cancelButton = new Button();
-                            _cancelButton.TextAlign = ContentAlignment.MiddleCenter;
+                            _cancelButton = new Button
+                            {
+                                TextAlign = ContentAlignment.MiddleCenter
+                            };
                             if (BidiHelper.IsRightToLeft)
                                 _cancelButton.RightToLeft = RightToLeft.Yes;
                             _cancelButton.Text = Res.Get(StringId.CancelButton);
@@ -412,6 +423,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                                 // of the Image dialog
                                 HitOpen();
                             }
+
                             return IntPtr.Zero;
                         }
                 }
@@ -508,6 +520,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                                         Trace.WriteLine("File(s) not found: " + fileName);
                                         return;
                                     }
+
                                     if (matchingFiles.Length == 1)
                                     {
                                         _chosenImage.Add(matchingFiles[0].FullName);
@@ -531,6 +544,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     }
                 }
             }
+
             GC.KeepAlive(this);
         }
 
@@ -557,6 +571,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                             files.Add(filePath);
                         currentFileName.Remove(0, currentFileName.Length);
                     }
+
                     insideQuote = !insideQuote;
                     continue;
                 }
@@ -569,7 +584,6 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 {
                     Trace.Assert(char.IsWhiteSpace(fileName[i]), "asdfasd");
                 }
-
             }
 
             return files;
@@ -584,6 +598,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 if (IsSamePlusExtension(fullPath, fi.FullName))
                     results.Add(fi);
             }
+
             return (FileInfo[])results.ToArray(typeof(FileInfo));
         }
 
@@ -667,6 +682,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             {
                 activeImageSource.Repaint(new Size(newWidth, _panelImage.Height));
             }
+
             GC.KeepAlive(this);
         }
 
@@ -703,6 +719,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             {
                 User32.ShowWindow(thing, SW.SHOW);
             }
+
             ForceLargeThumbnail(_hWndContent);
             User32.SendMessage(_hWndFileName, WM.SETFOCUS, new UIntPtr(1), IntPtr.Zero);
             state = STATE.FILE;
@@ -726,6 +743,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     activeImageSource.Selected = true;
                     CloseDialogAndInsertFile();
                 }
+
                 return true;
             }
             else if (state == STATE.FILE)
@@ -755,6 +773,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -765,6 +784,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 if (!File.Exists(file) || new FileInfo(file).Extension.ToLower(CultureInfo.InvariantCulture) == ".lnk")
                     return false;
             }
+
             return true;
         }
 
@@ -800,9 +820,11 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 RECT rc = new RECT();
 
                 User32.GetWindowRect(hWndControl, ref rc);
-                POINT pnt = new POINT();
-                pnt.x = rc.left;
-                pnt.y = rc.top;
+                POINT pnt = new POINT
+                {
+                    x = rc.left,
+                    y = rc.top
+                };
                 User32.MapWindowPoints((IntPtr)null, _hWndParent, ref pnt, 1);
                 rcContent.X = pnt.x;
                 rcContent.Width = rc.Width;
@@ -814,10 +836,12 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     User32.GetWindowRect(_hWndParent, ref rcParent);
                     rcContent.X = rcParent.left + rcParent.Width - rc.right - _extraWindowWidth;
                 }
+
                 User32.MoveWindow(hWndControl, rcContent.Left, rcContent.Top, rcContent.Width, rcContent.Height, true);
                 //building up a list of the controls
                 controlsToShowHideOnTabSwitch.Add(hWndControl);
             }
+
             GC.KeepAlive(this);
             return true;
         }
@@ -829,9 +853,11 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             {
                 RECT rc = new RECT();
                 User32.GetWindowRect(hWndControl, ref rc);
-                POINT pnt = new POINT();
-                pnt.x = rc.left;
-                pnt.y = rc.top;
+                POINT pnt = new POINT
+                {
+                    x = rc.left,
+                    y = rc.top
+                };
                 User32.MapWindowPoints((IntPtr)null, _hWndParent, ref pnt, 1);
 
                 rcContent.X = pnt.x;
@@ -845,8 +871,10 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     rcContent.X = rcParent.left + rcParent.Width - rc.right - (int)(0.5 * _extraWindowWidth);
                     rcContent.Width = 545 - rcContent.X;
                 }
+
                 User32.MoveWindow(hWndControl, rcContent.Left, rcContent.Top, rcContent.Width, rcContent.Height, true);
             }
+
             GC.KeepAlive(this);
         }
 
@@ -966,8 +994,8 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
 
         private class CommandListener : NativeWindow
         {
-            private InsertImageDialog _insertImageDialog;
-            private int _cancelButtonId;
+            private readonly InsertImageDialog _insertImageDialog;
+            private readonly int _cancelButtonId;
 
             public CommandListener(IntPtr hImageDialog, InsertImageDialog insertImageDialog, int cancelButtonId)
             {
@@ -1004,6 +1032,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                         return;
                     }
                 }
+
                 try
                 {
                     base.WndProc(ref m);
@@ -1019,7 +1048,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
 
         private class ThumbnailReadinessListener : NativeWindow
         {
-            private InsertImageDialog _insertImageDialog;
+            private readonly InsertImageDialog _insertImageDialog;
 
             public ThumbnailReadinessListener(IntPtr hImageDialog, InsertImageDialog insertImageDialog)
             {
@@ -1037,6 +1066,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                         _insertImageDialog.CompleteInitialization();
                     }
                 }
+
                 base.WndProc(ref m);
             }
 
@@ -1046,5 +1076,4 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             private static readonly IntPtr MSGF_DIALOGBOX = IntPtr.Zero;
         }
     }
-
 }

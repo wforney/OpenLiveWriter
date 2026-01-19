@@ -25,9 +25,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The menu type.
         /// </summary>
-        private MenuType menuType;
+        private readonly MenuType menuType;
 
-        private Font menuFont;
+        private readonly Font menuFont;
 
         /// <summary>
         /// The menu text.
@@ -707,7 +707,6 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             return KeyboardHelper.FormatShortcutString(shortcut);
         }
-
     }
 
     internal interface IMainMenuBackgroundPainter

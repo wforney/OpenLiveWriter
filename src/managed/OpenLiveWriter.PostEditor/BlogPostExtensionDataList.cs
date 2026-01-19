@@ -19,8 +19,8 @@ namespace OpenLiveWriter.PostEditor
     /// </summary>
     public class BlogPostExtensionDataList
     {
-        private Hashtable _extensionData;
-        private ISupportingFileService _fileService;
+        private readonly Hashtable _extensionData;
+        private readonly ISupportingFileService _fileService;
         internal BlogPostExtensionDataList(ISupportingFileService fileService)
         {
             _extensionData = new Hashtable();
@@ -81,16 +81,15 @@ namespace OpenLiveWriter.PostEditor
                     Attr idAttr = bt.GetAttribute("id");
                     if (idAttr != null) //Synchronized WP posts will strip ID attrs (bug 488143)
                     {
-                        string smartContentSourceId;
-                        string smartContentId;
                         string smartContentElementId = idAttr.Value;
-                        ContentSourceManager.ParseContainingElementId(smartContentElementId, out smartContentSourceId, out smartContentId);
+                        ContentSourceManager.ParseContainingElementId(smartContentElementId, out string smartContentSourceId, out string smartContentId);
                         IExtensionData data = GetExtensionData(smartContentId);
                         if (data != null)
                             datas[smartContentId] = data;
                     }
                 }
             }
+
             return (IExtensionData[])ArrayHelper.CollectionToArray(datas.Values, typeof(IExtensionData));
         }
 
@@ -165,11 +164,11 @@ namespace OpenLiveWriter.PostEditor
     {
         private BlogPostSettingsBag _settings;
         private string _id;
-        private ISupportingFileService _fileService;
+        private readonly ISupportingFileService _fileService;
         private DateTime? _refreshCallBack;
         private Object _objectContext;
 
-        Hashtable _fileIds;
+        readonly Hashtable _fileIds;
 
         internal BlogPostExtensionData(string id, BlogPostSettingsBag settings, ISupportingFileService fileService, Hashtable fileMappings)
         {
@@ -248,6 +247,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 file = file.UpdateFile(s);
             }
+
             _fileIds[fileName] = file;
 
             return file.FileId;
@@ -306,9 +306,11 @@ namespace OpenLiveWriter.PostEditor
         public object Clone()
         {
             BlogPostExtensionData exdata =
-                new BlogPostExtensionData(Guid.NewGuid().ToString(), (BlogPostSettingsBag)_settings.Clone(), _fileService, (Hashtable)_fileIds.Clone());
-            exdata.RefreshCallBack = RefreshCallBack;
-            exdata.ObjectState = ObjectState;
+                new BlogPostExtensionData(Guid.NewGuid().ToString(), (BlogPostSettingsBag)_settings.Clone(), _fileService, (Hashtable)_fileIds.Clone())
+                {
+                    RefreshCallBack = RefreshCallBack,
+                    ObjectState = ObjectState
+                };
             return exdata;
         }
 

@@ -580,6 +580,7 @@ namespace OpenLiveWriter.BrowserControl
                 // dispose of the browser instance
                 m_browser.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -907,7 +908,7 @@ namespace OpenLiveWriter.BrowserControl
         /// Table of commands supported by the WebBrowser. Key = BrowserCommand (int),
         /// Value = BrowserCommand.
         /// </summary>
-        private Hashtable m_commands = new Hashtable();
+        private readonly Hashtable m_commands = new Hashtable();
 
         // Instances of DirectInvokeBrowserCommand that we need references to so
         // we can update their status when the CommandStateChange event is fired
@@ -1063,5 +1064,4 @@ namespace OpenLiveWriter.BrowserControl
         #endregion
 
     }
-
 }

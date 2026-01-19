@@ -12,7 +12,7 @@ namespace OpenLiveWriter.CoreServices
         public delegate T LazyLoaderDelegate();
         private bool isInit = false;
         private T _value;
-        private LazyLoaderDelegate _valueCalculator;
+        private readonly LazyLoaderDelegate _valueCalculator;
 
         public LazyLoader(LazyLoaderDelegate valueCalculator)
         {
@@ -28,6 +28,7 @@ namespace OpenLiveWriter.CoreServices
                     _value = _valueCalculator();
                     isInit = true;
                 }
+
                 return _value;
             }
             set
@@ -51,6 +52,5 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return isInit; }
         }
-
     }
 }

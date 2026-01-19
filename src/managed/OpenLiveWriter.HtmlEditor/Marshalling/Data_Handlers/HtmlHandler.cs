@@ -87,6 +87,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                                 {
                                     ExpandToIncludeTables(sourceRange, sourceContainerMarkupServices);
                                 }
+
                                 ExpandToIncludeLists(sourceRange, sourceContainerMarkupServices);
                             }
 
@@ -202,6 +203,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 {
                     bodyAttributes.AppendFormat(CultureInfo.InvariantCulture, "{0} ", attr);
                 }
+
                 IHTMLElement sourceBodyElement = EditorContext.MarkupServices.CreateElement(_ELEMENT_TAG_ID.TAGID_BODY, bodyAttributes.ToString());
                 HTMLElementHelper.CopyAttributes(sourceBodyElement, destinationBody);
             }

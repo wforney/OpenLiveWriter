@@ -144,9 +144,9 @@ namespace OpenLiveWriter.PostEditor.Tables
                 {
                     (targetCells[i] as IHTMLElement).innerHTML = (cellsToPaste[i] as IHTMLElement).innerHTML;
                 }
+
                 undoUnit.Commit();
             }
-
         }
 
         private static IHTMLTable GetSourceTable(DataObjectMeister dataMeister)
@@ -197,6 +197,5 @@ namespace OpenLiveWriter.PostEditor.Tables
             // didn't find it
             return null;
         }
-
     }
 }

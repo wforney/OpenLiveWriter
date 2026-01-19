@@ -45,6 +45,7 @@ namespace OpenLiveWriter.CoreServices
                     m_browserData = BrowserData.Create(m_dataObject);
                     haveAttemptedBrowserCreate = true;
                 }
+
                 return m_browserData;
             }
         }
@@ -84,6 +85,7 @@ namespace OpenLiveWriter.CoreServices
                     m_fileData = FileData.Create(m_dataObject);
                     haveAttemptedFileCreate = true;
                 }
+
                 return m_fileData;
             }
         }
@@ -103,6 +105,7 @@ namespace OpenLiveWriter.CoreServices
                     m_urlData = URLData.Create(m_dataObject);
                     haveAttempedURLCreate = true;
                 }
+
                 return m_urlData;
             }
         }
@@ -122,6 +125,7 @@ namespace OpenLiveWriter.CoreServices
                     m_textData = TextData.Create(m_dataObject);
                     haveAttemptedTextCreate = true;
                 }
+
                 return m_textData;
             }
         }
@@ -141,6 +145,7 @@ namespace OpenLiveWriter.CoreServices
                     m_imageData = ImageData.Create(m_dataObject);
                     haveAttemptedImageCreate = true;
                 }
+
                 return m_imageData;
             }
         }
@@ -154,9 +159,10 @@ namespace OpenLiveWriter.CoreServices
                 HTMLMetaDataRequest request = new HTMLMetaDataRequest(url);
                 m_metaData[url] = request.GetMetaDataFromCache();
             }
+
             return (HTMLMetaData)m_metaData[url];
         }
-        private Hashtable m_metaData = new Hashtable();
+        private readonly Hashtable m_metaData = new Hashtable();
 
         public LightWeightHTMLDocumentData LightWeightHTMLDocumentData
         {
@@ -167,6 +173,7 @@ namespace OpenLiveWriter.CoreServices
                     m_lightWeightHTMLDocumentData = LightWeightHTMLDocumentData.Create(m_dataObject);
                     haveAttemptedLightWeightCreate = true;
                 }
+
                 return m_lightWeightHTMLDocumentData;
             }
         }
@@ -182,6 +189,7 @@ namespace OpenLiveWriter.CoreServices
                     _liveClipboardData = LiveClipboardData.Create(m_dataObject);
                     haveAttemptedLiveClipboardCreate = true;
                 }
+
                 return _liveClipboardData;
             }
         }
@@ -191,6 +199,6 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The DataObjectMeister's underlying IDataObject.
         /// </summary>
-        private IDataObject m_dataObject;
+        private readonly IDataObject m_dataObject;
     }
 }

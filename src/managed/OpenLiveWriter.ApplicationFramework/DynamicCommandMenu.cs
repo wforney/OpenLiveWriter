@@ -92,12 +92,14 @@ namespace OpenLiveWriter.ApplicationFramework
             // add 'more' command if appropriate
             if (Context.Options.MoreCommandsMenuCaption != null)
             {
-                commandMore = new Command(this.components);
-                commandMore.Identifier = Guid.NewGuid().ToString();
-                commandMore.VisibleOnContextMenu = true;
-                commandMore.VisibleOnMainMenu = true;
-                commandMore.MenuText = Context.Options.MoreCommandsMenuCaption;
-                commandMore.MainMenuPath = Context.Options.MainMenuBasePath + "/" + Context.Options.MoreCommandsMenuCaption + "@" + (Context.Options.MenuMergeOffset + Context.Options.MaxCommandsShownOnMenu).ToString(CultureInfo.InvariantCulture);
+                commandMore = new Command(this.components)
+                {
+                    Identifier = Guid.NewGuid().ToString(),
+                    VisibleOnContextMenu = true,
+                    VisibleOnMainMenu = true,
+                    MenuText = Context.Options.MoreCommandsMenuCaption,
+                    MainMenuPath = Context.Options.MainMenuBasePath + "/" + Context.Options.MoreCommandsMenuCaption + "@" + (Context.Options.MenuMergeOffset + Context.Options.MaxCommandsShownOnMenu).ToString(CultureInfo.InvariantCulture)
+                };
                 commandMore.Execute += new EventHandler(commandMore_Execute);
                 Context.CommandManager.Add(commandMore);
             }
@@ -186,13 +188,13 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get { return _context; }
         }
-        private IDynamicCommandMenuContext _context;
+        private readonly IDynamicCommandMenuContext _context;
 
-        private ArrayList _commands = new ArrayList();
+        private readonly ArrayList _commands = new ArrayList();
 
         private Command commandMore;
 
-        private Container components = new Container();
+        private readonly Container components = new Container();
 
     }
 
@@ -304,6 +306,5 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public bool SeparatorBegin;
     }
-
 }
 

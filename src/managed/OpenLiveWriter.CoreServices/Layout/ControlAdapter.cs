@@ -31,7 +31,7 @@ namespace OpenLiveWriter.CoreServices.Layout
 
     internal class ControlControlAdapter : ControlAdapter
     {
-        private Control c;
+        private readonly Control c;
 
         public ControlControlAdapter(Control c)
         {
@@ -89,7 +89,7 @@ namespace OpenLiveWriter.CoreServices.Layout
 
     internal class ControlGroupControlAdapter : ControlAdapter
     {
-        private ControlGroup c;
+        private readonly ControlGroup c;
 
         public ControlGroupControlAdapter(ControlGroup c)
         {

@@ -101,8 +101,7 @@ namespace OpenLiveWriter.PostEditor
         public IContentEditor CreateEditorFromMoniker(IContentEditorSite contentEditorSite, IInternetSecurityManager internetSecurityManager, IMoniker moniker, uint codepage, HtmlInsertOptions options, string color, int dlControlFlags, string wpost)
         {
             codepage = EmailShim.GetCodepage(codepage);
-            string name;
-            string html = HTMLDocumentHelper.MonikerToString(moniker, codepage, out name);
+            string html = HTMLDocumentHelper.MonikerToString(moniker, codepage, out string name);
 
             if (CultureHelper.IsRtlCodepage(codepage))
             {
@@ -153,7 +152,7 @@ namespace OpenLiveWriter.PostEditor
             Log_Always = 6
         };
 
-        private IContentEditorLogger _logger;
+        private readonly IContentEditorLogger _logger;
         public RedirectionLogger(IContentEditorLogger logger)
         {
             _logger = logger;
@@ -255,7 +254,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private Queue<DelayedInsert> delayedInsertOperations = new Queue<DelayedInsert>();
+        private readonly Queue<DelayedInsert> delayedInsertOperations = new Queue<DelayedInsert>();
 
         /// <summary>
         /// Initializes the IContentEditor.
@@ -292,11 +291,13 @@ namespace OpenLiveWriter.PostEditor
                 IntPtr p = _contentEditorSite.GetWindowHandle();
                 WINDOWINFO info = new WINDOWINFO();
                 User32.GetWindowInfo(p, ref info);
-                panel = new Panel();
-                panel.Top = 0;
-                panel.Left = 0;
-                panel.Width = Math.Max(info.rcWindow.Width, 200);
-                panel.Height = Math.Max(info.rcWindow.Height, 200);
+                panel = new Panel
+                {
+                    Top = 0,
+                    Left = 0,
+                    Width = Math.Max(info.rcWindow.Width, 200),
+                    Height = Math.Max(info.rcWindow.Height, 200)
+                };
                 panel.CreateControl();
                 User32.SetParent(panel.Handle, p);
 
@@ -619,5 +620,4 @@ namespace OpenLiveWriter.PostEditor
         #endregion
 
     }
-
 }

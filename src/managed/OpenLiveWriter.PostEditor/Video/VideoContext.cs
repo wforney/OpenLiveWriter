@@ -14,10 +14,10 @@ namespace OpenLiveWriter.PostEditor.Video
     /// </summary>
     public class VideoContext
     {
-        private SupportsFeature _embeddable = SupportsFeature.Unknown;
-        private SupportsFeature _scriptable = SupportsFeature.Unknown;
-        private string _blogProviderId = String.Empty;
-        private IPublishingContext _context;
+        private readonly SupportsFeature _embeddable = SupportsFeature.Unknown;
+        private readonly SupportsFeature _scriptable = SupportsFeature.Unknown;
+        private readonly string _blogProviderId = String.Empty;
+        private readonly IPublishingContext _context;
 
         public VideoContext()
         {

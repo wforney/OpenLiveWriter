@@ -47,8 +47,8 @@ namespace OpenLiveWriter.CoreServices
     public class MetaLock
     {
         private static readonly TimeSpan INITIAL_TIMEOUT = TimeSpan.FromSeconds(1);
-        private object metaLock = new object();
-        private ISet locks = new HashSet();
+        private readonly object metaLock = new object();
+        private readonly ISet locks = new HashSet();
 
         public MetaLock()
         {
@@ -115,8 +115,6 @@ namespace OpenLiveWriter.CoreServices
 #endif
                 metaLock.Exit(lockId);
             }
-
         }
-
     }
 }

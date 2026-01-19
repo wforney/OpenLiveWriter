@@ -46,7 +46,6 @@ namespace OpenLiveWriter.PostEditor.Tables
             {
                 return cellPropertiesControl.CellProperties;
             }
-
         }
 
         private void buttonOK_Click(object sender, System.EventArgs e)

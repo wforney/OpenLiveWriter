@@ -9,8 +9,8 @@ namespace OpenLiveWriter.CoreServices.Settings
 {
     public class RegistrySettingsPersister : ISettingsPersister
     {
-        private RegistryKey rootNode;
-        private string keyName;
+        private readonly RegistryKey rootNode;
+        private readonly string keyName;
 
         /// <param name="rootNode">One of the root-level nodes (HKLM, HKCU, etc.)</param>
         /// <param name="keyName">A relative path from the rootNode to the key for this instance</param>
@@ -187,6 +187,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                 {
                     return false;
                 }
+
                 using (RegistryKey subSettingsKey = key.OpenSubKey(subSettingsName))
                 {
                     return subSettingsKey != null;

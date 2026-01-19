@@ -16,10 +16,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         public TableSelection(MarkupRange markupRange)
         {
             // calculate the begin and end cells
-            IHTMLTableCell beginCell;
-            IHTMLTableCell endCell;
-            ArrayList selectedCells;
-            FindCellRange(markupRange, out selectedCells, out beginCell, out endCell);
+            FindCellRange(markupRange, out ArrayList selectedCells, out IHTMLTableCell beginCell, out IHTMLTableCell endCell);
 
             // see if the two cells have a single containing table
             IHTMLTable table = GetSelectedTable(beginCell, endCell, markupRange) as IHTMLTable;
@@ -57,37 +54,37 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get { return _hasContiguousSelection; }
         }
-        private bool _hasContiguousSelection = false;
+        private readonly bool _hasContiguousSelection = false;
 
         public IHTMLTable Table
         {
             get { return _table; }
         }
-        private IHTMLTable _table = null;
+        private readonly IHTMLTable _table = null;
 
         public bool EntireTableSelected
         {
             get { return _entireTableSelected; }
         }
-        private bool _entireTableSelected;
+        private readonly bool _entireTableSelected;
 
         public IHTMLTableCell BeginCell
         {
             get { return _beginCell; }
         }
-        private IHTMLTableCell _beginCell;
+        private readonly IHTMLTableCell _beginCell;
 
         public IHTMLTableCell EndCell
         {
             get { return _endCell; }
         }
-        private IHTMLTableCell _endCell;
+        private readonly IHTMLTableCell _endCell;
 
         public ArrayList SelectedCells
         {
             get { return _selectedCells; }
         }
-        private ArrayList _selectedCells = new ArrayList();
+        private readonly ArrayList _selectedCells = new ArrayList();
 
         public bool SelectionSpansAllCells
         {
@@ -101,13 +98,13 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get { return _beginRow; }
         }
-        private IHTMLTableRow _beginRow = null;
+        private readonly IHTMLTableRow _beginRow = null;
 
         public IHTMLTableRow EndRow
         {
             get { return _endRow; }
         }
-        private IHTMLTableRow _endRow = null;
+        private readonly IHTMLTableRow _endRow = null;
 
         public bool SingleRowSelected
         {
@@ -118,13 +115,13 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get { return _beginColumn; }
         }
-        private HTMLTableColumn _beginColumn = null;
+        private readonly HTMLTableColumn _beginColumn = null;
 
         public HTMLTableColumn EndColumn
         {
             get { return _endColumn; }
         }
-        private HTMLTableColumn _endColumn = null;
+        private readonly HTMLTableColumn _endColumn = null;
 
         public bool SingleColumnSelected
         {
@@ -247,6 +244,5 @@ namespace OpenLiveWriter.PostEditor.Tables
                 return beginParentTable != null && endParentTable != null;
             }
         }
-
     }
 }

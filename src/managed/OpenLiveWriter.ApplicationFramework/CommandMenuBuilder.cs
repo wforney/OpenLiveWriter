@@ -39,12 +39,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// The root merge menu entry.  Commands are merged as child entries of this entry and
         /// returned as an array of MenuItems.
         /// </summary>
-        private CommandMenuBuilderEntry rootCommandMenuBuilderEntry;
+        private readonly CommandMenuBuilderEntry rootCommandMenuBuilderEntry;
 
         /// <summary>
         /// The type of menu merge to perform.
         /// </summary>
-        private MenuType menuType;
+        private readonly MenuType menuType;
 
         /// <summary>
         /// Gets or sets the type of menu merge to perform.
@@ -116,9 +116,7 @@ namespace OpenLiveWriter.ApplicationFramework
             for (int entry = 0; entry <= lastEntry; entry++)
             {
                 //	Parse the menu path entry into text and position values.
-                string text;
-                int position;
-                ParseMenuPathEntry(menuPathEntries[entry], out text, out position);
+                ParseMenuPathEntry(menuPathEntries[entry], out string text, out int position);
 
                 //	See if we have a merge menu entry for this text and position already.
                 CommandMenuBuilderEntry mergeMenuEntry = (CommandMenuBuilderEntry)parentCommandMenuBuilderEntry[position, text];

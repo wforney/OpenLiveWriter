@@ -14,10 +14,10 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
     /// </summary>
     internal class SupportingFileReferenceList
     {
-        Hashtable supportingFilesByUri = new Hashtable();
-        Hashtable supportingFilesById = new Hashtable();
-        Hashtable filesById = new Hashtable();
-        IBlogPostEditingContext _editingContext;
+        readonly Hashtable supportingFilesByUri = new Hashtable();
+        readonly Hashtable supportingFilesById = new Hashtable();
+        readonly Hashtable filesById = new Hashtable();
+        readonly IBlogPostEditingContext _editingContext;
         private SupportingFileReferenceList(IBlogPostEditingContext editingContext)
         {
             _editingContext = editingContext;
@@ -64,6 +64,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 list.Add(file);
             }
+
             return (ISupportingFile[])list.ToArray(typeof(ISupportingFile));
         }
 
@@ -114,6 +115,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
                     AddReference(supportingFile);
                 }
             }
+
             return reference;
         }
 

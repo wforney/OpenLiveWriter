@@ -25,7 +25,7 @@ namespace OpenLiveWriter.PostEditor
         /// </summary>
         private Label labelCopyright;
         private Button buttonOK;
-        private PictureBox pictureBoxLogo;
+        private readonly PictureBox pictureBoxLogo;
         private Label labelProduct;
         private Label labelVersion;
         private System.Windows.Forms.LinkLabel lnkShowLogFile;
@@ -35,11 +35,11 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private LinkLabel labelWebsiteLink;
 
         // Copyright notices are not to be localized.
-        string[] credits = {
+        readonly string[] credits = {
             /* Brian Lambert */ "Portions Copyright © 2003 Brian Lambert, used with permission of the author under the MIT License.",
             "DeltaCompressionDotNet (MS-PL) Copyright © Todd Aspeotis 2013 \nhttps://github.com/taspeotis/DeltaCompressionDotNet",
             "DotNetZip (MS-PL) Copyright (c) 2011 Dino Chiesa.\nhttp://dotnetzip.codeplex.com/",
@@ -72,10 +72,12 @@ namespace OpenLiveWriter.PostEditor
 
             //	Piece of crap designer.
             Bitmap aboutBoxImage = ResourceHelper.LoadAssemblyResourceBitmap("Images.AboutBoxImageSmall.png");
-            pictureBoxLogo = new PictureBox();
-            pictureBoxLogo.Bounds = new Rectangle(7, 16, aboutBoxImage.Width, aboutBoxImage.Height);
-            pictureBoxLogo.Image = aboutBoxImage;
-            pictureBoxLogo.RightToLeft = RightToLeft.No;
+            pictureBoxLogo = new PictureBox
+            {
+                Bounds = new Rectangle(7, 16, aboutBoxImage.Width, aboutBoxImage.Height),
+                Image = aboutBoxImage,
+                RightToLeft = RightToLeft.No
+            };
             Controls.Add(pictureBoxLogo);
 
             //	Set the dialog text.
@@ -100,6 +102,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 strCredits.AppendFormat("{0}\r\n\r\n", str);
             }
+
             copyrightTextbox.Text = strCredits.ToString().TrimEnd();
             copyrightTextbox.AccessibleName = ControlHelper.ToAccessibleName(Res.Get(StringId.CopyrightInformation));
 
@@ -139,6 +142,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -189,7 +189,6 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 LiteralElementMethods.CssEscape(literalOverride, quotChar) +
                 Data.Substring(literalOffset + literalLen, (Offset + Length) - (literalOffset + literalLen));
         }
-
     }
 
     /// <summary>
@@ -406,8 +405,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         public Attr GetAttribute(string attrName)
         {
-            int foundAt;
-            return GetAttribute(attrName, 0, out foundAt);
+            return GetAttribute(attrName, 0, out int foundAt);
         }
 
         public Attr GetAttribute(string attrName, int startIndex, out int foundAt)
@@ -463,6 +461,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -498,6 +497,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         delim = " ";
                     }
                 }
+
                 if (HasResidue)
                     result.Append(Residue);
 
@@ -614,5 +614,4 @@ namespace OpenLiveWriter.HtmlParser.Parser
             return string.Compare(name, this.name.Value, StringComparison.OrdinalIgnoreCase) == 0;
         }
     }
-
 }

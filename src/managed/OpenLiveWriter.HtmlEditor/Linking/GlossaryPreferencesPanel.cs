@@ -25,7 +25,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public GlossaryPreferencesPanel()
         {
@@ -79,6 +79,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -164,7 +165,6 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             _glossaryPreferences.AutoLinkTermsOnlyOnce = checkBoxOnlyOnce.Checked;
             OnModified(EventArgs.Empty);
         }
-
     }
 }
 

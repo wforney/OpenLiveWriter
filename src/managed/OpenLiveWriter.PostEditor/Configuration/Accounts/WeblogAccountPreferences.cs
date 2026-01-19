@@ -36,6 +36,5 @@ namespace OpenLiveWriter.PostEditor
             PostEditorSettings.AllowProviderButtons = AllowProviderButtons;
             PostEditorSettings.AllowSettingsAutoUpdate = AllowSettingsAutoUpdate;
         }
-
     }
 }

@@ -99,6 +99,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     stylesBuilder.Append(behaviorDefinition.TargetClass + " { behavior: url(#default#" +
                                          behaviorDefinition.HtmlId + ") }\r\n");
                 }
+
                 return stylesBuilder.ToString();
             });
 
@@ -111,6 +112,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                              behaviorDefinition.Clsid +
                                              "\" style=\"visibility: hidden\" width=\"0px\" height=\"0px\"> </object>\r\n");
                 }
+
                 return objectTagsBuilder.ToString();
             });
         }
@@ -124,7 +126,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             <object id="IMG_BEHAVIOR" clsid="clsid:3C0C37AD-21B5-41f4-A25E-59259B0ED874" style="visibility: hidden" width="0px" height="0px"> </object>
         */
 
-        private LazyLoader<string> _getBehaviorStyles;
+        private readonly LazyLoader<string> _getBehaviorStyles;
         public string BehaviorStyles
         {
             get
@@ -133,7 +135,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
         }
 
-        private LazyLoader<string> _getBehaviorObjectTags;
+        private readonly LazyLoader<string> _getBehaviorObjectTags;
         public string BehaviorObjectTags
         {
             get
@@ -179,8 +181,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             return (BehaviorObjectTags + BehaviorStyles).GetHashCode();
         }
 
-        private List<MshtmlElementBehavior> _behaviors = new List<MshtmlElementBehavior>();
-        private ArrayList _behaviorDefinitions = new ArrayList();
+        private readonly List<MshtmlElementBehavior> _behaviors = new List<MshtmlElementBehavior>();
+        private readonly ArrayList _behaviorDefinitions = new ArrayList();
 
         internal bool ContainsBehavior(string behaviorClassname)
         {

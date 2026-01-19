@@ -40,8 +40,8 @@ namespace OpenLiveWriter.PostEditor
     class PostEditorKeyboardHandler : IDisposable
     {
         private BlogPostHtmlEditorControl _blogPostHtmlEditorControl;
-        private IBlogPostImageEditingContext _imageEditingContext;
-        private IEditingMode _editingModeContext;
+        private readonly IBlogPostImageEditingContext _imageEditingContext;
+        private readonly IEditingMode _editingModeContext;
 
         public PostEditorKeyboardHandler(BlogPostHtmlEditorControl blogPostHtmlEditorControl, IBlogPostImageEditingContext imageEditingContext, IEditingMode editingModeContext)
         {
@@ -174,8 +174,7 @@ namespace OpenLiveWriter.PostEditor
                         _linkIgnoreWord = null;
                         if (AutoLinkEnabled)
                         {
-                            MarkupPointer blockBoundary;
-                            string htmlText = GetHtmlText(out blockBoundary);
+                            string htmlText = GetHtmlText(out MarkupPointer blockBoundary);
 
                             if (blockBoundary == null)
                                 return;
@@ -212,6 +211,7 @@ namespace OpenLiveWriter.PostEditor
                     Debug.Assert(_delayedAutoReplaceAction == null, "Delayed autoreplace operation wasn't null!");
                     Debug.Assert(_typographicCharacterHandler == null, "Delayed typographic character operation wasn't null!");
                 }
+
                 _delayedAutoReplaceAction = null;
                 _typographicCharacterHandler = null;
                 _lastActionWasReplace = 0;
@@ -238,6 +238,7 @@ namespace OpenLiveWriter.PostEditor
                 _blogPostHtmlEditorControl.SelectionChanged -= _blogPostHtmlEditorControl_SelectionChanged;
                 _blogPostHtmlEditorControl = null;
             }
+
             LastChanceKeyboardHook.BeforeKeyHandled -= _keyHandled;
 
             AutoreplaceSettings.SettingsChanged -= AutoreplaceSettings_SettingsChanged;
@@ -278,6 +279,7 @@ namespace OpenLiveWriter.PostEditor
                 _haltAutoReplace = true;
                 throw;
             }
+
             return handled;
         }
 
@@ -285,8 +287,7 @@ namespace OpenLiveWriter.PostEditor
 
         private bool DoHandleKey(char c, bool whiteSpaceOrPunctuation)
         {
-            MarkupPointer blockBoundary;
-            string htmlText = GetHtmlText(out blockBoundary);
+            string htmlText = GetHtmlText(out MarkupPointer blockBoundary);
 
             if (blockBoundary == null)
                 return false;
@@ -324,8 +325,7 @@ namespace OpenLiveWriter.PostEditor
                 return false;
 
             bool handled = false;
-            int length;
-            string replaceHtml = _autoreplaceManager.FindMatch(htmlText, out length);
+            string replaceHtml = _autoreplaceManager.FindMatch(htmlText, out int length);
             if (replaceHtml != null && length > 0 && htmlText != replaceHtml)
             {
                 if (!ShouldAutoCorrect(htmlText, key, replaceHtml))
@@ -344,6 +344,7 @@ namespace OpenLiveWriter.PostEditor
                 _lastActionWasReplace++;
 
             }
+
             return handled;
         }
 
@@ -429,14 +430,14 @@ namespace OpenLiveWriter.PostEditor
                     editor.InsertHtml(range.Start, range.End, replacement);
                     return true;
                 }
+
                 return false;
             }
         }
 
         private void MatchUrl(string htmlText, MatchAction action)
         {
-            int length;
-            GlossaryLinkItem linkItem = GlossaryManager.Instance.SuggestLink(htmlText, out length);
+            GlossaryLinkItem linkItem = GlossaryManager.Instance.SuggestLink(htmlText, out int length);
             if (linkItem != null && length > 0)
             {
                 string matchText = htmlText.Substring(htmlText.Length - length, length);
@@ -474,6 +475,7 @@ namespace OpenLiveWriter.PostEditor
                         Trace.WriteLine(ex.ToString());
                 }
             }
+
             return false;
 
         }
@@ -511,6 +513,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 parent = parent.parentElement;
             }
+
             if (parent != null && matchText.ToLower(CultureInfo.CurrentCulture) == parent.innerText.ToLower(CultureInfo.CurrentCulture))
                 _linkIgnoreWord = matchText;
         }
@@ -579,5 +582,4 @@ namespace OpenLiveWriter.PostEditor
 
         private bool _haltAutoReplace = false;
     }
-
 }

@@ -19,8 +19,8 @@ namespace OpenLiveWriter.PostEditor.Video
         public string Title { get { return _title; } }
         public string Description { get { return _description; } }
 
-        private string _title;
-        private string _description;
+        private readonly string _title;
+        private readonly string _description;
     }
 
     class VideoPluginUnexpectedException : VideoPluginException
@@ -29,6 +29,5 @@ namespace OpenLiveWriter.PostEditor.Video
             : base(Res.Get(StringId.Plugin_Video_Error_Unexpected_Title), ex.ToString())
         {
         }
-
     }
 }

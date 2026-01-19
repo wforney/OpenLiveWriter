@@ -32,12 +32,13 @@ namespace OpenLiveWriter.BlogClient.Providers
                         // add provider plugins (XML and C#)
 
                     }
+
                     return _providerTypes;
                 }
             }
         }
         private static ArrayList _providerTypes;
-        private static object _classLock = new object();
+        private static readonly object _classLock = new object();
 
         public static IBlogProvider FindProvider(string providerId)
         {
@@ -106,7 +107,5 @@ namespace OpenLiveWriter.BlogClient.Providers
             // return list of providers
             return providers.ToArray(typeof(BlogProvider));
         }
-
     }
-
 }

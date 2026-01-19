@@ -128,13 +128,14 @@ namespace OpenLiveWriter.BlogClient.Detection
                 {
                     Trace.WriteLine("Error attempting to download manifest from " + downloadInfo.SourceUrl + ": " + ex.ToString());
                 }
+
                 return null;
             }
         }
 
         private class EditingManifestFilter
         {
-            private WriterEditingManifestDownloadInfo _previousDownloadInfo;
+            private readonly WriterEditingManifestDownloadInfo _previousDownloadInfo;
 
             public EditingManifestFilter(WriterEditingManifestDownloadInfo previousDownloadInfo)
             {
@@ -282,8 +283,8 @@ namespace OpenLiveWriter.BlogClient.Detection
         }
         private readonly string _webPreviewUrl;
 
-        private IBlogClient _blogClient = null;
-        private IBlogCredentialsAccessor _credentials = null;
+        private readonly IBlogClient _blogClient = null;
+        private readonly IBlogCredentialsAccessor _credentials = null;
 
         private WriterEditingManifest(WriterEditingManifestDownloadInfo downloadInfo)
             : this(downloadInfo, null, null, null)
@@ -407,6 +408,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 if (webLayoutUrl != String.Empty)
                     _webLayoutUrl = BlogClientHelper.GetAbsoluteUrl(webLayoutUrl, downloadInfo.SourceUrl);
             }
+
             XmlNode webPreviewUrlNode = xmlDocument.SelectSingleNode("//m:views/m:view[@type='WebPreview']/@src", nsmgr);
             if (webPreviewUrlNode != null)
             {
@@ -468,6 +470,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 // indicates that no attempt to provide us an image was made
                 imageBytes = new byte[0];
             }
+
             return imageBytes;
         }
 
@@ -528,5 +531,4 @@ namespace OpenLiveWriter.BlogClient.Detection
         private const int REQUEST_TIMEOUT = 20000;
 
     }
-
 }

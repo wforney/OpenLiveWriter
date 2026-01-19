@@ -152,6 +152,7 @@ namespace OpenLiveWriter.CoreServices
                     return i;
                 }
             }
+
             return -1;
         }
 
@@ -172,6 +173,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 return int.MaxValue;
             }
+
             return total;
         }
 

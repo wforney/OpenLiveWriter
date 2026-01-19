@@ -52,9 +52,11 @@ namespace OpenLiveWriter.PostEditor.Tables
         public Point TransformGlobalToLocal(Point ptGlobal)
         {
             POINT pointLocal = new POINT();
-            POINT pointGlobal = new POINT();
-            pointGlobal.x = ptGlobal.X;
-            pointGlobal.y = ptGlobal.Y;
+            POINT pointGlobal = new POINT
+            {
+                x = ptGlobal.X,
+                y = ptGlobal.Y
+            };
             HTMLPaintSite.TransformGlobalToLocal(pointGlobal, ref pointLocal);
             return new Point(pointLocal.x, pointLocal.y);
         }

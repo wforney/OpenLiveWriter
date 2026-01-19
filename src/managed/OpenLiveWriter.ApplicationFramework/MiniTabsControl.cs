@@ -29,7 +29,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public delegate void SelectedTabChangedEventHandler(object sender, SelectedTabChangedEventArgs args);
 
         private MiniTab[] tabs = new MiniTab[0];
-        private MiniTabContext ctx;
+        private readonly MiniTabContext ctx;
         private int indent = 6;
         private const int PADDING = 5;
         private Color topBorderColor = Color.Transparent;

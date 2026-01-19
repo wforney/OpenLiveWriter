@@ -14,12 +14,12 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 {
     public class KeepSourceFormatting
     {
-        private IHTMLDocument2 sourceDocument;
-        private MshtmlMarkupServices sourceMarkupServices;
-        private MarkupRange sourceRange;
-        private IHTMLDocument2 destinationDocument;
-        private MshtmlMarkupServices destinationMarkupServices;
-        private MarkupRange destinationRange;
+        private readonly IHTMLDocument2 sourceDocument;
+        private readonly MshtmlMarkupServices sourceMarkupServices;
+        private readonly MarkupRange sourceRange;
+        private readonly IHTMLDocument2 destinationDocument;
+        private readonly MshtmlMarkupServices destinationMarkupServices;
+        private readonly MarkupRange destinationRange;
         private IHTMLElementFilter isNonSupportedStrikeThroughElement;
         private IHTMLElementFilter isBrElement;
         private IHTMLElementFilter supportsAlignmentAttribute;
@@ -111,8 +111,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                             }
 
                             // Some tags aren't natively supported by MSHTML's editing commands and should be replaced.
-                            _ELEMENT_TAG_ID replacement;
-                            if (TryGetReplacement(context.Element, out replacement))
+                            if (TryGetReplacement(context.Element, out _ELEMENT_TAG_ID replacement))
                             {
                                 elementsToReplace.Add(context.Element, replacement);
                                 return true;
@@ -301,8 +300,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                         TextStyle sourceStyle = sourceEnumerator.Current;
                         TextStyle destinationStyle = destinationEnumerator.Current;
 
-                        FixupSegment fixupSegment;
-                        if (openFixupSegments.TryGetValue(destinationStyle.GetType(), out fixupSegment))
+                        if (openFixupSegments.TryGetValue(destinationStyle.GetType(), out FixupSegment fixupSegment))
                         {
                             // We've moved into a new range, so we may want to end an open fixup segment.
                             if (ShouldEndFixupSegment(sourceStyle, destinationStyle, fixupSegment))

@@ -74,6 +74,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (components != null)
                     components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

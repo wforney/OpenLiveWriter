@@ -47,6 +47,5 @@ namespace OpenLiveWriter.CoreServices
             Debug.WriteLine("QuickTimer: [" + label + "] - no timing information");
 #endif
         }
-
     }
 }

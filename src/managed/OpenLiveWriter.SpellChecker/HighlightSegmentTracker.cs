@@ -14,7 +14,7 @@ namespace OpenLiveWriter.SpellChecker
     //used to store the highlight segments in a post for tracking spelling changes
     public class HighlightSegmentTracker
     {
-        SortedList list;
+        readonly SortedList list;
 
         private class SegmentDef
         {
@@ -29,7 +29,6 @@ namespace OpenLiveWriter.SpellChecker
                 endPtr = end;
                 word = wd;
             }
-
         }
 
         public class MatchingSegment
@@ -53,9 +52,8 @@ namespace OpenLiveWriter.SpellChecker
         //used when a misspelled word is found
         public void AddSegment(IHighlightSegmentRaw segment, string wordHere, IMarkupServicesRaw markupServices)
         {
-            IMarkupPointerRaw start, end;
-            markupServices.CreateMarkupPointer(out start);
-            markupServices.CreateMarkupPointer(out end);
+            markupServices.CreateMarkupPointer(out IMarkupPointerRaw start);
+            markupServices.CreateMarkupPointer(out IMarkupPointerRaw end);
             segment.GetPointers(start, end);
             if (!list.ContainsKey(start))
                 list.Add(start, new SegmentDef(segment, start, end, wordHere));
@@ -118,6 +116,7 @@ namespace OpenLiveWriter.SpellChecker
                     }
                 }
             }
+
             return (MatchingSegment[])segments.ToArray(typeof (MatchingSegment));
         }
 
@@ -135,12 +134,10 @@ namespace OpenLiveWriter.SpellChecker
             while (-1 != i)
             {
                 SegmentDef x = (SegmentDef)list.GetByIndex(i);
-                bool startTest;
-                current.IsRightOfOrEqualTo(x.startPtr, out startTest);
+                current.IsRightOfOrEqualTo(x.startPtr, out bool startTest);
                 if (startTest)
                 {
-                    bool endTest;
-                    current.IsLeftOfOrEqualTo(x.endPtr, out endTest);
+                    current.IsLeftOfOrEqualTo(x.endPtr, out bool endTest);
                     if (endTest)
                     {
                         MarkupPointer pStart = markupServices.CreateMarkupPointer(x.startPtr);
@@ -153,16 +150,20 @@ namespace OpenLiveWriter.SpellChecker
                             list.RemoveAt(i);
                             return null;
                         }
+
                         return new MisspelledWordInfo(range, x.word);
                     }
+
                     start = i + 1;
                 }
                 else
                 {
                     end = i - 1;
                 }
+
                 i = Middle(start, end);
             }
+
             return null;
         }
 
@@ -172,6 +173,7 @@ namespace OpenLiveWriter.SpellChecker
             {
                 return (int)Math.Floor(Convert.ToDouble((start + end)/2));
             }
+
             return -1;
         }
 
@@ -186,6 +188,7 @@ namespace OpenLiveWriter.SpellChecker
                 segments[--count] = ((SegmentDef) list.GetByIndex(i)).segment;
                 list.RemoveAt(i);
             }
+
             return segments;
         }
 
@@ -206,8 +209,7 @@ namespace OpenLiveWriter.SpellChecker
 
         public int Compare(IMarkupPointerRaw a, IMarkupPointerRaw b)
         {
-            bool test;
-            a.IsEqualTo(b, out test);
+            a.IsEqualTo(b, out bool test);
             if (test) return 0;
             a.IsLeftOf(b, out test);
             if (test) return -1;

@@ -25,13 +25,13 @@ namespace OpenLiveWriter.CoreServices
         private readonly bool _caseSensitive;
         private readonly int _minUnnamedArgCount;
         private readonly int _maxUnnamedArgCount;
-        private ArrayList _required = new ArrayList();
-        private Hashtable _args = new Hashtable();
+        private readonly ArrayList _required = new ArrayList();
+        private readonly Hashtable _args = new Hashtable();
 
-        private ArrayList _unnamedArgs = new ArrayList();
-        private Hashtable _values = new Hashtable();
-        private HashSet _argsPresent = new HashSet();
-        private ArrayList _errors = new ArrayList();
+        private readonly ArrayList _unnamedArgs = new ArrayList();
+        private readonly Hashtable _values = new Hashtable();
+        private readonly HashSet _argsPresent = new HashSet();
+        private readonly ArrayList _errors = new ArrayList();
 
         public CommandLineOptions(params ArgSpec[] args) : this(false, 0, int.MaxValue, args)
         {
@@ -143,6 +143,7 @@ namespace OpenLiveWriter.CoreServices
                 if (!_argsPresent.Contains(requiredArg))
                     success &= AddError(ERROR_ARG_REQUIRED, null, requiredArg, null);
             }
+
             if (stopOnFirstError && !success)
                 return false;
 
@@ -238,6 +239,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 parsedValue = argValue;
             }
+
             if (err != null)
                 return AddError(err, arg, argName, argValue);
 
@@ -253,8 +255,10 @@ namespace OpenLiveWriter.CoreServices
                     values = new ArrayList();
                     _values[argName] = values;
                 }
+
                 values.Add(parsedValue);
             }
+
             return true;
         }
 
@@ -278,8 +282,8 @@ namespace OpenLiveWriter.CoreServices
 
         public class ErrorType
         {
-            private int _errorCode;
-            private string _messageFormat;
+            private readonly int _errorCode;
+            private readonly string _messageFormat;
 
             public ErrorType(int errorCode, string message)
             {
@@ -355,7 +359,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return Message;
             }
-
         }
     }
 

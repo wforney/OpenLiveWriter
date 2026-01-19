@@ -20,6 +20,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                             if (data[pos] == '\r' && pos < end - 2 && data[pos] == '\n')
                                 pos++;
                         }
+
                         break;
 
                     case '"':
@@ -33,6 +34,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         return;
                 }
             }
+
             literalEnd = pos;
         }
 
@@ -49,6 +51,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                             if (data[pos] == '\r' && pos < end - 2 && data[pos] == '\n')
                                 pos++;
                         }
+
                         break;
 
                     case '\'':
@@ -62,6 +65,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         return;
                 }
             }
+
             literalEnd = pos;
         }
 
@@ -127,6 +131,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 if (substring[p++] != data[i])
                     return false;
             }
+
             return true;
         }
 
@@ -141,6 +146,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 if (ToAsciiLower(substring[p++]) != ToAsciiLower(data[i]))
                     return false;
             }
+
             return true;
         }
 
@@ -152,6 +158,5 @@ namespace OpenLiveWriter.HtmlParser.Parser
             else
                 return c;
         }
-
     }
 }

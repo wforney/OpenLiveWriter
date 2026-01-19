@@ -52,13 +52,16 @@ namespace OpenLiveWriter.CoreServices
                     string filePath = fileData.Files[0].ContentsPath;
                     if (PathHelper.IsPathUrlFile(filePath))
                     {
-                        URLData urlData = new URLData(iDataObject, UrlHelper.GetUrlFromShortCutFile(filePath), Path.GetFileNameWithoutExtension(filePath));
-                        urlData.DateCreated = File.GetCreationTime(filePath);
-                        urlData.DateModified = File.GetLastWriteTime(filePath);
+                        URLData urlData = new URLData(iDataObject, UrlHelper.GetUrlFromShortCutFile(filePath), Path.GetFileNameWithoutExtension(filePath))
+                        {
+                            DateCreated = File.GetCreationTime(filePath),
+                            DateModified = File.GetLastWriteTime(filePath)
+                        };
                         return urlData;
                     }
                 }
             }
+
             return null;
         }
 
@@ -82,6 +85,7 @@ namespace OpenLiveWriter.CoreServices
                         m_url = reader.ReadToEnd().Trim((char)0);
                     }
                 }
+
                 return m_url;
             }
         }
@@ -142,6 +146,7 @@ namespace OpenLiveWriter.CoreServices
 
                     m_title = Path.GetFileNameWithoutExtension(FileHelper.GetValidFileName(sBuilder.ToString()));
                 }
+
                 return m_title;
             }
         }
@@ -163,6 +168,6 @@ namespace OpenLiveWriter.CoreServices
             m_url = url;
             m_title = title;
         }
-        private IDataObject m_dataObject;
+        private readonly IDataObject m_dataObject;
     }
 }

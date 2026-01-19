@@ -93,9 +93,7 @@ namespace OpenLiveWriter.PostEditor
             Size shadowSize = new Size(1280, 960);
             using (MemoryStream shadowStream = new MemoryStream())
             {
-                ImageFormat format;
-                string fileExt;
-                ImageHelper2.GetImageFormat(sourceFile.SupportingFile.FileName, out fileExt, out format);
+                ImageHelper2.GetImageFormat(sourceFile.SupportingFile.FileName, out string fileExt, out ImageFormat format);
                 using (Bitmap sourceImage = new Bitmap(sourceFile.Uri.LocalPath))
                 {
                     if (sourceImage.Width > shadowSize.Width || sourceImage.Height > shadowSize.Height)
@@ -113,6 +111,7 @@ namespace OpenLiveWriter.PostEditor
                         }
                     }
                 }
+
                 shadowStream.Seek(0, SeekOrigin.Begin);
 
                 ISupportingFile supportingFile = fileService.CreateSupportingFile(sourceFile.SupportingFile.FileName, shadowStream);
@@ -191,14 +190,14 @@ namespace OpenLiveWriter.PostEditor
             get { return _supportingFile.Settings.GetInt(WIDTH, 0); }
             set { _supportingFile.Settings.SetInt(WIDTH, value); }
         }
-        private string WIDTH = "image.width";
+        private readonly string WIDTH = "image.width";
 
         public int Height
         {
             get { return _supportingFile.Settings.GetInt(HEIGHT, 0); }
             set { _supportingFile.Settings.SetInt(HEIGHT, value); }
         }
-        private string HEIGHT = "image.height";
+        private readonly string HEIGHT = "image.height";
 
         public ImageFileRelationship Relationship
         {
@@ -216,7 +215,7 @@ namespace OpenLiveWriter.PostEditor
             }
             set { _supportingFile.Settings.SetString(RELATIONSHIP, value.ToString()); }
         }
-        private string RELATIONSHIP = "image.relationship";
+        private readonly string RELATIONSHIP = "image.relationship";
 
         public object Clone()
         {
@@ -259,7 +258,7 @@ namespace OpenLiveWriter.PostEditor
 
     public class BlogPostImageDataList : IEnumerable
     {
-        ArrayList _list = new ArrayList();
+        readonly ArrayList _list = new ArrayList();
 
         public BlogPostImageDataList()
         {
@@ -322,6 +321,7 @@ namespace OpenLiveWriter.PostEditor
                 if (fileData != null && fileData.Uri != null && fileData.Uri.Equals(inlineUri))
                     return imageData;
             }
+
             return null;
         }
 
@@ -332,6 +332,7 @@ namespace OpenLiveWriter.PostEditor
                 if (imageData.LinkedImageFile != null && imageData.LinkedImageFile.Uri.Equals(inlineUri))
                     return imageData;
             }
+
             return null;
         }
     }

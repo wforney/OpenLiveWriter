@@ -76,6 +76,7 @@ namespace OpenLiveWriter.Mshtml
                 MovePointer(p1, direction, context);
                 result = continueFilter(context);
             }
+
             if (result == MoveFilterResult.CONTINUE)
             {
                 //we hit the boundary, so position pointer at the boundary
@@ -154,7 +155,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class CompoundMoveContextFilter
         {
-            private MoveContextFilter[] _filters;
+            private readonly MoveContextFilter[] _filters;
             public CompoundMoveContextFilter(MoveContextFilter[] filters)
             {
                 _filters = filters;
@@ -167,6 +168,7 @@ namespace OpenLiveWriter.Mshtml
                     if (result != MoveFilterResult.CONTINUE)
                         return result;
                 }
+
                 return MoveFilterResult.CONTINUE;
             }
         }
@@ -260,6 +262,7 @@ namespace OpenLiveWriter.Mshtml
                                                               : Direction.Right;
                 }
             }
+
             return Direction.None;
         }
 
@@ -313,7 +316,6 @@ namespace OpenLiveWriter.Mshtml
             {
                 p.MoveAdjacentToElement(p.CurrentScope, _ELEMENT_ADJACENCY.ELEM_ADJ_BeforeBegin);
             }
-
         }
     }
 

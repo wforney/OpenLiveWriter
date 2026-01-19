@@ -29,19 +29,19 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
             public SidebarControl SidebarControl;
         }
 
-        private Container components = new Container();
+        private readonly Container components = new Container();
 
-        private IHtmlEditorComponentContext _editorContext;
+        private readonly IHtmlEditorComponentContext _editorContext;
 
         // map sidebar types to sidebar instances
-        private ArrayList _sidebars = new ArrayList();
+        private readonly ArrayList _sidebars = new ArrayList();
 
         private Panel _mainPanel;
         // private HtmlEditorSidebarTitle _title ;
         // private HtmlEditorSidebarStatus _status ;
 
         private SidebarControl _defaultSidebarControl;
-        private ControlUITheme _uiTheme;
+        private readonly ControlUITheme _uiTheme;
 
         public HtmlEditorSidebarHost(IHtmlEditorComponentContext editorContext)
         {
@@ -229,6 +229,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                         Visible = false;
                         _mainPanel.AutoScrollMinSize = Size.Empty;
                     }
+
                     ResumeLayout();
                 }
             }
@@ -259,6 +260,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                         sidebarEntry.SidebarControl = CreateAndInitializeSidebar(sidebar);
                         sidebarEntry.SidebarControl.Visible = sidebarEntry.SidebarControl.Controls.Count > 0;
                     }
+
                     return sidebarEntry.SidebarControl;
                 }
             }
@@ -292,6 +294,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                     _editorContext.SelectionChanged -= new EventHandler(_editorContext_SelectionChanged);
                     _editorContext.DocumentEvents.Click -= new OpenLiveWriter.Mshtml.HtmlEventHandler(DocumentEvents_Click);
                 }
+
                 if (_activeSidebarControl != null)
                 {
                     _activeSidebarControl.MinimumSizeChanged -= new EventHandler(_activeSidebarControl_MinimumSizeChanged);
@@ -302,6 +305,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -318,9 +322,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
             //_title.TabStop = false ;
             //_title.HideTitleBarClicked +=new EventHandler(_title_HideTitleBarClicked);
 
-            _mainPanel = new Panel();
-            _mainPanel.Dock = DockStyle.Fill;
-            _mainPanel.TabIndex = 1;
+            _mainPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                TabIndex = 1
+            };
 
             //_status = new HtmlEditorSidebarStatus();
             //_status.Dock = DockStyle.Bottom ;
@@ -432,8 +438,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                         }
                     }
                 }
+
                 _smartContentEditorCache = contentSourceSidebarControl;
             }
+
             Debug.Assert(_smartContentEditorCache != null);
             return _smartContentEditorCache.GetSmartContentEditor(contentSourceId);
         }

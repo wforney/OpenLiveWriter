@@ -59,6 +59,7 @@ namespace OpenLiveWriter.CoreServices
                         keywords.Add(li.InnerText);
                     }
                 }
+
                 return (string[])keywords.ToArray(typeof(string));
             }
         }
@@ -83,6 +84,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     return Convert.ToInt32(xmlNode.InnerText, CultureInfo.InvariantCulture);
                 }
+
                 return rating;
             }
         }
@@ -149,6 +151,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 return xmlNode.ChildNodes[0].InnerText;
             }
+
             return null;
         }
     }

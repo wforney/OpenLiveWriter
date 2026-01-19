@@ -153,9 +153,11 @@ namespace OpenLiveWriter.BlogClient.Clients
                     {
                         AddCategoriesXml(categoriesNode, rootElement, uri);
                     }
+
                     return results;
                 }
             }
+
             Trace.Fail("Couldn't find collection in service document:\r\n" + xmlDoc.OuterXml);
             return new XmlDocument();
         }
@@ -303,9 +305,11 @@ namespace OpenLiveWriter.BlogClient.Clients
                             if (!now.HasValue || blogPost.DatePublished.CompareTo(now.Value) < 0)
                                 blogPosts.Add(blogPost);
                         }
+
                         if (blogPosts.Count >= maxPosts)
                             break;
                     }
+
                     if (blogPosts.Count >= maxPosts)
                         break;
 
@@ -325,6 +329,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 else
                     Trace.Fail("Duplicate IDs detected in feed");
             }
+
             return (BlogPost[])blogPosts.ToArray(typeof(BlogPost));
         }
 
@@ -350,8 +355,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             FixupBlogId(ref blogId);
 
             Uri uri = PostIdToPostUri(postId);
-            WebHeaderCollection responseHeaders;
-            XmlDocument doc = xmlRestRequestHelper.Get(ref uri, RequestFilter, out responseHeaders);
+            XmlDocument doc = xmlRestRequestHelper.Get(ref uri, RequestFilter, out WebHeaderCollection responseHeaders);
             XmlDocument remotePost = (XmlDocument)doc.Clone();
             XmlElement entryNode = doc.SelectSingleNode("/atom:entry", _nsMgr) as XmlElement;
             if (entryNode == null)
@@ -407,8 +411,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 try
                 {
                     Uri uri = PostIdToPostUri(post.Id);
-                    WebHeaderCollection responseHeaders;
-                    xmlRestRequestHelper.Put(ref uri, etagToMatch, RequestFilter, ENTRY_CONTENT_TYPE, doc, _clientOptions.CharacterSet, true, out responseHeaders);
+                    xmlRestRequestHelper.Put(ref uri, etagToMatch, RequestFilter, ENTRY_CONTENT_TYPE, doc, _clientOptions.CharacterSet, true, out WebHeaderCollection responseHeaders);
                 }
                 catch (WebException we)
                 {
@@ -438,6 +441,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             }
                         }
                     }
+
                     throw;
                 }
             }
@@ -461,8 +465,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
 
             Uri getUri = PostIdToPostUri(post.Id);
-            WebHeaderCollection getResponseHeaders;
-            remotePost = xmlRestRequestHelper.Get(ref getUri, RequestFilter, out getResponseHeaders);
+            remotePost = xmlRestRequestHelper.Get(ref getUri, RequestFilter, out WebHeaderCollection getResponseHeaders);
             etag = FilterWeakEtag(getResponseHeaders["ETag"]);
             Trace.Assert(remotePost != null, "After successful PUT, remote post could not be retrieved");
 
@@ -512,6 +515,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         return GetEtagImpl(uri, requestFilter, newMethods);
                     }
                 }
+
                 throw;
             }
         }
@@ -749,7 +753,6 @@ namespace OpenLiveWriter.BlogClient.Clients
             if (Options.SupportsSlug)
                 slug = post.Slug;
 
-            WebHeaderCollection responseHeaders;
             Uri uri = new Uri(blogId);
             XmlDocument result = xmlRestRequestHelper.Post(
                 ref uri,
@@ -757,7 +760,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 ENTRY_CONTENT_TYPE,
                 doc,
                 _clientOptions.CharacterSet,
-                out responseHeaders);
+                out WebHeaderCollection responseHeaders);
 
             etag = FilterWeakEtag(responseHeaders["ETag"]);
             string location = responseHeaders["Location"];
@@ -765,11 +768,11 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 throw new BlogClientInvalidServerResponseException("POST", "The HTTP response was missing the required Location header.", "");
             }
+
             if (location != responseHeaders["Content-Location"] || result == null)
             {
                 Uri locationUri = new Uri(location);
-                WebHeaderCollection getResponseHeaders;
-                result = xmlRestRequestHelper.Get(ref locationUri, RequestFilter, out getResponseHeaders);
+                result = xmlRestRequestHelper.Get(ref locationUri, RequestFilter, out WebHeaderCollection getResponseHeaders);
                 etag = FilterWeakEtag(getResponseHeaders["ETag"]);
             }
 
@@ -826,6 +829,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             sb.Append((char)b);
                         }
                     }
+
                     return sb.ToString();
                 }
             }

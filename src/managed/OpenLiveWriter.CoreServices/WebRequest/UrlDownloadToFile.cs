@@ -35,6 +35,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 //may occur if the URL is malformed
             }
+
             return false;
         }
 
@@ -68,10 +69,12 @@ namespace OpenLiveWriter.CoreServices
         public static string Download(string url, int timeoutMs, WinInetCredentialsContext credentialsContext)
         {
             // do the download (will use cached images correctly, etc.)
-            UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile();
-            urlDownloadToFile.Url = url;
-            urlDownloadToFile.TimeoutMs = timeoutMs;
-            urlDownloadToFile.CredentialsContext = credentialsContext;
+            UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile
+            {
+                Url = url,
+                TimeoutMs = timeoutMs,
+                CredentialsContext = credentialsContext
+            };
             urlDownloadToFile.Download();
 
             // return a bitmap based on the file
@@ -110,6 +113,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     _filePath = TempFileManager.Instance.CreateTempFile();
                 }
+
                 return _filePath;
             }
             set
@@ -279,7 +283,7 @@ namespace OpenLiveWriter.CoreServices
         }
         private string m_contentType = null;
 
-        private static string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
+        private static readonly string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
         private IProgressHost ProgressHost;
 
         #region IBindStatusCallback Members
@@ -591,13 +595,13 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _networkCredential; }
         }
-        private NetworkCredential _networkCredential = null;
+        private readonly NetworkCredential _networkCredential = null;
 
         public CookieString CookieString
         {
             get { return _cookieString; }
         }
-        private CookieString _cookieString;
+        private readonly CookieString _cookieString;
     }
 
     public class CookieString
@@ -611,12 +615,12 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _url; }
         }
-        private string _url;
+        private readonly string _url;
 
         public string Cookies
         {
             get { return _cookies; }
         }
-        private string _cookies;
+        private readonly string _cookies;
     }
 }

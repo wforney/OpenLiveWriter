@@ -37,7 +37,7 @@ namespace OpenLiveWriter.SpellChecker
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public event EventHandler WordIgnored;
 
@@ -594,6 +594,7 @@ namespace OpenLiveWriter.SpellChecker
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -605,7 +606,7 @@ namespace OpenLiveWriter.SpellChecker
         /// <summary>
         /// Spelling checker used by the form
         /// </summary>
-        private ISpellingChecker spellingChecker;
+        private readonly ISpellingChecker spellingChecker;
 
         /// <summary>
         /// Is there a word-range highlight pending the showing of the form?

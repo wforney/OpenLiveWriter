@@ -27,11 +27,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
         private System.Windows.Forms.CheckBox cbUseSystemLogin;
         private System.Windows.Forms.CheckBox checkBoxSavePassword;
 
-        IAccountBasicInfoProvider _basicInfoProvider;
+        readonly IAccountBasicInfoProvider _basicInfoProvider;
 
         public WeblogConfigurationWizardPanelSharePointAuthentication()
         {
@@ -90,6 +90,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -227,6 +228,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 textBoxUsername.Text = "";
                 textBoxPassword.Text = "";
             }
+
             textBoxUsername.Enabled =
                 textBoxPassword.Enabled =
                 checkBoxSavePassword.Enabled =
@@ -268,9 +270,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             get
             {
-                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials();
-                credentials.Username = textBoxUsername.Text.Trim();
-                credentials.Password = textBoxPassword.Text.Trim();
+                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials
+                {
+                    Username = textBoxUsername.Text.Trim(),
+                    Password = textBoxPassword.Text.Trim()
+                };
                 return credentials;
             }
             set

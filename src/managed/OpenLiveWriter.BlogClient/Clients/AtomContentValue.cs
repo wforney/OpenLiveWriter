@@ -43,6 +43,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     else
                         throw new ArgumentException("Cannot convert text value to XHTML", "type");
             }
+
             throw new InvalidOperationException("Unknown text type: " + _type);
         }
 
@@ -59,6 +60,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 case AtomContentValueType.XHTML:
                     return HtmlUtils.HTMLToPlainText(_value, false);
             }
+
             throw new InvalidOperationException("Unknown text type: " + _type);
         }
 
@@ -75,6 +77,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 case AtomContentValueType.XHTML:
                     return _value;
             }
+
             throw new InvalidOperationException("Unknown text type: " + _type);
         }
     }

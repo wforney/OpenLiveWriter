@@ -15,10 +15,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
     /// </summary>
     public class MapActiveObject
     {
-        private Hashtable _pushpinTable;
-        private ArrayList _pushpinList;
+        private readonly Hashtable _pushpinTable;
+        private readonly ArrayList _pushpinList;
 
-        private IJSMapController _jsMapController;
+        private readonly IJSMapController _jsMapController;
 
         public MapActiveObject(VELatLong center, string mapStyle, int zoomLevel, VEBirdseyeScene birdseyeScene)
         {
@@ -106,6 +106,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     default:
                         throw new ArgumentException("unsupported VEMapStyle detected: " + value);
                 }
+
                 MapStyle = mapStyle;
             }
         }

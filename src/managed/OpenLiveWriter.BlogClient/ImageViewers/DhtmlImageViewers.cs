@@ -39,6 +39,7 @@ namespace OpenLiveWriter.BlogClient
                   {
                       regexList.Add(new Regex(v.Pattern, RegexOptions.CultureInvariant));
                   }
+
                   return regexList;
               });
 
@@ -81,6 +82,7 @@ namespace OpenLiveWriter.BlogClient
                         return viewers[i];
                 }
             }
+
             return null;
         }
 
@@ -124,7 +126,6 @@ namespace OpenLiveWriter.BlogClient
         {
             return name;
         }
-
     }
 
     public enum ImageViewerGroupSupport
@@ -210,6 +211,7 @@ namespace OpenLiveWriter.BlogClient
                         break;
                     }
                 }
+
                 if (isMatch)
                 {
                     useImageViewer = true;
@@ -262,5 +264,4 @@ namespace OpenLiveWriter.BlogClient
                 ((IHTMLElement)element).removeAttribute(attr.Name, 0);
         }
     }
-
 }

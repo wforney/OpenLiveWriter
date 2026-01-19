@@ -165,6 +165,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 uploader.Start();
                 return uploader;
             }
+
             return null;
         }
 
@@ -206,7 +207,6 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
         {
 
         }
-
     }
 
     internal class YouTubeVideoUploader : AsyncOperation, IStatusWatcher
@@ -297,7 +297,6 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 req.Method = "DELETE";
                 req.GetResponse().Close();
             }
-
         }
 
         public void Dispose()
@@ -532,10 +531,10 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
         private readonly string _boundary;
         private readonly HttpWebRequest _request;
         Stream _requestStream;
-        private MemoryStream _requestBodyTop = new MemoryStream();
-        private MemoryStream _requestBodyBottom = new MemoryStream();
+        private readonly MemoryStream _requestBodyTop = new MemoryStream();
+        private readonly MemoryStream _requestBodyBottom = new MemoryStream();
 
-        private UTF8Encoding _utf8NoBOMEncoding = new UTF8Encoding(false);
+        private readonly UTF8Encoding _utf8NoBOMEncoding = new UTF8Encoding(false);
 
         internal YouTubeUploadRequestHelper(HttpWebRequest request)
         {

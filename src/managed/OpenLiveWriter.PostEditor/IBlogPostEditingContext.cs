@@ -58,25 +58,25 @@ namespace OpenLiveWriter.PostEditor
         {
             get { return _blogId; }
         }
-        private string _blogId;
+        private readonly string _blogId;
 
         public PostEditorFile LocalFile
         {
             get { return _localFile; }
         }
-        private PostEditorFile _localFile;
+        private readonly PostEditorFile _localFile;
 
         public PostEditorFile AutoSaveLocalFile
         {
             get { return _autoSaveLocalFile; }
         }
-        private PostEditorFile _autoSaveLocalFile;
+        private readonly PostEditorFile _autoSaveLocalFile;
 
         public BlogPost BlogPost
         {
             get { return _blogPost; }
         }
-        private BlogPost _blogPost;
+        private readonly BlogPost _blogPost;
 
         public string ServerSupportingFileDirectory
         {
@@ -85,7 +85,7 @@ namespace OpenLiveWriter.PostEditor
                 return _serverSupportingFileDirectory;
             }
         }
-        private string _serverSupportingFileDirectory = String.Empty;
+        private readonly string _serverSupportingFileDirectory = String.Empty;
 
         public BlogPostSupportingFileStorage SupportingFileStorage
         {
@@ -141,5 +141,4 @@ namespace OpenLiveWriter.PostEditor
 
         #endregion
     }
-
 }

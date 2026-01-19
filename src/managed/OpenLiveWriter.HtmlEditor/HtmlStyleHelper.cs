@@ -15,7 +15,7 @@ namespace OpenLiveWriter.HtmlEditor
 {
     public class HtmlStyleHelper
     {
-        private MshtmlMarkupServices _markupServices;
+        private readonly MshtmlMarkupServices _markupServices;
 
         private HtmlStyleHelper(MshtmlMarkupServices markupServices)
         {
@@ -67,11 +67,10 @@ namespace OpenLiveWriter.HtmlEditor
                     // If the selection is empty and we're just inside the tagId closing tag (meaning that there is no text before the closing tag),
                     // then we just hop outside of the tagId closing tag.
 
-                    bool exitScopeMatchesTagIdToBeApplied;
                     MarkupPointer pointerOutsideTagIdScope = htmlStyleHelper.NextExitScopeWithoutInterveningText(selection,
                                                                             tagId,
                                                                             mutuallyExclusiveTagId,
-                                                                            out exitScopeMatchesTagIdToBeApplied);
+                                                                            out bool exitScopeMatchesTagIdToBeApplied);
 
                     if (pointerOutsideTagIdScope != null)
                     {
@@ -154,6 +153,7 @@ namespace OpenLiveWriter.HtmlEditor
 
                                 blockFreeRange.Collapse(true);
                             }
+
                             break;
                         case _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_None:
                             {
@@ -162,6 +162,7 @@ namespace OpenLiveWriter.HtmlEditor
                                 if (ShouldApplyInlineTagToBlockFreeSelection(blockFreeRange))
                                     newSelection.ExpandToInclude(ApplyInlineTagToBlockFreeSelection(tagId, attributes, blockFreeRange));
                             }
+
                             break;
                         default:
                             break;

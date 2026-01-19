@@ -63,8 +63,8 @@ namespace OpenLiveWriter.CoreServices
             return text.Replace("{NL}", "\r\n");
         }
 
-        private string _titleFormat;
-        private string _textFormat;
-        private object[] _textFormatArgs;
+        private readonly string _titleFormat;
+        private readonly string _textFormat;
+        private readonly object[] _textFormatArgs;
     }
 }

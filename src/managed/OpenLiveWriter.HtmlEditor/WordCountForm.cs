@@ -53,7 +53,6 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 gbTableHeader.Text = Res.Get(StringId.Statistics);
             }
-
         }
 
         protected override void OnLoad(EventArgs e)
@@ -93,10 +92,10 @@ namespace OpenLiveWriter.HtmlEditor
         #endregion
 
         public readonly String countText;
-        private LazyLoader<int> llWords = null;
-        private LazyLoader<int> llChars = null;
-        private LazyLoader<int> llCharsWithoutSpaces = null;
-        private LazyLoader<int> llParagraphs = null;
+        private readonly LazyLoader<int> llWords = null;
+        private readonly LazyLoader<int> llChars = null;
+        private readonly LazyLoader<int> llCharsWithoutSpaces = null;
+        private readonly LazyLoader<int> llParagraphs = null;
 
         public WordCounter(string text)
         {

@@ -219,7 +219,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 }
             }
         }
-        private static Regex marginRegex = new Regex(@"(?<pixels>\d{1,4})\s*px");
+        private static readonly Regex marginRegex = new Regex(@"(?<pixels>\d{1,4})\s*px");
     }
     public enum StyleSizeUnit { PX, EM };
     public class MarginStyle

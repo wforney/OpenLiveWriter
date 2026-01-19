@@ -154,6 +154,7 @@ namespace OpenLiveWriter.CoreServices
             catch (OutOfMemoryException)
             {
             }
+
             return filePath;
         }
         private const string BMP = ".bmp";
@@ -352,8 +353,10 @@ namespace OpenLiveWriter.CoreServices
             {
                 AdjustSizes(bitmap, ref xSize, ref ySize);
 
-                Bitmap scaledBitmap = new Bitmap(xSize, ySize, bitmap.PixelFormat);
-                scaledBitmap.Palette = bitmap.Palette;
+                Bitmap scaledBitmap = new Bitmap(xSize, ySize, bitmap.PixelFormat)
+                {
+                    Palette = bitmap.Palette
+                };
 
                 int sourceWidth = bitmap.Width;   // width of source
                 int sourceHeight = bitmap.Height;  // height of source
@@ -399,7 +402,6 @@ namespace OpenLiveWriter.CoreServices
                                 *d++ = *(sRow + (int)(x * xRatio));
                             }
                         }
-
                     }
                     finally
                     {
@@ -444,6 +446,7 @@ namespace OpenLiveWriter.CoreServices
                                                     new PointF(destRect.Left, destRect.Bottom),
                                                 }, srcRect, GraphicsUnit.Pixel, ia);
                 }
+
                 return scaledBitmap;
             }
 
@@ -617,6 +620,7 @@ namespace OpenLiveWriter.CoreServices
                     if (encoders[j].MimeType.ToUpper(CultureInfo.InvariantCulture) == mimeType.ToUpper(CultureInfo.InvariantCulture))
                         return encoders[j];
                 }
+
                 return null;
             }
         }
@@ -632,8 +636,9 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         internal class ThumbMaker
         {
-            Bitmap scaledBitmap, bitmap;
-            ImageFormat targetImageFormat;
+            private Bitmap scaledBitmap;
+            private readonly Bitmap bitmap;
+            readonly ImageFormat targetImageFormat;
 
             internal ThumbMaker(Bitmap image, ImageFormat targetImageFormat)
             {
@@ -686,6 +691,7 @@ namespace OpenLiveWriter.CoreServices
                     if (encoders[j].MimeType.ToUpper(CultureInfo.InvariantCulture) == mimeType.ToUpper(CultureInfo.InvariantCulture))
                         return encoders[j];
                 }
+
                 return null;
             }
 
@@ -785,6 +791,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 g.DrawImage(bitmap, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), rectangle, GraphicsUnit.Pixel);
             }
+
             return newBitmap;
         }
 

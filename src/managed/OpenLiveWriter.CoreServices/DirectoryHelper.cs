@@ -125,6 +125,7 @@ namespace OpenLiveWriter.CoreServices
                 if (File.Exists(Path.Combine(baseDirectory, directoryName + ".htm")))
                     return true;
             }
+
             return false;
         }
         private const string FILES = "_files";
@@ -134,9 +135,8 @@ namespace OpenLiveWriter.CoreServices
         public static string GetVideosFolder()
         {
             string path = null;
-            IntPtr ppidl;
 
-            int ret = Shell32.SHGetKnownFolderIDList(ref FOLDERID_Videos, 0, IntPtr.Zero, out ppidl);
+            int ret = Shell32.SHGetKnownFolderIDList(ref FOLDERID_Videos, 0, IntPtr.Zero, out IntPtr ppidl);
 
             if (ret == 0)
             {
@@ -258,6 +258,7 @@ namespace OpenLiveWriter.CoreServices
                     else
                         throw;
                 }
+
                 Array.Sort(directories);
 
                 // notify subclass of each directory and then recursively
@@ -291,10 +292,10 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // directory which is being iterated
-        private string m_rootPath;
+        private readonly string m_rootPath;
 
         //flag to set whether subfolders should be included in listing.
-        private bool m_includeSubfolders;
+        private readonly bool m_includeSubfolders;
     }
 
     public class DirectoryException : Exception
@@ -368,7 +369,7 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // flag indicating whether we should convert OS path separators to URI separators
-        bool m_useUriSeparator;
+        readonly bool m_useUriSeparator;
 
         // storage for list of files
         private ArrayList m_files;
@@ -446,12 +447,12 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // path to copy files to
-        private string m_destinationPath;
+        private readonly string m_destinationPath;
 
         // flag specifying whether to overwrite existing files
-        private bool m_overwrite;
+        private readonly bool m_overwrite;
 
         //flag specifying whether to copy subfolders
-        private bool m_recursive;
+        private readonly bool m_recursive;
     }
 }

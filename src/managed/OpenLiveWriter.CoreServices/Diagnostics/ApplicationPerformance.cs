@@ -105,7 +105,6 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                 //Debug.Assert(!OpenEvents.ContainsKey(name), "2 open events with the same name.");
                 OpenEvents.Add(name, LogEvent(name));
             }
-
         }
 
         public static void EndEvent(string name)

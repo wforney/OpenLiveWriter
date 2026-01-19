@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
         }
 
         // Best practice recommends defining a private object to lock on
-        private static Object syncLock = new Object();
+        private static readonly Object syncLock = new Object();
 
         private static volatile TaskbarManager instance;
         /// <summary>
@@ -125,6 +125,5 @@ namespace OpenLiveWriter.PostEditor.JumpList
                 return PlatformHelper.RunningOnWin7OrHigher();
             }
         }
-
     }
 }

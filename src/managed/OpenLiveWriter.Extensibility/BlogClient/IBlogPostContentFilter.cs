@@ -38,6 +38,6 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             get { return _typeName; }
         }
 
-        private string _typeName;
+        private readonly string _typeName;
     }
 }

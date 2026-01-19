@@ -38,9 +38,9 @@ namespace OpenLiveWriter.BlogClient.Detection
                             postBody.style.height = 300;
                         return HTMLColorHelper.GetBackgroundColor(postBody, true, null, Color.White);
                     }
+
                     return defaultColor;
                 });
         }
     }
-
 }

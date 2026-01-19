@@ -12,7 +12,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public UnhandledExceptionErrorMessage()
         {
@@ -38,6 +38,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

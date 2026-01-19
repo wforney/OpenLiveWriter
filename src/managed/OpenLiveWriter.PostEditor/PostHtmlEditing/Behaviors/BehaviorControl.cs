@@ -38,7 +38,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         /// <summary>
         /// The collection of lightweight controls contained within the lightweight control.
         /// </summary>
-        private BehaviorControlCollection controls;
+        private readonly BehaviorControlCollection controls;
 
         /// <summary>
         /// A value indicating whether the control is displayed.

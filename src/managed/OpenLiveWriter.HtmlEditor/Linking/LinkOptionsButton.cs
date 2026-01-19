@@ -22,5 +22,4 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             AccessibleRole = System.Windows.Forms.AccessibleRole.ButtonMenu;
         }
     }
-
 }

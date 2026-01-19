@@ -16,14 +16,16 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
 {
     public class ResizableElementBehavior : ElementControlBehavior
     {
-        private BehaviorControl _dragBufferControl;
-        private ResizerControl _resizerControl;
-        BehaviorDragAndDropSource _dragDropController;
+        private readonly BehaviorControl _dragBufferControl;
+        private readonly ResizerControl _resizerControl;
+        readonly BehaviorDragAndDropSource _dragDropController;
         public ResizableElementBehavior(IHtmlEditorComponentContext editorContext)
             : base(editorContext)
         {
-            _dragBufferControl = new BehaviorControl();
-            _dragBufferControl.Visible = false;
+            _dragBufferControl = new BehaviorControl
+            {
+                Visible = false
+            };
 
             _resizerControl = new ResizerControl();
             _resizerControl.SizerModeChanged += new SizerModeEventHandler(resizerControl_SizerModeChanged);
@@ -186,11 +188,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                                 EditorContext.ShowContextMenu(p);
                                 return HRESULT.S_OK;
                             }
+
                             return leftMouseDown ? HRESULT.S_OK : HRESULT.S_FALSE;
                     }
                 }
+
                 return controlResult;
             }
+
             return HRESULT.S_FALSE;
         }
 
@@ -291,6 +296,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                 _dragBufferControl.VirtualLocation = new Point(-rect.X, -rect.Y);
                 _dragBufferControl.Visible = true;
             }
+
             ResumeLayout();
             PerformLayout();
             Invalidate();
@@ -399,6 +405,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                 offsetLeft += element.offsetLeft;
                 element = element.offsetParent;
             }
+
             return new Point(offsetLeft, offsetTop);
         }
 

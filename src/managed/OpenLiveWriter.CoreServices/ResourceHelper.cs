@@ -89,7 +89,6 @@ namespace OpenLiveWriter.CoreServices
             string resourceName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", path, resource);
             string key = String.Format(CultureInfo.InvariantCulture, "{0},{1}", resourceName, mirror);
             //	Get the bitmap.
-            Bitmap bitmap;
             lock (typeof(ResourceHelper))
             {
                 //	Initialize the bitmap cache if necessary
@@ -97,7 +96,7 @@ namespace OpenLiveWriter.CoreServices
                     bitmapCache = new Dictionary<string, Bitmap>();
 
                 //	Locate the resource name in the bitmap cache.  If found, return it.
-                if (!bitmapCache.TryGetValue(key, out bitmap))
+                if (!bitmapCache.TryGetValue(key, out Bitmap bitmap))
                 {
                     //	Get a stream on the resource.  If this fails, null will be returned.  This means
                     //	that we could not find the resource in the assembly.
@@ -137,7 +136,6 @@ namespace OpenLiveWriter.CoreServices
         public static Bitmap LoadBitmap(string resource)
         {
             //	Get the bitmap.
-            Bitmap bitmap;
             lock (typeof(ResourceHelper))
             {
                 //	Initialize the bitmap cache if necessary
@@ -145,7 +143,7 @@ namespace OpenLiveWriter.CoreServices
                     bitmapCache = new Dictionary<string, Bitmap>();
 
                 //	Locate the resource name in the bitmap cache.  If found, return it.
-                if (!bitmapCache.TryGetValue(resource, out bitmap))
+                if (!bitmapCache.TryGetValue(resource, out Bitmap bitmap))
                 {
                     bitmap = Images.ResourceManager.GetObject(resource) as Bitmap;
                     bitmapCache.Add(resource, bitmap);

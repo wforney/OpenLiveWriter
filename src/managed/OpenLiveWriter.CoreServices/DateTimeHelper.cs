@@ -41,9 +41,11 @@ namespace OpenLiveWriter.CoreServices
         public static System.Runtime.InteropServices.ComTypes.FILETIME ToFileTime(DateTime dateTime)
         {
             long fileTimeVal = dateTime.Ticks - BASETICKS;
-            System.Runtime.InteropServices.ComTypes.FILETIME result = new System.Runtime.InteropServices.ComTypes.FILETIME();
-            result.dwHighDateTime = (int)(fileTimeVal >> 32);
-            result.dwLowDateTime = (int)(fileTimeVal & 0xFFFFFFFF);
+            System.Runtime.InteropServices.ComTypes.FILETIME result = new System.Runtime.InteropServices.ComTypes.FILETIME
+            {
+                dwHighDateTime = (int)(fileTimeVal >> 32),
+                dwLowDateTime = (int)(fileTimeVal & 0xFFFFFFFF)
+            };
             return result;
         }
 
@@ -89,6 +91,7 @@ namespace OpenLiveWriter.CoreServices
                 dateTime = DateTime.ParseExact(w3cDateTime, W3C_DATE_FORMATS_UTC, culture, DateTimeStyles.AllowWhiteSpaces);
                 dateTime = LocalToUtc(dateTime);
             }
+
             return dateTime;
         }
         private const string W3C_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz";
@@ -98,16 +101,14 @@ namespace OpenLiveWriter.CoreServices
         public static DateTime LocalToUtc(DateTime localTime)
         {
             System.Runtime.InteropServices.ComTypes.FILETIME localFileTime = ToFileTime(localTime);
-            System.Runtime.InteropServices.ComTypes.FILETIME utcFileTime;
-            Kernel32.LocalFileTimeToFileTime(ref localFileTime, out utcFileTime);
+            Kernel32.LocalFileTimeToFileTime(ref localFileTime, out System.Runtime.InteropServices.ComTypes.FILETIME utcFileTime);
             return ToDateTime(utcFileTime);
         }
 
         public static DateTime UtcToLocal(DateTime utcTime)
         {
             System.Runtime.InteropServices.ComTypes.FILETIME utcFileTime = ToFileTime(utcTime);
-            System.Runtime.InteropServices.ComTypes.FILETIME localFileTime;
-            Kernel32.FileTimeToLocalFileTime(ref utcFileTime, out localFileTime);
+            Kernel32.FileTimeToLocalFileTime(ref utcFileTime, out System.Runtime.InteropServices.ComTypes.FILETIME localFileTime);
             return ToDateTime(localFileTime);
         }
 

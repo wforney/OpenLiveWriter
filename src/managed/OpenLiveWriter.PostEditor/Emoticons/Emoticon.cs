@@ -13,7 +13,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
     public class Emoticon : IComparable
     {
         public const string CLASS_NAME = "wlEmoticon";
-        private Bitmap _bitmapStrip = null;     // bitmap strip containing all emoticons
+        private readonly Bitmap _bitmapStrip = null;     // bitmap strip containing all emoticons
         private readonly int _index = 0;        // index into the _bitmapStrip
         private Bitmap _bitmapCached = null;
 

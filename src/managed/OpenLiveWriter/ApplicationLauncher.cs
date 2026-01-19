@@ -42,8 +42,7 @@ namespace OpenLiveWriter
                         // check for a prefs request
                         if (options.IsShowPreferences)
                         {
-                            if (splashScreen != null)
-                                splashScreen.Dispose();
+                            splashScreen?.Dispose();
 
                             ExecuteShowPreferences(options.PreferencesPage);
                         }
@@ -51,8 +50,7 @@ namespace OpenLiveWriter
                         // check for an open-post request
                         else if (options.IsOpenPost)
                         {
-                            if (splashScreen != null)
-                                splashScreen.Dispose();
+                            splashScreen?.Dispose();
 
                             ExecuteOpenPost();
                         }
@@ -79,8 +77,7 @@ namespace OpenLiveWriter
             }
             catch
             {
-                if (splashScreen != null)
-                    splashScreen.Dispose();
+                splashScreen?.Dispose();
                 throw;
             }
         }
@@ -94,8 +91,7 @@ namespace OpenLiveWriter
             string[] autoSavedPostFiles = Directory.GetFiles(autoSaveDir, "*.wpost");
             if (autoSavedPostFiles.Length > 0)
             {
-                if (splashScreen != null)
-                    splashScreen.Dispose();
+                splashScreen?.Dispose();
 
                 AutoRecoverPromptResult result = AutoRecoverPrompt(null, autoSavedPostFiles.Length);
 
@@ -106,6 +102,7 @@ namespace OpenLiveWriter
                         {
                             ExecutePostEditorFile(autoSavedPost, splashScreen);
                         }
+
                         return true;
                     case AutoRecoverPromptResult.Discard:
                         foreach (string autoSavedPost in autoSavedPostFiles)
@@ -115,6 +112,7 @@ namespace OpenLiveWriter
                         return false;
                 }
             }
+
             return false;
         }
 
@@ -133,27 +131,25 @@ namespace OpenLiveWriter
 
             while (true)
             {
-                TaskDialog td = new TaskDialog();
+                TaskDialog td = new TaskDialog
+                {
+                    WindowTitle = ApplicationEnvironment.ProductNameQualified,
+                    MainInstruction = string.Format(CultureInfo.CurrentCulture,
+                                                       Res.Get(StringId.AutoRecoverDialogInstruction),
+                                                       ApplicationEnvironment.ProductNameQualified),
+                    Content = string.Format(CultureInfo.CurrentCulture,
+                                               Res.Get(StringId.AutoRecoverDialogContent),
+                                               ApplicationEnvironment.ProductNameQualified),
+                    //            td.MainIcon = TaskDialogIcon.Warning;
 
-                td.WindowTitle = ApplicationEnvironment.ProductNameQualified;
-                td.MainInstruction = string.Format(CultureInfo.CurrentCulture,
-                                                   Res.Get(StringId.AutoRecoverDialogInstruction),
-                                                   ApplicationEnvironment.ProductNameQualified);
-                td.Content = string.Format(CultureInfo.CurrentCulture,
-                                           Res.Get(StringId.AutoRecoverDialogContent),
-                                           ApplicationEnvironment.ProductNameQualified);
-                //            td.MainIcon = TaskDialogIcon.Warning;
+                    AllowDialogCancellation = true,
 
-                td.AllowDialogCancellation = true;
-
-                td.UseCommandLinks = true;
+                    UseCommandLinks = true
+                };
                 td.Buttons.Add(new TaskDialogButton(ID_RECOVER, Res.Get(StringId.AutoRecoverDialogButtonRecover)));
                 td.Buttons.Add(new TaskDialogButton(ID_DISCARD, Res.Get(StringId.AutoRecoverDialogButtonDiscard)));
                 td.Buttons.Add(new TaskDialogButton(ID_ASKLATER, Res.Get(StringId.AutoRecoverDialogButtonAskLater)));
-
-                int result, radioResult;
-                bool flag;
-                td.Show(window, out result, out radioResult, out flag);
+                td.Show(window, out int result, out _, out _);
                 switch (result)
                 {
                     case ID_RECOVER:
@@ -195,6 +191,7 @@ namespace OpenLiveWriter
                 ExpirationSettings.LastWarnDays = bucket;
                 return true;
             }
+
             return false;
         }
 
@@ -228,8 +225,7 @@ namespace OpenLiveWriter
             }
             else
             {
-                if (splashScreen != null)
-                    splashScreen.Dispose();
+                splashScreen?.Dispose();
             }
         }
 
@@ -246,7 +242,6 @@ namespace OpenLiveWriter
             {
                 return true;
             }
-
         }
 
         private static void ExecuteNewPost(IDisposable splashScreen, string switchToBlog)
@@ -260,10 +255,7 @@ namespace OpenLiveWriter
             if (!BloggingConfigured || ApplicationDiagnostics.SimulateFirstRun)
             {
                 // create a new profile
-                if (CreateInitialProfile(splashScreen))
-                    return true;
-                else
-                    return false;
+                return CreateInitialProfile(splashScreen);
             }
             else
             {
@@ -275,8 +267,7 @@ namespace OpenLiveWriter
         {
             using (new WaitCursor())
             {
-                if (splashScreen != null)
-                    splashScreen.Dispose();
+                splashScreen?.Dispose();
 
                 if (WeblogConfigurationWizardController.Welcome(null) != null)
                 {

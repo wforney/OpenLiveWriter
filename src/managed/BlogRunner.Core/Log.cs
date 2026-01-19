@@ -34,6 +34,7 @@ namespace BlogRunner.Core
             {
                 indentLevel--;
             }
+
             WriteLine(@"\== " + name + " ====");
         }
 

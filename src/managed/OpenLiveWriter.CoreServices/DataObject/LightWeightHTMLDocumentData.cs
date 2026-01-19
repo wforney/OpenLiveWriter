@@ -10,7 +10,7 @@ namespace OpenLiveWriter.CoreServices
     /// </summary>
     public class LightWeightHTMLDocumentData
     {
-        private LightWeightHTMLDocument _document;
+        private readonly LightWeightHTMLDocument _document;
 
         public static LightWeightHTMLDocumentData Create(IDataObject iDataObject)
         {

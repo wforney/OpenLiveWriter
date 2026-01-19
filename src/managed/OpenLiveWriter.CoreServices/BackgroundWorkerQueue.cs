@@ -69,8 +69,10 @@ namespace OpenLiveWriter.CoreServices
                     {
                         //no worker background threads were available to process the worker, so launch a
                         //standard thread to process the queue.
-                        Thread th = new Thread(new ThreadStart(ProcessQueue));
-                        th.IsBackground = true;
+                        Thread th = new Thread(new ThreadStart(ProcessQueue))
+                        {
+                            IsBackground = true
+                        };
                         th.Start();
                     }
                     //else, there's at least one background thread processing the queue, so we'll eventually
@@ -105,6 +107,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     Trace.Fail("Background worker threw an exception: " + e.Message, e.StackTrace);
                 }
+
                 worker = DequeueWorker();
             }
         }
@@ -123,12 +126,13 @@ namespace OpenLiveWriter.CoreServices
                 if (worker == null)
                     activeWorkerCount--;
             }
+
             return worker;
         }
 
-        Queue queue = new Queue();
+        readonly Queue queue = new Queue();
         int activeWorkerCount;
-        int MaxConcurrency;
+        readonly int MaxConcurrency;
 
         /// <summary>
         /// Utility class for associating a WaitCallback delegate with its assigned state.

@@ -17,9 +17,9 @@ namespace OpenLiveWriter.PostEditor
     public class HtmlAlignDecoratorSettings
     {
         private static readonly string DEFAULT_ALIGNMENT = "DefaultAlignment";
-        private IHTMLElement _element;
-        IProperties Settings;
-        private ImageDecoratorInvocationSource _invocationSource = ImageDecoratorInvocationSource.Unknown;
+        private readonly IHTMLElement _element;
+        readonly IProperties Settings;
+        private readonly ImageDecoratorInvocationSource _invocationSource = ImageDecoratorInvocationSource.Unknown;
 
         public HtmlAlignDecoratorSettings(IHTMLElement element)
         {
@@ -124,6 +124,7 @@ namespace OpenLiveWriter.PostEditor
                             needToSelectImage = true;
                             element = CreateNodeForCentering();
                         }
+
                         if (element != null)
                         {
                             element.setAttribute("align", "center", 0);
@@ -136,6 +137,7 @@ namespace OpenLiveWriter.PostEditor
                         _element.style.marginLeft = "auto";
                         _element.style.marginRight = "auto";
                     }
+
                     break;
                 default:
                     Trace.Fail("Unknown image alignment: " + value.ToString());
@@ -242,6 +244,7 @@ namespace OpenLiveWriter.PostEditor
                     count++;
                 }
             }
+
             return count;
         }
 

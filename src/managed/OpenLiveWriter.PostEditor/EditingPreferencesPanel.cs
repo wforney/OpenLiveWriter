@@ -22,11 +22,11 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private GroupBox groupBoxEditing;
         private CheckBox checkBoxTypographic;
-        private AutoreplacePreferences _autoReplacePreferences;
+        private readonly AutoreplacePreferences _autoReplacePreferences;
         private CheckBox checkBoxSmartQuotes;
         private CheckBox checkBoxSpecialChars;
         private CheckBox checkBoxEmoticons;
@@ -119,6 +119,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

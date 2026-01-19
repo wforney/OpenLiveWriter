@@ -20,8 +20,8 @@ namespace OpenLiveWriter.CoreServices.HTML
     /// </summary>
     public class ExternalHtmlReferenceFixer
     {
-        private HtmlReferenceFixer _htmlReferenceFixer;
-        private string _sourceUrl;
+        private readonly HtmlReferenceFixer _htmlReferenceFixer;
+        private readonly string _sourceUrl;
 
         /// <summary>
         /// Initializes a new instance of the ExternalHtmlReferenceFixer class.

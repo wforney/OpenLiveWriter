@@ -28,14 +28,14 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
-        private IWin32Window _parentFrame;
-        private IBlogPostPublishingContext _publishingContext;
-        private bool _publish;
+        private readonly IWin32Window _parentFrame;
+        private readonly IBlogPostPublishingContext _publishingContext;
+        private readonly bool _publish;
         private bool _republishOnSuccess;
         private UpdateWeblogAsyncOperation _updateWeblogAsyncOperation;
-        private string _defaultProgressMessage;
+        private readonly string _defaultProgressMessage;
         private string _cancelReason;
 
         /// <param name="parentFrame"></param>
@@ -279,14 +279,16 @@ namespace OpenLiveWriter.PostEditor
                             DisplayHelper.ScaleBitmap(ResourceHelper.LoadAssemblyResourceBitmap(resourceName))
                             );
                     }
+
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));
                 }
+
                 return _animationBitmaps;
             }
         }
         private Bitmap[] _animationBitmaps;
 
-        private Bitmap bottomBevelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.PublishAnimation.BottomBevel.png");
+        private readonly Bitmap bottomBevelBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.PublishAnimation.BottomBevel.png");
 
         /// <summary>
         /// Clean up any resources being used.
@@ -301,6 +303,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -415,6 +418,5 @@ namespace OpenLiveWriter.PostEditor
             ProgressMessage = msg ?? _defaultProgressMessage;
         }
     }
-
 }
 

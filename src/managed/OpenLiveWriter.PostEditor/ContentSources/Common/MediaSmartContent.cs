@@ -107,14 +107,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
         {
             _content.Files.Remove(fileName);
         }
-
     }
 
     public class ForceInvalidateSmartContent
     {
         public readonly static string FORCEINVALIDATE = "ForceInvalidateSmartContent.ForceInvalidate";
 
-        private ISmartContent _content;
+        private readonly ISmartContent _content;
         public ForceInvalidateSmartContent(ISmartContent content)
         {
             _content = content;

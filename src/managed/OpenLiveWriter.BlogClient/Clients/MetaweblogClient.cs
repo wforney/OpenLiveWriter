@@ -52,6 +52,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 return WordPressGetKeywords(blogId);
             }
+
             return new BlogPostKeyword[] { };
         }
 
@@ -286,6 +287,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 newCategories.Add(newCategory);
                 newCategoryContext.NewCategoryAdded(newCategory);
             }
+
             post.NewCategories = newCategories.ToArray(typeof(BlogPostCategory)) as BlogPostCategory[];
             return true;
         }
@@ -717,6 +719,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     Trace.Fail("Unexpected non-integer category parent ID: " + parent);
                 }
             }
+
             return val;
         }
 
@@ -972,7 +975,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if (!now.HasValue || Options.FuturePublishDateWarning || blogPost.DatePublished.CompareTo(now.Value) < 0)
                         posts.Add(blogPost);
                 }
-
             }
             catch (Exception ex)
             {
@@ -988,10 +990,11 @@ namespace OpenLiveWriter.BlogClient.Clients
         private BlogPost ParseBlogPost(XmlNode postNode, bool includeCategories)
         {
             // create blog post
-            BlogPost blogPost = new BlogPost();
-
-            // get node values
-            blogPost.Id = NodeText(postNode.SelectSingleNode("member[name='postid']/value"));
+            BlogPost blogPost = new BlogPost
+            {
+                // get node values
+                Id = NodeText(postNode.SelectSingleNode("member[name='postid']/value"))
+            };
             if (blogPost.Id == String.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("member[name='page_id']/value"));
 
@@ -1226,6 +1229,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             delimiter = ',';
                             break;
                     }
+
                     StringBuilder trackbackBuilder = new StringBuilder();
                     foreach (string pingUrl in post.PingUrlsPending)
                         trackbackBuilder.AppendFormat("{0}{1}", pingUrl, delimiter);

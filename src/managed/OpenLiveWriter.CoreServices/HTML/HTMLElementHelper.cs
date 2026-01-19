@@ -368,8 +368,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                 {
                     EnsureColorTable();
-                    string composeSettingsString;
-                    if (colorTable.TryGetValue(colorTableString.ToLowerInvariant(), out composeSettingsString))
+                    if (colorTable.TryGetValue(colorTableString.ToLowerInvariant(), out string composeSettingsString))
                     {
                         return composeSettingsString;
                     }
@@ -430,6 +429,7 @@ namespace OpenLiveWriter.CoreServices
                 p.Y += element.offsetTop;
                 element = element.offsetParent;
             }
+
             return p;
         }
 
@@ -548,6 +548,7 @@ namespace OpenLiveWriter.CoreServices
                     left += offsetParent.offsetLeft;
                     offsetParent = offsetParent.offsetParent;
                 }
+
                 left += offsetParent.offsetLeft;
 
                 // record a reference to the body element
@@ -632,6 +633,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 array[i++] = e;
             }
+
             return array;
         }
 
@@ -665,6 +667,7 @@ namespace OpenLiveWriter.CoreServices
                     imageElement = image;
                 }
             }
+
             return (IHTMLImgElement)imageElement;
         }
 
@@ -953,8 +956,7 @@ namespace OpenLiveWriter.CoreServices
                     return 0;
                 }
 
-                double number;
-                if (Double.TryParse(cssUnits, NumberStyles.Float, CultureInfo.InvariantCulture, out number))
+                if (Double.TryParse(cssUnits, NumberStyles.Float, CultureInfo.InvariantCulture, out double number))
                 {
                     // The line-height property supports numbers with no units.
                     if (cssUnitStringDelegate == CSSUnitStringLineHeight)
@@ -972,6 +974,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 Trace.Fail("Failed to convert CSS units: " + ex);
             }
+
             return result;
         }
 
@@ -1386,5 +1389,4 @@ namespace OpenLiveWriter.CoreServices
         Before,
         After
     }
-
 }

@@ -25,8 +25,8 @@ namespace OpenLiveWriter.PostEditor
     /// </summary>
     public class HtmlDocument2Wrapper : IHTMLDocument2, IDataObject, IPersistStreamInit
     {
-        private IHTMLDocument2 _innerDoc2;
-        private IContentSourceSidebarContext _contentSourceSidebarContext;
+        private readonly IHTMLDocument2 _innerDoc2;
+        private readonly IContentSourceSidebarContext _contentSourceSidebarContext;
         public HtmlDocument2Wrapper(IHTMLDocument2 doc2, IContentSourceSidebarContext contentSourceSidebarContext)
         {
             _innerDoc2 = doc2;
@@ -625,7 +625,6 @@ namespace OpenLiveWriter.PostEditor
                     Trace.Flush();
                     throw;
                 }
-
             }
         }
     }

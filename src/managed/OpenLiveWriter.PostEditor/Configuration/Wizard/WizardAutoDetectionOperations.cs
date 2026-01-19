@@ -172,7 +172,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         protected BlogServiceDetectorBase _blogServiceDetector;
         protected TemporaryBlogSettings _temporarySettings;
-        private WizardStep _editWithStyleStep;
+        private readonly WizardStep _editWithStyleStep;
     }
 
     /// <summary>
@@ -286,9 +286,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         private TemporaryBlogSettings _temporarySettings;
         private BlogEditingTemplateDetector _blogEditingTemplateDetector;
         private MultipartAsyncOperation _hostOperation;
-        WizardStep _editWithStyleStep;
+        readonly WizardStep _editWithStyleStep;
 
     }
-
 }
 

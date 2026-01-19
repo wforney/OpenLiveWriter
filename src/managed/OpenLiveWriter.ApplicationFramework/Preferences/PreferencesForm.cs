@@ -28,7 +28,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// The SideBarControl that provides our TabControl-like user interface.
         /// </summary>
-        private SideBarControl sideBarControl;
+        private readonly SideBarControl sideBarControl;
 
         /// <summary>
         /// The PreferencesPanel list.
@@ -69,10 +69,12 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             Text = Res.Get(StringId.Options);
 
             //	Instantiate and initialize the SideBarControl.
-            sideBarControl = new SideBarControl();
-            sideBarControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom;
-            sideBarControl.TabStop = true;
-            sideBarControl.TabIndex = 0;
+            sideBarControl = new SideBarControl
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom,
+                TabStop = true,
+                TabIndex = 0
+            };
             sideBarControl.SelectedIndexChanged += new EventHandler(sideBarControl_SelectedIndexChanged);
             sideBarControl.Location = new Point(10, 10);
             sideBarControl.Size = new Size(151, ClientSize.Height - 20);
@@ -95,6 +97,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -367,6 +370,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
             {
                 maxPanelHeight = Math.Max(maxPanelHeight, GetPanelHeightRequired(panel));
             }
+
             panelPreferences.Height = maxPanelHeight;
             Height = maxPanelHeight + (int)Math.Ceiling(DisplayHelper.ScaleY(100));
         }
@@ -424,7 +428,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
 
         internal class TabSwitcher
         {
-            private SideBarControl control;
+            private readonly SideBarControl control;
             internal TabSwitcher(SideBarControl control)
             {
                 this.control = control;
@@ -509,6 +513,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                     ControlHelper.HideFocus(this);
                     ControlHelper.ShowFocus(this);
                 }
+
                 preferencesPanel.BringToFront();
             }
 

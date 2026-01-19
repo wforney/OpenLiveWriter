@@ -25,7 +25,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components;
+        private readonly IContainer components;
 
         /// <summary>
         /// Initializes a new instance of the ApplicationForm class.
@@ -74,6 +74,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -123,6 +124,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     DisposeMenu(subMenu);
                 }
+
                 menu.Dispose();
             }
         }
@@ -193,10 +195,12 @@ namespace OpenLiveWriter.ApplicationFramework
             _hMainMenuBrush = Gdi32.CreatePatternBrush(_hMainMenuBrushBitmap);
 
             // set the brush
-            MENUINFO mi = new MENUINFO();
-            mi.cbSize = Marshal.SizeOf(typeof(MENUINFO));
-            mi.fMask = MIM.BACKGROUND;
-            mi.hbrBack = _hMainMenuBrush;
+            MENUINFO mi = new MENUINFO
+            {
+                cbSize = Marshal.SizeOf(typeof(MENUINFO)),
+                fMask = MIM.BACKGROUND,
+                hbrBack = _hMainMenuBrush
+            };
             User32.SetMenuInfo(Menu.Handle, ref mi);
             User32.DrawMenuBar(Handle);
         }

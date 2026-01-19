@@ -147,6 +147,7 @@ namespace OpenLiveWriter.SpellChecker
                 if (!IsWordChar(text[i]))
                     lastNonWord = i;
             }
+
             return lastNonWord + 1;
         }
 
@@ -157,6 +158,7 @@ namespace OpenLiveWriter.SpellChecker
                 if (IsWordChar(text[i]))
                     return i;
             }
+
             return -1;
         }
 
@@ -172,6 +174,7 @@ namespace OpenLiveWriter.SpellChecker
                 if (!IsWordChar(text[i]))
                     return i;
             }
+
             return text.Length;
         }
 

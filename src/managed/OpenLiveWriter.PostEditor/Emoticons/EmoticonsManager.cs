@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
     public class EmoticonsManager
     {
         private const int MAX_RECENT_EMOTICONS = 10;
-        private static Bitmap bitmapStrip = Images.Emoticon_All_Strip;
+        private static readonly Bitmap bitmapStrip = Images.Emoticon_All_Strip;
         private static int nextIndex = 0;
 
         private static readonly List<Emoticon> _emoticons = new List<Emoticon> {
@@ -134,10 +134,10 @@ namespace OpenLiveWriter.PostEditor.Emoticons
             new Emoticon(new List<string> { "*s*" },                                    Res.Get(StringId.EmoticonSchool),                       bitmapStrip, nextIndex++, Emoticon.CLASS_NAME + "-school",                    ".png")
         };
 
-        private List<Emoticon> _recentEmoticons;
-        private Dictionary<Emoticon, Uri> _inlineImageUriTable;
-        private IBlogPostImageEditingContext _imageEditingContext;
-        private IEditingMode _editingModeContext;
+        private readonly List<Emoticon> _recentEmoticons;
+        private readonly Dictionary<Emoticon, Uri> _inlineImageUriTable;
+        private readonly IBlogPostImageEditingContext _imageEditingContext;
+        private readonly IEditingMode _editingModeContext;
 
         public EmoticonsManager(IBlogPostImageEditingContext imageEditingContext, IEditingMode editingModeContext)
         {
@@ -241,8 +241,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                 return emoticon.AutoReplaceText[0];
             }
 
-            Uri inlineImageUri;
-            if (!_inlineImageUriTable.TryGetValue(emoticon, out inlineImageUri))
+            if (!_inlineImageUriTable.TryGetValue(emoticon, out Uri inlineImageUri))
             {
                 inlineImageUri = CreateInlineImage(emoticon);
             }
@@ -283,8 +282,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
         /// </summary>
         public Uri GetInlineImageUri(Emoticon emoticon)
         {
-            Uri inlineImageUri;
-            if (!_inlineImageUriTable.TryGetValue(emoticon, out inlineImageUri))
+            if (!_inlineImageUriTable.TryGetValue(emoticon, out Uri inlineImageUri))
             {
                 inlineImageUri = CreateInlineImage(emoticon);
             }
@@ -326,6 +324,7 @@ namespace OpenLiveWriter.PostEditor.Emoticons
                     }
                 }
             }
+
             return recentEmoticons;
         }
 

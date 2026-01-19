@@ -49,5 +49,4 @@ namespace OpenLiveWriter.InternalWriterPlugin
             PointF scale = new PointF(1f, 1f);
         }
     }
-
 }

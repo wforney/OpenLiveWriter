@@ -50,6 +50,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
                 {
                     internalParsingName = GetParsingName(nativeShellItem);
                 }
+
                 return internalParsingName;
             }
             protected set
@@ -125,6 +126,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
                         throw new ExternalException("Shell item could not be created.", Marshal.GetExceptionForHR(retCode));
                     }
                 }
+
                 return nativeShellItem;
             }
         }

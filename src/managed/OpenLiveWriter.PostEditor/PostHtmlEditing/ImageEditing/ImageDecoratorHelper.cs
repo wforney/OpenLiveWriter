@@ -43,6 +43,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     return editorForm.ShowDialog();
                 }
             }
+
             return DialogResult.Abort;
         }
     }

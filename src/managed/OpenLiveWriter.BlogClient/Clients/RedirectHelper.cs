@@ -29,8 +29,10 @@ namespace OpenLiveWriter.BlogClient.Clients
                     response.Close();
                     continue;
                 }
+
                 return response;
             }
+
             throw new BlogClientInvalidServerResponseException(initialUri, "Allowed number of redirects (50) was exceeded", string.Empty);
         }
 

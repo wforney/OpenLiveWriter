@@ -138,7 +138,7 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // hashtable containing paths and corresponding memory streams
-        private Hashtable m_streams = new Hashtable();
+        private readonly Hashtable m_streams = new Hashtable();
     }
 
     /// <summary>
@@ -172,5 +172,4 @@ namespace OpenLiveWriter.CoreServices
         // length of the stream after it has been closed
         private int m_finalLength = -1;
     }
-
 }

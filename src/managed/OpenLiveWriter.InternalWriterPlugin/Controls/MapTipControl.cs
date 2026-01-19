@@ -11,7 +11,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
 {
     internal class MapTipControl : UserControl
     {
-        private Bitmap _tipIcon;
+        private readonly Bitmap _tipIcon;
 
         public MapTipControl()
         {
@@ -95,7 +95,6 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                 // draw string
                 g.DrawText(TipText, Font, textRectangle, Color.FromArgb(GraphicsHelper.Opacity(TextOpacityPct), ForeColor), flags);
             }
-
         }
     }
 }

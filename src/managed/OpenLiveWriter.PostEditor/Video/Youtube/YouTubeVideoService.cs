@@ -95,6 +95,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 VideoContext context = new VideoContext();
                 _ytVideoBuffers[requestType] = new VideoBuffer(GetVideosInternal(requestType, timeoutMs, pageSize, context), context);
             }
+
             return _ytVideoBuffers[requestType] as VideoBuffer;
         }
 
@@ -204,13 +205,12 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 string requestUrl = baseUrl + queryString;
 
                 YouTubeVideo[] videos;
-                int totalResults;
 
                 // download the document
                 Stream videoListStream = CallYouTubeApi(requestUrl, timeoutMs);
 
                 // parse it into a list of videos
-                videos = ParseVideoList(videoListStream, out totalResults);
+                videos = ParseVideoList(videoListStream, out int totalResults);
 
                 context.Available = totalResults;
                 if (videos.Length == 0)
@@ -365,6 +365,7 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
                 _ratingCount = SafeParseInt(ratingElement.GetAttribute(
                                                 "numRaters"));
             }
+
             XmlElement statsElement = entryNode.SelectSingleNode("yt:statistics", mgr) as XmlElement;
             if (statsElement != null)
                 _viewCount = SafeParseInt(statsElement.GetAttribute(
@@ -464,11 +465,10 @@ namespace OpenLiveWriter.PostEditor.Video.YouTube
         private int _viewCount = 0;
         private DateTime _uploadTime = DateTime.MinValue;
         private int _commentCount = 0;
-        private string[] _tags = new string[] { };
+        private readonly string[] _tags = new string[] { };
         private string _url = String.Empty;
         private string _thumbnailUrl = String.Empty;
         private bool _isPublished = true;
 
     }
-
 }

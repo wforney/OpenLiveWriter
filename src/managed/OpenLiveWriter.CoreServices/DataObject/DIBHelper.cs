@@ -93,6 +93,7 @@ namespace OpenLiveWriter.CoreServices
                     break;
                 }
             }
+
             return clsid;
         }
 
@@ -106,18 +107,20 @@ namespace OpenLiveWriter.CoreServices
             // Get the Bitmap Info Header
             BinaryReader reader = new BinaryReader(stream);
 
-            BITMAPINFOHEADER bmpInfoHeader = new BITMAPINFOHEADER();
-            bmpInfoHeader.biSize = reader.ReadInt32();
-            bmpInfoHeader.biWidth = reader.ReadInt32();
-            bmpInfoHeader.biHeight = reader.ReadInt32();
-            bmpInfoHeader.biPlanes = reader.ReadInt16();
-            bmpInfoHeader.biBitCount = reader.ReadInt16();
-            bmpInfoHeader.biCompression = reader.ReadInt32();
-            bmpInfoHeader.biSizeImage = reader.ReadInt32();
-            bmpInfoHeader.biXPelsPerMeter = reader.ReadInt32();
-            bmpInfoHeader.biYPelsPerMeter = reader.ReadInt32();
-            bmpInfoHeader.biClrUsed = reader.ReadInt32();
-            bmpInfoHeader.biClrImportant = reader.ReadInt32();
+            BITMAPINFOHEADER bmpInfoHeader = new BITMAPINFOHEADER
+            {
+                biSize = reader.ReadInt32(),
+                biWidth = reader.ReadInt32(),
+                biHeight = reader.ReadInt32(),
+                biPlanes = reader.ReadInt16(),
+                biBitCount = reader.ReadInt16(),
+                biCompression = reader.ReadInt32(),
+                biSizeImage = reader.ReadInt32(),
+                biXPelsPerMeter = reader.ReadInt32(),
+                biYPelsPerMeter = reader.ReadInt32(),
+                biClrUsed = reader.ReadInt32(),
+                biClrImportant = reader.ReadInt32()
+            };
 
             return bmpInfoHeader;
         }
@@ -143,7 +146,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Supported codecs
         /// </summary>
-        private static ImageCodecInfo[] m_codecs = ImageCodecInfo.GetImageEncoders();
+        private static readonly ImageCodecInfo[] m_codecs = ImageCodecInfo.GetImageEncoders();
 
     }
 

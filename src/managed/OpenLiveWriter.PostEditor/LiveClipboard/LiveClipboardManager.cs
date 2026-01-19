@@ -48,13 +48,13 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         {
             get { return _format; }
         }
-        private LiveClipboardFormat _format;
+        private readonly LiveClipboardFormat _format;
 
         public string FormatName
         {
             get { return _formatName; }
         }
-        private string _formatName;
+        private readonly string _formatName;
 
         public string FormatDescription
         {
@@ -66,7 +66,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                     return String.Format(CultureInfo.CurrentCulture, "{0} format", FormatName);
             }
         }
-        private string _formatDescription;
+        private readonly string _formatDescription;
 
         public Image FormatImage
         {
@@ -87,10 +87,9 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                     Trace.Fail("Unexpected exception thrown while trying to retreive live clipboard format image: " + ex.ToString());
                     return ContentSource.Image;
                 }
-
             }
         }
-        private string _formatImagePath;
+        private readonly string _formatImagePath;
 
         public string FriendlyContentType
         {
@@ -107,7 +106,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         {
             get { return _contentSource; }
         }
-        private ContentSourceInfo _contentSource;
+        private readonly ContentSourceInfo _contentSource;
 
         public class NameComparer : IComparer
         {
@@ -116,7 +115,6 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                 return (x as LiveClipboardFormatHandler).FormatName.CompareTo((y as LiveClipboardFormatHandler).FormatName);
             }
         }
-
     }
 
     internal sealed class LiveClipboardManager
@@ -229,6 +227,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                     if (supportedFormatHandler.Format.Equals(format))
                         contentSources.Add(contentSourceInfo);
             }
+
             return contentSources.ToArray(typeof(ContentSourceInfo)) as ContentSourceInfo[];
         }
 
@@ -244,8 +243,8 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                 return formatSettings.GetString(CONTENT_SOURCE_ID, null);
         }
 
-        private static SettingsPersisterHelper _liveClipboardSettings = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("LiveClipboard");
-        private static SettingsPersisterHelper _formatHandlerSettings = _liveClipboardSettings.GetSubSettings("Formats");
+        private static readonly SettingsPersisterHelper _liveClipboardSettings = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("LiveClipboard");
+        private static readonly SettingsPersisterHelper _formatHandlerSettings = _liveClipboardSettings.GetSubSettings("Formats");
         private const string CONTENT_SOURCE_ID = "ContentSourceId";
 
     }
@@ -269,11 +268,11 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         }
 
         public Image Icon { get { return _icon; } }
-        private Image _icon;
+        private readonly Image _icon;
         public string Name { get { return _name; } }
-        private string _name;
+        private readonly string _name;
 
-        private Bitmap _writerLogoBitmap = ResourceHelper.LoadAssemblyResourceBitmap("LiveClipboard.Images.HandledByOpenLiveWriter.png");
+        private readonly Bitmap _writerLogoBitmap = ResourceHelper.LoadAssemblyResourceBitmap("LiveClipboard.Images.HandledByOpenLiveWriter.png");
 
     }
 }

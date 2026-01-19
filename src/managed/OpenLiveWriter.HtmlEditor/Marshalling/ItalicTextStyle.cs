@@ -46,5 +46,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return Italic.GetHashCode();
         }
     }
-
 }

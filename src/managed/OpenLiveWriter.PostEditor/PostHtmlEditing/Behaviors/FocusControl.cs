@@ -14,9 +14,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     /// </summary>
     public class FocusControl : BehaviorControl
     {
-        private ElementFocusPainter focusPainter;
+        private readonly ElementFocusPainter focusPainter;
 
-        private ElementControlBehavior _parent;
+        private readonly ElementControlBehavior _parent;
         public FocusControl(ElementControlBehavior parent)
         {
             _parent = parent;

@@ -73,6 +73,7 @@ namespace OpenLiveWriter.CoreServices.UI
                     point.Offset(rect.Right, rect.Bottom);
                     break;
             }
+
             return point;
         }
     }

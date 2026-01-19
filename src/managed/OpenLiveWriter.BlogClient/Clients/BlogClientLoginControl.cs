@@ -30,7 +30,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public BlogClientLoginControl()
         {
@@ -67,6 +67,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 if (_domainImage != null)
                     _domainImage.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

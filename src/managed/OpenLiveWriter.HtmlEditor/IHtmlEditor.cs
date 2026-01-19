@@ -58,5 +58,4 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         bool SuspendAutoSave { get; }
     }
-
 }

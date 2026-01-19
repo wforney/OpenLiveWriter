@@ -156,8 +156,7 @@ namespace OpenLiveWriter.CoreServices
 
         private static IMoniker CreateMoniker(string itemName)
         {
-            IMoniker mk;
-            int result = Ole32.CreateItemMoniker("!", itemName, out mk);
+            int result = Ole32.CreateItemMoniker("!", itemName, out IMoniker mk);
             if (result != 0)
                 throw new Win32Exception(result);
             return mk;
@@ -172,14 +171,14 @@ namespace OpenLiveWriter.CoreServices
             {
                 IMoniker mk = CreateMoniker(itemName);
 
-                object obj;
-                int hr = _rot.GetObject(mk, out obj);
+                int hr = _rot.GetObject(mk, out object obj);
 
                 if (hr != HRESULT.S_OK)
                 {
                     Trace.WriteLine(String.Format("ROT.GetObject returned HRESULT 0x{0:x}.", hr));
                     return null;
                 }
+
                 return obj;
             }
             catch (COMException e)
@@ -207,8 +206,8 @@ namespace OpenLiveWriter.CoreServices
 
         private class RegistrationHandle : IDisposable
         {
-            private RunningObjectTable _rot;
-            private int _registration;
+            private readonly RunningObjectTable _rot;
+            private readonly int _registration;
 
             public RegistrationHandle(RunningObjectTable rot, int registration)
             {
@@ -222,8 +221,7 @@ namespace OpenLiveWriter.CoreServices
 
                 // Can't use normal Dispose() because the _rot may already
                 // have been garbage collected by this point
-                IRunningObjectTable rot;
-                int result = Ole32.GetRunningObjectTable(0, out rot);
+                int result = Ole32.GetRunningObjectTable(0, out IRunningObjectTable rot);
                 if (result == 0)
                 {
                     rot.Revoke(_registration);

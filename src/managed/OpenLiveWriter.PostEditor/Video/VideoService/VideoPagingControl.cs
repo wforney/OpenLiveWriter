@@ -142,6 +142,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 _previousEnabledImage.Dispose();
 
             }
+
             base.Dispose(disposing);
         }
 
@@ -167,7 +168,6 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 labelQueryStatus.Left = buttonPreviousPage.Left - labelQueryStatus.Width - PADDING_X;
                 labelQueryStatus.TextAlign = ContentAlignment.MiddleRight;
             }
-
         }
 
         private static readonly int PADDING_X = 2;
@@ -206,6 +206,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 buttonPreviousPage.Enabled = _currentPage > 1;
                 buttonNextPage.Enabled = _numberOfVideos > endIndex;
             }
+
             RefreshLayout();
         }
 

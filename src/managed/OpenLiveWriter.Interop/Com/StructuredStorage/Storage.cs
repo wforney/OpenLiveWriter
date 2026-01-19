@@ -190,14 +190,15 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                             else
                                 throw;
                         }
+
                         break;
                 }
-
             }
             catch (COMException e)
             {
                 ThrowStorageException(e);
             }
+
             return stream;
         }
 
@@ -230,9 +231,8 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
 
                     // Iterate over the IEnumSTATSTG and copy the elements into a managed array
                     ArrayList statstgList = new ArrayList();
-                    System.Runtime.InteropServices.ComTypes.STATSTG current;
                     int result;
-                    while ((result = enumerator.Next(1, out current, IntPtr.Zero)) == HRESULT.S_OK)
+                    while ((result = enumerator.Next(1, out System.Runtime.InteropServices.ComTypes.STATSTG current, IntPtr.Zero)) == HRESULT.S_OK)
                         statstgList.Add(current);
 
                     // check to see if the last result was an error rather than HRESULT.S_FALSE
@@ -430,6 +430,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                         {
                             throw new COMException("StorageName does not exist", STG_E.FILENOTFOUND);
                         }
+
                         break;
 
                     case (StorageMode.OpenOrCreate):
@@ -437,6 +438,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                         {
                             opener.CreateStorage(name, out storage);
                         }
+
                         break;
                 }
             }
@@ -444,6 +446,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
             {
                 ThrowStorageException(e);
             }
+
             return storage;
         }
 
@@ -548,6 +551,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
             {
                 ThrowStorageException(e);
             }
+
             return clsid;
         }
 
@@ -682,7 +686,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// <summary>
         /// Whether the storage is writable.
         /// </summary>
-        private bool writable = false;
+        private readonly bool writable = false;
 
         private const int FIRST_NON_RESERVED_CHAR = 0x5D;
     }
@@ -775,10 +779,11 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
 
                 throw;
             }
+
             return true;
         }
 
-        private IStorage storage;
+        private readonly IStorage storage;
     }
 
     /// <summary>
@@ -795,9 +800,11 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
             string pwcsName,
             out IStorage ppstg)
         {
-            Ole32Storage.STGOPTIONS stgoptions = new Ole32Storage.STGOPTIONS();
-            stgoptions.usVersion = 1;
-            stgoptions.ulSectorSize = 4096;
+            Ole32Storage.STGOPTIONS stgoptions = new Ole32Storage.STGOPTIONS
+            {
+                usVersion = 1,
+                ulSectorSize = 4096
+            };
 
             Guid guidIStorage = typeof(IStorage).GUID;
             int result = Ole32Storage.StgCreateStorageEx(
@@ -852,9 +859,11 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                 return false;
             }
 
-            Ole32Storage.STGOPTIONS stgoptions = new Ole32Storage.STGOPTIONS();
-            stgoptions.usVersion = 1;
-            stgoptions.ulSectorSize = 4096;
+            Ole32Storage.STGOPTIONS stgoptions = new Ole32Storage.STGOPTIONS
+            {
+                usVersion = 1,
+                ulSectorSize = 4096
+            };
 
             Guid guidIStorage = typeof(IStorage).GUID;
             int result = Ole32Storage.StgOpenStorageEx(
@@ -892,6 +901,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                 else if (result != HRESULT.S_OK)
                     Marshal.ThrowExceptionForHR(result);
             }
+
             return true;
         }
     }
@@ -905,5 +915,4 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         Open,
         OpenOrCreate
     }
-
 }

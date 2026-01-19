@@ -25,7 +25,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// The settings persister helper.
         /// </summary>
-        private SettingsPersisterHelper settingsPersisterHelper;
+        private readonly SettingsPersisterHelper settingsPersisterHelper;
 
         /// <summary>
         ///  A value that indicates that the Preferences object has been modified since being

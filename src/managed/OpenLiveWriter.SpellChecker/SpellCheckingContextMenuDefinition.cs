@@ -37,8 +37,8 @@ namespace OpenLiveWriter.SpellChecker
             Entries.Add(CommandId.OpenSpellingForm, false, false);
         }
 
-        private string _currentWord;
-        private SpellingManager _spellingManager;
+        private readonly string _currentWord;
+        private readonly SpellingManager _spellingManager;
 
         private MenuDefinitionEntryCollection GetSpellingSuggestions()
         {
@@ -81,10 +81,13 @@ namespace OpenLiveWriter.SpellChecker
                         lastScore = suggestion.Score ;
                     }
                 }
+
                 if (!foundSuggestion)
                 {
-                    Command FixSpellingCommand = new Command(CommandId.FixWordSpelling);
-                    FixSpellingCommand.Enabled = false;
+                    Command FixSpellingCommand = new Command(CommandId.FixWordSpelling)
+                    {
+                        Enabled = false
+                    };
 
                     commandManager.Add(FixSpellingCommand);
                     listOfSuggestions.Add(CommandId.FixWordSpelling, false, true);
@@ -95,6 +98,7 @@ namespace OpenLiveWriter.SpellChecker
                 commandManager.EndUpdate();
                 commandManager.SuppressEvents = false;
             }
+
             return listOfSuggestions;
         }
 

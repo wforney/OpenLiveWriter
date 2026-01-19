@@ -89,6 +89,5 @@ namespace OpenLiveWriter.Interop.Com
         {
             // Nothing to do
         }
-
     }
 }

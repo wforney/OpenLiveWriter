@@ -210,6 +210,7 @@ namespace OpenLiveWriter.BlogClient
                         baseUrl = UrlHelper.UrlCombine(hostUrl, path);
                     }
                 }
+
                 return baseUrl;
             }
         }
@@ -245,6 +246,7 @@ namespace OpenLiveWriter.BlogClient
                     Trace.Fail("Parsing failed: " + postId);
                 }
             }
+
             return FormatUrl(ClientOptions.PostEditingUrl, postId);
         }
 
@@ -330,6 +332,7 @@ namespace OpenLiveWriter.BlogClient
                     DisplayMessage msg = new DisplayMessage(MessageId.ErrorConnecting);
                     ex = new BlogClientException(msg.Title, msg.Text);
                 }
+
                 HttpRequestHelper.LogException(we);
             }
 
@@ -527,8 +530,10 @@ namespace OpenLiveWriter.BlogClient
         public PostResult EditPost(BlogPost post, INewCategoryContext newCategoryContext, bool publish)
         {
             // initialize result (for edits the id never changes)
-            PostResult result = new PostResult();
-            result.PostId = post.Id;
+            PostResult result = new PostResult
+            {
+                PostId = post.Id
+            };
             try
             {
                 //apply any publishing filters and make the post
@@ -637,7 +642,7 @@ namespace OpenLiveWriter.BlogClient
             return _settings.BlogName;
         }
 
-        private IBlogSettingsAccessor _settings;
+        private readonly IBlogSettingsAccessor _settings;
 
         private bool ErrorIsInvalidPostId(BlogClientProviderException ex)
         {
@@ -737,8 +742,8 @@ namespace OpenLiveWriter.BlogClient
         private enum ContentFilterMode { Open, Publish };
         private class ContentFilterApplier : IDisposable
         {
-            private BlogPost _blogPost;
-            private string _originalContents;
+            private readonly BlogPost _blogPost;
+            private readonly string _originalContents;
             public ContentFilterApplier(BlogPost blogPost, IBlogClientOptions clientOptions, ContentFilterMode filterMode)
             {
                 _blogPost = blogPost;
@@ -762,6 +767,7 @@ namespace OpenLiveWriter.BlogClient
                             content = bpContentFilter.PublishFilter(content);
                     }
                 }
+
                 return content;
             }
 

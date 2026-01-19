@@ -41,7 +41,6 @@ namespace OpenLiveWriter.CoreServices
                 Truncate(ref a, j);
                 return (object[])a;
             }
-
         }
 
         /// <summary>
@@ -102,8 +101,10 @@ namespace OpenLiveWriter.CoreServices
                     {
                         outerTable[o] = 0;
                     }
+
                     outerTable[o] = (int)outerTable[o] + 1;
                 }
+
                 isFirstTrip = false;
             }
 
@@ -117,6 +118,7 @@ namespace OpenLiveWriter.CoreServices
                     intersection.SetValue(entry.Key, pos++);
                 }
             }
+
             Truncate(ref intersection, pos);
             if (intersection.Length > 0)
                 return Narrow(intersection, underlyingType);
@@ -162,6 +164,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 union.SetValue(o, pos++);
             }
+
             return union;
         }
 
@@ -183,6 +186,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 newArray.SetValue(mapper(array.GetValue(i)), i);
             }
+
             return newArray;
         }
 
@@ -269,6 +273,7 @@ namespace OpenLiveWriter.CoreServices
                 if (hitTester(searchState, array[i]))
                     return i;
             }
+
             return -1;
         }
 
@@ -323,5 +328,4 @@ namespace OpenLiveWriter.CoreServices
             return false;
         }
     }
-
 }

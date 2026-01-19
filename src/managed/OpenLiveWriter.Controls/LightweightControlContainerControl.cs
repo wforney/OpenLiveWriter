@@ -75,7 +75,7 @@ namespace OpenLiveWriter.Controls
         /// The height of the drag-and-drop auto-scroll rectangle at the top and bottom of the
         /// control's ClientRectangle.
         /// </summary>
-        private static int DRAG_AND_DROP_AUTO_SCROLL_RECTANGLE_HEIGHT = 25;
+        private static readonly int DRAG_AND_DROP_AUTO_SCROLL_RECTANGLE_HEIGHT = 25;
 
         /// <summary>
         /// The initial drag-and-drop auto-scroll timer interval.
@@ -109,7 +109,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// The collection of lightweight controls contained within the control.
         /// </summary>
-        private LightweightControlCollection lightweightControls;
+        private readonly LightweightControlCollection lightweightControls;
 
         /// <summary>
         /// The active lightweight control.  All keyboard messages are sent to the active control.
@@ -394,6 +394,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -407,11 +408,13 @@ namespace OpenLiveWriter.Controls
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.toolTip = new ToolTip2(this.components);
-            //
-            // toolTip
-            //
-            this.toolTip.ShowAlways = true;
+            this.toolTip = new ToolTip2(this.components)
+            {
+                //
+                // toolTip
+                //
+                ShowAlways = true
+            };
             //
             // LightweightControlContainerControl
             //
@@ -1081,12 +1084,14 @@ namespace OpenLiveWriter.Controls
                                 return true;
                             }
                         }
+
                         break;
                     case Keys.Tab:
                         if (ProcessControlNavigation((keyData & Keys.Shift) == Keys.None))
                         {
                             return true;
                         }
+
                         break;
                     case Keys.Enter:
                         if (DoDefaultAction())
@@ -1098,6 +1103,7 @@ namespace OpenLiveWriter.Controls
                         break;
                 }
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -1133,6 +1139,7 @@ namespace OpenLiveWriter.Controls
                     return containerControl;
                 control = containerControl.ActiveControl;
             }
+
             return control;
         }
 
@@ -1145,6 +1152,7 @@ namespace OpenLiveWriter.Controls
                 else
                     return Parent.SelectNextControl(this, forward, true, true, false);
             }
+
             return false;
         }
 
@@ -1499,6 +1507,7 @@ namespace OpenLiveWriter.Controls
                             OnGotFocus(EventArgs.Empty);
                             return;
                         }
+
                         break;
                     }
             }
@@ -2088,7 +2097,7 @@ namespace OpenLiveWriter.Controls
 
         public class LightweightControlContainerAccessibility : Control.ControlAccessibleObject
         {
-            private LightweightControlContainerControl _containerControl;
+            private readonly LightweightControlContainerControl _containerControl;
 
             public LightweightControlContainerAccessibility(LightweightControlContainerControl containerControl) : base(containerControl)
             {
@@ -2110,7 +2119,6 @@ namespace OpenLiveWriter.Controls
                 else
                     return base.GetChildCount();
             }
-
         }
     }
 }

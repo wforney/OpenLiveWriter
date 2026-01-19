@@ -14,7 +14,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
     public class WeblogConfigurationWizard : WizardForm
     {
-        private LinkLabel proxyLabel;
+        private readonly LinkLabel proxyLabel;
 
         public WeblogConfigurationWizard(WizardController controller) : base(controller)
         {
@@ -27,13 +27,15 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
             this.Height = Res.WizardHeight;
 
-            proxyLabel = new LinkLabel();
-            proxyLabel.Text = Res.Get(StringId.EditProxySettings);
-            proxyLabel.AutoSize = true;
-            proxyLabel.Location = new Point(19, 16);
-            proxyLabel.LinkBehavior = LinkBehavior.HoverUnderline;
-            proxyLabel.Name = "linkLabelProxy";
-            proxyLabel.LinkColor = SystemInformation.HighContrast ? SystemColors.HotTrack : Color.FromArgb(0, 102, 204);
+            proxyLabel = new LinkLabel
+            {
+                Text = Res.Get(StringId.EditProxySettings),
+                AutoSize = true,
+                Location = new Point(19, 16),
+                LinkBehavior = LinkBehavior.HoverUnderline,
+                Name = "linkLabelProxy",
+                LinkColor = SystemInformation.HighContrast ? SystemColors.HotTrack : Color.FromArgb(0, 102, 204)
+            };
             proxyLabel.LinkClicked += new LinkLabelLinkClickedEventHandler(proxyLabel_LinkClicked);
             panelFooter.Controls.Add(proxyLabel);
             proxyLabel.Visible = false;

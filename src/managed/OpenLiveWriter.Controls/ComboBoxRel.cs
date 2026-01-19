@@ -39,6 +39,5 @@ namespace OpenLiveWriter.Controls
                     SelectedIndex = index;
             }
         }
-
     }
 }

@@ -105,8 +105,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     {
                         // sub-menu begins
                         data.Read(); // eat the (
-                        string menuId;
-                        string menuPath = ReadNextEntry(true, prefix, data, out menuId);
+                        string menuPath = ReadNextEntry(true, prefix, data, out string menuId);
                         Parse(data, results, menuPath);
                     }
                     else if (c == ')')
@@ -119,8 +118,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     }
                     else
                     {
-                        string commandId;
-                        string commandMenuPath = ReadNextEntry(false, prefix, data, out commandId);
+                        string commandMenuPath = ReadNextEntry(false, prefix, data, out string commandId);
                         results.Add(commandId, commandMenuPath);
                     }
                 }

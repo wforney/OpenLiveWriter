@@ -157,11 +157,13 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         private TableProperties ReadFormProperties()
         {
-            TableProperties properties = new TableProperties();
-            properties.CellPadding = numericTextBoxCellPadding.Text.Trim();
-            properties.CellSpacing = numericTextBoxCellSpacing.Text.Trim();
-            properties.BorderSize = BorderSize;
-            properties.Width = columnWidthControl.ColumnWidth;
+            TableProperties properties = new TableProperties
+            {
+                CellPadding = numericTextBoxCellPadding.Text.Trim(),
+                CellSpacing = numericTextBoxCellSpacing.Text.Trim(),
+                BorderSize = BorderSize,
+                Width = columnWidthControl.ColumnWidth
+            };
             return properties;
         }
 
@@ -348,11 +350,13 @@ namespace OpenLiveWriter.PostEditor.Tables
         private TableCreationParameters CreateDefaultParameters()
         {
             // get default table properties
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.CellPadding = TableEditingSettings.DefaultCellPadding;
-            tableProperties.CellSpacing = TableEditingSettings.DefaultCellSpacing;
-            tableProperties.BorderSize = TableEditingSettings.DefaultBorderSize;
-            tableProperties.Width = new PixelPercent();
+            TableProperties tableProperties = new TableProperties
+            {
+                CellPadding = TableEditingSettings.DefaultCellPadding,
+                CellSpacing = TableEditingSettings.DefaultCellSpacing,
+                BorderSize = TableEditingSettings.DefaultBorderSize,
+                Width = new PixelPercent()
+            };
 
             // return default parameters
             return new TableCreationParameters(

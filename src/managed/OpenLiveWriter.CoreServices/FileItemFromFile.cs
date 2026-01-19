@@ -16,7 +16,7 @@ namespace OpenLiveWriter.CoreServices
             m_fileInfo = fileInfo;
         }
 
-        private FileInfo m_fileInfo;
+        private readonly FileInfo m_fileInfo;
 
         public override FileItem[] Children
         {

@@ -63,14 +63,17 @@ namespace OpenLiveWriter.BlogClient
                     url = url.Replace(BlogHomepageUrlToken, homepageUrl);
                 }
             }
+
             if (postApiUrl != null)
             {
                 url = url.Replace(BlogPostApiUrlToken, postApiUrl);
             }
+
             if (hostBlogId != null)
             {
                 url = url.Replace(BlogIdToken, hostBlogId);
             }
+
             if (postId != null)
             {
                 url = url.Replace(PostIdToken, postId);

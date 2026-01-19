@@ -12,7 +12,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
     /// <typeparam name="T">The type of elements in this collection.</typeparam>
     internal class JumpListItemCollection<T> : ICollection<T>
     {
-        private List<T> items = new List<T>();
+        private readonly List<T> items = new List<T>();
 
         /// <summary>
         /// Gets or sets a value that determines if this collection is read-only.

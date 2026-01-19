@@ -25,7 +25,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
     public class BlogClientHttpErrorException : BlogClientException
     {
-        private WebException _exception;
+        private readonly WebException _exception;
         public BlogClientHttpErrorException(string targetUrl, string description, WebException exception)
             : base(StringId.BCEHttpErrorTitle,
                     StringId.BCEHttpErrorMessage,
@@ -122,12 +122,11 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             : base(providerErrorCode, providerErrorString)
         {
         }
-
     }
 
     public class BlogClientAuthenticationException : BlogClientProviderException
     {
-        private WebException _webException;
+        private readonly WebException _webException;
         public BlogClientAuthenticationException(string providerErrorCode, string providerErrorString) :
         this(providerErrorCode, providerErrorString, null)
         {

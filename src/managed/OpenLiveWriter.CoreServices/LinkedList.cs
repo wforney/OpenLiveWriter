@@ -14,7 +14,7 @@ namespace OpenLiveWriter.CoreServices
     [Serializable]
     public class LinkedList : IList
     {
-        private HeadNode head = new HeadNode();
+        private readonly HeadNode head = new HeadNode();
         private Node tail;
         private int count = 0;
 
@@ -75,6 +75,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 throw new IndexOutOfRangeException();
             }
+
             return thisNode;
         }
 
@@ -110,10 +111,7 @@ namespace OpenLiveWriter.CoreServices
         {
             Modify();
 
-            Node parent;
-            Node target;
-            int index;
-            head.Find(val, out parent, out target, out index);
+            head.Find(val, out Node parent, out Node target, out int index);
             if (target == null)
                 return;
 
@@ -125,10 +123,7 @@ namespace OpenLiveWriter.CoreServices
 
         public bool Contains(object val)
         {
-            Node parent;
-            Node target;
-            int index;
-            head.Find(val, out parent, out target, out index);
+            head.Find(val, out Node parent, out Node target, out int index);
             return (target != null);
         }
 
@@ -143,10 +138,7 @@ namespace OpenLiveWriter.CoreServices
 
         public int IndexOf(object val)
         {
-            Node parent;
-            Node target;
-            int index;
-            head.Find(val, out parent, out target, out index);
+            head.Find(val, out Node parent, out Node target, out int index);
             if (target == null)
                 return -1;
             return index;
@@ -220,8 +212,8 @@ namespace OpenLiveWriter.CoreServices
         private class LLEnum : IEnumerator
         {
 
-            private int seqnum;
-            private LinkedList list;
+            private readonly int seqnum;
+            private readonly LinkedList list;
             private Node currNode;
             private bool atHead = true;
 
@@ -380,6 +372,7 @@ namespace OpenLiveWriter.CoreServices
                 sb.Append(o.ToString());
                 sb.Append(";");
             }
+
             sb.Append("}");
             return sb.ToString();
         }

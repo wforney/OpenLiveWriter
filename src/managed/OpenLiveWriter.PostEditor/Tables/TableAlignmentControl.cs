@@ -21,7 +21,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public TableAlignmentControl()
         {
@@ -101,6 +101,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -174,8 +175,8 @@ namespace OpenLiveWriter.PostEditor.Tables
                 return _value.GetHashCode();
             }
 
-            private string _caption;
-            private object _value;
+            private readonly string _caption;
+            private readonly object _value;
         }
 
         protected class AlignmentEditingProfile
@@ -189,8 +190,8 @@ namespace OpenLiveWriter.PostEditor.Tables
             public string Label { get { return _label; } }
             public AlignmentOption[] Options { get { return _options; } }
 
-            private string _label;
-            private AlignmentOption[] _options;
+            private readonly string _label;
+            private readonly AlignmentOption[] _options;
         }
     }
 
@@ -262,5 +263,4 @@ namespace OpenLiveWriter.PostEditor.Tables
         private readonly AlignmentOption MixedAlignment = new AlignmentOption("", VerticalAlignment.Mixed);
 
     }
-
 }

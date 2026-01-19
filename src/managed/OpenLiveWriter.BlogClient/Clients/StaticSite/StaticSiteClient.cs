@@ -32,7 +32,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 
         public IBlogClientOptions Options { get; private set; }
 
-        private StaticSiteConfig Config;
+        private readonly StaticSiteConfig Config;
 
         public StaticSiteClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
             : base(credentials)
@@ -89,6 +89,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                 Trace.Fail("Static site does not support drafts, cannot post.");
                 throw new BlogClientPostAsDraftUnsupportedException();
             }
+
             remotePost = null;
             etag = "";
 
@@ -103,6 +104,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                 Trace.Fail("Static site does not support drafts, cannot post.");
                 throw new BlogClientPostAsDraftUnsupportedException();
             }
+
             remotePost = null;
             etag = "";
 
@@ -305,7 +307,6 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                 // Throw the exception up
                 throw ex;
             }
-
         }
 
         /// <summary>
@@ -430,6 +431,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     uniqueName = Guid.NewGuid().ToString();
                     break;
                 }
+
                 if (i > 0) uniqueName += $"-{i}";
                 if (!File.Exists(Path.Combine(Config.LocalSitePath, Config.ImagesPath, uniqueName + fileExt ))) break;
             }
@@ -448,8 +450,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         /// </summary>
         private void DoSiteBuild()
         {
-            string stdout, stderr;
-            var proc = RunSiteCommand(Config.BuildCommand, out stdout, out stderr);
+            var proc = RunSiteCommand(Config.BuildCommand, out string stdout, out string stderr);
             if (proc.ExitCode != 0)
             {
                 throw new BlogClientException(
@@ -468,8 +469,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         /// </summary>
         private void DoSitePublish()
         {
-            string stdout, stderr;
-            var proc = RunSiteCommand(Config.PublishCommand, out stdout, out stderr);
+            var proc = RunSiteCommand(Config.PublishCommand, out string stdout, out string stderr);
             if (proc.ExitCode != 0)
             {
                 throw new BlogClientException(
@@ -551,6 +551,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                 {
                     // Timeout reached
                     try { proc.Kill(); } catch { } // Attempt to kill the process
+
                     throw new BlogClientException(
                         Res.Get(StringId.SSGErrorCommandTimeoutTitle),
                         Res.Get(StringId.SSGErrorCommandTimeoutText));

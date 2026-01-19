@@ -14,7 +14,7 @@ namespace OpenLiveWriter.CoreServices
         {
             _css = css;
         }
-        private string _css = null;
+        private readonly string _css = null;
 
         public void Parse()
         {
@@ -72,6 +72,5 @@ namespace OpenLiveWriter.CoreServices
 
         protected virtual void OnStyleText(StyleText styleText)
         { }
-
     }
 }

@@ -7,7 +7,7 @@ namespace OpenLiveWriter.Controls
 {
     public class NewFolderButton : BitmapButton
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public NewFolderButton()
         {
@@ -37,6 +37,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -27,7 +27,7 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public static DialogResult ShowExpiredDialog(int daysRemaining)
         {
@@ -123,6 +123,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -82,6 +82,5 @@ namespace OpenLiveWriter.Api
         /// </summary>
         IPostInfo PostInfo { get; }
     }
-
 }
 

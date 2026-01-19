@@ -175,6 +175,7 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
             {
                 imageSize = _calculations[i].ReverseCalculation(imageSize);
             }
+
             return imageSize;
         }
     }

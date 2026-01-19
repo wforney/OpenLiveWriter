@@ -96,6 +96,5 @@ namespace OpenLiveWriter.BlogClient.Clients
                 throw new BlogClientInvalidServerResponseException("wp.getUsersBlogs", ex.Message, response);
             }
         }
-
     }
 }

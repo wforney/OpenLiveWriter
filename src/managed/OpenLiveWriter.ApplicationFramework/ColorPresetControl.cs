@@ -41,7 +41,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public event ColorSelectedEventHandler ColorSelected;
         public event GridNavigateEventHandler Navigate;
 
-        private Color _color;
+        private readonly Color _color;
         public Color Color
         {
             get { return _color; }
@@ -70,7 +70,6 @@ namespace OpenLiveWriter.ApplicationFramework
                     Invalidate();
                 }
             }
-
         }
 
         public ColorButton(Color color) : base()
@@ -180,10 +179,10 @@ namespace OpenLiveWriter.ApplicationFramework
     {
         private TableLayoutPanel tableLayout;
 
-        private int NUM_ROWS = 3;
-        private int NUM_COLUMNS = 4;
+        private readonly int NUM_ROWS = 3;
+        private readonly int NUM_COLUMNS = 4;
 
-        private ColorButton[] colors = {
+        private readonly ColorButton[] colors = {
                                      new ColorButton(Color.FromArgb(58, 177, 222)),
                                      new ColorButton(Color.FromArgb(166, 166, 166)),
                                      new ColorButton(Color.FromArgb(110, 158, 255)),
@@ -225,6 +224,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 style.SizeType = SizeType.Percent;
                 style.Height = 1 / (float)tableLayout.RowCount;
             }
+
             foreach (ColumnStyle style in tableLayout.ColumnStyles)
             {
                 style.SizeType = SizeType.Percent;
@@ -324,6 +324,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     {
                         navTo.Column++;
                     }
+
                     break;
                 default:
                     break;

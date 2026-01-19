@@ -35,7 +35,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         ///	The CommandManager.
         /// </summary>
-        private CommandManager commandManager;
+        private readonly CommandManager commandManager;
 
         /// <summary>
         /// A value which indicates whether this CommandContextManager is "Activated".
@@ -50,24 +50,24 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The command context table.
         /// </summary>
-        private Hashtable commandContextTable = new Hashtable();
+        private readonly Hashtable commandContextTable = new Hashtable();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager at all times.
         /// </summary>
-        private CommandCollection normalCommandCollection = new CommandCollection();
+        private readonly CommandCollection normalCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager when the user of this
         /// CommandContextManager is "Activated".
         /// </summary>
-        private CommandCollection activatedCommandCollection = new CommandCollection();
+        private readonly CommandCollection activatedCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Collection of commands that are added to the CommandManager when the user of this
         /// CommandContextManager is "Entered".
         /// </summary>
-        private CommandCollection enteredCommandCollection = new CommandCollection();
+        private readonly CommandCollection enteredCommandCollection = new CommandCollection();
 
         /// <summary>
         /// Initializes a new instance of the CommandContextManager class.

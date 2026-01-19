@@ -19,8 +19,8 @@ namespace OpenLiveWriter.CoreServices.HTML
         private const string TAG_HR = "hr";
         private const string TAG_IMG = "img";
 
-        private static Hashtable _tagSpecs = new Hashtable();
-        private static Hashtable _tagSpecsStrict = new Hashtable();
+        private static readonly Hashtable _tagSpecs = new Hashtable();
+        private static readonly Hashtable _tagSpecsStrict = new Hashtable();
         static LightWeightHTMLThinner2()
         {
             #region tag map
@@ -233,6 +233,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                         {
                             output.Append(string.Format(CultureInfo.InvariantCulture, "</{0}>", tagName));
                         }
+
                         if (tagName == TAG_PRE)
                             preserveWhitespace = false;
                     }
@@ -297,6 +298,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                     }
                 }
             }
+
             output.Append(">");
         }
 
@@ -320,7 +322,7 @@ namespace OpenLiveWriter.CoreServices.HTML
         private class WhitespaceBuffer
         {
             private WhitespaceClass wsclass = WhitespaceClass.None;
-            private bool frozen = false;
+            private readonly bool frozen = false;
 
             public void Promote(WhitespaceClass newClass)
             {
@@ -400,6 +402,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                             output.Append(whitespace.Render(elclass));
                             whitespace = null;
                         }
+
                         return false;
                     default:
                         Trace.Fail("Unknown element class " + elclass.ToString());

@@ -34,6 +34,7 @@ namespace OpenLiveWriter.CoreServices
                 length = -1;
                 return null;
             }
+
             return _trie.Find(StringHelper.Reverse(text).ToLower(CultureInfo.CurrentCulture), _canMatch, out length);
         }
 

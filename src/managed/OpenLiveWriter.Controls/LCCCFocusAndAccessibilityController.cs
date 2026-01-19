@@ -13,11 +13,11 @@ namespace OpenLiveWriter.Controls
     /// </summary>
     internal class LCCCFocusAndAccessibilityController
     {
-        private LightweightControlContainerControl _control;
+        private readonly LightweightControlContainerControl _control;
         private bool _enteredState; //tracks the enter/leave state of the control (while entered, focus is restored)
         private int _focusedControlIndex = -1;
-        private ArrayList _controls;
-        private bool _wrap = false;
+        private readonly ArrayList _controls;
+        private readonly bool _wrap = false;
 
         internal LCCCFocusAndAccessibilityController(LightweightControlContainerControl control)
         {
@@ -165,6 +165,7 @@ namespace OpenLiveWriter.Controls
                 {
                     return !stopResult;
                 }
+
                 currIndex = nextIndex;
             }
         }
@@ -180,6 +181,7 @@ namespace OpenLiveWriter.Controls
                 if (VisitControl(i, IsFocusControlVisitor.Instance))
                     return i;
             }
+
             return -1;
         }
 
@@ -190,6 +192,7 @@ namespace OpenLiveWriter.Controls
             {
                 return GetNextControlIndex(index, forward, false);
             }
+
             return -1;
         }
 
@@ -267,12 +270,15 @@ namespace OpenLiveWriter.Controls
                         {
                             return true;
                         }
+
                         focusedControl = focusedControl.Parent;
                     }
+
                     if (focusedControl != _control)
                         return true;
                 }
             }
+
             return FocusNextControl(forward);
         }
 
@@ -290,6 +296,7 @@ namespace OpenLiveWriter.Controls
                     return containerControl;
                 control = containerControl.ActiveControl;
             }
+
             return control;
         }
 
@@ -312,6 +319,7 @@ namespace OpenLiveWriter.Controls
                 obj.DoDefaultAction();
                 return true;
             }
+
             return false;
         }
 
@@ -367,8 +375,10 @@ namespace OpenLiveWriter.Controls
                         //(this can happen when the active window changes)
                         _focusedControlIndex = GetFocusedControlIndex();
                     }
+
                     focusedControl.Unfocus();
                 }
+
                 _control.ActiveLightweightControl = null;
             }
 
@@ -418,6 +428,7 @@ namespace OpenLiveWriter.Controls
                     if (control.Parent is LightweightControlContainerControl)
                         (control.Parent as LightweightControlContainerControl).ActiveControl = null;
                 }
+
                 bool focused = control.Focus();
                 return focused;
             }

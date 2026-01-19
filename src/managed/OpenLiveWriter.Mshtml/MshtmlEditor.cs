@@ -151,6 +151,7 @@ namespace OpenLiveWriter.Mshtml
 
                 _eventCounter.AssertAllEventsAreUnhooked();
             }
+
             base.Dispose(disposing);
         }
 
@@ -589,7 +590,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
                 _eventCounter.EventUnhooked(PreHandleEventHandler);
             }
         }
-        private List<HtmlEditDesignerEventHandler> preEventHandleList = new List<HtmlEditDesignerEventHandler>();
+        private readonly List<HtmlEditDesignerEventHandler> preEventHandleList = new List<HtmlEditDesignerEventHandler>();
         private event HtmlEditDesignerEventHandler PreHandleEventHandler; // Used only for debug purposes.
 
         /// <summary>
@@ -667,13 +668,11 @@ editingOption.Key, editingOption.Value, ex.ToString()));
                 {
                     //this is a keyboard invocation of the context menu, so show the context menu
                     //at the caret location
-                    IHTMLCaretRaw caret;
-                    mshtmlControl.DisplayServices.GetCaret(out caret);
+                    mshtmlControl.DisplayServices.GetCaret(out IHTMLCaretRaw caret);
                     //calculate the screen point of the caret
                     //Note: we don't test for caret visibility anymore since the caret
                     //is not considered visible if there is a contiguous selection (bug 476391)
-                    POINT p;
-                    caret.GetLocation(out p, true);
+                    caret.GetLocation(out POINT p, true);
                     screenPoint = PointToScreen(new Point(p.x, p.y));
                 }
 
@@ -1339,7 +1338,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
         /// <summary>
         /// Callbacks registered for showing custom context menus
         /// </summary>
-        private ArrayList _contextMenuHandlers = new ArrayList();
+        private readonly ArrayList _contextMenuHandlers = new ArrayList();
 
         /// <summary>
         /// cookie used for manipulating change sink for underlying document
@@ -1419,6 +1418,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
                     _DLCTLOptions = DEFAULT_DLCTL;
                     return;
                 }
+
                 _DLCTLOptions = value;
             }
         }
@@ -1437,7 +1437,7 @@ editingOption.Key, editingOption.Value, ex.ToString()));
         {
             get { return _editingOptions; }
         }
-        private ListDictionary _editingOptions = new ListDictionary();
+        private readonly ListDictionary _editingOptions = new ListDictionary();
 
         /// <summary>
         /// Base registry key path that used to override the IE settings found in

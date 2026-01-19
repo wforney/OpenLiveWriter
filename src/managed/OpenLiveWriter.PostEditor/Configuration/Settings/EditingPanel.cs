@@ -34,7 +34,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public EditingPanel()
         {
@@ -120,13 +120,12 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     if (blog.VerifyCredentials())
                     {
                         BlogClientUIContextImpl uiContext = new BlogClientUIContextImpl(FindForm());
-                        Color? backgroundColor;
                         BlogEditingTemplateFile[] editingTemplates = BlogEditingTemplateDetector.DetectTemplate(
                             uiContext,
                             panelBrowserParent,
                             TemporaryBlogSettings,
                             !BlogIsAutoUpdatable(blog),
-                            out backgroundColor); // only probe for manifest if blog is not auto-updatable
+                            out Color? backgroundColor); // only probe for manifest if blog is not auto-updatable
                         if (editingTemplates.Length != 0)
                         {
                             TemporaryBlogSettings.TemplateFiles = editingTemplates;
@@ -160,6 +159,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -299,6 +299,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
 
             TemporaryBlogSettingsModified = true;
         }
-
     }
 }

@@ -30,6 +30,7 @@ namespace OpenLiveWriter.CoreServices
                     return new FileData(iDataObject, format);
                 }
             }
+
             return null;
         }
 
@@ -64,7 +65,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Initialize list of FileItem formats that we support
         /// </summary>
-        private static ArrayList fileItemFormats =
+        private static readonly ArrayList fileItemFormats =
             ArrayList.Synchronized(new ArrayList(new IFileItemFormat[]
                 {
                     new FileItemFileItemFormat(),
@@ -75,7 +76,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Initialize list of FileItem formats that we support
         /// </summary>
-        private static ArrayList mozillaFileItemFormats =
+        private static readonly ArrayList mozillaFileItemFormats =
             ArrayList.Synchronized(new ArrayList(new IFileItemFormat[]
                 {
                     new FileItemFileContentsFormat(),
@@ -103,10 +104,10 @@ namespace OpenLiveWriter.CoreServices
         private const string MOZILLA_MARKER = "text/_moz_htmlinfo";
 
         // underlying data object
-        private IDataObject m_dataObject = null;
+        private readonly IDataObject m_dataObject = null;
 
         // file item format
-        private IFileItemFormat m_fileItemFormat = null;
+        private readonly IFileItemFormat m_fileItemFormat = null;
 
         // list of files
         private FileItem[] m_files = null;
@@ -127,11 +128,11 @@ namespace OpenLiveWriter.CoreServices
                     matches++;
                     sb.AppendLine(format.ToString());
                 }
+
             Debug.Assert(matches == 1,
                 "More than 1 file item format can be created from a data object " +
                 "(potential ambiguity / order dependency\r\n" + sb.ToString());
 
         }
     }
-
 }

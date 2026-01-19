@@ -47,5 +47,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return Bold.GetHashCode();
         }
     }
-
 }

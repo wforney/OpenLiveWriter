@@ -37,7 +37,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
     [ComVisible(true)]
     public class JSMapController : IJSMapController
     {
-        private Queue _events; //list of events to be processed by the JavaScript runtime
+        private readonly Queue _events; //list of events to be processed by the JavaScript runtime
         private VELatLong _center;
 
         internal JSMapController(VELatLong center, string mapStyle, int zoomLevel, VEBirdseyeScene scene)
@@ -245,9 +245,9 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
     public class VEBirdseyeSceneThumbnail
     {
-        private string _sceneId;
-        private BirdseyeSceneAdjacency _adjacency;
-        private string _url;
+        private readonly string _sceneId;
+        private readonly BirdseyeSceneAdjacency _adjacency;
+        private readonly string _url;
         public VEBirdseyeSceneThumbnail(string sceneId, BirdseyeSceneAdjacency adjacency, string url)
         {
             _sceneId = sceneId;
@@ -277,9 +277,9 @@ namespace OpenLiveWriter.InternalWriterPlugin
     [ComVisible(true)]
     public class VELatLong
     {
-        private float _latitude;
-        private float _longitude;
-        private string _reserved;
+        private readonly float _latitude;
+        private readonly float _longitude;
+        private readonly string _reserved;
 
         public VELatLong(float latitude, float longitude, String reserved)
         {
@@ -342,8 +342,8 @@ namespace OpenLiveWriter.InternalWriterPlugin
             _name = name;
             _value = val;
         }
-        private string _name;
-        private object _value;
+        private readonly string _name;
+        private readonly object _value;
         public string Name
         {
             get { return _name; }
@@ -363,13 +363,13 @@ namespace OpenLiveWriter.InternalWriterPlugin
     [ComVisible(true)]
     public class VEPushpin
     {
-        private string _pinId;
-        private VELatLong _veLatLong;
-        private string _imageFile;
-        private string _title;
-        private string _details;
-        private string _photoUrl;
-        private string _moreInfoUrl;
+        private readonly string _pinId;
+        private readonly VELatLong _veLatLong;
+        private readonly string _imageFile;
+        private readonly string _title;
+        private readonly string _details;
+        private readonly string _photoUrl;
+        private readonly string _moreInfoUrl;
 
         public VEPushpin(string pinId, VELatLong veLatLong, string imageFile, string title, string details, string moreInfoUrl, string photoUrl)
         {
@@ -421,9 +421,9 @@ namespace OpenLiveWriter.InternalWriterPlugin
     [ComVisible(true)]
     public class PushpinEvent : IMapEvent
     {
-        VEPushpin _pushpin;
+        readonly VEPushpin _pushpin;
         internal enum PushPinAction { Add = 1, Delete = 2, DeleteAll = 3 };
-        PushPinAction _action;
+        readonly PushPinAction _action;
         internal PushpinEvent(VEPushpin pushpin, PushPinAction action)
         {
             _pushpin = pushpin;
@@ -452,8 +452,8 @@ namespace OpenLiveWriter.InternalWriterPlugin
     [ComVisible(true)]
     public class PanMapEvent : IMapEvent
     {
-        private int _deltaX;
-        private int _deltaY;
+        private readonly int _deltaX;
+        private readonly int _deltaY;
         public PanMapEvent(int deltaX, int deltaY)
         {
             _deltaX = deltaX;
@@ -480,7 +480,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
     public class MapPixelZoomEvent : IMapEvent
     {
         private Point _location;
-        private int _zoomLevel;
+        private readonly int _zoomLevel;
         public MapPixelZoomEvent(Point location, int zoomLevel)
         {
             _location = location;
@@ -510,11 +510,11 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
     public class MapContextMenuEvent : EventArgs
     {
-        int _x;
-        int _y;
-        float _latitude;
-        float _longitude;
-        string _reserved;
+        readonly int _x;
+        readonly int _y;
+        readonly float _latitude;
+        readonly float _longitude;
+        readonly string _reserved;
         internal MapContextMenuEvent(int x, int y, float latitude, float longitude, string reserved)
         {
             _x = x;

@@ -94,6 +94,7 @@ namespace OpenLiveWriter.Interop.Windows
                 // error... probably file does not exist
                 return null;
             }
+
             if (requiredBuffer > bufferLen)
             {
                 // The buffer we used was not long enough... try again
@@ -129,6 +130,7 @@ namespace OpenLiveWriter.Interop.Windows
                 // error... probably file does not exist
                 return null;
             }
+
             if (requiredBuffer > bufferLen)
             {
                 // The buffer we used was not long enough... try again
@@ -470,6 +472,7 @@ namespace OpenLiveWriter.Interop.Windows
                     throw new Win32Exception(
                         Marshal.GetLastWin32Error(), "Unexpected error calling GlobalSize");
                 }
+
                 return size;
             }
         }
@@ -502,6 +505,7 @@ namespace OpenLiveWriter.Interop.Windows
                     throw new Win32Exception(lastError,
                          "Unexpected error occurred calling GlobalUnlock");
                 }
+
                 pData = IntPtr.Zero;
             }
         }
@@ -529,7 +533,7 @@ namespace OpenLiveWriter.Interop.Windows
         /// <summary>
         /// Underlying HGLOBAL
         /// </summary>
-        private IntPtr hGlobal = IntPtr.Zero;
+        private readonly IntPtr hGlobal = IntPtr.Zero;
 
         /// <summary>
         /// Pointer to data (acquired by locking the HGLOBAL)

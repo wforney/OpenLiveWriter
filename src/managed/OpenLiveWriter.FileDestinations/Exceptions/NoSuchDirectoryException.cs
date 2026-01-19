@@ -20,7 +20,7 @@ namespace OpenLiveWriter.FileDestinations
             this.path = path;
         }
 
-        private string path;
+        private readonly string path;
         public string Path
         {
             get

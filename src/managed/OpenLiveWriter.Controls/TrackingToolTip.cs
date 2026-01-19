@@ -30,10 +30,12 @@ namespace OpenLiveWriter.Controls
         public TrackingToolTip()
         {
             // create params for a tracking tooltip window
-            CreateParams cp = new CreateParams();
-            cp.ExStyle = (int)WS.EX_TOPMOST;
-            cp.ClassName = WINDOW_CLASS.TOOLTIPS;
-            cp.Style = unchecked((int)(WS.POPUP | TTS.ALWAYSTIP | TTS.NOPREFIX));
+            CreateParams cp = new CreateParams
+            {
+                ExStyle = (int)WS.EX_TOPMOST,
+                ClassName = WINDOW_CLASS.TOOLTIPS,
+                Style = unchecked((int)(WS.POPUP | TTS.ALWAYSTIP | TTS.NOPREFIX))
+            };
 
             // create the window
             CreateHandle(cp);
@@ -60,6 +62,7 @@ namespace OpenLiveWriter.Controls
                     if (currentTool != null)
                         currentTool.Location = location;
                 }
+
                 GC.KeepAlive(this);
             }
         }
@@ -157,7 +160,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// dictionary of tools (caption -> Tool) associated with this tooltip control
         /// </summary>
-        private IDictionary tools = new Hashtable();
+        private readonly IDictionary tools = new Hashtable();
 
         /// <summary>
         /// Current location of the tooltip
@@ -270,7 +273,7 @@ namespace OpenLiveWriter.Controls
             /// <summary>
             /// ToolTip control associated with this tool
             /// </summary>
-            private IntPtr toolTipControl;
+            private readonly IntPtr toolTipControl;
 
             /// <summary>
             /// TOOLINFO structure associated with this tool
@@ -280,7 +283,7 @@ namespace OpenLiveWriter.Controls
             /// <summary>
             /// Unmanaged pointer to TOOLINFO structure
             /// </summary>
-            IntPtr pToolInfo = IntPtr.Zero;
+            readonly IntPtr pToolInfo = IntPtr.Zero;
 
             /// <summary>
             /// Location (in screen coordinates of tool)
@@ -288,6 +291,5 @@ namespace OpenLiveWriter.Controls
             private Point location;
         }
     }
-
 }
 

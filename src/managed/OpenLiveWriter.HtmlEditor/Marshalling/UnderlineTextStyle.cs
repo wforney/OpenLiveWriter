@@ -70,5 +70,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return Underline.GetHashCode();
         }
     }
-
 }

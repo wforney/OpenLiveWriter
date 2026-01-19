@@ -166,16 +166,17 @@ namespace OpenLiveWriter.BlogClient.Detection
                 else
                     Trace.Fail(ex.ToString());
             }
+
             _exception = ex;
             _errorMessageType = errorMessageType;
             _errorMessageParams = errorMessageParams;
         }
 
-        private string _clientType;
-        private string _postApiUrl;
-        private IBlogCredentialsAccessor _credentials;
-        private string _blogId = String.Empty;
-        private string _blogName = String.Empty;
+        private readonly string _clientType;
+        private readonly string _postApiUrl;
+        private readonly IBlogCredentialsAccessor _credentials;
+        private readonly string _blogId = String.Empty;
+        private readonly string _blogName = String.Empty;
         private BlogInfo[] _usersBlogs = new BlogInfo[] { };
         private MessageId _errorMessageType;
         private object[] _errorMessageParams;
@@ -183,6 +184,5 @@ namespace OpenLiveWriter.BlogClient.Detection
         private class NoAccountsOnServerException : ApplicationException
         {
         }
-
     }
 }

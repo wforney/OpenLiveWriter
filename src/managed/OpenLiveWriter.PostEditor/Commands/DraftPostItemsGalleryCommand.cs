@@ -12,14 +12,14 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     public class DraftPostItemsGalleryCommand : DynamicCommandGallery
     {
-        private IBlogPostEditingSite postEditingSite;
+        private readonly IBlogPostEditingSite postEditingSite;
         private PostInfo[] postInfo;
-        private bool _isPost;
+        private readonly bool _isPost;
         // Note: The maximum number of recent items specified here should match the RecentItem's MaxCount attribute in ribbon.xml.
         private const int MaxItems = PostListCache.MaxItems;
-        private Command[] _commands = new Command[MaxItems];
-        private object _commandsLock = new object();
-        private int draftCmdStart = (int)CommandId.OpenDraftMRU0;
+        private readonly Command[] _commands = new Command[MaxItems];
+        private readonly object _commandsLock = new object();
+        private readonly int draftCmdStart = (int)CommandId.OpenDraftMRU0;
 
         public DraftPostItemsGalleryCommand(IBlogPostEditingSite postEditingSite, CommandManager commandManager, bool isPost)
             : base((isPost ? CommandId.OpenPostSplit : CommandId.OpenDraftSplit))
@@ -30,6 +30,7 @@ namespace OpenLiveWriter.PostEditor.Commands
             {
                 draftCmdStart = (int)CommandId.OpenPostMRU0;
             }
+
             lock (_commandsLock)
             {
                 // initialize commands
@@ -83,6 +84,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                         _commands[i].LargeImage = (bs.ClientType.Contains("WordPress") ? Images.WordPressPost_LargeImage
                                                        : Images.OtherBlogPost_LargeImage);
                     }
+
                     items.Add(new GalleryItem(v.Title, null, _commands[i]));
                 }
             }

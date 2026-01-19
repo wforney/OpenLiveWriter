@@ -22,7 +22,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        private Bitmap _backgroundBitmap;
+        private readonly Bitmap _backgroundBitmap;
         private const int BUTTON_INSET = 5;
 
         private class DirectionalButton : MapBitmapButton
@@ -34,17 +34,17 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             }
 
             public VEOrientation Direction { get { return _direction; } }
-            private VEOrientation _direction;
+            private readonly VEOrientation _direction;
         }
         private class NorthButton : DirectionalButton { public NorthButton() : base(VEOrientation.North, "RoadNorth") { } }
         private class EastButton : DirectionalButton { public EastButton() : base(VEOrientation.East, "RoadEast") { } }
         private class SouthButton : DirectionalButton { public SouthButton() : base(VEOrientation.South, "RoadSouth") { } }
         private class WestButton : DirectionalButton { public WestButton() : base(VEOrientation.West, "RoadWest") { } }
 
-        private NorthButton _northButton = new NorthButton();
-        private SouthButton _southButton = new SouthButton();
-        private EastButton _eastButton = new EastButton();
-        private WestButton _westButton = new WestButton();
+        private readonly NorthButton _northButton = new NorthButton();
+        private readonly SouthButton _southButton = new SouthButton();
+        private readonly EastButton _eastButton = new EastButton();
+        private readonly WestButton _westButton = new WestButton();
 
         public MapScrollControl()
         {
@@ -157,6 +157,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -183,7 +184,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
 
         public VEOrientation Direction { get { return _direction; } }
 
-        private VEOrientation _direction;
+        private readonly VEOrientation _direction;
     }
 
     public delegate void DirectionalButtonClickedHandler(object sender, DirectionalButtonClickedEventArgs ea);

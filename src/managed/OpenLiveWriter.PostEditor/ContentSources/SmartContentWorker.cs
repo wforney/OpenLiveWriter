@@ -46,11 +46,10 @@ namespace OpenLiveWriter.PostEditor
                         ISmartContent sContent = null;
                         try
                         {
-                            string contentSourceId, contentItemId;
                             string blockId = beginTag.GetAttributeValue("id");
                             if (blockId != null)
                             {
-                                ContentSourceManager.ParseContainingElementId(blockId, out contentSourceId, out contentItemId);
+                                ContentSourceManager.ParseContainingElementId(blockId, out string contentSourceId, out string contentItemId);
 
                                 ContentSourceInfo contentSource = sourceContext.FindContentSource(contentSourceId);
                                 if (contentSource != null && contentSource.Instance is SmartContentSource)
@@ -99,6 +98,7 @@ namespace OpenLiveWriter.PostEditor
                         }
                     }
                 }
+
                 sb.Append(e.ToString());
             }
 

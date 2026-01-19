@@ -38,7 +38,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_contentType;
             }
         }
-        private string m_contentType;
+        private readonly string m_contentType;
 
         /// <summary>
         /// The Url (after redirects) that actually provided the content type information
@@ -50,7 +50,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_url;
             }
         }
-        private string m_url;
+        private readonly string m_url;
 
         /// <summary>
         /// The content encoding provided for this url (if known).
@@ -62,7 +62,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_contentEncoding;
             }
         }
-        private string m_contentEncoding;
+        private readonly string m_contentEncoding;
 
         /// <summary>
         /// The content length provided for the url (if known).
@@ -74,7 +74,7 @@ namespace OpenLiveWriter.CoreServices
                 return _contentLength;
             }
         }
-        private int _contentLength = -1;
+        private readonly int _contentLength = -1;
     }
 
     /// <summary>
@@ -170,8 +170,7 @@ namespace OpenLiveWriter.CoreServices
 
             // Get the header for this URL out of the cache and see if we
             // can get the content type out of the header
-            Internet_Cache_Entry_Info info;
-            if (WinInet.GetUrlCacheEntryInfo(url, out info))
+            if (WinInet.GetUrlCacheEntryInfo(url, out Internet_Cache_Entry_Info info))
             {
                 // Get the header string for the info struct
                 string header = Marshal.PtrToStringAnsi(info.lpHeaderInfo);
@@ -212,9 +211,11 @@ namespace OpenLiveWriter.CoreServices
                                 break;
                         }
                     }
+
                     contentType = new UrlContentTypeInfo(contentTypeString, contentEncodingString, url, int.Parse(contentLengthString, CultureInfo.InvariantCulture));
                 }
             }
+
             return contentType;
         }
 
@@ -376,6 +377,7 @@ namespace OpenLiveWriter.CoreServices
 
                     break;
             }
+
             return contentType;
         }
 
@@ -416,12 +418,12 @@ namespace OpenLiveWriter.CoreServices
                         contentTypeString = contentTypeParts[0];
                         contentEncodingString = contentTypeParts[1];
                     }
+
                     contentType = new UrlContentTypeInfo(contentTypeString, contentEncodingString, UrlHelper.SafeToAbsoluteUri(response.ResponseUri), Convert.ToInt32(response.ContentLength));
                 }
-
             }
+
             return contentType;
         }
-
     }
 }

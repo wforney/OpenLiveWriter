@@ -14,9 +14,9 @@ namespace OpenLiveWriter.HtmlEditor
 {
     public class BoldApplier
     {
-        private MshtmlMarkupServices markupServices;
-        private MarkupRange markupRange;
-        private IMshtmlCommand boldCommand;
+        private readonly MshtmlMarkupServices markupServices;
+        private readonly MarkupRange markupRange;
+        private readonly IMshtmlCommand boldCommand;
 
         public BoldApplier(MshtmlMarkupServices markupServices, MarkupRange markupRange, IMshtmlCommand boldCommand)
         {
@@ -224,6 +224,5 @@ namespace OpenLiveWriter.HtmlEditor
             return e.tagName.Equals("STRONG", StringComparison.OrdinalIgnoreCase) ||
                 e.tagName.Equals("B", StringComparison.OrdinalIgnoreCase);
         }
-
     }
 }

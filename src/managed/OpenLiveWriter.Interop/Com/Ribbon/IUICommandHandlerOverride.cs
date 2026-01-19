@@ -33,5 +33,4 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         Int32 CancelOverride(UInt32 commandId,
                              [In] ref PropertyKey key);
     }
-
 }

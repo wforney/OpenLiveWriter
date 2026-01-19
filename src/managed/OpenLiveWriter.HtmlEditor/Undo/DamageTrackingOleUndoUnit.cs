@@ -7,7 +7,7 @@ namespace OpenLiveWriter.HtmlEditor.Undo
 {
     internal class DamageTrackingOleUndoUnit : OleUndoUnit
     {
-        private IHTMLEditorDamageServices _damageServices;
+        private readonly IHTMLEditorDamageServices _damageServices;
 
         public DamageTrackingOleUndoUnit(MshtmlMarkupServices markupServices, MarkupRange selection, IHTMLEditorDamageServices damageServices)
             : base(markupServices, selection)

@@ -1028,6 +1028,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     commandBarButtonBitmapDisabled = ImageHelper.MakeDisabled(commandBarButtonBitmapEnabled);
                 }
+
                 return commandBarButtonBitmapDisabled;
             }
             set
@@ -1085,6 +1086,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     commandBarButtonBitmapSelected = commandBarButtonBitmapEnabled;
                 }
+
                 return commandBarButtonBitmapSelected;
             }
             set
@@ -1111,6 +1113,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     commandBarButtonBitmapPushed = commandBarButtonBitmapEnabled;
                 }
+
                 return commandBarButtonBitmapPushed;
             }
             set
@@ -1889,6 +1892,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 eventHandler(this, e);
                 return true;
             }
+
             return false;
         }
 
@@ -1905,6 +1909,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 eventHandler(this, e);
                 return true;
             }
+
             return false;
         }
 
@@ -1939,7 +1944,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         bool _flushing = false;
 
-        private PropertyKey[] _keys = new PropertyKey[MAX_PENDING_INVALIDATIONS];
+        private readonly PropertyKey[] _keys = new PropertyKey[MAX_PENDING_INVALIDATIONS];
         public void FlushPendingInvalidations(IUIFramework framework)
         {
             Debug.Assert(!_flushing, "Flushing while already flushing!?!");
@@ -1974,7 +1979,7 @@ namespace OpenLiveWriter.ApplicationFramework
         }
 
         private const int MAX_PENDING_INVALIDATIONS = 15;
-        private Dictionary<PropertyKey, InvalidationState> pendingInvalidations = new Dictionary<PropertyKey, InvalidationState>(MAX_PENDING_INVALIDATIONS);
+        private readonly Dictionary<PropertyKey, InvalidationState> pendingInvalidations = new Dictionary<PropertyKey, InvalidationState>(MAX_PENDING_INVALIDATIONS);
 
         protected internal void UpdateInvalidationState(PropertyKey key, InvalidationState invalidationState)
         {
@@ -2000,7 +2005,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
     public class ExecuteEventHandlerArgs : EventArgs
     {
-        private Hashtable args = new Hashtable();
+        private readonly Hashtable args = new Hashtable();
 
         public bool Cancelled { get; set; }
 

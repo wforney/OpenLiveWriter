@@ -76,6 +76,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                     listViewItems.Items.Add(item);
                 }
             }
+
             listViewItems.Sort();
         }
 
@@ -141,7 +142,6 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                     RefreshEntries();
                     SelectItem(form.Phrase);
                 }
-
             }
         }
 
@@ -188,5 +188,4 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
             buttonDelete.Enabled = buttonEdit.Enabled = enabled;
         }
     }
-
 }

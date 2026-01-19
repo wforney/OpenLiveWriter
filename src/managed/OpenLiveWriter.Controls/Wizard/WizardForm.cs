@@ -25,7 +25,7 @@ namespace OpenLiveWriter.Controls.Wizard
     /// </summary>
     public class WizardForm : BaseForm
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
         protected Button buttonCancel;
         protected Button buttonBack;
         protected Button buttonNext;
@@ -35,7 +35,7 @@ namespace OpenLiveWriter.Controls.Wizard
         private Panel wizardBody;
         private Panel panelHeader;
         protected Panel panelFooter;
-        private WizardController _controller;
+        private readonly WizardController _controller;
         private IntPtr _hSystemMenu;
 
         public WizardForm(WizardController controller)
@@ -123,6 +123,7 @@ namespace OpenLiveWriter.Controls.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -297,6 +298,7 @@ namespace OpenLiveWriter.Controls.Wizard
                 OnAddControl(control);
                 _scaledControls.Add(control);
             }
+
             control.Size = new Size(wizardBody.Width, wizardBody.Height);
 
             // This may get called multiple times per control, and that's OK, they are designed for it.
@@ -439,6 +441,5 @@ namespace OpenLiveWriter.Controls.Wizard
         {
             this.DialogResult = DialogResult.OK;
         }
-
     }
 }

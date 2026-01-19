@@ -113,7 +113,6 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         {
             return new BlogPostCategory(Id, Name, Parent);
         }
-
     }
 
     public class BlogPostCategoryNone : BlogPostCategory

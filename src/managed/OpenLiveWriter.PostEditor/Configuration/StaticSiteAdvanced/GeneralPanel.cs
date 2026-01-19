@@ -43,7 +43,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public string SiteTitle
         {
@@ -138,6 +138,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -320,9 +321,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
 
         private void ButtonBrowseLocalSitePath_Click(object sender, EventArgs e)
         {
-            var folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.ShowNewFolderButton = false;
-            folderBrowserDialog.Description = Res.Get(StringId.CWStaticSiteLocalSiteFolderPicker);
+            var folderBrowserDialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = false,
+                Description = Res.Get(StringId.CWStaticSiteLocalSiteFolderPicker)
+            };
             var result = folderBrowserDialog.ShowDialog();
 
             if (result == DialogResult.OK)

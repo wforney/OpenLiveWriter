@@ -33,8 +33,6 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion.WebImages
 
                 return form.DialogResult;
             }
-
         }
-
     }
 }

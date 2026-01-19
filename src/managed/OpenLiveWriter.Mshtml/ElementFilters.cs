@@ -76,7 +76,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class TagIdElementFilter
         {
-            private string _tagId;
+            private readonly string _tagId;
             public TagIdElementFilter(string tagId)
             {
                 _tagId = tagId;
@@ -90,7 +90,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class IdElementFilter
         {
-            private string _id;
+            private readonly string _id;
             public IdElementFilter(string id)
             {
                 _id = id;
@@ -112,7 +112,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class EqualElementFilter
         {
-            private IHTMLElement _element;
+            private readonly IHTMLElement _element;
             public EqualElementFilter(IHTMLElement element)
             {
                 _element = element;
@@ -134,7 +134,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class ClassElementFilter
         {
-            private string _className;
+            private readonly string _className;
             public ClassElementFilter(string className)
             {
                 _className = className;
@@ -148,7 +148,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class ElementNameFilter
         {
-            private string _name;
+            private readonly string _name;
             public ElementNameFilter(string name)
             {
                 _name = name;
@@ -162,7 +162,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class ElementAttributeFilter
         {
-            private string _attributeName;
+            private readonly string _attributeName;
             public ElementAttributeFilter(string attributeName)
             {
                 _attributeName = attributeName.ToUpper(CultureInfo.InvariantCulture);
@@ -189,7 +189,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class ElementEqualsFilter
         {
-            private IHTMLElement _element;
+            private readonly IHTMLElement _element;
             public ElementEqualsFilter(IHTMLElement e)
             {
                 _element = e;
@@ -203,7 +203,7 @@ namespace OpenLiveWriter.Mshtml
 
         private class CompoundElementFilter
         {
-            private IHTMLElementFilter[] _filters;
+            private readonly IHTMLElementFilter[] _filters;
             public CompoundElementFilter(IHTMLElementFilter[] filters)
             {
                 _filters = filters;
@@ -215,6 +215,7 @@ namespace OpenLiveWriter.Mshtml
                     if (filter(e))
                         return true;
                 }
+
                 return false;
             }
         }
@@ -230,6 +231,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 return true;
             }
+
             return false;
         }
         public static IHTMLElementFilter TABLE_ELEMENTS = new IHTMLElementFilter(IsTableElement);
@@ -256,6 +258,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 return true;
             }
+
             return false;
         }
         public static IHTMLElementFilter BLOCK_ELEMENTS = new IHTMLElementFilter(IsBlockElement);
@@ -269,6 +272,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 return true;
             }
+
             return false;
         }
         public static IHTMLElementFilter HEADER_ELEMENTS = new IHTMLElementFilter(IsHeaderElement);
@@ -307,6 +311,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 return true;
             }
+
             return false;
         }
         public static IHTMLElementFilter INLINE_ELEMENTS = new IHTMLElementFilter(IsInlineElement);
@@ -342,6 +347,7 @@ namespace OpenLiveWriter.Mshtml
                 if (null != dir)
                     return String.Compare(dir, direction, StringComparison.OrdinalIgnoreCase) == 0;
             }
+
             return false;
         }
 
@@ -413,6 +419,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 return true;
             }
+
             return false;
         }
         public static IHTMLElementFilter END_TAG_OPTIONAL_ELEMENTS = new IHTMLElementFilter(IsEndTagOptional);
@@ -438,6 +445,7 @@ namespace OpenLiveWriter.Mshtml
                     _tableTagNames["TBODY"] = "TBODY";
                     _tableTagNames["TFOOT"] = "TFOOT";
                 }
+
                 return _tableTagNames;
             }
         }
@@ -474,6 +482,7 @@ namespace OpenLiveWriter.Mshtml
                     //_blockTagNames["OL"] = "OL";
                     _blockTagNames["LI"] = "LI";
                 }
+
                 return _blockTagNames;
             }
         }
@@ -530,6 +539,7 @@ namespace OpenLiveWriter.Mshtml
                     _inlineTagNames["U"] = "U";
                     _inlineTagNames["VAR"] = "VAR";
                 }
+
                 return _inlineTagNames;
             }
         }
@@ -552,6 +562,7 @@ namespace OpenLiveWriter.Mshtml
                     _headerTagNames["H5"] = "H5";
                     _headerTagNames["H6"] = "H6";
                 }
+
                 return _headerTagNames;
             }
         }
@@ -587,6 +598,7 @@ namespace OpenLiveWriter.Mshtml
                     _endTagOptionalNames["DT"] = "DT";
                     _endTagOptionalNames["DD"] = "DD";
                 }
+
                 return _endTagOptionalNames;
             }
         }
@@ -617,6 +629,7 @@ namespace OpenLiveWriter.Mshtml
                     m_noEndTagRequired.Add(HTMLTokens.Meta, HTMLTokens.Meta);
                     m_noEndTagRequired.Add(HTMLTokens.Param, HTMLTokens.Param);
                 }
+
                 return m_noEndTagRequired;
             }
         }

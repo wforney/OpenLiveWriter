@@ -20,17 +20,17 @@ namespace OpenLiveWriter.ApplicationFramework
         private BitmapButton btnMaximize;
         private BitmapButton btnClose;
 
-        private Bitmap minEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MinimizeEnabled.png");
-        private Bitmap maxEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MaximizeEnabled.png");
-        private Bitmap closeEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.CloseEnabled.png");
-        private Bitmap minDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MinimizeDisabled.png");
-        private Bitmap maxDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MaximizeDisabled.png");
-        private Bitmap closeDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.CloseDisabled.png");
+        private readonly Bitmap minEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MinimizeEnabled.png");
+        private readonly Bitmap maxEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MaximizeEnabled.png");
+        private readonly Bitmap closeEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.CloseEnabled.png");
+        private readonly Bitmap minDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MinimizeDisabled.png");
+        private readonly Bitmap maxDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.MaximizeDisabled.png");
+        private readonly Bitmap closeDisabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.CloseDisabled.png");
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public MinMaxClose()
         {
@@ -101,6 +101,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -200,6 +201,5 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             FindForm().Close();
         }
-
     }
 }

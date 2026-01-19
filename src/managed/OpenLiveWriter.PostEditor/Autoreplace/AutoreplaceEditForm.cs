@@ -84,8 +84,8 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                         return false;
                     }
                 }
-
             }
+
             return true;
         }
 

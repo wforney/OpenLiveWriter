@@ -52,6 +52,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

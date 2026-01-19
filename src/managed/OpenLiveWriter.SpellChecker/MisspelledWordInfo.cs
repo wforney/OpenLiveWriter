@@ -11,8 +11,8 @@ namespace OpenLiveWriter.SpellChecker
     /// </summary>
     public class MisspelledWordInfo
     {
-        private MarkupRange _range;
-        private string _word;
+        private readonly MarkupRange _range;
+        private readonly string _word;
 
         public MisspelledWordInfo(MarkupRange range, string word)
         {

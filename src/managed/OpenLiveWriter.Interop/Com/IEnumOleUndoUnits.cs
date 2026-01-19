@@ -57,5 +57,4 @@ namespace OpenLiveWriter.Interop.Com
         void Clone(
             [Out] out IEnumOleUndoUnits ppenum);
     }
-
 }

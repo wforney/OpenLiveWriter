@@ -273,6 +273,7 @@ namespace OpenLiveWriter.Controls
             {
                 components?.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -829,6 +830,7 @@ namespace OpenLiveWriter.Controls
                 VirtualTransparency.VirtualPaint(this, pevent);
                 return;
             }
+
             base.OnPaintBackground(pevent);
         }
 
@@ -979,6 +981,7 @@ namespace OpenLiveWriter.Controls
                 PushByKeystroke();
                 return true;
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -1092,6 +1095,7 @@ namespace OpenLiveWriter.Controls
                         BorderPaintMode.Cached | BorderPaintMode.StretchToFill | BorderPaintMode.PaintMiddleCenter,
                         3, 4, 3, 71);
                 }
+
                 return buttonFaceBorder;
             }
         }
@@ -1108,6 +1112,7 @@ namespace OpenLiveWriter.Controls
                         BorderPaintMode.Cached | BorderPaintMode.StretchToFill | BorderPaintMode.PaintMiddleCenter,
                         3, 4, 3, 71);
                 }
+
                 return pushedButtonFaceBorder;
             }
         }

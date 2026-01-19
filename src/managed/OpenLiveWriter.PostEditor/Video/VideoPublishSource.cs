@@ -22,9 +22,9 @@ namespace OpenLiveWriter.PostEditor.Video
         private Video _video;
         IVideoPublisher _currentPublisher;
         private bool _firstRun = true;
-        private SidebarListBox<IVideoPublisher> sideBarControl;
+        private readonly SidebarListBox<IVideoPublisher> sideBarControl;
         private bool _isUserDirty = false;
-        private string _selectedPermission;
+        private readonly string _selectedPermission;
 
         public VideoPublishSource(String selectedPermission)
         {
@@ -53,13 +53,15 @@ namespace OpenLiveWriter.PostEditor.Video
             BackColor = SystemColors.Control;
 
             // Since it is a generic control we have to create it ourself
-            sideBarControl = new SidebarListBox<IVideoPublisher>();
-            sideBarControl.AccessibleName = Res.Get(StringId.Plugin_Video_Provider_Select);
-            sideBarControl.Name = "sideBarControl";
-            sideBarControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom;
-            sideBarControl.TabIndex = 5;
-            sideBarControl.Location = new Point(10, 48);
-            sideBarControl.Size = new Size(101, 381);
+            sideBarControl = new SidebarListBox<IVideoPublisher>
+            {
+                AccessibleName = Res.Get(StringId.Plugin_Video_Provider_Select),
+                Name = "sideBarControl",
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom,
+                TabIndex = 5,
+                Location = new Point(10, 48),
+                Size = new Size(101, 381)
+            };
             sideBarControl.Initialize();
             Controls.Add(sideBarControl);
 
@@ -80,6 +82,7 @@ namespace OpenLiveWriter.PostEditor.Video
             {
                 controls.Add(videoLoginStatusControl);
             }
+
             controls.Add(sideBarControl);
             controls.Add(txtFile);
             controls.Add(btnFileOpen);
@@ -148,6 +151,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 {
                     comboBoxCategory.Items.Add(c);
                 }
+
                 comboBoxCategory.SelectedIndex = 0;
                 comboBoxCategory.Enabled = true;
                 comboBoxCategory.DropDownWidth = DisplayHelper.AutoFitSystemComboDropDown(comboBoxCategory) + 10;
@@ -234,9 +238,7 @@ namespace OpenLiveWriter.PostEditor.Video
                         if (txtTags.Text == String.Empty || !_isUserDirty)
                             txtTags.Text = baseWords;
                     }
-
                 }
-
             }
         }
 
@@ -380,5 +382,4 @@ namespace OpenLiveWriter.PostEditor.Video
             txtTags.Text = _currentPublisher.FormatTags(txtTags.Text);
         }
     }
-
 }

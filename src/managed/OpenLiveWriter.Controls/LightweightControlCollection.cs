@@ -16,7 +16,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         ///	The lightweight control container that owns this lightweight control collection.
         /// </summary>
-        private ILightweightControlContainerControl owner;
+        private readonly ILightweightControlContainerControl owner;
 
         /// <summary>
         ///	Initializes a new instance of <see cref='OpenLiveWriter.Controls.LightweightControlCollection'/>.
@@ -238,8 +238,8 @@ namespace OpenLiveWriter.Controls
         /// </summary>
         public class LightweightControlEnumerator : object, IEnumerator
         {
-            private IEnumerator baseEnumerator;
-            private IEnumerable temp;
+            private readonly IEnumerator baseEnumerator;
+            private readonly IEnumerable temp;
 
             /// <summary>
             /// Initializes a new instance of the LightweightControlEnumerator class.

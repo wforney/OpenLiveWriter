@@ -140,16 +140,16 @@ namespace OpenLiveWriter.CoreServices
             }
         }
         // platform-specific invalid path characters
-        static char[] pathInvalid = Path.GetInvalidPathChars();
+        static readonly char[] pathInvalid = Path.GetInvalidPathChars();
         // other invalid chars (parens are invalid in MIME Content-Location headers)
-        static char[] mimeInvalid = new char[] { };
+        static readonly char[] mimeInvalid = new char[] { };
         // both ( and ) were protected, but I couldn't replicate a problem w/parens in Content headers.
 
         // storage for root file name
         private string m_rootFile = null;
 
         // static FileListingComparer for use in sorting file listings
-        private static FileListingComparer m_comparer = new FileListingComparer();
+        private static readonly FileListingComparer m_comparer = new FileListingComparer();
     }
 
     /// <summary>
@@ -237,5 +237,4 @@ namespace OpenLiveWriter.CoreServices
                 return String.Compare(leftPaths[sharedLevel], rightPaths[sharedLevel], StringComparison.OrdinalIgnoreCase);
         }
     }
-
 }

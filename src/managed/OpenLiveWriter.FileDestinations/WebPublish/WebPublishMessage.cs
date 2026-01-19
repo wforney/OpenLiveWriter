@@ -10,8 +10,8 @@ namespace OpenLiveWriter.FileDestinations
 {
     public class WebPublishMessage
     {
-        private DisplayMessage _displayMessage;
-        private object[] _textFormatArgs;
+        private readonly DisplayMessage _displayMessage;
+        private readonly object[] _textFormatArgs;
 
         public WebPublishMessage(MessageId messageId, params object[] textFormatArgs)
         {

@@ -10,10 +10,10 @@ namespace OpenLiveWriter.CoreServices.Progress
     /// </summary>
     public class ProgressWorker
     {
-        private ProgressOperationCompleted CompletedMethod;
-        private ProgressOperation WorkerMethod;
-        private IProgressHost ParentProgress;
-        private int ProgressSize;
+        private readonly ProgressOperationCompleted CompletedMethod;
+        private readonly ProgressOperation WorkerMethod;
+        private readonly IProgressHost ParentProgress;
+        private readonly int ProgressSize;
 
         public ProgressWorker(ProgressOperation method, int progressSize, int progressTotal, IProgressHost progress)
             : this(method, null, null, progressSize, progressTotal, progress)

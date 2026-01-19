@@ -136,7 +136,6 @@ namespace OpenLiveWriter.Localization
             {
                 return CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern;
             }
-
         }
 
         [Obsolete("NOT FULLY TESTED")]
@@ -167,7 +166,6 @@ namespace OpenLiveWriter.Localization
                 Trace.Fail("Failed to check if IME is active: " + ex);
                 return isActive;
             }
-
         }
 
         [Obsolete("NOT FULLY TESTED")]

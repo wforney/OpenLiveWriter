@@ -156,7 +156,6 @@ namespace OpenLiveWriter.CoreServices
             else
                 throw new ArgumentException("Program error: Cannot get value for something that is not an identifier, string, or version");
         }
-
     }
 
     internal class XppToken
@@ -251,10 +250,12 @@ namespace OpenLiveWriter.CoreServices
                         if (expr != null)
                             return expr;
                     }
+
                     Trace.Fail("Parse error, reached EOF in an invalid state. Use a debugger to see what's left on the stack.");
                     throw new ArgumentException(
                         "Parse error, reached EOF in an invalid state. Use a debugger to see what's left on the stack.");
                 }
+
                 Push(new XppParserSymbol(token.TokenType, token.Value, null));
                 EvaluateStack();
             }
@@ -315,6 +316,7 @@ namespace OpenLiveWriter.CoreServices
                                 }
                             }
                         }
+
                         break;
                     case XppTokenType.Rparen:
                         if (Peek(1).IsExpr)
@@ -329,6 +331,7 @@ namespace OpenLiveWriter.CoreServices
                                 continue;
                             }
                         }
+
                         throw new ArgumentException("Didn't expect a right parenthesis here");
                     case XppTokenType.Identifier:
                     case XppTokenType.StringLiteral:
@@ -351,6 +354,7 @@ namespace OpenLiveWriter.CoreServices
                                     repeat = true;
                                     continue;
                                 }
+
                                 break;
                         }
 
@@ -367,6 +371,7 @@ namespace OpenLiveWriter.CoreServices
                                 Push(new XppParserSymbol(XppTokenType.Production, null, new XppRegexExpr(val, pattern, not)));
                             }
                         }
+
                         break;
                     case XppTokenType.RegexLiteral:
                         if (Peek(1).TokenType == XppTokenType.REGEX || Peek(1).TokenType == XppTokenType.NOTREGEX)
@@ -384,6 +389,7 @@ namespace OpenLiveWriter.CoreServices
                                 continue;
                             }
                         }
+
                         throw new ArgumentException("Didn't expect a regex literal here");
                     case XppTokenType.TRUE:
                     case XppTokenType.FALSE:
@@ -664,6 +670,7 @@ namespace OpenLiveWriter.CoreServices
                                 else
                                     break;
                             }
+
                             string val = str.Substring(startPos, pos - startPos);
                             return new XppToken(ClassifyString(val), val, startPos, pos - startPos);
                         }
@@ -676,6 +683,7 @@ namespace OpenLiveWriter.CoreServices
                                 else
                                     break;
                             }
+
                             string val = str.Substring(startPos, pos - startPos);
                             return new XppToken(XppTokenType.VersionLiteral, val, startPos, pos - startPos);
                         }
@@ -683,6 +691,7 @@ namespace OpenLiveWriter.CoreServices
                             throw new ArgumentException("Unexpected character '" + c + "' at offset " + startPos);
                 }
             }
+
             return new XppToken(XppTokenType.EOF, "", startPos, 0);
         }
 

@@ -24,14 +24,14 @@ namespace OpenLiveWriter.SpellChecker
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private CheckBox _checkBoxCheckBeforePublish;
         private CheckBox _checkBoxRealTimeChecking;
         private CheckBox _checkBoxAutoCorrect;
         private System.Windows.Forms.Label _labelDictionaryLanguage;
         private System.Windows.Forms.ComboBox _comboBoxLanguage;
 
-        private SpellingPreferences spellingPreferences;
+        private readonly SpellingPreferences spellingPreferences;
 
         public SpellingPreferencesPanel()
             : this(new SpellingPreferences())
@@ -85,8 +85,10 @@ namespace OpenLiveWriter.SpellChecker
                 {
                     Debug.Fail("Language in registry not supported!");
                 }
+
                 _comboBoxLanguage.SelectedIndex = 0; // "None"
             }
+
             _comboBoxLanguage.EndUpdate();
 
             ManageSpellingOptions();
@@ -110,7 +112,7 @@ namespace OpenLiveWriter.SpellChecker
 
         private class SentryLanguageEntryComparer : IComparer
         {
-            private CultureInfo cultureInfo;
+            private readonly CultureInfo cultureInfo;
 
             public SentryLanguageEntryComparer(CultureInfo cultureInfo)
             {
@@ -168,6 +170,7 @@ namespace OpenLiveWriter.SpellChecker
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

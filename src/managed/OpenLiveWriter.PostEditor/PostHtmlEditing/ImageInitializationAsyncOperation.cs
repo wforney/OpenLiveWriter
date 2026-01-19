@@ -21,12 +21,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// A list of images to initialize.
         /// </summary>
-        private List<NewImageInfo> newImages;
+        private readonly List<NewImageInfo> newImages;
 
         /// <summary>
         /// Allows us to register the images with the editor.
         /// </summary>
-        private ISupportingFileService fileService;
+        private readonly ISupportingFileService fileService;
 
         /// <summary>
         /// Initializes a new instance of the ImageInitializationAsyncOperation class.
@@ -81,9 +81,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     Stream inlineImageStream = new MemoryStream();
                     using (Bitmap sourceBitmap = new Bitmap(newImage.ImageInfo.ImageSourceUri.LocalPath))
                     {
-                        string extension;
-                        ImageFormat imageFormat;
-                        ImageHelper2.GetImageFormat(newImage.ImageInfo.ImageSourceUri.LocalPath, out extension, out imageFormat);
+                        ImageHelper2.GetImageFormat(newImage.ImageInfo.ImageSourceUri.LocalPath, out string extension, out ImageFormat imageFormat);
 
                         using (Bitmap resizedBitmap = ImageHelper2.CreateResizedBitmap(sourceBitmap, newImage.InitialSize.Width, newImage.InitialSize.Height, imageFormat))
                         {

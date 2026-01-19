@@ -24,10 +24,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         Bitmap _originalImage;
         Bitmap _currImage;
         IProperties _currSettings;
-        ImagePropertiesInfo _imageInfo;
-        ImageDecoratorsList _decoratorsList;
-        ImageEmbedType _embedType;
-        IEditorOptions _editorOptions;
+        readonly ImagePropertiesInfo _imageInfo;
+        readonly ImageDecoratorsList _decoratorsList;
+        readonly ImageEmbedType _embedType;
+        readonly IEditorOptions _editorOptions;
 
         private ImageFilterDecoratorAdapter(ImagePropertiesInfo imageInfo, ImageEmbedType embedType, ImageDecoratorInvocationSource invocationSource, IEditorOptions editorOptions)
         {
@@ -126,6 +126,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         //by the caller, so dispose it automatically;
                         _currImage.Dispose();
                     }
+
                     _currImage = value;
                 }
             }
@@ -155,7 +156,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get { return _invocationSource; }
         }
-        private ImageDecoratorInvocationSource _invocationSource;
+        private readonly ImageDecoratorInvocationSource _invocationSource;
 
         public RotateFlipType ImageRotation
         {

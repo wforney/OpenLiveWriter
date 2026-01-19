@@ -140,7 +140,6 @@ namespace OpenLiveWriter.Mshtml
                     ValidFont = false;
                     return;
                 }
-
             }
 
             // Parse font family, which is a comma delimited list of font names
@@ -163,6 +162,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 FontFamily = "Calibri";
             }
+
             start.Append(FontFamily);
             start.Append("';\"");
 

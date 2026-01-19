@@ -95,5 +95,4 @@ namespace OpenLiveWriter.Interop.Com
             int cCategories,
             [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
     }
-
 }

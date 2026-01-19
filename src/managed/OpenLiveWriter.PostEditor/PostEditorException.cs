@@ -66,5 +66,4 @@ namespace OpenLiveWriter.PostEditor
             return new PostEditorStorageException(ex);
         }
     }
-
 }

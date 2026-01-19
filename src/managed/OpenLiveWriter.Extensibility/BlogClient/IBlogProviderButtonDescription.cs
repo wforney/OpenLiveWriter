@@ -54,5 +54,4 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         // clear notification image on click?
         bool ClearNotificationOnClick { get; }
     }
-
 }

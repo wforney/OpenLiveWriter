@@ -20,7 +20,7 @@ namespace OpenLiveWriter.CoreServices
                 return _html;
             }
         }
-        private string _html;
+        private readonly string _html;
 
         public void Parse()
         {
@@ -207,5 +207,4 @@ namespace OpenLiveWriter.CoreServices
             DefaultAction(styleComment);
         }
     }
-
 }

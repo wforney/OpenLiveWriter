@@ -70,6 +70,7 @@ namespace OpenLiveWriter.PostEditor
                                 selectedIndex = i;
                         }
                     }
+
                     base.LoadItems();
                 }
                 else
@@ -156,7 +157,7 @@ namespace OpenLiveWriter.PostEditor
                 }
             }
 
-            private static int[] _fontSizes = new int[] { 8, 10, 12, 14, 18, 24, 36 };
+            private static readonly int[] _fontSizes = new int[] { 8, 10, 12, 14, 18, 24, 36 };
 
             private float _currentFontSize;
             public override void LoadItems()
@@ -240,7 +241,6 @@ namespace OpenLiveWriter.PostEditor
                     base.SmallImage = value;
                 }
             }
-
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace OpenLiveWriter.PostEditor
                 SetSelectedColor(_savedSelectedColor, _savedSelectedColorType);
             }
 
-            private ColorPickerColor[] _standardColors = new ColorPickerColor[]
+            private readonly ColorPickerColor[] _standardColors = new ColorPickerColor[]
                                                              {
                                                                  new ColorPickerColor(Color.FromArgb(255, 255, 255), StringId.ColorWhite),
                                                                  new ColorPickerColor(Color.FromArgb(255, 0,   0), StringId.ColorVibrantRed),
@@ -333,6 +333,7 @@ namespace OpenLiveWriter.PostEditor
                             tooltips[idx] = Res.Get(_standardColors[idx].StringId);
                         }
                     }
+
                     return tooltips;
                 }
             }
@@ -350,6 +351,7 @@ namespace OpenLiveWriter.PostEditor
                             colors[idx] = Convert.ToUInt32(ColorHelper.ColorToBGR(_standardColors[idx].Color));
                         }
                     }
+
                     return colors;
                 }
             }
@@ -756,7 +758,6 @@ namespace OpenLiveWriter.PostEditor
                     return true;
                 }
             }
-
         }
 
         private class RedoCommand : TextEditingCommand
@@ -780,7 +781,6 @@ namespace OpenLiveWriter.PostEditor
                     return true;
                 }
             }
-
         }
 
         private class CutCommand : TextEditingCommand
@@ -986,8 +986,8 @@ namespace OpenLiveWriter.PostEditor
 
         internal class LetterCommand : OverridableCommand, CommandBarButtonLightweightControl.ICustomButtonBitmapPaint
         {
-            private char _letter;
-            private FontStyle _fontStyle;
+            private readonly char _letter;
+            private readonly FontStyle _fontStyle;
 
             public LetterCommand(CommandId commandId, char letter, FontStyle fontStyle)
                 : base(commandId)
@@ -1157,8 +1157,8 @@ namespace OpenLiveWriter.PostEditor
 
         private class StyleCommand : TextEditingCommand
         {
-            IHtmlStylePicker _stylePicker;
-            TextEditingFocusHandler _focusCallback;
+            readonly IHtmlStylePicker _stylePicker;
+            readonly TextEditingFocusHandler _focusCallback;
             public StyleCommand(IHtmlStylePicker stylePicker, TextEditingFocusHandler focusCallback)
             {
                 _stylePicker = stylePicker;
@@ -1222,6 +1222,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     PostEditor.ApplyAlignment(_alignment);
                 }
+
                 base.Execute();
             }
 
@@ -1230,7 +1231,7 @@ namespace OpenLiveWriter.PostEditor
                 // Do nothing, we will explicitly manage them all together in ManageCommands
             }
 
-            private EditorTextAlignment _alignment;
+            private readonly EditorTextAlignment _alignment;
         }
 
         private class AlignLeftCommand : AlignCommand
@@ -1584,7 +1585,6 @@ namespace OpenLiveWriter.PostEditor
                 {
                     _isExecuting = false;
                 }
-
             }
 
             public override void Manage()
@@ -1612,9 +1612,8 @@ namespace OpenLiveWriter.PostEditor
                 Debug.Assert(CommandId == CommandId.CheckSpelling);
                 if (commandExecutionProperties != null)
                 {
-                    PropVariant doNotPromptValue;
                     PropertyKey doNotPromptKey = new PropertyKey(3001, VarEnum.VT_BOOL);
-                    int returnValue = commandExecutionProperties.GetValue(ref doNotPromptKey, out doNotPromptValue);
+                    int returnValue = commandExecutionProperties.GetValue(ref doNotPromptKey, out PropVariant doNotPromptValue);
                     if (returnValue == 0)
                     {
                         ExecuteEventHandlerArgs eventArgs =
@@ -1626,17 +1625,18 @@ namespace OpenLiveWriter.PostEditor
                         return eventArgs.Cancelled ? HRESULT.S_FALSE : HRESULT.S_OK;
                     }
                 }
+
                 return base.PerformExecute(verb, key, currentValue, commandExecutionProperties);
             }
         }
 
-        private IWin32Window _owner;
-        private IHtmlStylePicker _stylePicker;
+        private readonly IWin32Window _owner;
+        private readonly IHtmlStylePicker _stylePicker;
         private IHtmlEditorCommandSource _postEditor;
         private TextEditingFocusHandler _focusCallback;
-        private ArrayList _simpleTextEditors = new ArrayList();
-        private IContainer components = new Container();
-        private ArrayList _textEditingCommands = new ArrayList();
+        private readonly ArrayList _simpleTextEditors = new ArrayList();
+        private readonly IContainer components = new Container();
+        private readonly ArrayList _textEditingCommands = new ArrayList();
         private FontSizeCommand commandFontSize;
         private FontFamilyCommand commandFontFamily;
         private FontColorPickerCommand fontColorPickerCommand;

@@ -103,11 +103,11 @@ namespace OpenLiveWriter.HtmlEditor
 
     public class LinkInfo
     {
-        private string _anchorText;
-        private string _url;
-        private string _linkTitle;
-        private string _rel;
-        private bool _newWindow;
+        private readonly string _anchorText;
+        private readonly string _url;
+        private readonly string _linkTitle;
+        private readonly string _rel;
+        private readonly bool _newWindow;
 
         public LinkInfo(string anchorText, string url, string linkTitle, string rel, bool newWindow)
         {

@@ -64,6 +64,5 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             return new CommandBarSpacerLightweightControl();
         }
-
     }
 }

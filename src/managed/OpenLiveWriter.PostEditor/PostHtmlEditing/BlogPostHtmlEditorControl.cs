@@ -76,6 +76,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (mc.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_EnterScope && ElementFilters.IsBlockElement(mc.Element))
                     return true;
             }
+
             return false;
         }
 
@@ -131,7 +132,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         readonly IBlogPostSpellCheckingContext _spellingContext;
         private PostEditorKeyboardHandler _keyBoardHandler;
         private IImageReferenceFixer _referenceFixer;
-        private TemplateStrategy _strategy;
+        private readonly TemplateStrategy _strategy;
 
         // initialize document editing options
         protected override void InitializeDocumentEditingOptions()
@@ -160,6 +161,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     pPolicy = URLPOLICY.ALLOW;
                     return HRESULT.S_OK;
                 }
+
                 return base.ProcessUrlAction(pwszUrl, dwAction, out pPolicy, cbPolicy, pContext, cbContext, dwFlags, dwReserved);
             }
         }
@@ -292,7 +294,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     //here is a big deal, so we eat it
                     Debug.Fail("Error setting margin", nre.ToString());
                 }
-
             }
             else
             {
@@ -362,8 +363,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                IHTMLCaret caret;
-                ((IDisplayServices)HTMLDocument).GetCaret(out caret);
+                ((IDisplayServices)HTMLDocument).GetCaret(out IHTMLCaret caret);
                 Debug.Assert(caret != null, "HTML Document should have caret");
                 return caret;
             }
@@ -427,6 +427,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             HTMLDocument.selection.empty();
                         }
                     }
+
                     if (inEvtDispId == DISPID_HTMLELEMENTEVENTS2.ONMOUSEMOVE)
                         break;
 
@@ -454,11 +455,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             pIEventObj.cancelBubble = true;
                             return HRESULT.S_OK;
                         }
-
                     }
+
                     break;
 
             }
+
             return base.OnPreHandleEvent(inEvtDispId, pIEventObj);
         }
 
@@ -497,6 +499,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         {
                             return null;
                         }
+
                         break;
                 }
             }
@@ -649,9 +652,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             MarkupPointer insertionPoint = MarkupServices.CreateMarkupPointer(head, _ELEMENT_ADJACENCY.ELEM_ADJ_BeforeEnd);
 
-            int major;
-            int minor;
-            BrowserHelper.GetInstalledVersion(out major, out minor);
+            BrowserHelper.GetInstalledVersion(out int major, out int minor);
 
             // FIXME: Dynamically scale this padding on DPI change
             int titlePaddingY = (int)Math.Ceiling(DisplayHelper.ScaleY(10));
@@ -1062,6 +1063,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             destination.runtimeStyle.overflow = source.currentStyle.overflow;
             destination.runtimeStyle.padding = source.currentStyle.padding;
             destination.runtimeStyle.paddingBottom = source.currentStyle.paddingBottom;
@@ -1151,6 +1153,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     _titleBehavior.DetachFromElement();
                     _titleBehavior = null;
                 }
+
                 if (_bodyBehavior != null)
                 {
                     _bodyBehavior.EditableRegionFocusChanged -= new EventHandler(regionBehavior_EditableRegionFocusChanged);
@@ -1273,6 +1276,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     //This can cause an exception under some weblog styles when some behaviors are attached.  Bug 407544.
                     Trace.Fail("Unexpected exception while focusing element", e.ToString());
                 }
+
                 if (selectAll)
                     SelectAll();
             }
@@ -1409,7 +1413,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 Trace.WriteLine(ex);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -1432,6 +1435,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         return IsValidEditRegion(target);
                 }
             }
+
             return false;
         }
 
@@ -1570,10 +1574,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     throw new ArgumentException("Unknown position value");
             }
 
-            IHTMLCaret caret;
-            ((IDisplayServices)HTMLDocument).GetCaret(out caret);
-            IDisplayPointer displayPointer;
-            ((IDisplayServices)HTMLDocument).CreateDisplayPointer(out displayPointer);
+            ((IDisplayServices)HTMLDocument).GetCaret(out IHTMLCaret caret);
+            ((IDisplayServices)HTMLDocument).CreateDisplayPointer(out IDisplayPointer displayPointer);
             displayPointer.MoveToMarkupPointer((IMarkupPointer)location.PointerRaw, null);
             caret.MoveCaretToPointerEx(displayPointer, 1, 1, _CARET_DIRECTION.CARET_DIRECTION_INDETERMINATE);
         }
@@ -1590,6 +1592,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 ISupportingFile supportingFile = _imageEditingContext.SupportingFileService.GetFileByUri(new Uri(url));
                 return supportingFile != null;
             }
+
             return false;
         }
 
@@ -1608,6 +1611,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     InsertHtml(plainText ? "<br />" + BlogPost.PlainTextHorizontalLine : BlogPost.HorizontalLine, true);
                 }
+
                 undo.Commit();
             }
         }
@@ -1620,6 +1624,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     InsertHtml("<br clear=\"all\" />", true);
                 }
+
                 undo.Commit();
             }
         }
@@ -1750,6 +1755,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         dispEmbed.hidden = "false";
                     }
                 }
+
                 undo.Commit();
             }
         }
@@ -1859,6 +1865,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     command.PerformExecute();
 
             }
+
             return true;
         }
 
@@ -1926,7 +1933,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
-
         }
 
         private CommandContextMenuDefinition MergeContextMenuDefinitions(CommandContextMenuDefinition menu1, CommandContextMenuDefinition menu2)
@@ -1971,9 +1977,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         if (SelectedImageResized != null)
                             SelectedImageResized(newSize, snapRectInitialImageSize, snapRectPreserveConstraints, imgElement);
                     }
+
                     undo.Commit();
                 }
             }
+
             snapRectInitialImageSize = Size.Empty;
             snapRectImageElement = null;
             snapRectPreserveConstraints = false;
@@ -2144,7 +2152,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             return false;
         }
 
-        private SpellingManager _spellingManager;
+        private readonly SpellingManager _spellingManager;
 
         private void spellingSettings_SpellingSettingsChanged(object sender, EventArgs e)
         {
@@ -2256,8 +2264,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         private MarkupPointer ScreenPointToMarkupPointer(Point screenPoint)
         {
             MarkupPointer markupPointer = MarkupServices.CreateMarkupPointer();
-            IDisplayPointerRaw displayPointer;
-            MshtmlEditor.MshtmlControl.DisplayServices.CreateDisplayPointer(out displayPointer);
+            MshtmlEditor.MshtmlControl.DisplayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer);
             Point clientPoint = EditorControl.PointToClient(screenPoint);
 
             MoveDisplayPointerToClientPoint(displayPointer, clientPoint);
@@ -2274,10 +2281,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// </summary>
         class SpellCheckingDamageCommitStrategy : DamageCommitStrategy
         {
-            private RealtimeDamageCommitStrategy _realtimeCommitStrategy;
-            private WordBasedDamageCommitStrategy _wordBasedCommitStrategy;
+            private readonly RealtimeDamageCommitStrategy _realtimeCommitStrategy;
+            private readonly WordBasedDamageCommitStrategy _wordBasedCommitStrategy;
             private DamageCommitStrategy _currentCommitStrategy;
-            private BlogPostHtmlEditorControl _editor;
+            private readonly BlogPostHtmlEditorControl _editor;
 
             public SpellCheckingDamageCommitStrategy(BlogPostHtmlEditorControl editor)
             {
@@ -2444,7 +2451,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             public abstract IHTMLElement PostBodyElement(IHTMLDocument2 doc);
             public abstract IHTMLElement TitleElement(IHTMLDocument2 doc);
         }
-
     }
 
     internal delegate void SelectedImageResizedHandler(Size newSize, Size originalSize, bool preserveRatio, IHTMLImgElement image);

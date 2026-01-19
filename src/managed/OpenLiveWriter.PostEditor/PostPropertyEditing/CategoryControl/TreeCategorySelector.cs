@@ -35,6 +35,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 {
                     m.Msg = (int)WM.LBUTTONDOWN;
                 }
+
                 base.WndProc(ref m);
             }
         }
@@ -126,8 +127,10 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             {
                 // TODO: This will need to be rewritten to deal with the fact that
                 // ID doesn't work effectively in the face of hierarchy and new categories
-                allNodes[i] = new TreeNode(HtmlUtils.UnEscapeEntities(categories[i].Name, HtmlUtils.UnEscapeMode.Default));
-                allNodes[i].Tag = categories[i];
+                allNodes[i] = new TreeNode(HtmlUtils.UnEscapeEntities(categories[i].Name, HtmlUtils.UnEscapeMode.Default))
+                {
+                    Tag = categories[i]
+                };
 
                 // TODO:
                 // This is necessary due to bug in categories, where multiple
@@ -148,6 +151,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                     allNodes[i] = null;
                 }
             }
+
             return (TreeNode[])ArrayHelper.Compact(allNodes);
         }
 
@@ -163,9 +167,11 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 {
                     if (results == null)
                         results = new List<TreeNode>();
-                    TreeNode newNode = new TreeNode(node.Text, filteredChildNodes);
-                    newNode.Tag = node;
-                    newNode.Checked = node.Checked;
+                    TreeNode newNode = new TreeNode(node.Text, filteredChildNodes)
+                    {
+                        Tag = node,
+                        Checked = node.Checked
+                    };
                     results.Add(newNode);
                 }
             }
@@ -185,6 +191,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 if (child != null)
                     return child;
             }
+
             return null;
         }
 
@@ -209,6 +216,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 else
                     node.Remove();
             }
+
             return keptAny;
         }
 
@@ -259,6 +267,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                         treeView.Nodes.AddRange(FilteredNodes(RealNodes, prefixPredicate));
                     }
                 }
+
                 treeView.ExpandAll();
                 if (treeView.Nodes.Count > 0)
                     treeView.Nodes[0].EnsureVisible();

@@ -50,6 +50,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 requestedHeight = maxHeight;
                 requestedWidth = (requestedHeight * width) / height;
             }
+
             return new Size((int)Math.Round(requestedWidth), (int)Math.Round(requestedHeight));
         }
 
@@ -165,6 +166,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 //image.PropertyItems will throw an exception if the image does not contain any exif data
             }
+
             return RotateFlipType.RotateNoneFlipNone;
         }
 
@@ -278,6 +280,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         g.DrawImage(bitmap, destRect.Left, destRect.Top, destRect.Width, destRect.Height);
                     }
                 }
+
                 return enlargedBitmap;
             }
         }
@@ -293,6 +296,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     column[k] = f1[k, j];
                 }
+
                 for (int i = 0; i < 5; i++)
                 {
                     float s = 0;
@@ -300,9 +304,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     {
                         s += f2[i, k] * column[k];
                     }
+
                     X[i, j] = s;
                 }
             }
+
             return X;
         }
 
@@ -316,6 +322,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     X[j, k] = m[k, j];
                 }
             }
+
             return X;
         }
     }

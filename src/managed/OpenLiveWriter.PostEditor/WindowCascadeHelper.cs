@@ -62,10 +62,12 @@ namespace OpenLiveWriter.PostEditor
             {
                 newLeft = ourScreen.WorkingArea.X;
             }
+
             if (!ourScreen.WorkingArea.Contains(lowerLeft))
             {
                 newTop = ourScreen.WorkingArea.Y;
             }
+
             return new Point(newLeft, newTop);
         }
 
@@ -80,6 +82,7 @@ namespace OpenLiveWriter.PostEditor
                     return screen;
                 }
             }
+
             return null;
         }
         //verifies that if the form is at this location at least the toolbar will be visible

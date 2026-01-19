@@ -58,5 +58,4 @@ namespace OpenLiveWriter.Mshtml
         /// </summary>
         private bool findBehaviorCalled = false;
     }
-
 }

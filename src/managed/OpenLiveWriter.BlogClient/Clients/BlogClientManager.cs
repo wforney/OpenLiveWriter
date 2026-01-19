@@ -114,7 +114,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 return _optionOverrides[optionName] as string;
             }
 
-            private IDictionary _optionOverrides;
+            private readonly IDictionary _optionOverrides;
         }
 
         private static IList ClientTypes
@@ -137,12 +137,13 @@ namespace OpenLiveWriter.BlogClient.Clients
                         AddClientType(typeof(TistoryBlogClient));
                         AddClientType(typeof(StaticSite.StaticSiteClient));
                     }
+
                     return _clientTypes;
                 }
             }
         }
         private static IList _clientTypes;
-        private static object _classLock = new object();
+        private static readonly object _classLock = new object();
 
         private static void AddClientType(Type clientType)
         {
@@ -179,20 +180,19 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 get { return _name; }
             }
-            private string _name;
+            private readonly string _name;
 
             public ConstructorInfo Constructor
             {
                 get { return _constructor; }
             }
-            private ConstructorInfo _constructor;
+            private readonly ConstructorInfo _constructor;
 
             public Type Type
             {
                 get { return _type; }
             }
-            private Type _type;
+            private readonly Type _type;
         }
     }
-
 }

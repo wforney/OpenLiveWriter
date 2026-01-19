@@ -69,6 +69,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 if (_selectedIndex > -1 && _selectedIndex < Items.Count)
                     SelectedIndex = _selectedIndex;
             }
+
             base.OnSelectionChangeCommitted(e);
         }
 
@@ -84,6 +85,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -104,8 +106,6 @@ namespace OpenLiveWriter.PostEditor.Tagging
             {
                 return Res.Get(StringId.TagsCustomizeProviders);
             }
-
         }
     }
-
 }

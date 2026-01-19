@@ -90,5 +90,4 @@ namespace OpenLiveWriter.Interop.Windows
         public const int ON_THREAD_INTERNET = 0x00000040;
         public const int ON_THREAD_RESTRICTED = 0x00000080;
     }
-
 }

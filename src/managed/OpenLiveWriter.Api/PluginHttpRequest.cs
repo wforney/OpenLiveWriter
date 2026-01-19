@@ -59,8 +59,7 @@ namespace OpenLiveWriter.Api
         {
             get
             {
-                uint flags;
-                return WinInet.InternetGetConnectedState(out flags, 0);
+                return WinInet.InternetGetConnectedState(out _, 0);
             }
         }
 
@@ -69,14 +68,11 @@ namespace OpenLiveWriter.Api
         /// </summary>
         public static IWebProxy GetWriterProxy()
         {
-            IWebProxy proxy = HttpRequestHelper.GetProxyOverride();
-
-            if (proxy == null)
-                // TODO: Some plugins (like Flickr4Writer) cast this to a WebProxy
-                // Since the fix for this returns an explicit IWebProxy, we'll need to have
-                // the Flickr4Writer plugin fixed, then alter this to use the correct call.
-#pragma warning disable 612,618
-                proxy = System.Net.WebProxy.GetDefaultProxy();
+            // TODO: Some plugins (like Flickr4Writer) cast this to a WebProxy
+            // Since the fix for this returns an explicit IWebProxy, we'll need to have
+            // the Flickr4Writer plugin fixed, then alter this to use the correct call.
+#pragma warning disable 612, 618
+            IWebProxy proxy = HttpRequestHelper.GetProxyOverride() ?? WebProxy.GetDefaultProxy();
 #pragma warning restore 612, 618
             return proxy;
         }
@@ -98,49 +94,29 @@ namespace OpenLiveWriter.Api
         public PluginHttpRequest(string requestUrl, HttpRequestCacheLevel cacheLevel)
         {
             _requestUrl = requestUrl;
-            _cacheLevel = cacheLevel;
+            CacheLevel = cacheLevel;
         }
 
         /// <summary>
         /// Automatically follow host redirects of the request (defaults to true).
         /// </summary>
-        public bool AllowAutoRedirect
-        {
-            get { return _allowAutoRedirect; }
-            set { _allowAutoRedirect = value; }
-        }
-        private bool _allowAutoRedirect = true;
+        public bool AllowAutoRedirect { get; set; } = true;
 
         /// <summary>
         /// Cache level for Http request (defaults to BypassCache).
         /// </summary>
-        public HttpRequestCacheLevel CacheLevel
-        {
-            get { return _cacheLevel; }
-            set { _cacheLevel = value; }
-        }
-        private HttpRequestCacheLevel _cacheLevel = HttpRequestCacheLevel.BypassCache;
+        public HttpRequestCacheLevel CacheLevel { get; set; } = HttpRequestCacheLevel.BypassCache;
 
         /// <summary>
         /// Content-type of post data (this value must be specified if post data is included
         /// in the request).
         /// </summary>
-        public string ContentType
-        {
-            get { return _contentType; }
-            set { _contentType = value; }
-        }
-        private string _contentType = null;
+        public string ContentType { get; set; } = null;
 
         /// <summary>
         /// Post data to send along with the request.
         /// </summary>
-        public byte[] PostData
-        {
-            get { return _postData; }
-            set { _postData = value; }
-        }
-        private byte[] _postData;
+        public byte[] PostData { get; set; }
 
         /// <summary>
         /// Retrieve the resource (with no timeout).
@@ -165,8 +141,7 @@ namespace OpenLiveWriter.Api
             // always try to get the url from the cache first
             if (ReadFromCache)
             {
-                Internet_Cache_Entry_Info cacheInfo;
-                if (WinInet.GetUrlCacheEntryInfo(_requestUrl, out cacheInfo))
+                if (WinInet.GetUrlCacheEntryInfo(_requestUrl, out Internet_Cache_Entry_Info cacheInfo))
                 {
                     if (File.Exists(cacheInfo.lpszLocalFileName))
                     {
@@ -195,17 +170,9 @@ namespace OpenLiveWriter.Api
                 try
                 {
                     Stream responseStream = response.GetResponseStream();
-                    if (responseStream != null)
-                    {
-                        if (WriteToCache)
-                            return WriteResponseToCache(responseStream);
-                        else
-                            return StreamHelper.CopyToMemoryStream(responseStream);
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return responseStream == null
+                        ? null
+                        : WriteToCache ? WriteResponseToCache(responseStream) : StreamHelper.CopyToMemoryStream(responseStream);
                 }
                 finally
                 {
@@ -276,6 +243,6 @@ namespace OpenLiveWriter.Api
             }
         }
 
-        private string _requestUrl;
+        private readonly string _requestUrl;
     }
 }

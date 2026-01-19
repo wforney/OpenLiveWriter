@@ -84,6 +84,7 @@ namespace OpenLiveWriter.PostEditor
                         {
                             (panel as IBlogPostEditingSitePreferences).EditingSite = editingSite;
                         }
+
                         preferencesForm.SetEntry(i, panel);
 
                         //	Select it, if requested.
@@ -192,7 +193,6 @@ namespace OpenLiveWriter.PostEditor
             //	Set the preferences panels type array.
             preferencesPanelTypes = (Type[])types.ToArray(typeof(Type));
         }
-
     }
 
     internal interface IBlogPostEditingSitePreferences

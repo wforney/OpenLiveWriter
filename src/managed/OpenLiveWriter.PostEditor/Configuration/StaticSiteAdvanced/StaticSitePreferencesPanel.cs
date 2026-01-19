@@ -11,7 +11,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
 {
     public class StaticSitePreferencesPanel : PreferencesPanel
     {
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         protected StaticSitePreferencesController _controller;
 
@@ -41,6 +41,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
                 switchToPanel();
                 return false;
             }
+
             return true;
         }
 
@@ -54,6 +55,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

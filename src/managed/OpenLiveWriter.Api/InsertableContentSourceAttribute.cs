@@ -33,10 +33,7 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("InsertableContentSource.MenuText");
-
-                _menuText = value;
+                _menuText = value ?? throw new ArgumentNullException("InsertableContentSource.MenuText");
             }
         }
         private string _menuText;
@@ -54,10 +51,7 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("InsertableContentSource.SidebarText");
-
-                _sidebarText = value;
+                _sidebarText = value ?? throw new ArgumentNullException("InsertableContentSource.SidebarText");
             }
         }
         private string _sidebarText;

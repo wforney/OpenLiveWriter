@@ -154,8 +154,10 @@ namespace OpenLiveWriter.ApplicationFramework
                     }
                     else
                     {
-                        CommandBarButtonEntry cbbe = new CommandBarButtonEntry();
-                        cbbe.CommandIdentifier = commandIdentifier;
+                        CommandBarButtonEntry cbbe = new CommandBarButtonEntry
+                        {
+                            CommandIdentifier = commandIdentifier
+                        };
                         entries.Add(cbbe);
                     }
                 }

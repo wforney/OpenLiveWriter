@@ -89,6 +89,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                             if (childElement != null)
                                 items.Add(new StackItem(childElement));
                         }
+
                         items.Reverse();
 
                         foreach (StackItem si in items)
@@ -123,7 +124,7 @@ namespace OpenLiveWriter.CoreServices.HTML
         protected virtual void OnText(IHTMLTextElement el) { }
 
         private const int INDENT_SPACES = 4;
-        private StringBuilder indent = new StringBuilder("");
+        private readonly StringBuilder indent = new StringBuilder("");
         private void IncreaseIndent()
         {
             indent.Append(' ', INDENT_SPACES);
@@ -141,6 +142,5 @@ namespace OpenLiveWriter.CoreServices.HTML
                 return indent.ToString();
             }
         }
-
     }
 }

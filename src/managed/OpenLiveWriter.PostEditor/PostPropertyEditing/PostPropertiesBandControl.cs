@@ -229,6 +229,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                     table.ColumnStyles[COL_PAGEPARENT].SizeType = SizeType.AutoSize;
                     table.ColumnStyles[COL_PAGEPARENT] = new System.Windows.Forms.ColumnStyle();
                 }
+
                 ManageFillerVisibility();
             }
         }
@@ -259,7 +260,6 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         private bool IsPage
         {
             get { return _editorContext != null && _editorContext.BlogPost != null ? _editorContext.BlogPost.IsPage : false; }
-
         }
 
         public void OnBlogChanged(Blog newBlog)

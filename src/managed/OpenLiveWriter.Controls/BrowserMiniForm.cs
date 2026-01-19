@@ -30,8 +30,8 @@ namespace OpenLiveWriter.Controls
     /// </summary>
     public class BrowserMiniForm : MiniForm
     {
-        private OpenLiveWriter.BrowserControl.ExplorerBrowserControl _explorerBrowserControl;
-        private string _url;
+        private readonly OpenLiveWriter.BrowserControl.ExplorerBrowserControl _explorerBrowserControl;
+        private readonly string _url;
 
         public BrowserMiniForm(string url, int downloadOptions, WinInetCredentialsContext credentialsContext)
         {
@@ -48,8 +48,10 @@ namespace OpenLiveWriter.Controls
             BackColor = Color.White;
 
             // initialize browser control
-            _explorerBrowserControl = new ExplorerBrowserControl();
-            _explorerBrowserControl.Dock = DockStyle.Fill;
+            _explorerBrowserControl = new ExplorerBrowserControl
+            {
+                Dock = DockStyle.Fill
+            };
             Controls.Add(_explorerBrowserControl);
 
             // install download options if requested
@@ -225,8 +227,8 @@ namespace OpenLiveWriter.Controls
                 {
                     Trace.Fail("Unexpected exception disposing BrowserMiniForm: " + ex.ToString());
                 }
-
             }
+
             base.Dispose(disposing);
         }
 
@@ -243,8 +245,6 @@ namespace OpenLiveWriter.Controls
                 // NOTE: this does not seem to be working for web pages we navigate to by url
                 pInfo.dwFlags |= (DOCHOSTUIFLAG.NO3DBORDER | DOCHOSTUIFLAG.NO3DOUTERBORDER);
             }
-
         }
-
     }
 }

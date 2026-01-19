@@ -94,7 +94,7 @@ namespace OpenLiveWriter.Controls
             windowSizesPersisterHelper = ApplicationEnvironment.UserSettingsRoot.GetSubSettings(@"WindowBounds");
 
         }
-        private static SettingsPersisterHelper windowSizesPersisterHelper;
+        private static readonly SettingsPersisterHelper windowSizesPersisterHelper;
 
         public static Rectangle LoadWindowBounds(string key, Rectangle defaultBounds)
         {
@@ -121,6 +121,5 @@ namespace OpenLiveWriter.Controls
         {
             form.Bounds = windowSizesPersisterHelper.GetRectangle(key, defaultBounds);
         }
-
     }
 }

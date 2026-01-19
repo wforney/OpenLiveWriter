@@ -37,6 +37,7 @@ namespace OpenLiveWriter.CoreServices
                     if (OleDataObjectHelper.GetDataPresentSafe(m_iDataObject, DataFormats.Dib))
                         m_dib = (Stream)m_iDataObject.GetData(DataFormats.Dib);
                 }
+
                 return m_dib;
             }
         }
@@ -54,6 +55,7 @@ namespace OpenLiveWriter.CoreServices
                     if (OleDataObjectHelper.GetDataPresentSafe(m_iDataObject, GIF_FORMAT))
                         m_gif = (Stream)m_iDataObject.GetData(GIF_FORMAT);
                 }
+
                 return m_gif;
             }
         }
@@ -75,6 +77,7 @@ namespace OpenLiveWriter.CoreServices
                         m_bitmap = (Bitmap)data;
                     }
                 }
+
                 return m_bitmap;
             }
         }
@@ -85,6 +88,6 @@ namespace OpenLiveWriter.CoreServices
             m_iDataObject = iDataObject;
         }
 
-        private IDataObject m_iDataObject;
+        private readonly IDataObject m_iDataObject;
     }
 }

@@ -15,8 +15,8 @@ namespace OpenLiveWriter.HtmlEditor
     /// </summary>
     public class HtmlBlockFormatHelper
     {
-        private MshtmlMarkupServices _markupServices;
-        private HtmlEditorControl _editor;
+        private readonly MshtmlMarkupServices _markupServices;
+        private readonly HtmlEditorControl _editor;
         public HtmlBlockFormatHelper(HtmlEditorControl editor)
         {
             _editor = editor;
@@ -60,6 +60,7 @@ namespace OpenLiveWriter.HtmlEditor
                     {
                         ApplyBlockFormatToContentSelection(selection, styleTagId, maximumBounds);
                     }
+
                     undo.Commit();
                 }
             }
@@ -143,6 +144,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 (startStopParent as IHTMLDOMNode).removeNode(false);
             }
+
             IHTMLElement newBlock = WrapRangeInBlockElement(selection, styleTagId);
             selection.MoveToElement(newBlock, false);
         }
@@ -205,6 +207,7 @@ namespace OpenLiveWriter.HtmlEditor
                             // Skip over the closing tag, so stagedBlockInsertionPoint points between the openning and the closing
                             stagedBlockInsertionPoint.Left(true);
                         }
+
                         j.Unposition();
                     }
                 }
@@ -461,6 +464,7 @@ namespace OpenLiveWriter.HtmlEditor
                         currentRegion.ContentRange.End.MoveToPointer(currentRegion.ContentRange.Start);
                     }
                 }
+
                 currentRegion.ContentRange.End.Right(true, moveContext);
             }
 
@@ -470,6 +474,7 @@ namespace OpenLiveWriter.HtmlEditor
                 //move the end of the region back before the break element to close this region
                 currentRegion.ContentRange.End.Left(true);
             }
+
             if (currentRegion.ContentRange.End.IsRightOf(range.End))
                 currentRegion.ContentRange.End.MoveToPointer(range.End);
             regions.Add(currentRegion);
@@ -677,6 +682,7 @@ namespace OpenLiveWriter.HtmlEditor
                     cloned = true;
                     bounds = bounds.Clone();
                 }
+
                 bounds.Normalize();
             }
 
@@ -689,6 +695,7 @@ namespace OpenLiveWriter.HtmlEditor
                     cloned = true;
                     bounds = bounds.Clone();
                 }
+
                 bounds.Start.Right(true);
                 bounds.Start.Right(false, ctx);
             }

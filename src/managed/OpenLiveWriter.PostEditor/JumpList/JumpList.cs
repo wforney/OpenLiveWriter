@@ -32,10 +32,10 @@ namespace OpenLiveWriter.PostEditor.JumpList
         }
 
         // Best practice recommends defining a private object to lock on
-        private static Object syncLock = new Object();
+        private static readonly Object syncLock = new Object();
 
         // Native implementation of destination list
-        private ICustomDestinationList customDestinationList;
+        private readonly ICustomDestinationList customDestinationList;
 
         #region Properties
 
@@ -86,7 +86,6 @@ namespace OpenLiveWriter.PostEditor.JumpList
 
                 knownCategoryOrdinalPosition = value;
             }
-
         }
 
         /// <summary>
@@ -166,14 +165,13 @@ namespace OpenLiveWriter.PostEditor.JumpList
         private void BeginList()
         {
             // Get list of removed items from native code
-            object removedItems;
-            uint maxSlotsInList = 10; // default
+            // default
 
             // Native call to start adding items to the taskbar destination list
             int hr = customDestinationList.BeginList(
-                out maxSlotsInList,
+                out uint maxSlotsInList,
                 ref Shell32.IObjectArray,
-                out removedItems);
+                out object removedItems);
 
             if (!ComHelper.SUCCEEDED(hr))
                 Marshal.ThrowExceptionForHR(hr);
@@ -237,7 +235,6 @@ namespace OpenLiveWriter.PostEditor.JumpList
                     if (!fileTypes.ContainsKey(extension))
                         fileTypes.Add(extension, error);
                 }
-
             }
             catch (Exception ex)
             {

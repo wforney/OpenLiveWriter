@@ -27,6 +27,5 @@ namespace BlogRunner.Core.Tests
             results.AddResult("futurePublishDateWarning", NO);
             return true;
         }
-
     }
 }

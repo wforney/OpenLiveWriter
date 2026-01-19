@@ -43,20 +43,24 @@ namespace OpenLiveWriter.CoreServices
 
             public Stream HttpGet(string url)
             {
-                UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile();
-                urlDownloadToFile.Url = url;
-                urlDownloadToFile.DownloadAction = UrlDownloadToFile.DownloadActions.GET;
-                urlDownloadToFile.ShowSecurityUI = true;
+                UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile
+                {
+                    Url = url,
+                    DownloadAction = UrlDownloadToFile.DownloadActions.GET,
+                    ShowSecurityUI = true
+                };
                 return DoDownload(urlDownloadToFile);
             }
 
             public Stream HttpPost(string url, Stream postData)
             {
-                UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile();
-                urlDownloadToFile.Url = url;
-                urlDownloadToFile.DownloadAction = UrlDownloadToFile.DownloadActions.POST;
-                urlDownloadToFile.ShowSecurityUI = true;
-                urlDownloadToFile.PostData = StreamHelper.AsBytes(postData);
+                UrlDownloadToFile urlDownloadToFile = new UrlDownloadToFile
+                {
+                    Url = url,
+                    DownloadAction = UrlDownloadToFile.DownloadActions.POST,
+                    ShowSecurityUI = true,
+                    PostData = StreamHelper.AsBytes(postData)
+                };
                 return DoDownload(urlDownloadToFile);
             }
 
@@ -68,6 +72,5 @@ namespace OpenLiveWriter.CoreServices
                 return new FileStream(path, FileMode.Open, FileAccess.Read);
             }
         }
-
     }
 }

@@ -106,7 +106,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                             Uri imageSrcUri = new Uri(imageSrc);
                             imageToResize = (Bitmap)Image.FromFile(imageSrcUri.LocalPath);
                         }
-
                     }
                     catch (Exception e)
                     {
@@ -155,6 +154,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     sizeBounds.Width = Math.Min(rotatedBaseSize.Width, sizeBounds.Width);
                     sizeBounds.Height = Math.Min(rotatedBaseSize.Height, sizeBounds.Height);
                 }
+
                 return ImageUtils.GetScaledImageSize(sizeBounds.Width, sizeBounds.Height, rotatedBaseSize);
             }
             else
@@ -498,6 +498,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 int defaultHeight = settings.GetInt(DEFAULT_HEIGHT, 240);
                 defaultBoundsSize = new Size(defaultWidth, defaultHeight);
             }
+
             return defaultBoundsSize;
         }
 

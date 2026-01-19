@@ -13,7 +13,7 @@ namespace OpenLiveWriter.CoreServices.Progress
     /// </summary>
     public class MultipartAsyncOperation : ProgressWorkerHostAyncOperation, IProgressCategoryProvider
     {
-        private ArrayList workers;
+        private readonly ArrayList workers;
         private int totalProgressTicks;
 
         /// <summary>
@@ -142,6 +142,7 @@ namespace OpenLiveWriter.CoreServices.Progress
                 {
                     this.Cancel();
                 }
+
                 this.AcknowledgeCancel();
             }
         }

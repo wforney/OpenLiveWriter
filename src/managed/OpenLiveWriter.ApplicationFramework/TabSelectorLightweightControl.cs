@@ -37,12 +37,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components;
+        private readonly IContainer components;
 
         /// <summary>
         /// The tab entry.
         /// </summary>
-        private TabEntry tabEntry;
+        private readonly TabEntry tabEntry;
 
         /// <summary>
         /// Gets the tab entry.
@@ -243,6 +243,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -500,6 +501,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 topColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabTopColor;
                 bottomColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabBottomColor;
             }
+
             if (topColor == bottomColor)
                 using (SolidBrush solidBrush = new SolidBrush(topColor))
                     graphics.FillRectangle(solidBrush, faceRectangle);

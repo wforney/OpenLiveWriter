@@ -158,6 +158,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                 b.Dispose();
                 return adjustedBitmap;
             }
+
             return b;
         }
 
@@ -600,7 +601,6 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                     (byte)(gNew * wLumAlpha / wScale),
                     (byte)(bNew * wLumAlpha / wScale));
             }
-
         }
 
         public static Bitmap ColorizeBitmap(Bitmap bitmap, Color crColorize, int wScale)
@@ -624,6 +624,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                         newBitmap.SetPixel(x, y, bitmap.GetPixel(x, y));
                 }
             }
+
             return newBitmap;
         }
     }

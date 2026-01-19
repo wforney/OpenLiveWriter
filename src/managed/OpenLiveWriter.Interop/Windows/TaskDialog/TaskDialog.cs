@@ -599,12 +599,14 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
                         if (args.ResetTickCount)
                             return new IntPtr(1);
                     }
+
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_VERIFICATION_CLICKED:
                     if (VerificationClicked != null)
                         VerificationClicked(this, new TaskDialogVerificationEventArgs(driver, wParam.ToInt32() == 1));
                     break;
             }
+
             return IntPtr.Zero;
         }
 
@@ -616,9 +618,11 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
             TASKDIALOG_BUTTON[] results = new TASKDIALOG_BUTTON[buttons.Count];
             for (int i = 0; i < results.Length; i++)
             {
-                results[i] = new TASKDIALOG_BUTTON();
-                results[i].nButtonID = buttons[i].Id;
-                results[i].pszButtonText = buttons[i].Text;
+                results[i] = new TASKDIALOG_BUTTON
+                {
+                    nButtonID = buttons[i].Id,
+                    pszButtonText = buttons[i].Text
+                };
             }
 
             return new StructArrayMarshaller<TASKDIALOG_BUTTON>(results);
@@ -631,8 +635,8 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
     public class TaskDialogButton
     {
-        private int id;
-        private string text;
+        private readonly int id;
+        private readonly string text;
 
         public TaskDialogButton(int id, string text)
         {
@@ -646,7 +650,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
     public class TaskDialogIcon : IDisposable
     {
-        private IntPtr id;
+        private readonly IntPtr id;
         private IntPtr hicon;
 
         public TaskDialogIcon(Bitmap bitmap)

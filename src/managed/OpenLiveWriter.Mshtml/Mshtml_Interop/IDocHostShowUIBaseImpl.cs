@@ -27,6 +27,5 @@ namespace OpenLiveWriter.Mshtml
             return HRESULT.S_FALSE;
         }
     }
-
 }
 

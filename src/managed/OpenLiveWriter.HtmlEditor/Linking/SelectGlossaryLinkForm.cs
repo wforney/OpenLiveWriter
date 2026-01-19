@@ -47,6 +47,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -121,6 +122,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 DisplayMessage.Show(MessageId.SelectEntry);
                 return;
             }
+
             DialogResult = DialogResult.OK;
         }
 
@@ -147,6 +149,5 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 initialItem.Selected = true;
             }
         }
-
     }
 }

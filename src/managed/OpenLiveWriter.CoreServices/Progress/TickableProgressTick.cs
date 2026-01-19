@@ -6,8 +6,8 @@ namespace OpenLiveWriter.CoreServices.Progress
 
     public class TickableProgressTick
     {
-        private IProgressHost _progress;
-        private int _ticks;
+        private readonly IProgressHost _progress;
+        private readonly int _ticks;
         private int _currentTicks;
 
         public TickableProgressTick(IProgressHost progress,

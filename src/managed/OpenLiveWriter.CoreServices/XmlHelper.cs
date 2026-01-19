@@ -30,8 +30,7 @@ namespace OpenLiveWriter.CoreServices
             if (String.IsNullOrEmpty(rawDate))
                 return null;
 
-            DateTime dateTime;
-            if (DateTime.TryParse(rawDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            if (DateTime.TryParse(rawDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
             {
                 return dateTime;
             }
@@ -169,6 +168,5 @@ namespace OpenLiveWriter.CoreServices
                 return defaultValue;
             }
         }
-
     }
 }

@@ -53,6 +53,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 ShowColorDialog();
                 return true;
             }
+
             return base.ProcessMnemonic(charCode);
         }
 

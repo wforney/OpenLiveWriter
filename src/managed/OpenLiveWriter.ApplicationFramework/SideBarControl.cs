@@ -33,12 +33,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         /// <summary>
         /// BitmapButton list of the entries in the SideBarControl.
         /// </summary>
-        private ArrayList bitmapButtonList = new ArrayList();
+        private readonly ArrayList bitmapButtonList = new ArrayList();
 
         /// <summary>
         /// The selected index of the BitmapButton that is selected.
@@ -87,6 +87,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -167,8 +168,10 @@ namespace OpenLiveWriter.ApplicationFramework
         public void SetEntry(int index, Bitmap bitmap, string text, string name)
         {
             //	Instantiate and initialize the BitmapButton.
-            BitmapButton bitmapButton = new BitmapButton();
-            bitmapButton.Tag = index;
+            BitmapButton bitmapButton = new BitmapButton
+            {
+                Tag = index
+            };
             bitmapButton.Click += new EventHandler(bitmapButton_Click);
             bitmapButton.AutoSizeHeight = false;
             bitmapButton.AutoSizeWidth = false;

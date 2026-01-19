@@ -22,7 +22,7 @@ namespace OpenLiveWriter.CoreServices
     /// </summary>
     public class ResourceFileDownloader
     {
-        private static bool _allowResourceFileDownloads = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Resources").GetBoolean("DownloadResources", true);
+        private static readonly bool _allowResourceFileDownloads = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Resources").GetBoolean("DownloadResources", true);
 
         /// <summary>
         /// Version of the ResourceFileDownloader with cache mapped to standard Local Settings directory
@@ -47,6 +47,7 @@ namespace OpenLiveWriter.CoreServices
                     new DelayUpdateHelper(assembly, name, url, contentType, this, processor, delayMs).StartBackgroundUpdate();
                 }
             }
+
             return ProcessResourceSafely(assembly, name, string.Empty, contentType, REQUIREDFRESHNESSDAYS, TIMEOUTMS, processor);
         }
         private const int REQUIREDFRESHNESSDAYS = 1;
@@ -165,7 +166,6 @@ namespace OpenLiveWriter.CoreServices
                 using (Stream stream = GetResourceLocal(callingAssembly, name))
                     return processor(stream);
             }
-
         }
 
         private class XPPResourceFileProcessor
@@ -174,7 +174,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 _processor = processor;
             }
-            private ResourceFileProcessor _processor;
+            private readonly ResourceFileProcessor _processor;
 
             public object ProcessXmlResource(Stream stream)
             {
@@ -193,7 +193,6 @@ namespace OpenLiveWriter.CoreServices
 
                 return _processor(processedStream);
             }
-
         }
 
         private Stream GetResource(Assembly assembly, string name, string resourceUrl, string contentType, int requiredFreshnessDays, int timeoutMs)
@@ -344,8 +343,8 @@ namespace OpenLiveWriter.CoreServices
 #endif
         }
 
-        private string _fileCacheBasePath;
-        private bool _enableDownloading;
+        private readonly string _fileCacheBasePath;
+        private readonly bool _enableDownloading;
     }
 
     /// <summary>

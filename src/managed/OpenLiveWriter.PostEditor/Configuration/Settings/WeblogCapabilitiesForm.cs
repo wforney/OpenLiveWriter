@@ -29,7 +29,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public WeblogCapabilitiesForm(IBlogClientOptions clientOptions)
         {
@@ -74,7 +74,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 _listView.Items.Add(item);
             }
 
-            private ListView _listView;
+            private readonly ListView _listView;
         }
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -240,6 +240,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     int defaultHeight = Settings.GetInt(DEFAULT_TARGET_HEIGHT, 300);
                     defaultBoundsSize = new Size(defaultWidth, defaultHeight);
                 }
+
                 return defaultBoundsSize;
             }
             set
@@ -313,6 +314,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     anchorElement.removeAttribute("title", 0);
                 }
+
                 if (rel != String.Empty)
                 {
                     anchorElement.setAttribute("rel", rel, 0);
@@ -380,6 +382,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     if (viewer != null)
                         viewer.Detect(htmlAnchorElement, ref useImageViewer, ref imageViewerGroupName);
                 }
+
                 return new LinkOptions(openInNewWindow, useImageViewer, imageViewerGroupName);
             }
             set
@@ -501,6 +504,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     return parentElement;
                 parentElement = parentElement.parentElement;
             }
+
             return null;
         }
 
@@ -528,6 +532,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                         viewer.Apply(htmlAnchorElement, defaultOptions.ImageViewerGroupName);
                 }
             }
+
             parentElement.setAttribute("href", href, 0);
         }
 

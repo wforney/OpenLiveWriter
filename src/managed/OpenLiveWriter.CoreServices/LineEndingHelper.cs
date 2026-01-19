@@ -56,6 +56,7 @@ namespace OpenLiveWriter.CoreServices
                             result = new StringBuilder(style == LineEnding.CRLF ? (int)(input.Length * 1.1) : input.Length);
                             result.Append(input, 0, i);
                         }
+
                         if (result != null)
                         {
                             result.Append(ending);

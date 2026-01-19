@@ -129,8 +129,10 @@ namespace OpenLiveWriter.BlogClient.Clients
                 {
                     throw;
                 }
+
                 Debug.Assert(requiredAuthScheme != AuthenticationScheme.Unknown, "Unexpected authscheme"); //this would cause an infinite loop!
             }
+
             return false;
         }
 
@@ -141,6 +143,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 if (e.Response.Headers["WWW-Authenticate"] != null)
                     return AuthenticationScheme.Http;
             }
+
             return AuthenticationScheme.MetaWeblog;
         }
 
@@ -170,6 +173,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 HttpCredentialsProvider credentialsProvider = tc.Token as HttpCredentialsProvider;
                 return credentialsProvider;
             }
+
             return null;
         }
 
@@ -219,8 +223,10 @@ namespace OpenLiveWriter.BlogClient.Clients
             string listGuid = SharepointBlogIdToListGuid(uploadContext.BlogId);
             if (listGuid != null)
             {
-                SharePointListsService listsServicesharePointLists = new SharePointListsService(attachSettings.UploadServiceUrl);
-                listsServicesharePointLists.Credentials = GetHttpCredentials();
+                SharePointListsService listsServicesharePointLists = new SharePointListsService(attachSettings.UploadServiceUrl)
+                {
+                    Credentials = GetHttpCredentials()
+                };
 
                 //The AddAttachment() call will throw an error if the attachment already exists, so we need to delete
                 //the attachment first (if it exists).  To delete the attachment, we must construct the attachment URL
@@ -241,6 +247,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
                 return;
             }
+
             throw new BlogClientFileUploadNotSupportedException();
         }
 
@@ -283,7 +290,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         private class FileAttachSettings
         {
-            IProperties _settings;
+            readonly IProperties _settings;
             public FileAttachSettings(IProperties properties)
             {
                 _settings = properties;
@@ -326,18 +333,18 @@ namespace OpenLiveWriter.BlogClient.Clients
         }
 
         private const string FILE_ALREADY_UPLOADED = "sharepoint.uploaded";
-        private Regex M1_postApiUrlRegex = new Regex(@"(.*)/_layouts/metaweblog\.aspx\?blog=(.*)");
-        private Regex M2_postApiUrlRegex = new Regex(@"(.*)/_layouts/metaweblog\.aspx");
-        private Uri _postApiUrl;
+        private readonly Regex M1_postApiUrlRegex = new Regex(@"(.*)/_layouts/metaweblog\.aspx\?blog=(.*)");
+        private readonly Regex M2_postApiUrlRegex = new Regex(@"(.*)/_layouts/metaweblog\.aspx");
+        private readonly Uri _postApiUrl;
         internal static readonly string USER_AGENT = ApplicationEnvironment.FormatUserAgentString(ApplicationEnvironment.ProductName, false);
 
         public enum AuthenticationScheme { Unknown, Http, MetaWeblog };
         internal const string AUTH_SCHEME = "AuthScheme";
         class HttpCredentialsProvider
         {
-            ICredentials _credentials = CredentialCache.DefaultCredentials;
-            private IBlogCredentialsAccessor _blogCredentials;
-            string _postApiUrl;
+            readonly ICredentials _credentials = CredentialCache.DefaultCredentials;
+            private readonly IBlogCredentialsAccessor _blogCredentials;
+            readonly string _postApiUrl;
             public HttpCredentialsProvider(string postApiUrl, IBlogCredentialsAccessor blogCredentials, string username, string password)
             {
                 _postApiUrl = postApiUrl;
@@ -375,6 +382,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     }
                     catch (Exception) { }//unknown authscheme detected
                 }
+
                 return authSceme;
             }
         }

@@ -19,12 +19,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         /// <summary>
         /// A value indicating whether the CommandContextMenu is being shown on a CommandBar.
         /// </summary>
-        private bool commandBar = false;
+        private readonly bool commandBar = false;
 
         /// <summary>
         /// Shows a CommandContextMenu modally.
@@ -266,6 +266,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (components != null)
                     components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -416,6 +417,7 @@ namespace OpenLiveWriter.ApplicationFramework
                         return commandOwnerDrawMenuItem;
                 }
             }
+
             return null;
         }
     }

@@ -16,13 +16,13 @@ namespace OpenLiveWriter.PostEditor.Commands
         private const int Increment = 1;
         private const uint DecimalPlaces = 0;
 
-        private string RepresentativeString;
-        private string FormatString;
+        private readonly string RepresentativeString;
+        private readonly string FormatString;
 
-        private SpinnerCommand commandLeftMargin;
-        private SpinnerCommand commandTopMargin;
-        private SpinnerCommand commandRightMargin;
-        private SpinnerCommand commandBottomMargin;
+        private readonly SpinnerCommand commandLeftMargin;
+        private readonly SpinnerCommand commandTopMargin;
+        private readonly SpinnerCommand commandRightMargin;
+        private readonly SpinnerCommand commandBottomMargin;
         private Padding marginValue;
 
         public MarginCommand(CommandManager commandManager)

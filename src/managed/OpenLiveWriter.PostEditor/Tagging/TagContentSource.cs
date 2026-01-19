@@ -48,6 +48,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     context.CurrentProvider = form.TagProvider;
                     context.AddTagsToHistory(form.Tags);
                 }
+
                 return result;
             }
         }
@@ -86,6 +87,5 @@ namespace OpenLiveWriter.PostEditor.Tagging
             options.Initialize(new TagProviderManager(Options));
             options.ShowDialog(dialogOwner);
         }
-
     }
 }

@@ -106,13 +106,15 @@ namespace OpenLiveWriter.PostEditor
                 foreach (string name in value)
                 {
                     i++;
-                    var tab = new ViewSwitchTabControl();
-                    tab.AccessibleName = name;
-                    tab.AccessibleRole = AccessibleRole.PageTab;
-                    tab.Text = name;
-                    tab.TabStop = true;
-                    tab.TabIndex = i;
-                    tab.Margin = new Padding(0);
+                    var tab = new ViewSwitchTabControl
+                    {
+                        AccessibleName = name,
+                        AccessibleRole = AccessibleRole.PageTab,
+                        Text = name,
+                        TabStop = true,
+                        TabIndex = i,
+                        Margin = new Padding(0)
+                    };
                     tab.Click += tab_Click;
                     tab.SelectedChanged += tab_SelectedChanged;
                     flowLayoutPanel.Controls.Add(tab);

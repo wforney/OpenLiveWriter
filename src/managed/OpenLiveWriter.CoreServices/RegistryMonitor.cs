@@ -20,9 +20,9 @@ namespace OpenLiveWriter.CoreServices
     #region RegistryKey Event and Delegate
     public class RegistryKeyEventArgs : EventArgs
     {
-        private string _key; //identifies the registry key
-        private string _fullKey; //identifies the registry key
-        private UIntPtr _hKey;
+        private readonly string _key; //identifies the registry key
+        private readonly string _fullKey; //identifies the registry key
+        private readonly UIntPtr _hKey;
         public RegistryKeyEventArgs(UIntPtr hkey, string key, string fullKey)
         {
             _hKey = hkey;
@@ -87,8 +87,8 @@ namespace OpenLiveWriter.CoreServices
             //initialize the fixed set of monitor events.
             InitFixedMonitorEvents();
         }
-        private SortedList keyMonitors;
-        private BackgroundWorkerQueue workerQueue;
+        private readonly SortedList keyMonitors;
+        private readonly BackgroundWorkerQueue workerQueue;
         private Thread monitorThread;
 
         /// <summary>
@@ -148,9 +148,11 @@ namespace OpenLiveWriter.CoreServices
                 //launch the monitor thread if it hasn't been started.
                 if (monitorThread == null)
                 {
-                    monitorThread = new Thread(new ThreadStart(this.MonitorChanges));
-                    monitorThread.IsBackground = true;
-                    monitorThread.Name = "Registry Monitor";
+                    monitorThread = new Thread(new ThreadStart(this.MonitorChanges))
+                    {
+                        IsBackground = true,
+                        Name = "Registry Monitor"
+                    };
                     monitorThread.Start();
                 }
             }
@@ -218,6 +220,7 @@ namespace OpenLiveWriter.CoreServices
                 ResetMonitorHandles();
                 //Debug.WriteLine("start listening for changes to registry key: " + monitor.FullKey, "RegistryMonitor");
             }
+
             return monitor;
         }
 
@@ -232,6 +235,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 RegistryHelper.CreateKey(hkey, key);
             }
+
             RegistryKeyMonitor monitor = new RegistryKeyMonitor(this, hkey, key);
             ConfigureChangeMonitoring(monitor, false);
             return monitor;
@@ -284,6 +288,7 @@ namespace OpenLiveWriter.CoreServices
                     {
                         ResetMonitorHandles();
                     }
+
                     return _monitorHandles;
                 }
             }
@@ -538,10 +543,10 @@ namespace OpenLiveWriter.CoreServices
         internal class RegistryKeyMonitor
         {
             private RegistryKeyEventHandler keyHandlers = null;
-            private RegistryMonitor _monitor;
-            private string _key;
-            private string _fullKey;
-            private UIntPtr _hKey;
+            private readonly RegistryMonitor _monitor;
+            private readonly string _key;
+            private readonly string _fullKey;
+            private readonly UIntPtr _hKey;
 
             /// <summary>
             /// Handle to underlying registry key used by this monitor (we need this in order

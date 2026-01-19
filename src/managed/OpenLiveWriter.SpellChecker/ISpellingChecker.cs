@@ -159,7 +159,6 @@ namespace OpenLiveWriter.SpellChecker
         /// <summary>
         /// Underlying native error code
         /// </summary>
-        private int nativeError = 0 ;
+        private readonly int nativeError = 0 ;
     }
-
 }

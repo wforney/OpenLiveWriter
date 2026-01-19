@@ -94,6 +94,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                         // set focus to the list
                         listViewGlossary.Focus();
                     }
+
                     return;
                 }
             }
@@ -150,6 +151,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -257,7 +259,6 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             {
                 UnexpectedErrorMessage.Show(ex);
             }
-
         }
 
         private void DeleteSelectedEntry()
@@ -297,6 +298,5 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 return (GlossaryLinkItem)listViewGlossary.SelectedItems[0].Tag;
             }
         }
-
     }
 }

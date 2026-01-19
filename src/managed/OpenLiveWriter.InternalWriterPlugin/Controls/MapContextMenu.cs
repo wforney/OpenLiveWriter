@@ -36,8 +36,10 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             Command returnCommand;
             using (CommandLoader commandLoader = new CommandLoader(commandManager, FilterMapContextMenuCommands(hideCommands)))
             {
-                CommandContextMenuDefinition ccmd = new CommandContextMenuDefinition();
-                ccmd.CommandBar = false;
+                CommandContextMenuDefinition ccmd = new CommandContextMenuDefinition
+                {
+                    CommandBar = false
+                };
                 ccmd.Entries.Add(CommandId.MapAddPushpin, false, true);
                 ccmd.Entries.Add(CommandId.MapZoomStreetLevel, false, false);
                 ccmd.Entries.Add(CommandId.MapZoomCityLevel, false, false);
@@ -65,6 +67,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                 if (!contextCommandTable.ContainsKey(_mapCommandIds[id]))
                     commandIds.Add(id);
             }
+
             return (CommandId[])commandIds.ToArray(typeof(CommandId));
         }
 
@@ -73,8 +76,10 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             Command command;
             using (CommandLoader commandLoader = new CommandLoader(commandManager, PushpinContextMenuIds))
             {
-                CommandContextMenuDefinition ccmd = new CommandContextMenuDefinition();
-                ccmd.CommandBar = false;
+                CommandContextMenuDefinition ccmd = new CommandContextMenuDefinition
+                {
+                    CommandBar = false
+                };
                 ccmd.Entries.Add(CommandId.MapEditPushpin, false, false);
                 ccmd.Entries.Add(CommandId.MapDeletePushpin, false, false);
 
@@ -116,8 +121,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             _pushpinCommandIds.Add(CommandId.MapDeletePushpin, PushpinContextCommand.DeletePushpin);
         }
 
-        private static Hashtable _mapCommandIds = Hashtable.Synchronized(new Hashtable());
-        private static Hashtable _pushpinCommandIds = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable _mapCommandIds = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable _pushpinCommandIds = Hashtable.Synchronized(new Hashtable());
     }
-
 }

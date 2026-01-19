@@ -177,5 +177,4 @@ namespace OpenLiveWriter.Mshtml
         DISABLE_UNTRUSTEDPROTOCOL = 0x01000000,
         DPI_AWARE = 0x04000000,
     }
-
 }

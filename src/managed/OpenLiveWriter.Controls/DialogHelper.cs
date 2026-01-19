@@ -90,6 +90,5 @@ namespace OpenLiveWriter.Controls
             // call the underlying delegate
             return param.EnumDelegate(hWnd, param.CustomParam);
         }
-
     }
 }

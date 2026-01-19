@@ -165,7 +165,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
 
         protected class Undo : IDisposable
         {
-            private IHtmlEditorComponentContext _editorContext;
+            private readonly IHtmlEditorComponentContext _editorContext;
             public Undo(IHtmlEditorComponentContext editorContext)
             {
                 _editorContext = editorContext;

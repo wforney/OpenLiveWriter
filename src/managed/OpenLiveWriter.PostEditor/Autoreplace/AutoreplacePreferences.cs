@@ -58,6 +58,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                 phrases[i] = new AutoreplacePhrase(phrase, (string)_autoReplacePhrases[phrase]);
                 i++;
             }
+
             return phrases;
         }
 
@@ -98,6 +99,5 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
             AutoreplaceSettings.EnableSpecialCharacterReplacement = EnableSpecialCharacterReplacement;
             AutoreplaceSettings.EnableEmoticonsReplacement = EnableEmoticonsReplacement;
         }
-
     }
 }

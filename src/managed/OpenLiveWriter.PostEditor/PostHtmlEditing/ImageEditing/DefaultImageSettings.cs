@@ -20,8 +20,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     internal class DefaultImageSettings
     {
-        string _contextId;
-        ImageDecoratorsManager _decoratorsManager;
+        readonly string _contextId;
+        readonly ImageDecoratorsManager _decoratorsManager;
         public DefaultImageSettings(string contextId, ImageDecoratorsManager decoratorsManager)
         {
             _contextId = contextId;
@@ -57,6 +57,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         }
                     }
                 }
+
                 contextImageSettings.SetString(ImageDecoratorsListKey, sb.ToString());
             }
         }
@@ -215,6 +216,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _settingsKey = ApplicationEnvironment.UserSettingsRoot.GetSubSettings("Weblogs");
                 }
+
                 return _settingsKey;
             }
             set
@@ -272,7 +274,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                 }
             }
-
         }
     }
 }

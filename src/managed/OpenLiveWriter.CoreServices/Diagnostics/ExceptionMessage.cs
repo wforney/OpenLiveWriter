@@ -7,9 +7,9 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
 {
     public class ExceptionMessage
     {
-        private string title;
-        private string messageFormat;
-        private bool unexpected;
+        private readonly string title;
+        private readonly string messageFormat;
+        private readonly bool unexpected;
 
         public ExceptionMessage(string title, string messageFormat, bool unexpected)
         {

@@ -16,8 +16,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        private TemporaryBlogSettings _targetBlogSettings;
-        private TemporaryBlogSettings _editableBlogSettings;
+        private readonly TemporaryBlogSettings _targetBlogSettings;
+        private readonly TemporaryBlogSettings _editableBlogSettings;
 
         public WeblogSettingsPanel()
             : base()
@@ -63,7 +63,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 if (_settingsModified)
                     OnModified(EventArgs.Empty);
             }
-
         }
         private bool _settingsModified = false;
 
@@ -79,6 +78,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

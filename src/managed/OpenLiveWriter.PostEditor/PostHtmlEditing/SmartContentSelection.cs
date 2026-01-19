@@ -54,6 +54,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                 return SelectElement(editorComponentContext, smartContent, contentState);
             }
+
             return null;
         }
 
@@ -62,7 +63,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             SmartContentSelection selection = (SmartContentSelection)SelectElementCore(editorComponentContext, e, new SmartContentSelection(editorComponentContext, e, contentState));
             return selection;
         }
-
     }
 
     public class DisabledImageSelection : ContentSelection
@@ -80,11 +80,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     public class ContentSelection : IHtmlEditorSelection
     {
-        private IHTMLElement _element;
+        private readonly IHTMLElement _element;
         private SmartContentState _contentState;
-        private MshtmlMarkupServices _markupServices;
-        private MarkupRange _markupRange;
-        private IHtmlEditorComponentContext _editorComponentContext;
+        private readonly MshtmlMarkupServices _markupServices;
+        private readonly MarkupRange _markupRange;
+        private readonly IHtmlEditorComponentContext _editorComponentContext;
 
         protected ContentSelection(IHtmlEditorComponentContext editorComponentContext, IHTMLElement element, SmartContentState contentState)
         {
@@ -260,8 +260,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     editorComponentContext.EndSelectionChange();
                 }
             }
+
             return null;
         }
-
     }
 }

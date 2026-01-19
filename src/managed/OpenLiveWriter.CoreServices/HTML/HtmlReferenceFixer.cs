@@ -71,6 +71,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                     }
                 }
             }
+
             base.OnBeginTag(tag);
         }
 
@@ -98,7 +99,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                     return reference;
             }
 
-            private ReferenceFixer _fixer;
+            private readonly ReferenceFixer _fixer;
         }
     }
 }

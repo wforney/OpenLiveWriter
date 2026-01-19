@@ -13,7 +13,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
     public class AutoreplaceManager : IAutoReplaceFinder
     {
         private static readonly object _lock = new object();
-        private static Dictionary<string, AutoReplaceFinder> finderFileCache = new Dictionary<string, AutoReplaceFinder>();
+        private static readonly Dictionary<string, AutoReplaceFinder> finderFileCache = new Dictionary<string, AutoReplaceFinder>();
         private AutoReplaceFinder finderFile;
         private AutoReplaceFinder finderRegistry;
         private readonly CanMatch canMatch;
@@ -56,7 +56,6 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                     finderFileCache.Add(path, finderFile);
                 }
             }
-
         }
 
         public void ReloadPhraseSettings()
@@ -68,6 +67,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                 {
                     newFinderRegistry.Add(NormalizeInputValue(phrase.Phrase), phrase.ReplaceValue);
                 }
+
                 finderRegistry = newFinderRegistry;
             }
         }
@@ -187,6 +187,7 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                     Debug.Fail("Odd number of words found in autocorrect lexicon");
                     yield break;
                 }
+
                 yield return new Pair(from, to);
             }
         }
@@ -233,5 +234,4 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
             return Encoding.Unicode.GetString(buffer, 0, charCount * 2);
         }
     }
-
 }

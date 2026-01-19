@@ -16,7 +16,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         /// <summary>
         /// Initializes a new instance of the ApplicationCommandBarLightweightControl class.
@@ -52,6 +52,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

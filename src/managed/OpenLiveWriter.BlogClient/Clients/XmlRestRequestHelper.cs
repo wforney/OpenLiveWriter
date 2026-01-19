@@ -25,8 +25,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         public XmlDocument Get(ref Uri uri, HttpRequestFilter filter, params string[] parameters)
         {
-            WebHeaderCollection responseHeaders;
-            return Get(ref uri, filter, out responseHeaders, parameters);
+            return Get(ref uri, filter, out WebHeaderCollection responseHeaders, parameters);
         }
 
         /// <summary>
@@ -87,8 +86,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// </summary>
         public XmlDocument Put(ref Uri uri, string etag, HttpRequestFilter filter, string contentType, XmlDocument doc, string encoding, bool ignoreResponse)
         {
-            WebHeaderCollection responseHeaders;
-            return Put(ref uri, etag, filter, contentType, doc, encoding, ignoreResponse, out responseHeaders);
+            return Put(ref uri, etag, filter, contentType, doc, encoding, ignoreResponse, out WebHeaderCollection responseHeaders);
         }
 
         /// <summary>
@@ -104,8 +102,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// </summary>
         public XmlDocument Post(ref Uri uri, HttpRequestFilter filter, string contentType, XmlDocument doc, string encoding)
         {
-            WebHeaderCollection responseHeaders;
-            return Post(ref uri, filter, contentType, doc, encoding, out responseHeaders);
+            return Post(ref uri, filter, contentType, doc, encoding, out WebHeaderCollection responseHeaders);
         }
 
         /// <summary>
@@ -212,10 +209,12 @@ namespace OpenLiveWriter.BlogClient.Clients
 
                 using (Stream s = request.GetRequestStream())
                 {
-                    XmlTextWriter writer = new XmlTextWriter(s, _encodingToUse);
-                    writer.Formatting = Formatting.Indented;
-                    writer.Indentation = 1;
-                    writer.IndentChar = ' ';
+                    XmlTextWriter writer = new XmlTextWriter(s, _encodingToUse)
+                    {
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = ' '
+                    };
                     writer.WriteStartDocument();
                     _doc.DocumentElement.WriteTo(writer);
                     writer.Close();
@@ -282,6 +281,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 StreamHelper.Transfer(s, ms);
             }
+
             ms.Seek(0, SeekOrigin.Begin);
 
             try

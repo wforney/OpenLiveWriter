@@ -16,10 +16,10 @@ namespace OpenLiveWriter.HtmlEditor
     /// </summary>
     public class HtmlEditorControlDamageServices : IHTMLEditorDamageServices, IDisposable
     {
-        private HtmlEditorControl _editorControl;
-        private MshtmlEditor _mshtmlControl;
-        private WordRangeDamager wordRangeDamager;
-        private DamageCommitStrategy _commitStrategy;
+        private readonly HtmlEditorControl _editorControl;
+        private readonly MshtmlEditor _mshtmlControl;
+        private readonly WordRangeDamager wordRangeDamager;
+        private readonly DamageCommitStrategy _commitStrategy;
 
         //flag used to suppress extra selection change events that are triggered by the delete key
         private bool suppressSelectionChangeForDelete;
@@ -73,7 +73,7 @@ namespace OpenLiveWriter.HtmlEditor
                 _services = services;
                 _services.StopTrackingDamage();
             }
-            private HtmlEditorControlDamageServices _services;
+            private readonly HtmlEditorControlDamageServices _services;
 
             public void Dispose()
             {
@@ -145,6 +145,7 @@ namespace OpenLiveWriter.HtmlEditor
                 _commitStrategy.OnSelectionChange();
                 wordRangeDamager.OnSelectionChange();
             }
+
             suppressSelectionChangeForDelete = false;
         }
 
@@ -211,8 +212,8 @@ namespace OpenLiveWriter.HtmlEditor
 
         private class DamageTracker : IDisposable
         {
-            private MarkupRange _damageRange;
-            private HtmlEditorControlDamageServices _damageServices;
+            private readonly MarkupRange _damageRange;
+            private readonly HtmlEditorControlDamageServices _damageServices;
             public DamageTracker(HtmlEditorControlDamageServices damageServices, MarkupPointer start, MarkupPointer end, bool includeAdjacentWords)
             {
                 _damageServices = damageServices;
@@ -232,7 +233,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private class DeleteDamageTracker : IDisposable
         {
-            private HtmlEditorControlDamageServices _damageServices;
+            private readonly HtmlEditorControlDamageServices _damageServices;
             public DeleteDamageTracker(HtmlEditorControlDamageServices damageServices)
             {
                 _damageServices = damageServices;
@@ -283,7 +284,7 @@ namespace OpenLiveWriter.HtmlEditor
 
     public class WordBasedDamageCommitStrategy : DamageCommitStrategy
     {
-        private IWordBasedEditor _editor;
+        private readonly IWordBasedEditor _editor;
         public WordBasedDamageCommitStrategy(IWordBasedEditor editor)
         {
             _editor = editor;
@@ -370,7 +371,7 @@ namespace OpenLiveWriter.HtmlEditor
 
     public class DamageEvent : EventArgs
     {
-        private MarkupRange[] _damageRegions;
+        private readonly MarkupRange[] _damageRegions;
         public DamageEvent(MarkupRange[] damageRegions)
         {
             _damageRegions = damageRegions;
@@ -387,10 +388,10 @@ namespace OpenLiveWriter.HtmlEditor
     public delegate void DamageListener(object source, DamageEvent evt);
     internal class WordRangeDamager : IDisposable
     {
-        HtmlEditorControl _editorControl;
-        MshtmlEditor _mshtmlEditor;
+        readonly HtmlEditorControl _editorControl;
+        readonly MshtmlEditor _mshtmlEditor;
         MarkupRange _currentSelectionDamage;
-        DamageRegionQueue damageQueue;
+        readonly DamageRegionQueue damageQueue;
         bool damaged;
         MarkupServicesWordHelper _wordHelper;
         private bool _disposed = false;
@@ -527,6 +528,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 ExpandDamageToAdjacentWords(wordRange);
             }
+
             _AddDamage(wordRange);
         }
 
@@ -554,6 +556,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 ExpandDamageToAdjacentWords(range);
             }
+
             return range;
         }
 
@@ -602,7 +605,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private class DamageRegionQueue
         {
-            ArrayList damagedRanges = new ArrayList();
+            readonly ArrayList damagedRanges = new ArrayList();
             public void EnqueueDamage(MarkupRange range)
             {
                 lock (damagedRanges)
@@ -636,9 +639,9 @@ namespace OpenLiveWriter.HtmlEditor
 
     public class MarkupServicesWordHelper
     {
-        private MarkupPointer _p;
-        private MarkupPointer _p2;
-        private MshtmlMarkupServices MarkupServices;
+        private readonly MarkupPointer _p;
+        private readonly MarkupPointer _p2;
+        private readonly MshtmlMarkupServices MarkupServices;
 
         public MarkupServicesWordHelper(MshtmlMarkupServices markupServices)
         {

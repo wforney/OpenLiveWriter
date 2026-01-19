@@ -28,9 +28,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     public class PictureEditingManager : IImagePropertyEditingContext
     {
         private CommandManager _commandManager;
-        private CreateFileCallback _createFileCallback;
-        private IHtmlEditorComponentContext _editorContext;
-        private IBlogPostImageEditingContext _imageEditingContext;
+        private readonly CreateFileCallback _createFileCallback;
+        private readonly IHtmlEditorComponentContext _editorContext;
+        private readonly IBlogPostImageEditingContext _imageEditingContext;
         private ImageEditingPropertyHandler _imagePropertyHandler;
         private bool _alignmentMarginCommandsHooked;
 
@@ -90,6 +90,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     _imagePropertyHandler = new ImageEditingPropertyHandler(
                         this, _createFileCallback, _imageEditingContext);
                 }
+
                 return _imagePropertyHandler;
             }
         }
@@ -142,6 +143,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     if (ImagePropertiesInfo != null)
                         RefreshCommands();
                 }
+
                 undo.Commit();
             }
         }
@@ -236,18 +238,24 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         private ImageCustomSizeDropdown _imageCustomSizeDropdown;
         private void InitializeSizeChunkCommands()
         {
-            _imageCropCommand = new Command(CommandId.ImageCrop);
-            _imageCropCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(CropDecorator.Id);
+            _imageCropCommand = new Command(CommandId.ImageCrop)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(CropDecorator.Id)
+            };
             _imageCropCommand.Execute += new EventHandler(imageDecoratorCommand_Execute); //Note: this handles its own undo
             _commandManager.Add(_imageCropCommand);
 
-            _imageWidthCommand = new ImageSizeSpinnerCommand(CommandId.FormatImageAdjustWidth);
-            _imageWidthCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlImageResizeDecorator.Id);
+            _imageWidthCommand = new ImageSizeSpinnerCommand(CommandId.FormatImageAdjustWidth)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlImageResizeDecorator.Id)
+            };
             _imageWidthCommand.ExecuteWithArgs += new ExecuteEventHandler(imageSizeCommand_ExecuteWithArgs);
             _commandManager.Add(_imageWidthCommand);
 
-            _imageHeightCommand = new ImageSizeSpinnerCommand(CommandId.FormatImageAdjustHeight);
-            _imageHeightCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlImageResizeDecorator.Id);
+            _imageHeightCommand = new ImageSizeSpinnerCommand(CommandId.FormatImageAdjustHeight)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlImageResizeDecorator.Id)
+            };
             _imageHeightCommand.ExecuteWithArgs += new ExecuteEventHandler(imageSizeCommand_ExecuteWithArgs);
             _commandManager.Add(_imageHeightCommand);
 
@@ -295,8 +303,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             _imageRotateCCWCommand.Execute += new UndoableCommandHandler(new EventHandler(imageRotateCCWCommand_Execute), _editorContext).ExecuteHandler;
             _commandManager.Add(_imageRotateCCWCommand);
 
-            _imageTiltCommand = new Command(CommandId.ImageTilt);
-            _imageTiltCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(TiltDecorator.Id);
+            _imageTiltCommand = new Command(CommandId.ImageTilt)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(TiltDecorator.Id)
+            };
             _imageTiltCommand.Execute += new EventHandler(imageDecoratorCommand_Execute);
             _commandManager.Add(_imageTiltCommand);
 
@@ -328,13 +338,17 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             _imageEffectsEmbossGalleryCommand.ExecuteWithArgs += new ExecuteEventHandler(imageEffectsGalleryCommand_ExecuteWithArgs);
             _commandManager.Add(_imageEffectsEmbossGalleryCommand);
 
-            _imageContrastCommand = new Command(CommandId.ImageContrast);
-            _imageContrastCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(BrightnessDecorator.Id);
+            _imageContrastCommand = new Command(CommandId.ImageContrast)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(BrightnessDecorator.Id)
+            };
             _imageContrastCommand.Execute += new EventHandler(imageDecoratorCommand_Execute); //Note: this handles its own undo
             _commandManager.Add(_imageContrastCommand);
 
-            _imageWatermarkCommand = new Command(CommandId.Watermark);
-            _imageWatermarkCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(WatermarkDecorator.Id);
+            _imageWatermarkCommand = new Command(CommandId.Watermark)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(WatermarkDecorator.Id)
+            };
             _imageWatermarkCommand.Execute += new EventHandler(imageDecoratorCommand_Execute); //Note: this handles its own undo
             _commandManager.Add(_imageWatermarkCommand);
 
@@ -362,8 +376,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             _imageLinkOptionsCommand = new CustomTooltipWhenDisabledCommand(CommandId.FormatImageLinkOptions, Res.Get(StringId.ImgSBLinkOptionsDisabledTooltip));
             _commandManager.Add(_imageLinkOptionsCommand, imageLinkOptionsCommand_Execute);
 
-            _imageAltTextCommand = new Command(CommandId.FormatImageAltText);
-            _imageAltTextCommand.Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlAltTextDecorator.Id);
+            _imageAltTextCommand = new Command(CommandId.FormatImageAltText)
+            {
+                Tag = _imageEditingContext.DecoratorsManager.GetImageDecorator(HtmlAltTextDecorator.Id)
+            };
             _imageAltTextCommand.Execute += new EventHandler(imageDecoratorCommand_Execute);
             _commandManager.Add(_imageAltTextCommand);
 
@@ -866,6 +882,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     ImagePropertiesInfo.LinkTarget = LinkTargetType.URL;
                     ImagePropertiesInfo.LinkTargetUrl = newLink;
                 }
+
                 ImagePropertiesInfo.UpdateImageLinkOptions(title, rel, newWindow);
             }
 
@@ -895,6 +912,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             ImagePropertiesInfo.LinkOptions = editor.LinkOptions;
                             ImagePropertiesInfo.LinkTargetImageSizeName = editor.ImageBoundsSize;
                         }
+
                         return result;
                     }
                 }
@@ -921,6 +939,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             ImagePropertiesInfo.UpdateImageLinkOptions(hyperlinkForm.LinkTitle, hyperlinkForm.Rel, hyperlinkForm.NewWindow);
                             ImagePropertiesInfo.LinkOptions = new LinkOptions(hyperlinkForm.NewWindow, false, null);
                         }
+
                         return result;
                     }
                 }
@@ -931,8 +950,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private class UndoableCommandHandler
         {
-            private EventHandler _commandHandler;
-            private IUndoUnitFactory _undoFactory;
+            private readonly EventHandler _commandHandler;
+            private readonly IUndoUnitFactory _undoFactory;
             public UndoableCommandHandler(EventHandler commandHandler, IUndoUnitFactory undoFactory)
             {
                 _commandHandler = commandHandler;
@@ -957,7 +976,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     public class SimpleImageDecoratorContext : ImageDecoratorContext
     {
-        private ImagePropertiesInfo _imageInfo;
+        private readonly ImagePropertiesInfo _imageInfo;
         public SimpleImageDecoratorContext(ImagePropertiesInfo imageInfo)
         {
             _imageInfo = imageInfo;

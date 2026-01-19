@@ -32,6 +32,7 @@ namespace OpenLiveWriter.CoreServices
                     Debug.Fail("bytesRead was negative! " + bytesRead);
                     break;
                 }
+
                 outStream.Write(buffer, 0, bytesRead);
                 totalBytes += bytesRead;
             }
@@ -173,6 +174,7 @@ namespace OpenLiveWriter.CoreServices
                         b = s.ReadByte();
                         tokenMaybeFound = b == startBytes[i];
                     }
+
                     if (tokenMaybeFound)
                     {
                         b = s.ReadByte(); //move past the last byte in the startBytes
@@ -188,6 +190,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                     b = s.ReadByte();
             }
+
             if (startIndex == -1)
                 return new byte[0];
 
@@ -205,11 +208,14 @@ namespace OpenLiveWriter.CoreServices
                         memStream.WriteByte((byte)b);
                         tokenMaybeFound = b == endBytes[i];
                     }
+
                     if (tokenMaybeFound)
                         break;
                 }
+
                 b = s.ReadByte();
             }
+
             return memStream.ToArray();
         }
     }

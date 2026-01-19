@@ -61,6 +61,7 @@ namespace OpenLiveWriter.CoreServices
                     _pixelsPerLogicalInchX = Gdi32.GetDeviceCaps(hDCDesktop, DEVICECAPS.LOGPIXELSX);
                     User32.ReleaseDC(hWndDesktop, hDCDesktop);
                 }
+
                 return _pixelsPerLogicalInchX.Value;
             }
         }
@@ -77,6 +78,7 @@ namespace OpenLiveWriter.CoreServices
                     _pixelsPerLogicalInchY = Gdi32.GetDeviceCaps(hDCDesktop, DEVICECAPS.LOGPIXELSY);
                     User32.ReleaseDC(hWndDesktop, hDCDesktop);
                 }
+
                 return _pixelsPerLogicalInchY.Value;
             }
         }
@@ -178,8 +180,7 @@ namespace OpenLiveWriter.CoreServices
                 IntPtr hPrevFont = Gdi32.SelectObject(hdc, hFont);
                 try
                 {
-                    SIZE size;
-                    if (!Gdi32.GetTextExtentPoint32(hdc, str, str.Length, out size))
+                    if (!Gdi32.GetTextExtentPoint32(hdc, str, str.Length, out SIZE size))
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     POINT p;
                     p.x = size.cx;
@@ -217,6 +218,7 @@ namespace OpenLiveWriter.CoreServices
                 if (!visibleOnly || button.Visible)
                     max = Math.Max(max, MeasureButton(button));
             }
+
             return max;
         }
 
@@ -274,6 +276,7 @@ namespace OpenLiveWriter.CoreServices
                         width = Math.Max(width, MeasureString(comboBox, o.ToString()).Width);
                 }
             }
+
             return width;
         }
 
@@ -298,6 +301,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 comboBox.Left -= deltaX;
             }
+
             return comboBox.Width;
         }
 
@@ -314,6 +318,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     c.Left += buttonWidth - newButtonWidth;
                 }
+
                 return newButtonWidth;
             }
             finally
@@ -350,6 +355,7 @@ namespace OpenLiveWriter.CoreServices
                         i--;
                     }
                 }
+
                 return sb.ToString();
             }
         }
@@ -400,8 +406,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     try
                     {
-                        bool tmp;
-                        if (0 == DwmIsCompositionEnabled(out tmp))
+                        if (0 == DwmIsCompositionEnabled(out bool tmp))
                             isCompositionEnabled = tmp;
                         else
                             isCompositionEnabled = false;

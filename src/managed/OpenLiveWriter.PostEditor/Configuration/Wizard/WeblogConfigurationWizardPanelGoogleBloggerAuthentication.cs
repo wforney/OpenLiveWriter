@@ -24,9 +24,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private string _blogId;
+        private readonly string _blogId;
         private CancellationTokenSource _cancellationTokenSource;
         private WizardController _wizardController;
         private UserCredential _userCredentials;
@@ -114,6 +114,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -216,8 +217,10 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 // The Google Blogger credentials don't use the normal IBlogCredentials storage and are instead 
                 // automatically written to disk by the Google APIs in the GetOAuth2AuthorizationAsync() call.
-                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials();
-                credentials.Username = _blogId;
+                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials
+                {
+                    Username = _blogId
+                };
                 return credentials;
             }
             set { }

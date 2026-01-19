@@ -50,6 +50,7 @@ namespace OpenLiveWriter.Controls
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -67,6 +68,7 @@ namespace OpenLiveWriter.Controls
             {
 
             }
+
             base.Dispose(disposing);
         }
 
@@ -167,7 +169,7 @@ namespace OpenLiveWriter.Controls
                 topLineColor = SystemColors.ControlLight;
             }
         }
-        private ControlTheme _theme;
+        private readonly ControlTheme _theme;
 
         private int CalculateItemHeight()
         {
@@ -181,7 +183,7 @@ namespace OpenLiveWriter.Controls
         #region Accessibility
         internal class BlogPostSourceListBoxAccessibility : ControlAccessibleObject
         {
-            private SidebarListBox<T> _listBox;
+            private readonly SidebarListBox<T> _listBox;
             public BlogPostSourceListBoxAccessibility(SidebarListBox<T> ownerControl) : base(ownerControl)
             {
                 _listBox = ownerControl;
@@ -216,11 +218,11 @@ namespace OpenLiveWriter.Controls
 
         class ListBoxEntryItem : AccessibleObject, IComparable
         {
-            private string _title;
-            private Bitmap _image;
-            private SidebarListBox<T> _listbox;
+            private readonly string _title;
+            private readonly Bitmap _image;
+            private readonly SidebarListBox<T> _listbox;
 
-            private T _value;
+            private readonly T _value;
 
             public ListBoxEntryItem(string title, T value, Bitmap image, SidebarListBox<T> ownerControl)
 

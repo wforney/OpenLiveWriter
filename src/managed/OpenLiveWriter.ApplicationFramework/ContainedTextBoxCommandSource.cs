@@ -171,6 +171,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     return textBox.ReadOnly;
                 }
+
                 return false;
             }
         }
@@ -197,6 +198,6 @@ namespace OpenLiveWriter.ApplicationFramework
             return focusedControl as TextBoxBase;
         }
 
-        private Control _parentControl;
+        private readonly Control _parentControl;
     }
 }

@@ -17,9 +17,9 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
-        private IWin32Window _parentFrame;
+        private readonly IWin32Window _parentFrame;
         private IMiniFormOwner _owner;
         private bool _floatAboveMainFrame = false;
         private bool _dismissOnDeactivate = false;
@@ -175,6 +175,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

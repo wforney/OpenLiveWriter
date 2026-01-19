@@ -45,6 +45,7 @@ namespace OpenLiveWriter.BlogClient
                 using (BlogSettings settings = BlogSettings.ForBlogId(ids[i]))
                     blogs[i] = new BlogDescriptor(ids[i], settings.BlogName, settings.HomepageUrl);
             }
+
             if (sortByName)
                 Array.Sort(blogs, new BlogDescriptor.Comparer());
             return blogs;
@@ -144,7 +145,7 @@ namespace OpenLiveWriter.BlogClient
                 return _id;
             }
         }
-        private string _id;
+        private readonly string _id;
 
         public bool IsValid
         {
@@ -358,6 +359,7 @@ namespace OpenLiveWriter.BlogClient
                                 homepageOptionOverrides.Add(optionName, homepageOptionOverridesKey.GetString(optionName, String.Empty));
                         }
                     }
+
                     return homepageOptionOverrides;
                 }
             }
@@ -392,6 +394,7 @@ namespace OpenLiveWriter.BlogClient
                         foreach (string optionName in optionOverridesKey.GetNames())
                             optionOverrides.Add(optionName, optionOverridesKey.GetString(optionName, String.Empty));
                     }
+
                     return optionOverrides;
                 }
             }
@@ -426,6 +429,7 @@ namespace OpenLiveWriter.BlogClient
                         foreach (string optionName in userOptionOverridesKey.GetNames())
                             userOptionOverrides.Add(optionName, userOptionOverridesKey.GetString(optionName, String.Empty));
                     }
+
                     return userOptionOverrides;
                 }
             }
@@ -473,6 +477,7 @@ namespace OpenLiveWriter.BlogClient
                     CredentialsDomain credentialsDomain = new CredentialsDomain(ServiceName, BlogName, FavIcon, Image);
                     _blogCredentials = new BlogCredentials(Settings, credentialsDomain);
                 }
+
                 return _blogCredentials;
             }
             set
@@ -497,6 +502,7 @@ namespace OpenLiveWriter.BlogClient
                                 buttonDescriptions.Add(new BlogProviderButtonDescriptionFromSettings(buttonKey));
                         }
                     }
+
                     return buttonDescriptions.ToArray(typeof(IBlogProviderButtonDescription)) as IBlogProviderButtonDescription[];
                 }
             }
@@ -643,6 +649,7 @@ namespace OpenLiveWriter.BlogClient
                 {
                     _keywordPersister.Add(KeywordPath, XmlFileSettingsPersister.Open(KeywordPath));
                 }
+
                 return _keywordPersister[KeywordPath];
             }
         }
@@ -674,7 +681,6 @@ namespace OpenLiveWriter.BlogClient
                     else
                         return new BlogPostKeyword[0];
                 }
-
             }
             set
             {
@@ -720,6 +726,7 @@ namespace OpenLiveWriter.BlogClient
                         Directory.CreateDirectory(folderPath);
                     _keywordPath = Path.Combine(folderPath, String.Format(CultureInfo.InvariantCulture, "keywords_{0}.xml", Id));
                 }
+
                 return _keywordPath;
             }
         }
@@ -734,6 +741,7 @@ namespace OpenLiveWriter.BlogClient
                     foreach (string id in categoriesKey.GetNames())
                         categories.Add(new BlogPostCategory(id, categoriesKey.GetString(id, id)));
                 }
+
                 return (BlogPostCategory[])categories.ToArray(typeof(BlogPostCategory));
             }
         }
@@ -1056,10 +1064,9 @@ namespace OpenLiveWriter.BlogClient
             {
                 return _settingsKey;
             }
-
         }
 
-        private static SettingsPersisterHelper _settingsKey = ApplicationEnvironment.UserSettingsRoot.GetSubSettings("Weblogs");
+        private static readonly SettingsPersisterHelper _settingsKey = ApplicationEnvironment.UserSettingsRoot.GetSubSettings("Weblogs");
 
         #endregion
 
@@ -1186,7 +1193,7 @@ namespace OpenLiveWriter.BlogClient
         }
 
         private SettingsPersisterHelper _credentialsSettingsRoot;
-        private SettingsPersisterHelper _settingsRoot;
+        private readonly SettingsPersisterHelper _settingsRoot;
     }
 
     public class BlogFileUploadSettings : IBlogFileUploadSettings, IDisposable
@@ -1222,5 +1229,4 @@ namespace OpenLiveWriter.BlogClient
 
         private SettingsPersisterHelper _settings;
     }
-
 }

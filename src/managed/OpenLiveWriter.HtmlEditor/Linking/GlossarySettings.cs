@@ -20,6 +20,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     _enabled = Settings.GetBoolean(AUTO, true);
                     _enabledInit = true;
                 }
+
                 return _enabled;
             }
             set
@@ -39,6 +40,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     _linkOnce = Settings.GetBoolean(ONLYONCE, true);
                     _linkOnceInit = true;
                 }
+
                 return _linkOnce;
             }
             set
@@ -57,6 +59,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     _init = Settings.GetBoolean(INIT, false);
                     _initInit = true;
                 }
+
                 return _init;
             }
             set

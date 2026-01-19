@@ -38,5 +38,4 @@ namespace OpenLiveWriter.CoreServices
     // subclasses for commonly used cursor types
     public class WaitCursor : DisposableCursor { public WaitCursor() : base(Cursors.WaitCursor) { } }
     public class AppStartingCursor : DisposableCursor { public AppStartingCursor() : base(Cursors.AppStarting) { } }
-
 }

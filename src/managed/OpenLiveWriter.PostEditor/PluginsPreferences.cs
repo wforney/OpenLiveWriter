@@ -39,10 +39,11 @@ namespace OpenLiveWriter.PostEditor
                 ContentSourceInfo contentSourceInfo = entry.Key as ContentSourceInfo;
                 contentSourceInfo.Enabled = (bool)entry.Value;
             }
+
             _enabledStateChanges.Clear();
         }
 
-        private Hashtable _enabledStateChanges = new Hashtable();
+        private readonly Hashtable _enabledStateChanges = new Hashtable();
 
     }
 }

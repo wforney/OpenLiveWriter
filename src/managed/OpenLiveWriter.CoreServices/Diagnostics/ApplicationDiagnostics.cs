@@ -106,12 +106,12 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The LogFileTraceListener.
         /// </summary>
-        private LogFileTraceListener logFileTraceListener;
+        private readonly LogFileTraceListener logFileTraceListener;
 
         /// <summary>
         /// The BufferingTraceListener we attach as a listener to Trace and Debug.
         /// </summary>
-        private BufferingTraceListener bufferingTraceListener;
+        private readonly BufferingTraceListener bufferingTraceListener;
 
         #endregion Private Member Variables
 

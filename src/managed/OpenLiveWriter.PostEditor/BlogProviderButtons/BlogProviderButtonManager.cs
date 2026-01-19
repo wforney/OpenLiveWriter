@@ -56,7 +56,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         // 1. The blog home page
         // 2. The blog admin page
         // The values are available through the editing manager.
-        private object _commandsLock = new object();
+        private readonly object _commandsLock = new object();
 
         public BlogProviderButtonManager(CommandManager commandManager) : base(CommandId.BlogProviderButtonsGallery, false)
         {
@@ -67,8 +67,10 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                 // initialize commands
                 for (int i = 0; i < _commands.Length; i++)
                 {
-                    _commands[i] = new Command();
-                    _commands[i].Identifier = String.Format(CultureInfo.InvariantCulture, BlogProviderButtonCommandBarInfo.ProviderCommandFormat, i);
+                    _commands[i] = new Command
+                    {
+                        Identifier = String.Format(CultureInfo.InvariantCulture, BlogProviderButtonCommandBarInfo.ProviderCommandFormat, i)
+                    };
                     _commands[i].Execute += new EventHandler(BlogProviderButton_Execute);
                     _commands[i].CommandBarButtonStyle = CommandBarButtonStyle.Provider;
                     _commands[i].On = false;
@@ -146,8 +148,8 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
         private string blogAdminUrl;
         private int commandsOffset;
-        private Command commandViewWeblog;
-        private Command commandViewWeblogAdmin;
+        private readonly Command commandViewWeblog;
+        private readonly Command commandViewWeblogAdmin;
 
         /// <summary>
         /// Must be called under the protection of _commandsLock.
@@ -228,9 +230,9 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                     // attach notification sink
                     _notificationSink.Attach(blog);
                 }
+
                 OnStateChanged(EventArgs.Empty);
             }
-
         }
 
         /// <summary>
@@ -262,6 +264,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
                 command.Tag = null;
             }
+
             command.CommandBarButtonBitmapEnabled = null;
             command.Text = String.Empty;
             RemoveDropDownMenu(command);
@@ -393,7 +396,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
         private BlogPostEditingManager _editingManager;
 
-        private Command[] _commands = new Command[BlogProviderButtonCommandBarInfo.MaximumProviderCommands];
+        private readonly Command[] _commands = new Command[BlogProviderButtonCommandBarInfo.MaximumProviderCommands];
 
         private BlogProviderButtonNotificationSink _notificationSink;
     }
@@ -450,9 +453,11 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                     _button.RecordButtonClicked();
 
                     // create the form and position it
-                    BrowserMiniForm form = new BrowserMiniForm(_button.ContentQueryUrl, downloadOptions, credentialsContext);
-                    form.StartPosition = FormStartPosition.Manual;
-                    form.Size = _button.ContentDisplaySize;
+                    BrowserMiniForm form = new BrowserMiniForm(_button.ContentQueryUrl, downloadOptions, credentialsContext)
+                    {
+                        StartPosition = FormStartPosition.Manual,
+                        Size = _button.ContentDisplaySize
+                    };
                     if (!Screen.FromPoint(menuLocation).Bounds.Contains(menuLocation.X + form.Width, menuLocation.Y))
                         menuLocation.X = alternativeLocation - form.Width;
                     form.Location = new Point(menuLocation.X + 1, menuLocation.Y);
@@ -484,5 +489,4 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         private readonly BlogProviderButton _button;
         private IDisposable _disposeWhenDone;
     }
-
 }

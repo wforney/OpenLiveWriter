@@ -28,7 +28,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public RowPropertiesForm(RowProperties rowProperties)
         {
@@ -67,6 +67,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
                 cellPropertiesControl.Width = groupBoxHeight.Width = Math.Max(cellPropertiesControl.Width, groupBoxHeight.Width);
             }
+
             LayoutHelper.FixupOKCancel(buttonOK, buttonCancel);
         }
 
@@ -74,9 +75,11 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                RowProperties rowProperties = new RowProperties();
-                rowProperties.Height = RowHeight;
-                rowProperties.CellProperties = cellPropertiesControl.CellProperties;
+                RowProperties rowProperties = new RowProperties
+                {
+                    Height = RowHeight,
+                    CellProperties = cellPropertiesControl.CellProperties
+                };
                 return rowProperties;
             }
         }
@@ -113,6 +116,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     radioButtonSizeToContent.Checked = true;
                     textBoxHeight.Text = String.Empty;
                 }
+
                 ManageUIState();
             }
         }
@@ -183,6 +187,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

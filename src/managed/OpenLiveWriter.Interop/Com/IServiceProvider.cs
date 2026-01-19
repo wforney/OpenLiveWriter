@@ -50,5 +50,4 @@ namespace OpenLiveWriter.Interop.Com
             [In] ref Guid riid,
             [Out] out IntPtr service);
     }
-
 }

@@ -77,6 +77,7 @@ namespace OpenLiveWriter.PostEditor.Video
                         Res.Get(StringId.Plugin_Video_Cannot_Parse_Url),
                         Res.Get(StringId.Plugin_Video_Cannot_Parse_Url_Message));
                 }
+
                 VideoSmartContent vsc = new VideoSmartContent(content);
                 vsc.Initialize(video, null);
             }
@@ -158,19 +159,21 @@ namespace OpenLiveWriter.PostEditor.Video
         public override void OnResizing(ISmartContent content, Size newSize)
         {
             // access content object
-            VideoSmartContent VideoContent = new VideoSmartContent(content);
-
-            // update html size
-            VideoContent.HtmlSize = newSize;
+            VideoSmartContent VideoContent = new VideoSmartContent(content)
+            {
+                // update html size
+                HtmlSize = newSize
+            };
         }
 
         public override void OnResizeComplete(ISmartContent content, Size newSize)
         {
             // access content object
-            VideoSmartContent VideoContent = new VideoSmartContent(content);
-
-            // update html size
-            VideoContent.HtmlSize = newSize;
+            VideoSmartContent VideoContent = new VideoSmartContent(content)
+            {
+                // update html size
+                HtmlSize = newSize
+            };
         }
 
         bool IHandlesMultipleUrls.HasUrlMatch(string url)
@@ -197,8 +200,10 @@ namespace OpenLiveWriter.PostEditor.Video
 
             videoSources.Add(new WebVideoSource());
 
-            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", String.Empty));
-            videoPublishSource.SelectedPath = files[0];
+            VideoPublishSource videoPublishSource = new VideoPublishSource(Options.GetString("Video.lastPermission", String.Empty))
+            {
+                SelectedPath = files[0]
+            };
             videoSources.Add(videoPublishSource);
 
             VideoServiceVideoSource source = new VideoServiceVideoSource();

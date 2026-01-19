@@ -19,7 +19,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private OpenLiveWriter.CoreServices.AsyncOperation _asyncOperation;
         private AnimatedBitmapControl _animatedBitmapControl;
@@ -148,6 +148,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

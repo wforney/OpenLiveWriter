@@ -42,8 +42,10 @@ namespace OpenLiveWriter.CoreServices
                     max = i;
                     break;
                 }
+
                 cost += CharCost(str[i]);
             }
+
             if (max == -1)
                 return str;  // never hit the max
 
@@ -69,6 +71,7 @@ namespace OpenLiveWriter.CoreServices
                 if (match.Success && match.Index + match.Length > max)
                     result = str.Substring(0, match.Index);
             }
+
             if (result == null)
                 result = str.Substring(0, max);
 

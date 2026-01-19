@@ -46,5 +46,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return StrikeThrough.GetHashCode();
         }
     }
-
 }

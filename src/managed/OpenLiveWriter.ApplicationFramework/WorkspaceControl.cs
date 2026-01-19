@@ -54,7 +54,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The CommandManager for this WorkspaceControl.
         /// </summary>
-        private CommandManager commandManager;
+        private readonly CommandManager commandManager;
 
         /// <summary>
         /// Gets the CommandManager for this WorkspaceControl.
@@ -288,6 +288,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

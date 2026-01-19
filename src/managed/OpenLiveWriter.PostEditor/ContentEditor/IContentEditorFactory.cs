@@ -291,5 +291,4 @@ namespace OpenLiveWriter.PostEditor
     {
         void WriteLine(string message, int level);
     }
-
 }

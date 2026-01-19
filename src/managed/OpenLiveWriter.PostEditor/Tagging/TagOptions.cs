@@ -27,7 +27,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public TagOptions()
         {
@@ -113,6 +113,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -226,8 +227,10 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            EditTagForm tagForm = new EditTagForm();
-            tagForm.Provider = new TagProvider();
+            EditTagForm tagForm = new EditTagForm
+            {
+                Provider = new TagProvider()
+            };
             DialogResult result = tagForm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
@@ -239,7 +242,6 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 if (_context != null)
                     _context.CurrentProvider = provider;
             }
-
         }
 
         private void buttonEdit_Click(object sender, EventArgs e)
@@ -248,8 +250,10 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 return;
 
             TagProvider provider = (TagProvider)listBoxOptions.SelectedItem;
-            EditTagForm tagForm = new EditTagForm();
-            tagForm.Provider = provider;
+            EditTagForm tagForm = new EditTagForm
+            {
+                Provider = provider
+            };
             DialogResult result = tagForm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
@@ -297,6 +301,5 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 _manager.RestoreDefaults();
             RefreshProviders(true);
         }
-
     }
 }

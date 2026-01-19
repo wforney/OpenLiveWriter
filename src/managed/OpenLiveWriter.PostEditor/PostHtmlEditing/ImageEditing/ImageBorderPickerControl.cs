@@ -17,7 +17,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ImagePickerControl()
         {
@@ -38,6 +38,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -142,8 +143,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         }
         bool dropDownShowing;
 
-        int MAX_IMAGE_HEIGHT = 25;
-        int MAX_IMAGE_WIDTH = 40;
+        readonly int MAX_IMAGE_HEIGHT = 25;
+        readonly int MAX_IMAGE_WIDTH = 40;
 
         // item metrics
         private const int TOP_INSET = 2;

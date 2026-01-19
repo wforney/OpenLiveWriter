@@ -84,6 +84,7 @@ namespace OpenLiveWriter.Controls
                     _disabledImage = BidiHelper.Mirror(_disabledImage);
                 mirrored = !mirrored;
             }
+
             Image = Enabled ? _normalImage : (_disabledImage ?? _normalImage);
         }
 

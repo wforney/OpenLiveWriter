@@ -150,10 +150,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// Data object meister representing the data that is being handled
         /// </summary>
         protected DataObjectMeister DataMeister { get { return dataMeister; } }
-        private DataObjectMeister dataMeister;
+        private readonly DataObjectMeister dataMeister;
 
         protected DataFormatHandlerContext HandlerContext { get { return handlerContext; } }
-        private DataFormatHandlerContext handlerContext;
+        private readonly DataFormatHandlerContext handlerContext;
 
         /// <summary>
         /// Constructor for data format handlers.

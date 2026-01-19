@@ -36,6 +36,7 @@ namespace OpenLiveWriter.ApplicationFramework
                         borderColor = ((MiniTabsControl)this.LightweightControlContainerControl).TopBorderColor;
                     }
                 }
+
                 return borderColor;
             }
         }

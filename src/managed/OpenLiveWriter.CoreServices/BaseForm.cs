@@ -12,7 +12,7 @@ namespace OpenLiveWriter.CoreServices
 {
     public class BaseForm : Form
     {
-        private bool allowFontChange = true;
+        private readonly bool allowFontChange = true;
         private bool suppressAutoRtlFixup = false;
         public BaseForm()
         {

@@ -365,7 +365,6 @@ namespace OpenLiveWriter.PostEditor
                             _blogId,
                             blogPostWithCategories);
                     }
-
                 }
             }
 
@@ -398,25 +397,28 @@ namespace OpenLiveWriter.PostEditor
                 ArrayList recentPosts = new ArrayList();
                 foreach (BlogPost blogPost in _blogPosts)
                 {
-                    PostInfo postInfo = new PostInfo();
-                    postInfo.Id = blogPost.Id;
-                    postInfo.IsPage = blogPost.IsPage;
-                    postInfo.Title = blogPost.Title;
-                    postInfo.Permalink = blogPost.Permalink;
-                    postInfo.BlogId = blog.Id;
-                    postInfo.BlogName = blog.Name;
-                    postInfo.BlogPostId = blogPost.Id;
-                    postInfo.Contents = blogPost.Contents;
-                    postInfo.DateModified = blogPost.DatePublished;
+                    PostInfo postInfo = new PostInfo
+                    {
+                        Id = blogPost.Id,
+                        IsPage = blogPost.IsPage,
+                        Title = blogPost.Title,
+                        Permalink = blogPost.Permalink,
+                        BlogId = blog.Id,
+                        BlogName = blog.Name,
+                        BlogPostId = blogPost.Id,
+                        Contents = blogPost.Contents,
+                        DateModified = blogPost.DatePublished
+                    };
                     recentPosts.Add(postInfo);
                 }
+
                 return (PostInfo[])recentPosts.ToArray(typeof(PostInfo));
             }
         }
 
-        private string _blogId;
-        private string _name;
-        private bool _supportsPages;
+        private readonly string _blogId;
+        private readonly string _name;
+        private readonly bool _supportsPages;
         private BlogPost[] _blogPosts;
     }
 
@@ -526,10 +528,10 @@ namespace OpenLiveWriter.PostEditor
 
         public abstract bool DeletePost(string postId, bool isPage);
 
-        private string _name;
-        private DirectoryInfo _directory;
-        private bool _supportsDelete;
-        private RecentPostRequest _defaultRequest;
+        private readonly string _name;
+        private readonly DirectoryInfo _directory;
+        private readonly bool _supportsDelete;
+        private readonly RecentPostRequest _defaultRequest;
     }
 
     public class LocalDraftsPostSource : LocalStoragePostSource
@@ -556,7 +558,6 @@ namespace OpenLiveWriter.PostEditor
         {
             return PostDeleteHelper.SafeDeleteLocalPost(new FileInfo(postId));
         }
-
     }
 
     public class LocalRecentPostsPostSource : LocalStoragePostSource
@@ -677,9 +678,8 @@ namespace OpenLiveWriter.PostEditor
             return NumberOfPosts.GetHashCode();
         }
 
-        private string _displayName;
-        private int _numberOfPosts;
+        private readonly string _displayName;
+        private readonly int _numberOfPosts;
         public const int ALL_POSTS = Int32.MaxValue;
     }
-
 }

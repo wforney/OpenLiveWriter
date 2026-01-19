@@ -41,7 +41,7 @@ namespace OpenLiveWriter.Api
                     throw new ArgumentNullException("UrlContentSource.UrlPattern");
 
                 if (!ValidateRegex(value))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "The regular expression \"{0}\" is invalid.", value), "UrlContentSource.UrlPattern");
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, "The regular expression \"{0}\" is invalid.", value), "UrlContentSource.UrlPattern");
 
                 _urlPattern = value;
             }
@@ -53,8 +53,7 @@ namespace OpenLiveWriter.Api
         /// method. This value should be specified if the content source performs network operations during content creation.
         /// Defaults to false.
         /// </summary>
-        public bool RequiresProgress { get { return _requiresProgress; } set { _requiresProgress = value; } }
-        private bool _requiresProgress = false;
+        public bool RequiresProgress { get; set; } = false;
 
         /// <summary>
         /// Optional caption used in progress message.
@@ -67,13 +66,10 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("UrlContentSource.ProgressCaption");
-
-                _progressCaption = value;
+                _progressCaption = value ?? throw new ArgumentNullException("UrlContentSource.ProgressCaption");
             }
         }
-        private string _progressCaption = String.Empty;
+        private string _progressCaption = string.Empty;
 
         /// <summary>
         /// Optional descriptive text used in progress message.
@@ -86,14 +82,10 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-
-                if (value == null)
-                    throw new ArgumentNullException("UrlContentSource.ProgressMessage");
-
-                _progressMessage = value;
+                _progressMessage = value ?? throw new ArgumentNullException("UrlContentSource.ProgressMessage");
             }
         }
-        private string _progressMessage = String.Empty;
+        private string _progressMessage = string.Empty;
 
         private bool ValidateRegex(string pattern)
         {
@@ -107,6 +99,5 @@ namespace OpenLiveWriter.Api
                 return false;
             }
         }
-
     }
 }

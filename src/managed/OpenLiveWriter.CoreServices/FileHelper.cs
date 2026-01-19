@@ -40,6 +40,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                     fileType = extension.Trim('.').ToUpper(CultureInfo.CurrentCulture) + " File";
             }
+
             return fileType;
         }
 
@@ -82,6 +83,7 @@ namespace OpenLiveWriter.CoreServices
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -249,7 +251,7 @@ namespace OpenLiveWriter.CoreServices
         {
             return GetValidAnsiFileName(fileName, -1);
         }
-        private static char[] AnsiTrimChars = new char[] { '~' };
+        private static readonly char[] AnsiTrimChars = new char[] { '~' };
 
         public static string GetValidFileName(string fileName)
         {
@@ -283,6 +285,7 @@ namespace OpenLiveWriter.CoreServices
                     if (!char.IsControl(ch))
                         nameBuilder.Append(ch);
                 }
+
                 fileName = nameBuilder.ToString();
 
                 // collapse any multiple spaces (in the event that we created them when stripping)
@@ -349,7 +352,6 @@ namespace OpenLiveWriter.CoreServices
 
                     fileName = fileNameNoExtension + extension;
                 }
-
             }
 
             string noExt = Path.GetFileNameWithoutExtension(fileName);
@@ -389,6 +391,7 @@ namespace OpenLiveWriter.CoreServices
                     indexChar = fileName.IndexOf(IllegalChars[i], 0);
                 }
             }
+
             return fileName;
         }
 
@@ -491,6 +494,7 @@ namespace OpenLiveWriter.CoreServices
                 if (openKey != null)
                     command = (string)openKey.GetValue(null);
             }
+
             return command;
         }
 
@@ -668,10 +672,12 @@ namespace OpenLiveWriter.CoreServices
                         result.Append(el.Name);
                     }
                 }
+
                 if (i > 0 && i != infos.Length - 1)
                     result.Append(Path.DirectorySeparatorChar);
                 lastEl = el;
             }
+
             return result.ToString();
         }
 
@@ -684,6 +690,7 @@ namespace OpenLiveWriter.CoreServices
                 result.Add(curr);
                 curr = curr.Parent;
             }
+
             result.Reverse();
             return (FileSystemInfo[])result.ToArray(typeof(FileSystemInfo));
         }
@@ -785,9 +792,10 @@ namespace OpenLiveWriter.CoreServices
                 if (fileName.EndsWith(new String(ch, 1), StringComparison.OrdinalIgnoreCase))
                     return true;
             }
+
             return false;
         }
-        private static char[] EvilEndChars = new char[] { '.', ' ' };
+        private static readonly char[] EvilEndChars = new char[] { '.', ' ' };
 
         public static bool IsFileInUse(string filePath)
         {
@@ -797,19 +805,19 @@ namespace OpenLiveWriter.CoreServices
                 {
                     // do nothing
                 }
+
                 return false;
             }
             catch (IOException)
             {
                 return true;
             }
-
         }
 
         private class PreserveLastWriteTimeHelper : IDisposable
         {
-            private string path;
-            private DateTime dateTime;
+            private readonly string path;
+            private readonly DateTime dateTime;
 
             public PreserveLastWriteTimeHelper(string path)
             {

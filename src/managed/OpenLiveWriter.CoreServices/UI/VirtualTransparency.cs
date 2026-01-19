@@ -26,6 +26,7 @@ namespace OpenLiveWriter.CoreServices.UI
                     return (IVirtualTransparencyHost)parent;
                 }
             }
+
             return null;
         }
 
@@ -65,8 +66,7 @@ namespace OpenLiveWriter.CoreServices.UI
             {
                 Gdi32.GraphicsMode oldGraphicsMode = Gdi32.SetGraphicsMode(hdc, Gdi32.GraphicsMode.Advanced);
 
-                Gdi32.XFORM xformOrig;
-                Gdi32.GetWorldTransform(hdc, out xformOrig);
+                Gdi32.GetWorldTransform(hdc, out Gdi32.XFORM xformOrig);
                 try
                 {
                     Gdi32.XFORM xform = xformOrig;

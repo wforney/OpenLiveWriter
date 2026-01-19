@@ -14,7 +14,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
 
     internal class MapBirdsEyeButton : MapBitmapButton
     {
-        private ControlTheme _theme;
+        private readonly ControlTheme _theme;
         public MapBirdsEyeButton()
             : base("GoBirdsEye")
         {

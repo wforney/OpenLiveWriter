@@ -115,9 +115,11 @@ namespace OpenLiveWriter.CoreServices
                 hBitmap = Gdi32.CreateCompatibleBitmap(User32.GetDC(IntPtr.Zero), width, height);
                 hPreviousObject = Gdi32.SelectObject(hBitmapDC, hBitmap);
 
-                RECT sourceRect = new RECT();
-                sourceRect.right = width;
-                sourceRect.bottom = height;
+                RECT sourceRect = new RECT
+                {
+                    right = width,
+                    bottom = height
+                };
 
                 // draw the bitmap
                 obj.Draw(DVASPECT.CONTENT, 1, IntPtr.Zero, IntPtr.Zero, User32.GetDC(IntPtr.Zero),
@@ -226,6 +228,7 @@ namespace OpenLiveWriter.CoreServices
                 ms.Seek(0, SeekOrigin.Begin);
                 bytes = ms.ToArray();
             }
+
             _elementCaptureProperties[id] = new ElementCaptureProperties(bytes, backgroundColor, padding);
         }
 
@@ -237,14 +240,14 @@ namespace OpenLiveWriter.CoreServices
         // capture parameters
         private int _maximumHeight = -1;
         private bool _showWaitCursor = true;
-        private string _htmlUrl;
-        private string _htmlContent;
-        private int _contentWidth;
+        private readonly string _htmlUrl;
+        private readonly string _htmlContent;
+        private readonly int _contentWidth;
         private int _timeoutMs;
 
         // successfully captured bitmap
         private byte[] _capturedBitmap;
-        private Dictionary<string, ElementCaptureProperties> _elementCaptureProperties = new Dictionary<string, ElementCaptureProperties>();
+        private readonly Dictionary<string, ElementCaptureProperties> _elementCaptureProperties = new Dictionary<string, ElementCaptureProperties>();
 
         // error that occurred during processing
         private Exception _exception;
@@ -254,7 +257,7 @@ namespace OpenLiveWriter.CoreServices
 
     public class ElementCaptureProperties
     {
-        private byte[] _capturedBitmap;
+        private readonly byte[] _capturedBitmap;
         public Padding Padding { get; set; }
 
         public ElementCaptureProperties(byte[] capturedBitmap, Color backgroundColor, Padding padding)
@@ -275,7 +278,6 @@ namespace OpenLiveWriter.CoreServices
                            : (Bitmap)Bitmap.FromStream(StreamHelper.AsStream(_capturedBitmap));
             }
         }
-
     }
 
     public class HtmlScreenCaptureAvailableEventArgsCore : EventArgs
@@ -289,7 +291,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _bitmap; }
         }
-        private Bitmap _bitmap;
+        private readonly Bitmap _bitmap;
 
         public bool CaptureCompleted
         {
@@ -310,7 +312,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _document; }
         }
-        private object _document;
+        private readonly object _document;
 
         public bool DocumentReady
         {
@@ -374,7 +376,7 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        private Form _form;
+        private readonly Form _form;
         private IntPtr _hwnd;
     }
 
@@ -390,8 +392,10 @@ namespace OpenLiveWriter.CoreServices
             _timeoutTime = DateTime.Now.AddMilliseconds(_htmlScreenCaptureCore.TimeoutMs);
 
             // create and add the underlying browser control
-            _browserControl = new ExplorerBrowserControl();
-            _browserControl.Silent = true;
+            _browserControl = new ExplorerBrowserControl
+            {
+                Silent = true
+            };
 
             Controls.Add(_browserControl);
         }
@@ -422,6 +426,7 @@ namespace OpenLiveWriter.CoreServices
 
                     textWriter.Write(html);
                 }
+
                 navigateUrl = _contentFile;
             }
 
@@ -470,8 +475,10 @@ namespace OpenLiveWriter.CoreServices
                 // (the Tick may need to fire more than once to allow enough
                 // time and message processing for an embedded object to
                 // be fully initialized)
-                timer = new Timer();
-                timer.Interval = WAIT_INTERVAL;
+                timer = new Timer
+                {
+                    Interval = WAIT_INTERVAL
+                };
                 timer.Tick += new EventHandler(timer_Tick);
                 timer.Start();
             }
@@ -644,9 +651,11 @@ namespace OpenLiveWriter.CoreServices
 
                 element.scrollIntoView(true);
 
-                tagPOINT offset = new tagPOINT();
-                offset.x = 0;
-                offset.y = 0;
+                tagPOINT offset = new tagPOINT
+                {
+                    x = 0,
+                    y = 0
+                };
                 displayServices.TransformPoint(ref offset, _COORD_SYSTEM.COORD_SYSTEM_CONTENT, _COORD_SYSTEM.COORD_SYSTEM_GLOBAL, element);
 
                 using (Bitmap snapshotAfter = HtmlScreenCaptureCore.TakeSnapshot((IViewObject)doc3, snapshotWidth, snapshotHeight))
@@ -692,14 +701,15 @@ namespace OpenLiveWriter.CoreServices
                 try { _browserControl.Dispose(); }
                 catch { }
             }
+
             base.Dispose(disposing);
         }
 
-        private ExplorerBrowserControl _browserControl;
+        private readonly ExplorerBrowserControl _browserControl;
         private string _contentFile;
 
-        private HtmlScreenCaptureCore _htmlScreenCaptureCore;
-        private DateTime _timeoutTime;
+        private readonly HtmlScreenCaptureCore _htmlScreenCaptureCore;
+        private readonly DateTime _timeoutTime;
 
         private const int WAIT_INTERVAL = 100;
     }

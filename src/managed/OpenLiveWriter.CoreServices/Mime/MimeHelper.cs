@@ -56,7 +56,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 throw MimeHelperException.ForUnableToSetContentType(contentType, e);
             }
-
         }
 
         /// <summary>
@@ -159,6 +158,7 @@ namespace OpenLiveWriter.CoreServices
                     extension = (string)mimeKey.OpenSubKey(contentType).GetValue(EXTENSION);
                 }
             }
+
             return extension;
         }
         private const string MIME_DATABASE_CONTENTTYPE = "MIME\\Database\\Content Type";
@@ -209,6 +209,7 @@ namespace OpenLiveWriter.CoreServices
                         break;
                     }
                 }
+
                 input.Position = 0;
 
                 //return encodingType;
@@ -220,7 +221,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return MimeHelper.Base64;
             }
-
         }
 
         /// <summary>
@@ -258,7 +258,6 @@ namespace OpenLiveWriter.CoreServices
                     // write the line to output
                     writer.WriteLine(encodedChars, 0, charsEncoded);
                 }
-
             } while (bytesRead == BUFFER_SIZE);
 
             // Flush this writer to make sure any internal buffer is empty.
@@ -413,9 +412,9 @@ namespace OpenLiveWriter.CoreServices
             return !(IsContentTypeImage(contentType) || IsContentTypeWebPage(contentType)) && (contentType != CONTENTTYPE_UNKNOWN);
         }
 
-        private static string[] m_imageContentTypes = new string[] { MimeHelper.IMAGE_GIF, MimeHelper.IMAGE_JPG, MimeHelper.IMAGE_PNG, MimeHelper.IMAGE_XPNG, MimeHelper.IMAGE_TIF, MimeHelper.IMAGE_ICON, "image/x-xbitmap" };
-        private static string[] m_webPageContentTypes = new string[] { "text/html", "html document", "application/x-httpd-php", "application/xhtml+xml", "htm file" };
-        private static string[] m_documentContentTypes =
+        private static readonly string[] m_imageContentTypes = new string[] { MimeHelper.IMAGE_GIF, MimeHelper.IMAGE_JPG, MimeHelper.IMAGE_PNG, MimeHelper.IMAGE_XPNG, MimeHelper.IMAGE_TIF, MimeHelper.IMAGE_ICON, "image/x-xbitmap" };
+        private static readonly string[] m_webPageContentTypes = new string[] { "text/html", "html document", "application/x-httpd-php", "application/xhtml+xml", "htm file" };
+        private static readonly string[] m_documentContentTypes =
             new string[] {  "application/pdf",
                             "application/postscript",
                             "application/msword",
@@ -504,7 +503,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// This is the overall state table for the quoted printable encoding
         /// </summary>
-        private static int[,,] QPStateTable =
+        private static readonly int[,,] QPStateTable =
             {
                 // SCANNING
                 {
@@ -631,6 +630,7 @@ namespace OpenLiveWriter.CoreServices
                                     gotoCaseInValue = true;
                                     break;
                             }
+
                             if (gotoCaseInValue)
                                 goto case IN_VALUE;
                             else
@@ -648,6 +648,7 @@ namespace OpenLiveWriter.CoreServices
                                     paramValue.Append(c);
                                     break;
                             }
+
                             break;
 
                         case IN_QUOTED_VALUE:
@@ -670,12 +671,14 @@ namespace OpenLiveWriter.CoreServices
                                         i++;
                                         paramValue.Append(chars[i]);
                                     }
+
                                     break;
 
                                 default:
                                     paramValue.Append(c);
                                     break;
                             }
+
                             break;
 
                         case VALUE_DONE:
@@ -693,6 +696,7 @@ namespace OpenLiveWriter.CoreServices
                                     state = ERROR;
                                     break;
                             }
+
                             break;
                     }
                 }
@@ -719,5 +723,4 @@ namespace OpenLiveWriter.CoreServices
         private const string CONTENT_TYPE_KEY = "Content Type";
 
     }
-
 }

@@ -45,5 +45,4 @@ namespace OpenLiveWriter.Interop.Com
         public const int FOR_UNTRUSTED_CALLER = 0x00000001;
         public const int FOR_UNTRUSTED_DATA = 0x00000002;
     }
-
 }

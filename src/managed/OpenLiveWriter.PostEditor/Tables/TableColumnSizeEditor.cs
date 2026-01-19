@@ -81,9 +81,11 @@ namespace OpenLiveWriter.PostEditor.Tables
             }
 
             // compute the element local coordinates of the point
-            POINT clientMouseLocation = new POINT();
-            clientMouseLocation.x = pIEventObj.clientX;
-            clientMouseLocation.y = pIEventObj.clientY;
+            POINT clientMouseLocation = new POINT
+            {
+                x = pIEventObj.clientX,
+                y = pIEventObj.clientY
+            };
             POINT localMouseLocation = new POINT();
             _paintSite.TransformGlobalToLocal(clientMouseLocation, ref localMouseLocation);
 
@@ -172,7 +174,6 @@ namespace OpenLiveWriter.PostEditor.Tables
             {
                 return null;
             }
-
         }
 
         private void OnMouseMove(TableColumnMouseEventArgs ea)
@@ -259,7 +260,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                     {
                         _sizingOperation.ClearPending();
                     }
-
                 }
                 else if (MouseNearCellEdge(compareX, cellEndX, cellSpacing))
                 {
@@ -282,13 +282,13 @@ namespace OpenLiveWriter.PostEditor.Tables
             return Math.Abs(mouseX - cellEdgeX) <= hotRegion;
         }
 
-        private IHTMLTable _table;
-        private IHtmlEditorComponentContext _editorContext;
-        private TableEditingContext _tableEditingContext;
+        private readonly IHTMLTable _table;
+        private readonly IHtmlEditorComponentContext _editorContext;
+        private readonly TableEditingContext _tableEditingContext;
 
-        private IHTMLPaintSiteRaw _paintSite;
+        private readonly IHTMLPaintSiteRaw _paintSite;
 
-        private SizingOperation _sizingOperation;
+        private readonly SizingOperation _sizingOperation;
     }
 
     internal class SizingOperation
@@ -495,8 +495,8 @@ namespace OpenLiveWriter.PostEditor.Tables
         }
         private const int MINIMUM_COLUMN_WIDTH = 10;
 
-        private IHTMLTable _table;
-        private IHtmlEditorComponentContext _editorContext;
+        private readonly IHTMLTable _table;
+        private readonly IHtmlEditorComponentContext _editorContext;
 
         private bool _pending = false;
         private int _lastClientX;

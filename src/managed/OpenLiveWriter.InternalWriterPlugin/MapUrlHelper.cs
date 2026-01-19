@@ -19,7 +19,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
     /// </summary>
     public class MapUrlHelper
     {
-        static string LIVE_MAP_URL = @"http://www.bing.com/maps/default.aspx";
+        static readonly string LIVE_MAP_URL = @"http://www.bing.com/maps/default.aspx";
         private const string MAP_QUERY_FORMAT = "v=2&cp={0}&lvl={1}&style={2}"; // change these with great care- they may break the sidebar previewing!
         private const string MAP_WHERE_QUERY_FORMAT = "v=2&where={0}&lvl={1}&style={2}";
 
@@ -53,6 +53,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     {
                         sb.Append("~");
                     }
+
                     sb.AppendFormat(CultureInfo.InvariantCulture, "aN.{0}_{1}_{2}_{3}", pin.VELatLong.Latitude, pin.VELatLong.Longitude, EncodeQueryValue(pin.Title), EncodeQueryValue(pin.Details));
                     if (pin.MoreInfoUrl != String.Empty || pin.PhotoUrl != String.Empty)
                     {

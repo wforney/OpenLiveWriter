@@ -43,5 +43,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return Overline.GetHashCode();
         }
     }
-
 }

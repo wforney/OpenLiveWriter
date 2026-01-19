@@ -20,7 +20,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private IDelayedFetchHandler _fetchHandler;
         private DropDownNotifier _dropDownNotifier;
@@ -124,6 +124,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -174,7 +175,7 @@ namespace OpenLiveWriter.Controls
                 ReleaseHandle();
             }
 
-            private DelayedFetchComboBox _delayedFetchCombo;
+            private readonly DelayedFetchComboBox _delayedFetchCombo;
 
         }
 
@@ -198,5 +199,4 @@ namespace OpenLiveWriter.Controls
     {
         object[] FetchItems(IWin32Window owner);
     }
-
 }

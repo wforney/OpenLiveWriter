@@ -13,7 +13,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 {
     public class StaticSiteItemFrontMatter
     {
-        private StaticSiteConfigFrontMatterKeys _frontMatterKeys;
+        private readonly StaticSiteConfigFrontMatterKeys _frontMatterKeys;
 
         public string Id { get; set; }
         public string Title { get; set; }
@@ -112,6 +112,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
             post.Title = Title;
             post.Categories = Tags?.Select(t => new BlogPostCategory(t)).ToArray();
             try { post.DatePublished = post.DatePublishedOverride = DateTime.Parse(Date); } catch { }
+
             post.IsPage = Layout == "page";
             if (post.IsPage) post.PageParent = new PostIdAndNameField(ParentId, string.Empty);
 

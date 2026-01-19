@@ -29,9 +29,9 @@ namespace OpenLiveWriter.InternalWriterPlugin
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private MapOptions _mapOptions;
+        private readonly MapOptions _mapOptions;
 
         public MapOptionsDialog(MapOptions mapOptions)
         {
@@ -60,6 +60,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

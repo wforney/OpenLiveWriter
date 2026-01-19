@@ -88,7 +88,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private static string[] DEFAULT_PING_URLS = { };
+        private static readonly string[] DEFAULT_PING_URLS = { };
 
         private const string PING_URLS = "PingUrls";
 

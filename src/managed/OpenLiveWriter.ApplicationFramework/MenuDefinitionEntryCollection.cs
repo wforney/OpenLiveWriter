@@ -20,21 +20,24 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         public void Add(string commandIdentifier, bool separatorBefore, bool separatorAfter)
         {
-            MenuDefinitionEntryCommand mde = new MenuDefinitionEntryCommand();
-            mde.CommandIdentifier = commandIdentifier;
-            mde.SeparatorBefore = separatorBefore;
-            mde.SeparatorAfter = separatorAfter;
+            MenuDefinitionEntryCommand mde = new MenuDefinitionEntryCommand
+            {
+                CommandIdentifier = commandIdentifier,
+                SeparatorBefore = separatorBefore,
+                SeparatorAfter = separatorAfter
+            };
             Add(mde);
         }
 
         public void Add(CommandId commandIdentifier, bool separatorBefore, bool separatorAfter)
         {
-            MenuDefinitionEntryCommand mde = new MenuDefinitionEntryCommand();
-            mde.CommandIdentifier = commandIdentifier.ToString();
-            mde.SeparatorBefore = separatorBefore;
-            mde.SeparatorAfter = separatorAfter;
+            MenuDefinitionEntryCommand mde = new MenuDefinitionEntryCommand
+            {
+                CommandIdentifier = commandIdentifier.ToString(),
+                SeparatorBefore = separatorBefore,
+                SeparatorAfter = separatorAfter
+            };
             Add(mde);
         }
-        
     }
 }

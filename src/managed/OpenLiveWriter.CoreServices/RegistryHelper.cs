@@ -153,7 +153,6 @@ namespace OpenLiveWriter.CoreServices
 
                 throw;
             }
-
         }
 
         public static bool IsRegistryException(Exception ex)
@@ -225,6 +224,7 @@ namespace OpenLiveWriter.CoreServices
                     regKey.Close();
                 }
             }
+
             return keyList[keyList.Count - 1] as RegistryKey;
         }
 

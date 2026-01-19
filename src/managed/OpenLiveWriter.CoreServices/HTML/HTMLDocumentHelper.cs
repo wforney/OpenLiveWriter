@@ -174,6 +174,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                     visitedNodes.Add(element.sourceIndex, text);
             }
+
             IHTMLDOMChildrenCollection children = (IHTMLDOMChildrenCollection)node.childNodes;
             IHTMLDOMNode elementNode = null;
             foreach (IHTMLDOMNode childNode in children)
@@ -474,6 +475,7 @@ namespace OpenLiveWriter.CoreServices
                     Regex.Match(script.text, @"location\.(assign|replace)") != Match.Empty)
                     return true;
             }
+
             return false;
         }
 
@@ -569,6 +571,7 @@ namespace OpenLiveWriter.CoreServices
                 mStream.Seek(0, SeekOrigin.Begin);
                 stream = mStream;
             }
+
             string htmlContent = null;
             Encoding currentEncoding = Encoding.Default;
             LightWeightHTMLDocument lwDoc = null;
@@ -645,6 +648,7 @@ namespace OpenLiveWriter.CoreServices
                     baseUrl = baseElement.href;
                 }
             }
+
             return baseUrl;
         }
 
@@ -658,6 +662,7 @@ namespace OpenLiveWriter.CoreServices
                 if (UrlHelper.IsUrl(newUrl))
                     url = newUrl;
             }
+
             return url;
         }
 
@@ -692,8 +697,8 @@ namespace OpenLiveWriter.CoreServices
                             specialHeaders.SavedFrom = commentElement.text;
                     }
                 }
-
             }
+
             return specialHeaders;
         }
 
@@ -782,7 +787,6 @@ namespace OpenLiveWriter.CoreServices
 
                     i++;
                 }
-
             }
 
             return specialHeaders;
@@ -882,6 +886,7 @@ namespace OpenLiveWriter.CoreServices
                     m_resourceElements.Add(HTMLTokens.Tr, HTMLTokens.Background);
                     m_resourceElements.Add(HTMLTokens.Table, HTMLTokens.Background);
                 }
+
                 return m_resourceElements;
             }
         }
@@ -906,6 +911,7 @@ namespace OpenLiveWriter.CoreServices
                     m_userVisibleElements.Add(HTMLTokens.Tr, HTMLTokens.Background);
                     m_userVisibleElements.Add(HTMLTokens.Table, HTMLTokens.Background);
                 }
+
                 return m_userVisibleElements;
             }
         }
@@ -925,6 +931,7 @@ namespace OpenLiveWriter.CoreServices
                     m_nonResourceElements.Add(HTMLTokens.A, HTMLTokens.Href);
                     m_nonResourceElements.Add(HTMLTokens.Area, HTMLTokens.Href);
                 }
+
                 return m_nonResourceElements;
             }
         }
@@ -939,6 +946,7 @@ namespace OpenLiveWriter.CoreServices
                     m_iframeElements = new Hashtable();
                     m_iframeElements.Add(HTMLTokens.IFrame, HTMLTokens.Src);
                 }
+
                 return m_iframeElements;
             }
         }
@@ -960,6 +968,7 @@ namespace OpenLiveWriter.CoreServices
                 DictionaryEntry entry = (DictionaryEntry)elementCollectionEnum.Current;
                 AddAttributesToList((string)entry.Value, (IHTMLElementCollection)entry.Key, resources);
             }
+
             return resources;
 
         }
@@ -1026,6 +1035,7 @@ namespace OpenLiveWriter.CoreServices
 
                 matchingUrls.Add(matchString.Substring(4, matchString.Length - 5));
             }
+
             return (string[])matchingUrls.ToArray(typeof(string));
 
         }
@@ -1152,10 +1162,12 @@ namespace OpenLiveWriter.CoreServices
                         if (baseUrl != "about:blank" && !UrlHelper.IsUrl(importSheet.href))
                             sheetPath = UrlHelper.EscapeRelativeURL(baseUrl, importSheet.href);
 
-                        ResourceUrlInfo urlInfo = new ResourceUrlInfo();
-                        urlInfo.ResourceUrl = importSheet.href;
-                        urlInfo.ResourceAbsoluteUrl = sheetPath;
-                        urlInfo.ResourceType = HTMLTokens.Style;
+                        ResourceUrlInfo urlInfo = new ResourceUrlInfo
+                        {
+                            ResourceUrl = importSheet.href,
+                            ResourceAbsoluteUrl = sheetPath,
+                            ResourceType = HTMLTokens.Style
+                        };
                         list.Add(urlInfo);
 
                         // Add the sheets references to the list
@@ -1191,10 +1203,12 @@ namespace OpenLiveWriter.CoreServices
             string listImagePath = GetPathFromStyleUrl(ruleName);
             if (listImagePath != null)
             {
-                ResourceUrlInfo urlInfo = new ResourceUrlInfo();
-                urlInfo.ResourceUrl = listImagePath;
-                urlInfo.ResourceAbsoluteUrl = UrlHelper.EscapeRelativeURL(baseUrl, listImagePath);
-                urlInfo.ResourceType = HTMLTokens.Img;
+                ResourceUrlInfo urlInfo = new ResourceUrlInfo
+                {
+                    ResourceUrl = listImagePath,
+                    ResourceAbsoluteUrl = UrlHelper.EscapeRelativeURL(baseUrl, listImagePath),
+                    ResourceType = HTMLTokens.Img
+                };
                 list.Add(urlInfo);
             }
         }
@@ -1216,6 +1230,7 @@ namespace OpenLiveWriter.CoreServices
                     path = style.Substring(firstQuote, lastQuote - firstQuote);
                 }
             }
+
             return path;
         }
 
@@ -1247,6 +1262,7 @@ namespace OpenLiveWriter.CoreServices
                 DictionaryEntry entry = (DictionaryEntry)enumElements.Current;
                 elementCollection.Add((IHTMLElementCollection)allHtmlElements.tags(entry.Key), entry.Value);
             }
+
             return elementCollection;
         }
 
@@ -1292,6 +1308,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                     outHtml.Append("&#" + Convert.ToInt32(chars[i]) + ";");
             }
+
             return outHtml.ToString();
         }
 
@@ -1374,10 +1391,12 @@ namespace OpenLiveWriter.CoreServices
             // If a valid path was discovered, add it to the list
             if (path != null)
             {
-                ResourceUrlInfo info = new ResourceUrlInfo();
-                info.ResourceUrl = path;
-                info.ResourceType = element.tagName;
-                info.InnerText = element.innerText;
+                ResourceUrlInfo info = new ResourceUrlInfo
+                {
+                    ResourceUrl = path,
+                    ResourceType = element.tagName,
+                    InnerText = element.innerText
+                };
                 resources.Add(info);
             }
         }
@@ -1401,6 +1420,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             return relativePath;
         }
 
@@ -1440,13 +1460,14 @@ namespace OpenLiveWriter.CoreServices
                 // insert the object into the scripting environment (requires several steps)
 
                 // insert a new dispatch-id for the object
-                IntPtr dispId;
-                dispatchEx.GetDispID(objectName, fdexNameEnsure, out dispId);
+                dispatchEx.GetDispID(objectName, fdexNameEnsure, out IntPtr dispId);
 
                 // initialize structure used to pass the object in
-                System.Runtime.InteropServices.ComTypes.DISPPARAMS dispParams = new System.Runtime.InteropServices.ComTypes.DISPPARAMS();
-                dispParams.cArgs = 1;
-                dispParams.cNamedArgs = 1;
+                System.Runtime.InteropServices.ComTypes.DISPPARAMS dispParams = new System.Runtime.InteropServices.ComTypes.DISPPARAMS
+                {
+                    cArgs = 1,
+                    cNamedArgs = 1
+                };
 
                 // indicate that this call to InvokeEx is a property put
                 pPropertyPut = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(Int32)));
@@ -1495,19 +1516,16 @@ namespace OpenLiveWriter.CoreServices
         public static string MonikerToString(IMoniker moniker, uint codepage, out string url)
         {
             // Create binding context that will be needed to get the url from the moniker
-            IBindCtx bindCtx;
-            int hr = Ole32.CreateBindCtx(0, out bindCtx);
+            int hr = Ole32.CreateBindCtx(0, out IBindCtx bindCtx);
             if (hr != HRESULT.S_OK)
                 throw new COMException("Error creating binding context", hr);
 
             // Get the url of the moniker
-            string name;
-            moniker.GetDisplayName(bindCtx, null, out name);
+            moniker.GetDisplayName(bindCtx, null, out string name);
             url = name;
 
             // Get a stream to the content of the url
-            IStream stream;
-            ComHelper.Chk(UrlMon.URLOpenBlockingStream(IntPtr.Zero, name, out stream, 0, null));
+            ComHelper.Chk(UrlMon.URLOpenBlockingStream(IntPtr.Zero, name, out IStream stream, 0, null));
 
             // Read the contents of the url, which should be the html to an email message
             using (ComStream comStream = new ComStream(stream, false))

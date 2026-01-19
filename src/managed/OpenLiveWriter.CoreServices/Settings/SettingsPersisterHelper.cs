@@ -19,7 +19,7 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// <summary>
         /// The ISettingsPersister that this SettingsPersisterHelper is bound to.
         /// </summary>
-        private ISettingsPersister settingsPersister;
+        private readonly ISettingsPersister settingsPersister;
 
         /// <summary>
         /// Dispose the settings persister helper
@@ -644,6 +644,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                     }
                 }
             }
+
             return null;
         }
     }

@@ -62,6 +62,5 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
             this.ResumeLayout(false);
 
         }
-
     }
 }

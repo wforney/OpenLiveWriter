@@ -42,6 +42,5 @@ namespace OpenLiveWriter.CoreServices.Progress
                 return 0;
             }
         }
-
     }
 }

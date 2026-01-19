@@ -160,12 +160,14 @@ namespace OpenLiveWriter.BlogClient.Clients
                         {
                             tv = new AtomContentValue(AtomContentValueType.XHTML, content);
                         }
+
                         break;
                     default:
                     case "text/plain":
                         tv = new AtomContentValue(AtomContentValueType.Text, content);
                         break;
                 }
+
                 return tv;
             }
 
@@ -240,6 +242,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if (SchemesEqual(scheme, categoryScheme))
                         nodesToRemove.Add(categoryEl);
                 }
+
                 foreach (XmlElement categoryEl in nodesToRemove)
                     categoryEl.ParentNode.RemoveChild(categoryEl);
             }
@@ -336,6 +339,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         label = term;
                     results.Add(new BlogPostCategory(term, label));
                 }
+
                 return (BlogPostCategory[])results.ToArray(typeof(BlogPostCategory));
             }
         }

@@ -14,7 +14,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
     /// </summary>
     class TabbingHookProc : KeyboardHook
     {
-        private TabLightweightControl _tabs;
+        private readonly TabLightweightControl _tabs;
 
         public TabbingHookProc(TabLightweightControl tabs)
         {

@@ -45,9 +45,11 @@ namespace OpenLiveWriter.Interop.Windows
                 fixed (char* data = str)
                 {
                     // input buffer
-                    DATA_BLOB dataIn = new DATA_BLOB();
-                    dataIn.cbData = (uint)((str.Length + 1) * 2);
-                    dataIn.pbData = new IntPtr(data);
+                    DATA_BLOB dataIn = new DATA_BLOB
+                    {
+                        cbData = (uint)((str.Length + 1) * 2),
+                        pbData = new IntPtr(data)
+                    };
 
                     // attempt to encrypt the data
                     if (!CryptProtectData(
@@ -107,9 +109,11 @@ namespace OpenLiveWriter.Interop.Windows
                 fixed (byte* data = encryptedStr)
                 {
                     // encrypted data
-                    DATA_BLOB encrtypedData = new DATA_BLOB();
-                    encrtypedData.cbData = (uint)encryptedStr.Length;
-                    encrtypedData.pbData = new IntPtr(data);
+                    DATA_BLOB encrtypedData = new DATA_BLOB
+                    {
+                        cbData = (uint)encryptedStr.Length,
+                        pbData = new IntPtr(data)
+                    };
 
                     // unencrypt
                     if (!CryptUnprotectData(
@@ -175,8 +179,7 @@ namespace OpenLiveWriter.Interop.Windows
             byte[] encrtypedData = CryptProtectString(data, description, 0, null);
 
             // decrypt data
-            string extractedDescription;
-            string decryptedData = CryptUnprotectString(encrtypedData, out extractedDescription, 0, null);
+            string decryptedData = CryptUnprotectString(encrtypedData, out string extractedDescription, 0, null);
 
             // verify results
             Debug.Assert(description == extractedDescription);
@@ -233,5 +236,4 @@ namespace OpenLiveWriter.Interop.Windows
         [MarshalAs(UnmanagedType.LPWStr)]
         public string szPrompt;
     }
-
 }

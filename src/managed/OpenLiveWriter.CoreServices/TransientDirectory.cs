@@ -13,7 +13,7 @@ namespace OpenLiveWriter.CoreServices
     public class TransientDirectory : TransientFileSystemItem
     {
         private string name;
-        private TransientFileSystemItem[] children;
+        private readonly TransientFileSystemItem[] children;
 
         public TransientDirectory(string name, params TransientFileSystemItem[] children)
         {
@@ -134,6 +134,7 @@ namespace OpenLiveWriter.CoreServices
                         item.Create(dirInfo);
                 }
             }
+
             return dirInfo;
         }
 

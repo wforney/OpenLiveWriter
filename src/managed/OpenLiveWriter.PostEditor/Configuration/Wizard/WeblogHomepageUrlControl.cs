@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public WeblogHomepageUrlControl()
         {
@@ -97,6 +97,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -191,8 +192,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 LayoutHelper.NaturalizeHeightAndDistribute(6, Controls);
             }
-
         }
-
     }
 }

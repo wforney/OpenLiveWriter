@@ -93,6 +93,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -276,7 +277,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         class TabPageAccessibility : ControlAccessibleObject
         {
-            TabPageControl _tabpage;
+            readonly TabPageControl _tabpage;
             public TabPageAccessibility(TabPageControl ownerControl) : base(ownerControl)
             {
                 _tabpage = ownerControl;
@@ -296,7 +297,6 @@ namespace OpenLiveWriter.ApplicationFramework
                     }
                 }
             }
-
         }
         #endregion
     }

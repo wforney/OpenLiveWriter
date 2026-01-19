@@ -67,6 +67,5 @@ namespace OpenLiveWriter.FileDestinations
             params object[] arguments) : base(innerException, typeof(SiteDestinationException), exceptionType, arguments)
         {
         }
-
     }
 }

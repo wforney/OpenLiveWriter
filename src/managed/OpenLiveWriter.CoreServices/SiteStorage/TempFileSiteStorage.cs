@@ -125,6 +125,5 @@ namespace OpenLiveWriter.CoreServices
                     SiteStorageException.UnableToCreateStorage, sitePath);
             }
         }
-
     }
 }

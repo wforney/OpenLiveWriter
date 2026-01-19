@@ -13,12 +13,12 @@ namespace OpenLiveWriter.CoreServices
     {
         private HTMLCombiner() { }
 
-        private static Regex bodyFinder = new Regex(@"<body(\s[^>]*)?>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private static Regex bodyEndFinder = new Regex(@"</body\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private static Regex fragmentMarkerFinder = new Regex(@"<!--\s*(startfragment|endfragment)\s*-->", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex bodyFinder = new Regex(@"<body(\s[^>]*)?>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex bodyEndFinder = new Regex(@"</body\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex fragmentMarkerFinder = new Regex(@"<!--\s*(startfragment|endfragment)\s*-->", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private static Regex framesetFinder = new Regex(@"<frameset\s", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private static Regex noframesFinder = new Regex(@"<noframes(?:\s[^>]*)?>(.*?)</noframes\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex framesetFinder = new Regex(@"<frameset\s", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex noframesFinder = new Regex(@"<noframes(?:\s[^>]*)?>(.*?)</noframes\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         public static string Combine(params string[] strings)
         {
@@ -64,6 +64,7 @@ namespace OpenLiveWriter.CoreServices
                 buf.Append("<p>");
                 buf.Append(html);
             }
+
             return buf.ToString();
         }
     }

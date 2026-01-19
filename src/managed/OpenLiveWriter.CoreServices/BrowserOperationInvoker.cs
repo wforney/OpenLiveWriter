@@ -79,9 +79,11 @@ namespace OpenLiveWriter.CoreServices
                     {
                         form.Size = new Size(browserWidth, browserHeight);
 
-                        browser = new ExplorerBrowserControl();
-                        browser.Dock = DockStyle.Fill;
-                        browser.Silent = true;
+                        browser = new ExplorerBrowserControl
+                        {
+                            Dock = DockStyle.Fill,
+                            Silent = true
+                        };
                         browser.DocumentComplete += Handler;
                         form.Controls.Add(browser);
                         form.CreateControl();
@@ -110,7 +112,6 @@ namespace OpenLiveWriter.CoreServices
                 {
                     Application.ExitThread();
                 }
-
             }
         }
     }

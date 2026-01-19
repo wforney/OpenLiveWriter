@@ -22,7 +22,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
 
         #endregion
 
-        private ArrayList handlers = ArrayList.Synchronized(new ArrayList());
+        private readonly ArrayList handlers = ArrayList.Synchronized(new ArrayList());
 
         public void AddMessage(IDynamicExceptionMessage message)
         {

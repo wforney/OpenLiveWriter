@@ -75,7 +75,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         private const string DEFAULT_DIALOG_WIDTH = "DefaultDialogWidth";
         private const string DEFAULT_DIALOG_HEIGHT = "DefaultDialogHeight";
 
-        private IProperties _mapOptions;
+        private readonly IProperties _mapOptions;
 
         public static Size DefaultMapSize
         {

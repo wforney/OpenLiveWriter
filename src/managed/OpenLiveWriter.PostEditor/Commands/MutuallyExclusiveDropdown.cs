@@ -27,7 +27,6 @@ namespace OpenLiveWriter.PostEditor.Commands
                 Debug.Assert(c.Tag is IComparable);
                 c.Execute += executeHandler;
             }
-
         }
 
         public virtual void SelectTag(T tag)
@@ -88,6 +87,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                 {
                     c.Enabled = value;
                 }
+
                 DropDownCommand.Enabled = value;
             }
         }

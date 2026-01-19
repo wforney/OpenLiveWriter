@@ -82,10 +82,9 @@ namespace OpenLiveWriter.BlogClient.Detection
                 DisplayMessage.Show(MessageId.TemplateDownloadFailed);
                 return new BlogEditingTemplateFile[0];
             }
-
         }
 
-        private IBlogClientUIContext _uiContext;
+        private readonly IBlogClientUIContext _uiContext;
 
         public BlogEditingTemplateDetector(IBlogClientUIContext uiContext, Control parentControl, IBlogSettingsAccessor blogSettings, bool probeForManifest)
             : this(uiContext, parentControl)
@@ -423,7 +422,6 @@ namespace OpenLiveWriter.BlogClient.Detection
                     _exception = e;
                     Trace.WriteLine("Error occurred while downloading weblog style: " + e.ToString());
                 }
-
             }
 
             // return the detected templates
@@ -501,6 +499,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "Failed to download template {0}: {1}", templateTypes[i].ToString(), e.ToString()));
                     }
                 }
+
                 if (templateFiles.Count > 0)
                     blogTemplateFiles = (BlogEditingTemplateFile[])templateFiles.ToArray(typeof(BlogEditingTemplateFile));
             }
@@ -508,6 +507,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 regionLocatorStrategy.CleanupRegions(new ProgressTick(progress, 25, 100));
             }
+
             return blogTemplateFiles;
         }
 
@@ -652,8 +652,8 @@ namespace OpenLiveWriter.BlogClient.Detection
                 {
                     Trace.WriteLine("Failed to differentiate between multiple nodes with title text, using the first node.  Exception: " + ex);
                 }
-
             }
+
             return titleElement;
         }
 
@@ -731,7 +731,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         BlogEditingTemplateStrategy templateStrategy = BlogEditingTemplateStrategies.GetTemplateStrategy(BlogEditingTemplateStrategies.StrategyType.FramedWysiwyg);
 
         // execution context
-        private Control _parentControl;
+        private readonly Control _parentControl;
         private bool _contextSet = false;
         private BlogAccount _blogAccount;
         private IBlogClient _blogClient;

@@ -100,6 +100,7 @@ namespace OpenLiveWriter.CoreServices
                 UnHookEvents(false);
                 throw;
             }
+
             return this;
         }
         private IProgressHost progressHost;
@@ -137,6 +138,7 @@ namespace OpenLiveWriter.CoreServices
                 UnHookEvents(true);
                 browserControl.Dispose();
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -268,6 +270,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     Trace.WriteLine("Error checking for WarnOnZoneCrossing " + e.ToString());
                 }
+
                 return (warnOnZoneCrossing == 1);
             }
         }
@@ -324,7 +327,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Embedded web browser
         /// </summary>
-        private ExplorerBrowserControl browserControl = null;
+        private readonly ExplorerBrowserControl browserControl = null;
 
         #region IOleClientSite Members
 
@@ -448,8 +451,8 @@ namespace OpenLiveWriter.CoreServices
                 _result = result;
                 _url = url;
             }
-            private int _result = -1;
-            private string _url = null;
+            private readonly int _result = -1;
+            private readonly string _url = null;
 
             public WebPageDownloaderException Exception
             {
@@ -491,9 +494,7 @@ namespace OpenLiveWriter.CoreServices
                         return new WebPageDownloaderException(string.Format(CultureInfo.CurrentCulture, "An unknown exception occurred while downloading this document: {0}", statusCode), url);
                 }
             }
-
         }
-
     }
 
     public class WebPageDownloaderException : Exception
@@ -508,8 +509,8 @@ namespace OpenLiveWriter.CoreServices
             _statusCode = statusCode;
             _finalUrl = finalUrl;
         }
-        private int _statusCode = -1;
-        private string _finalUrl = null;
+        private readonly int _statusCode = -1;
+        private readonly string _finalUrl = null;
 
         public int StatusCode
         {
@@ -527,5 +528,4 @@ namespace OpenLiveWriter.CoreServices
             }
         }
     }
-
 }

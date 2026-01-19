@@ -47,6 +47,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
                     _thumbnailManager.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -245,6 +246,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
             {
                 textColor = SystemColors.ControlText;
             }
+
             Color previewColor = Color.FromArgb(200, textColor);
 
             BidiGraphics g = new BidiGraphics(e.Graphics, e.Bounds);
@@ -387,22 +389,25 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
             {
                 if (_queryStatusLabel == null)
                 {
-                    Label label = new Label();
-                    label.Size = new Size(Width - 5, 4 * Convert.ToInt32(Font.GetHeight()));
-                    label.TextAlign = ContentAlignment.MiddleCenter;
-                    label.BackColor = BackColor;
-                    label.ForeColor = SystemColors.ControlDarkDark;
-                    label.Font = Res.GetFont(FontSize.XLarge, FontStyle.Regular);
-                    label.Text = String.Empty;
-                    label.Visible = false;
-                    //label.FlatStyle = FlatStyle.System;
-                    label.TabStop = false;
+                    Label label = new Label
+                    {
+                        Size = new Size(Width - 5, 4 * Convert.ToInt32(Font.GetHeight())),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        BackColor = BackColor,
+                        ForeColor = SystemColors.ControlDarkDark,
+                        Font = Res.GetFont(FontSize.XLarge, FontStyle.Regular),
+                        Text = String.Empty,
+                        Visible = false,
+                        //label.FlatStyle = FlatStyle.System;
+                        TabStop = false
+                    };
                     label.Location = new Point(
                         Left + (Width / 2) - (label.Width / 2),
                         Top + (Height / 2) - (label.Height / 2) - 30);
                     Parent.Controls.Add(label);
                     _queryStatusLabel = label;
                 }
+
                 return _queryStatusLabel;
             }
         }
@@ -417,5 +422,4 @@ namespace OpenLiveWriter.PostEditor.Video.VideoListBox
         #endregion
 
     }
-
 }

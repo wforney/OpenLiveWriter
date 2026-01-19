@@ -32,6 +32,7 @@ namespace BlogRunner.Core.Config
                     Console.Error.WriteLine("Unknown provider ID: " + providerId);
                     throw new ArgumentException("Unknown provider ID: " + providerId);
                 }
+
                 p.ClientType = el.Value;
             }
 

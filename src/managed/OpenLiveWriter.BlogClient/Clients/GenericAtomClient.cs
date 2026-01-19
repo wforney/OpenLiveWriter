@@ -73,12 +73,10 @@ namespace OpenLiveWriter.BlogClient.Clients
                     bool hasScheme = optionOverrides.Contains(BlogClientOptions.CATEGORY_SCHEME);
                     if (!hasNewCategories || !hasScheme)
                     {
-                        string scheme;
-                        bool supportsNewCategories;
                         GetCategoryInfo(context.HostBlogId,
                                         optionOverrides[BlogClientOptions.CATEGORY_SCHEME] as string, // may be null
-                                        out scheme,
-                                        out supportsNewCategories);
+                                        out string scheme,
+                                        out bool supportsNewCategories);
 
                         if (scheme == null)
                         {
@@ -118,9 +116,11 @@ namespace OpenLiveWriter.BlogClient.Clients
                     {
                         AddFeaturesXml(featuresNode, rootElement, uri);
                     }
+
                     return;
                 }
             }
+
             Trace.Fail("Couldn't find collection in service document:\r\n" + serviceDoc.OuterXml);
         }
 
@@ -146,7 +146,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                 foreach (XmlElement featureEl in featuresNode.SelectNodes("f:feature"))
                     containerNode.AppendChild(containerNode.OwnerDocument.ImportNode(featureEl, true));
             }
-
         }
 
         string IBlogClientForCategorySchemeHack.DefaultCategoryScheme
@@ -343,7 +342,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
     public class GoogleLoginAuthenticationModule : IAuthenticationModule
     {
-        private static GDataCredentials _gdataCred = new GDataCredentials();
+        private static readonly GDataCredentials _gdataCred = new GDataCredentials();
 
         public Authorization Authenticate(string challenge, WebRequest request, ICredentials credentials)
         {
@@ -352,9 +351,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
             HttpWebRequest httpRequest = (HttpWebRequest)request;
 
-            string service;
-            string realm;
-            ParseChallenge(challenge, out realm, out service);
+            ParseChallenge(challenge, out string realm, out string service);
             if (realm != "http://www.google.com/accounts/ClientLogin")
                 return null;
 

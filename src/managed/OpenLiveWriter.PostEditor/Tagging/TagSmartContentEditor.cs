@@ -45,9 +45,9 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
         private TagContext _context;
         private SectionHeaderControl header;
-        private IProperties _options;
+        private readonly IProperties _options;
         private SidebarHeaderControl sidebarHeader;
-        private TagContentSource.CurrentBlogId _getCurrentBlogId;
+        private readonly TagContentSource.CurrentBlogId _getCurrentBlogId;
         private string _providerName = string.Empty;
 
         private void InitializeComponent()

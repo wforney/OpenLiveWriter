@@ -103,6 +103,7 @@ namespace OpenLiveWriter.CoreServices
                 Rectangle bounds = new Rectangle(0, 0, enabled.Width, enabled.Height);
                 g.DrawImage(enabled, bounds, 0, 0, bounds.Width, bounds.Height, GraphicsUnit.Pixel, ia);
             }
+
             return disabled;
         }
 
@@ -143,13 +144,15 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         public static ColorMatrix GetColorOverrideImageMatrix(Color c)
         {
-            ColorMatrix cm = new ColorMatrix();
-            cm.Matrix00 = 0;
-            cm.Matrix11 = 0;
-            cm.Matrix22 = 0;
-            cm.Matrix40 = c.R / 255f;
-            cm.Matrix41 = c.G / 255f;
-            cm.Matrix42 = c.B / 255f;
+            ColorMatrix cm = new ColorMatrix
+            {
+                Matrix00 = 0,
+                Matrix11 = 0,
+                Matrix22 = 0,
+                Matrix40 = c.R / 255f,
+                Matrix41 = c.G / 255f,
+                Matrix42 = c.B / 255f
+            };
             return cm;
         }
 
@@ -321,6 +324,7 @@ namespace OpenLiveWriter.CoreServices
                 g.TranslateTransform(-minX, -minY);
                 g.DrawImage(image, new PointF[] { points[0], points[1], points[2] });
             }
+
             return target;
         }
 
@@ -337,6 +341,7 @@ namespace OpenLiveWriter.CoreServices
                     g.DrawImage(bitmap, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, ia);
                 }
             }
+
             return newBitmap;
         }
 
@@ -410,7 +415,5 @@ namespace OpenLiveWriter.CoreServices
         {
             return radians * 180 / Math.PI;
         }
-
     }
-
 }

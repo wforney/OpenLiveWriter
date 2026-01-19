@@ -859,6 +859,7 @@ namespace OpenLiveWriter.Controls
                     //clear the existing active lightweight control.
                     oldActiveLightweightControl.Unfocus();
                 }
+
                 if (value != null && LightweightControlContainerControl.ActiveLightweightControl != this)
                     LightweightControlContainerControl.ActiveLightweightControl = this;
             }
@@ -2146,6 +2147,7 @@ namespace OpenLiveWriter.Controls
             {
                 focusedControl = focusedControl.ActiveLightweightControl;
             }
+
             return focusedControl;
         }
 
@@ -2166,6 +2168,7 @@ namespace OpenLiveWriter.Controls
                 {
                     ((LightweightControlContainerControl)parent).NotifyControlFocused(this);
                 }
+
                 Invalidate();
                 return true;
             }
@@ -2356,6 +2359,7 @@ namespace OpenLiveWriter.Controls
                         parent = null;
                     }
                 }
+
                 return visible;
             }
 

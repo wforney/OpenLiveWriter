@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private System.Windows.Forms.Label labelProgress;
         private IProgressProvider _progressProvider;
@@ -91,6 +91,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 labelProgress.Text = progressUpdatedHandler.ProgressMessage;
                 panelMain.Invalidate(labelProgress.Bounds);
             }
+
             progressBar.Maximum = progressUpdatedHandler.Total;
             progressBar.Value = progressUpdatedHandler.Completed;
         }
@@ -109,6 +110,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

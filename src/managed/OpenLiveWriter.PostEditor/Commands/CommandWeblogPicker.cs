@@ -54,12 +54,12 @@ namespace OpenLiveWriter.PostEditor.Commands
             private const int PADDING_LEFT = 4;
             private const int PADDING_RIGHT = 8;
 
-            private Image _image;
-            private Icon _icon;
-            private string _providerName = string.Empty;
-            private string _blogName = string.Empty;
+            private readonly Image _image;
+            private readonly Icon _icon;
+            private readonly string _providerName = string.Empty;
+            private readonly string _blogName = string.Empty;
 
-            private TextFormatFlags _textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix |
+            private readonly TextFormatFlags _textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix |
                                                        TextFormatFlags.Right;
             private int _providerNameLeft;
             private int _providerNameWidth;
@@ -68,7 +68,7 @@ namespace OpenLiveWriter.PostEditor.Commands
             private int _imageLeft;
             private int _width;
             private int _height;
-            private Font _font;
+            private readonly Font _font;
 
             public WeblogPicker(Font font, Image image, Icon icon, string providerName, string blogName)
             {
@@ -103,6 +103,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                     _providerNameHeight = (int)Math.Ceiling((double)providerNameFullSize.Height);
                     providerNameFullWidth = providerNameFullSize.Width;
                 }
+
                 int imageWidth = 0;
                 if (_image != null)
                     imageWidth = _image.Width + IMAGE_PADDING_RIGHT;

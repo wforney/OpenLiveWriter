@@ -18,7 +18,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
     /// </summary>
     public abstract class FreeTextHandler : HtmlEditorDataFormatHandler
     {
-        MarkupPointer caretPointer;
+        readonly MarkupPointer caretPointer;
         protected FreeTextHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext)
             : base(dataObject, handlerContext, editorContext)
         {
@@ -52,8 +52,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 //determine if this location is content editable, if not provide None feedback
                 //since that is not a valid drop location
                 IHTMLElement3 element = (IHTMLElement3)caretPointer.CurrentScope;
-                bool visible = false;
-                currentCaretLocation.IsVisible(out visible);
+                currentCaretLocation.IsVisible(out bool visible);
                 if (!element.isContentEditable || !visible)
                     return DragDropEffects.None;
             }

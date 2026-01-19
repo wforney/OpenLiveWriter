@@ -89,7 +89,7 @@ namespace OpenLiveWriter.CoreServices
         /// The workQueue will be fully populated by the time worker threads
         /// begin, i.e., once it's empty it will always be empty.
         /// </summary>
-        private ThreadSafeQueue workQueue = new ThreadSafeQueue();
+        private readonly ThreadSafeQueue workQueue = new ThreadSafeQueue();
 
         /// <summary>
         /// The work to be performed by each worker thread.
@@ -98,8 +98,7 @@ namespace OpenLiveWriter.CoreServices
         {
             while (true)
             {
-                bool success;
-                DownloadWorkItem workItem = (DownloadWorkItem)workQueue.TryDequeue(out success);
+                DownloadWorkItem workItem = (DownloadWorkItem)workQueue.TryDequeue(out bool success);
                 if (!success)
                     return; // no more work in queue; this thread is done
 
@@ -112,7 +111,6 @@ namespace OpenLiveWriter.CoreServices
                 {
                     HandleException(e);
                 }
-
             }
         }
 
@@ -191,6 +189,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     HandleException(e);
                 }
+
                 if (allPagesProgress.CancelRequested)
                     throw new OperationCancelledException();
             }
@@ -236,11 +235,14 @@ namespace OpenLiveWriter.CoreServices
             {
                 return;
             }
+
             UrlDownloadToFile downloader;
             string fullPath;
 
-            downloader = new UrlDownloadToFile();
-            downloader.TimeoutMs = 30000;
+            downloader = new UrlDownloadToFile
+            {
+                TimeoutMs = 30000
+            };
 
             if (progressHost.CancelRequested)
                 throw new OperationCancelledException();
@@ -404,21 +406,21 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The file based site storage into which the page is being downloaded
         /// </summary>
-        private FileBasedSiteStorage _siteStorage;
+        private readonly FileBasedSiteStorage _siteStorage;
 
         /// <summary>
         /// The list of pages that should be downloaded
         /// </summary>
-        private PageToDownload[] _pagesToDownload;
+        private readonly PageToDownload[] _pagesToDownload;
 
         /// <summary>
         /// The list of references that should be downloaded
         /// </summary>
-        private Hashtable _referencesToDownload = new Hashtable();
+        private readonly Hashtable _referencesToDownload = new Hashtable();
 
         /// <summary>
         /// Indicates whether the download should throw when an exception occurs
         /// </summary>
-        private bool _throwOnFailure = true;
+        private readonly bool _throwOnFailure = true;
     }
 }

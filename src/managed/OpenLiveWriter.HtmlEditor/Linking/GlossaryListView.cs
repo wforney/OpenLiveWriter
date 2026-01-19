@@ -17,7 +17,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
     public class GlossaryListView : ListView
     {
         private IContainer components;
-        private int totalWidth;
+        private readonly int totalWidth;
 
         public GlossaryListView(IContainer container, int width)
         {
@@ -82,6 +82,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     }
                 }
             }
+
             return null;
         }
 
@@ -154,6 +155,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

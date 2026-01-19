@@ -11,8 +11,8 @@ namespace OpenLiveWriter.PostEditor
 
     public class BlogPostSettingsBag : IProperties, ICloneable
     {
-        Hashtable settings = new Hashtable();
-        Hashtable subsettings = new Hashtable();
+        readonly Hashtable settings = new Hashtable();
+        readonly Hashtable subsettings = new Hashtable();
         ArrayList settingsOrderedKeyList = new ArrayList(); //maintains settings keys in insertion order
         ArrayList subsettingsOrderedKeyList = new ArrayList(); //maintains subsettings keys in insertion order
 
@@ -47,6 +47,7 @@ namespace OpenLiveWriter.PostEditor
                 subsettings[key] = val;
                 subsettingsOrderedKeyList.Add(key);
             }
+
             return val;
         }
 
@@ -186,6 +187,7 @@ namespace OpenLiveWriter.PostEditor
                 clone.settingsOrderedKeyList = (ArrayList)settingsOrderedKeyList.Clone();
                 clone.subsettingsOrderedKeyList = (ArrayList)subsettingsOrderedKeyList.Clone();
             }
+
             return clone;
         }
 

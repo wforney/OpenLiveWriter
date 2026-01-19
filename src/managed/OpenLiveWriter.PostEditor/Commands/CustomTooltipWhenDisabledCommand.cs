@@ -14,7 +14,7 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     class CustomTooltipWhenDisabledCommand : OverridableCommand
     {
-        private string _disabledTooltipDescription;
+        private readonly string _disabledTooltipDescription;
         public CustomTooltipWhenDisabledCommand(CommandId commandId, string disabledTooltipDescription) : base(commandId)
         {
             _disabledTooltipDescription = disabledTooltipDescription;

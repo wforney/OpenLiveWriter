@@ -454,17 +454,20 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
                 txtUsername.Focus();
                 return;
             }
+
             if (password == String.Empty)
             {
                 DisplayMessage.Show(msg, this, null);
                 txtPassword.Focus();
                 return;
             }
+
             LoginStatus(true);
             if (!_auth.Login(username, password, ckBoxSavePassword.Checked, true, FindForm()))
             {
                 txtPassword.Focus();
             }
+
             LoginStatus(false);
         }
 

@@ -92,7 +92,7 @@ namespace OpenLiveWriter.PostEditor
             // don't transform the url
             return reference;
         }
-        private ArrayList _supportingFileScratchList = new ArrayList();
+        private readonly ArrayList _supportingFileScratchList = new ArrayList();
 
         public string CleanPathForServer(string path)
         {
@@ -105,7 +105,6 @@ namespace OpenLiveWriter.PostEditor
             return cleanPath;
         }
 
-        private DirectoryInfo _storageDirectory;
+        private readonly DirectoryInfo _storageDirectory;
     }
-
 }

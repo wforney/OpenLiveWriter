@@ -10,7 +10,7 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     public class AlignmentCommand : GalleryCommand<Alignment>
     {
-        private Command _commandAlignmentGroup;
+        private readonly Command _commandAlignmentGroup;
 
         public AlignmentCommand(CommandManager commandManager)
             : base(CommandId.AlignmentGallery, Alignment.None)

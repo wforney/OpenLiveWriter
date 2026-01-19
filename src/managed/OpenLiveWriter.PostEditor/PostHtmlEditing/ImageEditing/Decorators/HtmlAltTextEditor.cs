@@ -16,7 +16,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 {
     public class HtmlAltTextEditor : ImageDecoratorEditor
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public HtmlAltTextEditor()
         {
@@ -46,6 +46,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

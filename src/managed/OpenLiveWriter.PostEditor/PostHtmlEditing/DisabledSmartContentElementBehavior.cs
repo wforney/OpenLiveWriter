@@ -19,15 +19,17 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     internal class DisabledSmartContentElementBehavior : ElementControlBehavior
     {
-        private FocusControl _focusControl;
+        private readonly FocusControl _focusControl;
         private SmartContentState _contentState = SmartContentState.Disabled;
-        private IContentSourceSidebarContext _contentSourceContext;
-        BehaviorDragAndDropSource _dragDropController;
+        private readonly IContentSourceSidebarContext _contentSourceContext;
+        readonly BehaviorDragAndDropSource _dragDropController;
         public DisabledSmartContentElementBehavior(IHtmlEditorComponentContext editorContext, IContentSourceSidebarContext contentSourceContext)
             : base(editorContext)
         {
-            _focusControl = new FocusControl(this);
-            _focusControl.Visible = false;
+            _focusControl = new FocusControl(this)
+            {
+                Visible = false
+            };
             _contentSourceContext = contentSourceContext;
             Controls.Add(_focusControl);
             _dragDropController = new SmartContentDragAndDropSource(editorContext);
@@ -38,8 +40,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             base.OnElementAttached();
             (HTMLElement as IHTMLElement3).contentEditable = "false";
 
-            string sourceId;
-            string contentId;
             if (HTMLElement.id != null)
             {
                 try
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         _contentState = SmartContentState.Preserve;
                     else
                     {
-                        ContentSourceManager.ParseContainingElementId(HTMLElement.id, out sourceId, out contentId);
+                        ContentSourceManager.ParseContainingElementId(HTMLElement.id, out string sourceId, out string contentId);
                         if (sourceId == null || contentId == null)
                             _contentState = SmartContentState.Broken;
                         else
@@ -133,6 +133,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     //cancel the event so that the editor doesn't try to do anything funny (like placing a caret at the click)
                     return HRESULT.S_OK;
                 }
+
                 int controlResult = base.HandlePreHandleEvent(inEvtDispId, pIEventObj);
 
                 if (_dragDropController.PreHandleEvent(inEvtDispId, pIEventObj) == HRESULT.S_OK)

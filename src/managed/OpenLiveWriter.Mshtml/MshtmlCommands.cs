@@ -190,7 +190,7 @@ namespace OpenLiveWriter.Mshtml
         /// <summary>
         /// Command target that we execute our commands against
         /// </summary>
-        private IOleCommandTargetWithExecParams commandTarget;
+        private readonly IOleCommandTargetWithExecParams commandTarget;
     }
 
     /// <summary>
@@ -318,7 +318,6 @@ namespace OpenLiveWriter.Mshtml
             {
                 commandTarget.Exec(CGID.MSHTML, commandID, execOption, ref input, ref output);
             }
-
         }
 
         /// <summary>
@@ -342,8 +341,10 @@ namespace OpenLiveWriter.Mshtml
         private OLECMDF GetCommandStatus()
         {
             // query for the command status
-            OLECMD cmd = new OLECMD();
-            cmd.cmdID = commandID;
+            OLECMD cmd = new OLECMD
+            {
+                cmdID = commandID
+            };
             try
             {
                 commandTarget.QueryStatus(

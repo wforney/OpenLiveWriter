@@ -56,8 +56,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                bool b;
-                PointerRaw.Cling(out b);
+                PointerRaw.Cling(out bool b);
                 return b;
             }
             set
@@ -76,6 +75,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 parent = parent.parentElement;
             }
+
             return parent;
         }
 
@@ -86,8 +86,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                IHTMLElement currentScope;
-                PointerRaw.CurrentScope(out currentScope);
+                PointerRaw.CurrentScope(out IHTMLElement currentScope);
                 return currentScope;
             }
         }
@@ -99,8 +98,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                IMarkupContainerRaw container;
-                PointerRaw.GetContainer(out container);
+                PointerRaw.GetContainer(out IMarkupContainerRaw container);
                 return new MarkupContainer(MarkupServices, container);
             }
         }
@@ -137,6 +135,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 parent = parent.parentElement;
             }
+
             return parent;
         }
 
@@ -157,8 +156,10 @@ namespace OpenLiveWriter.Mshtml
                         list = new ArrayList();
                     list.Add(parent);
                 }
+
                 parent = parent.parentElement;
             }
+
             if (list != null)
                 return HTMLElementHelper.ToElementArray(list);
             else
@@ -176,8 +177,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                _POINTER_GRAVITY gravity;
-                PointerRaw.Gravity(out gravity);
+                PointerRaw.Gravity(out _POINTER_GRAVITY gravity);
                 return gravity;
             }
             set
@@ -193,8 +193,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public bool IsEqualTo(MarkupPointer p)
         {
-            bool b;
-            PointerRaw.IsEqualTo(p.PointerRaw, out b);
+            PointerRaw.IsEqualTo(p.PointerRaw, out bool b);
             return b;
         }
 
@@ -205,8 +204,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public bool IsLeftOf(MarkupPointer p)
         {
-            bool b;
-            PointerRaw.IsLeftOf(p.PointerRaw, out b);
+            PointerRaw.IsLeftOf(p.PointerRaw, out bool b);
             return b;
         }
 
@@ -217,8 +215,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public bool IsLeftOfOrEqualTo(MarkupPointer p)
         {
-            bool b;
-            PointerRaw.IsLeftOfOrEqualTo(p.PointerRaw, out b);
+            PointerRaw.IsLeftOfOrEqualTo(p.PointerRaw, out bool b);
             return b;
         }
 
@@ -229,8 +226,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public bool IsRightOf(MarkupPointer p)
         {
-            bool b;
-            PointerRaw.IsRightOf(p.PointerRaw, out b);
+            PointerRaw.IsRightOf(p.PointerRaw, out bool b);
             return b;
         }
 
@@ -241,8 +237,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public bool IsRightOfOrEqualTo(MarkupPointer p)
         {
-            bool b;
-            PointerRaw.IsRightOfOrEqualTo(p.PointerRaw, out b);
+            PointerRaw.IsRightOfOrEqualTo(p.PointerRaw, out bool b);
             return b;
         }
 
@@ -284,8 +279,10 @@ namespace OpenLiveWriter.Mshtml
         public IHTMLElement SeekElementLeft(IHTMLElementFilter filter, MarkupPointer boundaryPointer)
         {
             // initialize markup context used to track seeking
-            MarkupContext markupContext = new MarkupContext();
-            markupContext.Context = _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_NoScope;
+            MarkupContext markupContext = new MarkupContext
+            {
+                Context = _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_NoScope
+            };
 
             while ((boundaryPointer == null || IsRightOf(boundaryPointer)) &&             // apply boundary if one exists
                     (markupContext.Context != _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_None))   // otherwise use begin of document
@@ -310,8 +307,10 @@ namespace OpenLiveWriter.Mshtml
         public IHTMLElement SeekElementRight(IHTMLElementFilter filter, MarkupPointer boundaryPointer)
         {
             // initialize markup context used to track seeking
-            MarkupContext markupContext = new MarkupContext();
-            markupContext.Context = _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_NoScope;
+            MarkupContext markupContext = new MarkupContext
+            {
+                Context = _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_NoScope
+            };
 
             while ((boundaryPointer == null || IsLeftOf(boundaryPointer)) &&          // apply boundary if one exists
                 (markupContext.Context != _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_None))   // otherwise use end of document
@@ -384,8 +383,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                bool isPositioned;
-                PointerRaw.IsPositioned(out isPositioned);
+                PointerRaw.IsPositioned(out bool isPositioned);
                 return isPositioned;
             }
         }
@@ -397,8 +395,7 @@ namespace OpenLiveWriter.Mshtml
         /// <returns></returns>
         public IHTMLDocument2 OwningDoc()
         {
-            IHTMLDocument2 doc;
-            PointerRaw.OwningDoc(out doc);
+            PointerRaw.OwningDoc(out IHTMLDocument2 doc);
             return doc;
         }
 
@@ -521,8 +518,7 @@ namespace OpenLiveWriter.Mshtml
         {
             get
             {
-                int pos;
-                ((IMarkupPointer2Raw)PointerRaw).GetMarkupPosition(out pos);
+                ((IMarkupPointer2Raw)PointerRaw).GetMarkupPosition(out int pos);
                 return pos;
             }
         }
@@ -546,6 +542,7 @@ namespace OpenLiveWriter.Mshtml
                 sb.Append(" class=");
                 sb.Append(e.className);
             }
+
             sb.Append(">");
         }
 

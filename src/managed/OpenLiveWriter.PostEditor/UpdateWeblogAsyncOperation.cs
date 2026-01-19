@@ -35,7 +35,7 @@ namespace OpenLiveWriter.PostEditor
 
     public class UpdateWeblogAsyncOperation : OpenLiveWriter.CoreServices.AsyncOperation
     {
-        private IBlogClientUIContext _uiContext;
+        private readonly IBlogClientUIContext _uiContext;
 
         public UpdateWeblogAsyncOperation(IBlogClientUIContext uiContext, IBlogPostPublishingContext publishingContext, bool publish)
             : base(uiContext)
@@ -137,7 +137,6 @@ namespace OpenLiveWriter.PostEditor
                     UpdateProgress(-1, -1, Res.Get((pingUrls.Length == 1 ? StringId.SendingPing : StringId.SendingPings)));
                     Thread.Sleep(750);
                 }
-
             }
             catch (Exception e)
             {
@@ -181,8 +180,8 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private IBlogPostPublishingContext _publishingContext;
-        private bool _publish;
+        private readonly IBlogPostPublishingContext _publishingContext;
+        private readonly bool _publish;
 
         /// <summary>
         /// Class which manages resolution of local file references by uploading
@@ -192,7 +191,7 @@ namespace OpenLiveWriter.PostEditor
         /// </summary>
         private class LocalSupportingFileUploader : IDisposable
         {
-            private Blog _blog;
+            private readonly Blog _blog;
             BlogPostReferenceFixer _referenceFixer;
             public LocalSupportingFileUploader(IBlogPostPublishingContext publishingContext)
             {
@@ -254,16 +253,16 @@ namespace OpenLiveWriter.PostEditor
                 Debug.Fail("Failed to dispose LocalSupportingFileUploader");
             }
 
-            private IBlogPostPublishingContext _publishingContext;
-            private string _originalPostContents;
+            private readonly IBlogPostPublishingContext _publishingContext;
+            private readonly string _originalPostContents;
         }
     }
 
     internal class BlogPostReferenceFixer : LightWeightHTMLDocumentIterator
     {
-        FileUploadWorker _fileUploadWorker;
-        IBlogPostPublishingContext _uploadContext;
-        SupportingFileReferenceList _fileReferenceList;
+        readonly FileUploadWorker _fileUploadWorker;
+        readonly IBlogPostPublishingContext _uploadContext;
+        readonly SupportingFileReferenceList _fileReferenceList;
         internal BlogPostReferenceFixer(string html, IBlogPostPublishingContext publishingContext)
             : base(html)
         {
@@ -284,9 +283,9 @@ namespace OpenLiveWriter.PostEditor
 
         class LocalFileTransformer
         {
-            BlogPostReferenceFixer _referenceFixer;
-            ISupportingFileService _fileService;
-            BlogFileUploader _uploader;
+            readonly BlogPostReferenceFixer _referenceFixer;
+            readonly ISupportingFileService _fileService;
+            readonly BlogFileUploader _uploader;
             public LocalFileTransformer(BlogPostReferenceFixer referenceFixer, BlogFileUploader uploader)
             {
                 _referenceFixer = referenceFixer;
@@ -318,6 +317,7 @@ namespace OpenLiveWriter.PostEditor
                             return UrlHelper.SafeToAbsoluteUri(uploadUri);
                     }
                 }
+
                 return reference;
             }
         }
@@ -341,6 +341,7 @@ namespace OpenLiveWriter.PostEditor
                     }
                 }
             }
+
             base.OnBeginTag(tag);
         }
 
@@ -351,9 +352,9 @@ namespace OpenLiveWriter.PostEditor
 
         private class FileUploadWorker
         {
-            ArrayList _fileList = new ArrayList();
-            Hashtable _uploadedFiles = new Hashtable();
-            private string _postId;
+            readonly ArrayList _fileList = new ArrayList();
+            readonly Hashtable _uploadedFiles = new Hashtable();
+            private readonly string _postId;
 
             public FileUploadWorker(string postId)
             {
@@ -384,6 +385,7 @@ namespace OpenLiveWriter.PostEditor
                     {
                         listString += supportingFile.FileUri + "\r\n";
                     }
+
                     Trace.Fail(String.Format(CultureInfo.InvariantCulture, "Reference found to file that does not exist in SupportingFileService \r\nfileReference: {0}\r\n_fileList:\r\n{1}", fileReference, listString));
                     return;
                 }
@@ -410,7 +412,6 @@ namespace OpenLiveWriter.PostEditor
                         Trace.Fail("This file has already been uploaded during this publish operation: " + file.FileName);
                     }
                 }
-
             }
 
             public void DoAfterPostUploadWork(BlogFileUploader fileUploader, string postId)
@@ -429,12 +430,12 @@ namespace OpenLiveWriter.PostEditor
 
             private class FileUploadContext : IFileUploadContext
             {
-                private string _blogId;
-                private string _postId;
-                private ISupportingFile _supportingFile;
-                private ISupportingFileUploadInfo _uploadInfo;
+                private readonly string _blogId;
+                private readonly string _postId;
+                private readonly ISupportingFile _supportingFile;
+                private readonly ISupportingFileUploadInfo _uploadInfo;
                 private readonly bool _forceDirectImageLink;
-                private BlogFileUploader _fileUploader;
+                private readonly BlogFileUploader _fileUploader;
                 public FileUploadContext(BlogFileUploader fileUploader, string postId, ISupportingFile supportingFile, ISupportingFileUploadInfo uploadInfo, bool forceDirectImageLink)
                 {
                     _fileUploader = fileUploader;

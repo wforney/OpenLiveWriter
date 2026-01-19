@@ -16,7 +16,7 @@ namespace OpenLiveWriter.Controls
 {
     public class DisplayableExceptionDisplayForm : BaseForm
     {
-        private Bitmap errorBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.ErrorLogoSmall.png");
+        private readonly Bitmap errorBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.ErrorLogoSmall.png");
 
         private PictureBox pictureBoxIcon;
         private Label labelMessage;
@@ -24,7 +24,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private Button buttonOK;
 
         /// <summary>
@@ -84,6 +84,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -115,7 +116,6 @@ namespace OpenLiveWriter.Controls
                 DisplayHelper.AutoFitSystemButton(buttonOK, buttonOK.Width, Int32.MaxValue);
                 buttonOK.Left = (Width / 2) - (buttonOK.Width / 2);
             }
-
         }
 
         #region Windows Form Designer generated code

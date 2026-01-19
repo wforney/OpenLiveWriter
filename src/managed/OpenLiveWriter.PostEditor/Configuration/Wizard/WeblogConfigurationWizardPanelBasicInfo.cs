@@ -35,7 +35,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private System.Windows.Forms.CheckBox checkBoxSavePassword;
 
@@ -121,9 +121,11 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             get
             {
-                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials();
-                credentials.Username = textBoxUsername.Text.Trim();
-                credentials.Password = textBoxPassword.Text.Trim();
+                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials
+                {
+                    Username = textBoxUsername.Text.Trim(),
+                    Password = textBoxPassword.Text.Trim()
+                };
                 return credentials;
             }
             set
@@ -213,6 +215,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -346,8 +349,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             textBoxPassword.SelectAll();
         }
-
-
     }
-
 }

@@ -19,13 +19,13 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
     {
         public StaticSiteConfig Config { get; set; }
 
-        private TemporaryBlogSettings _temporarySettings;
+        private readonly TemporaryBlogSettings _temporarySettings;
 
         private StaticSitePreferencesForm formPreferences;
-        private GeneralPanel panelGeneral;
-        private AuthoringPanel panelAuthoring;
-        private FrontMatterPanel panelFrontMatter;
-        private BuildPublishPanel panelBuildPublish;
+        private readonly GeneralPanel panelGeneral;
+        private readonly AuthoringPanel panelAuthoring;
+        private readonly FrontMatterPanel panelFrontMatter;
+        private readonly BuildPublishPanel panelBuildPublish;
 
         public StaticSitePreferencesController(TemporaryBlogSettings blogSettings)
         {
@@ -95,7 +95,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
                         SaveConfigToBlogSettings(_temporarySettings);
                         return true;
                     }
-
                 }
             }
 

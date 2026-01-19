@@ -104,9 +104,7 @@ namespace BlogRunner.Core
             string token = BlogUtil.ShortGuid;
             blogPost.Title = token + ":" + blogPost.Title;
 
-            string etag;
-            XmlDocument remotePost;
-            string postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out etag, out remotePost);
+            string postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out string etag, out XmlDocument remotePost);
 
             try
             {
@@ -160,11 +158,7 @@ namespace BlogRunner.Core
         {
             Regex regex = new Regex(Regex.Escape(guid1) + "(.*?)" + Regex.Escape(guid2));
             Match m = regex.Match(homepageHtml);
-            string result;
-            if (!m.Success)
-                result = null;
-            else
-                result = m.Groups[1].Value;
+            string result = m.Success ? m.Groups[1].Value : null;
             HandleContentResult(result, results);
         }
     }
@@ -182,10 +176,7 @@ namespace BlogRunner.Core
 
             string token = BlogUtil.ShortGuid;
             blogPost.Title = token + ":" + blogPost.Title;
-
-            string etag;
-            XmlDocument remotePost;
-            string postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out etag, out remotePost);
+            string postId = blogClient.NewPost(blog.BlogId, blogPost, null, publish ?? true, out _, out _);
             BlogPost newPost = blogClient.GetPost(blog.BlogId, postId);
             HandleResult(newPost, results);
             if (postId != null && CleanUpPosts)

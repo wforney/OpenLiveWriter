@@ -12,7 +12,7 @@ namespace OpenLiveWriter.CoreServices
     /// </summary>
     public class TimerHelper
     {
-        InvokeInUIThreadDelegate _uiInvokeDelegate;
+        readonly InvokeInUIThreadDelegate _uiInvokeDelegate;
         private TimerHelper(InvokeInUIThreadDelegate uiInvokeDelegate)
         {
             _uiInvokeDelegate = uiInvokeDelegate;
@@ -21,8 +21,10 @@ namespace OpenLiveWriter.CoreServices
         private Timer Invoke(int delay)
         {
             //set a timer to send focus to the current editor on the next UI loop
-            Timer t = new Timer();
-            t.Interval = delay;
+            Timer t = new Timer
+            {
+                Interval = delay
+            };
             t.Tick += new EventHandler(t_Tick);
             t.Start();
             return t;
@@ -58,12 +60,14 @@ namespace OpenLiveWriter.CoreServices
     {
         private Timer t;
         private bool isStarted = false;
-        private Queue<InvokeInUIThreadDelegate> workItems = new Queue<InvokeInUIThreadDelegate>();
+        private readonly Queue<InvokeInUIThreadDelegate> workItems = new Queue<InvokeInUIThreadDelegate>();
 
         public MultiTaskHelper(int callbackTime)
         {
-            t = new Timer();
-            t.Interval = callbackTime;
+            t = new Timer
+            {
+                Interval = callbackTime
+            };
             t.Tick += t_Tick;
         }
 
@@ -78,6 +82,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 throw new InvalidOperationException("MultiTaskHelper has already been started");
             }
+
             workItems.Enqueue(work);
         }
 
@@ -107,6 +112,7 @@ namespace OpenLiveWriter.CoreServices
                 t.Dispose();
                 t = null;
             }
+
             workItems.Clear();
         }
     }

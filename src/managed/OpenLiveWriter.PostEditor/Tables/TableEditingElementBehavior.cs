@@ -254,8 +254,8 @@ namespace OpenLiveWriter.PostEditor.Tables
                         if (e is EndTag && ((EndTag)e).NameEquals("td"))
                             output.Append("&nbsp;");
                     }
-
                 }
+
                 args.Html = output.ToString();
             }
         }
@@ -383,8 +383,7 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         private TableColumnSizeEditor _columnSizeEditor;
         private TableCellSelectionTracker _cellSelectionTracker;
-        private TableEditingManager _tableEditingManager;
+        private readonly TableEditingManager _tableEditingManager;
 
     }
-
 }

@@ -19,7 +19,7 @@ namespace OpenLiveWriter.Api
         /// <param name="pluginOptions">Plugin options.</param>
         public virtual void Initialize(IProperties pluginOptions)
         {
-            _options = pluginOptions;
+            Options = pluginOptions;
         }
 
         /// <summary>
@@ -35,11 +35,6 @@ namespace OpenLiveWriter.Api
         /// <summary>
         /// Global Plugin options (user preferences, defaults, etc.).2
         /// </summary>
-        protected IProperties Options
-        {
-            get { return _options; }
-        }
-
-        private IProperties _options;
+        protected IProperties Options { get; private set; }
     }
 }

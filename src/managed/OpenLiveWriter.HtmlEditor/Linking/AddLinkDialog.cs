@@ -38,7 +38,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
         private ComboBoxRel comboBoxRel;
         private Label labelRel;
         private Panel panelAdvanced;
-        private System.ComponentModel.IContainer components = null;
+        private readonly System.ComponentModel.IContainer components = null;
 
         public AddLinkDialog(ICollection currentEntryKeys)
         {
@@ -102,6 +102,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             {
                 txtURL.Text = HTTP_PREFIX;
             }
+
             txtText.Focus();
 
             if (!string.IsNullOrEmpty(comboBoxRel.Rel) || !string.IsNullOrEmpty(txtTitle.Text))
@@ -122,6 +123,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

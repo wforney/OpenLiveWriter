@@ -83,8 +83,8 @@ namespace OpenLiveWriter.PostEditor
             EditAccounts();
         }
 
-        private IWin32Window _owner;
-        private IBlogPostEditingSite _editingSite;
+        private readonly IWin32Window _owner;
+        private readonly IBlogPostEditingSite _editingSite;
 
     }
 }

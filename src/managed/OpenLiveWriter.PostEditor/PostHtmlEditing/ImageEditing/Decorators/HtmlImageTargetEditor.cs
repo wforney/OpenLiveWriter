@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 {
     public class HtmlImageTargetEditor : ImageDecoratorEditor
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public HtmlImageTargetEditor()
         {
@@ -36,9 +36,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
             comboBoxLinkTargets.AccessibleName = ControlHelper.ToAccessibleName(Res.Get(StringId.LinkLinkTo));
         }
-        TextFormatFlags imageFileSummaryFormat;
+        readonly TextFormatFlags imageFileSummaryFormat;
         private Button buttonTargetOptions;
-        TextFormatFlags imageFileSizeFormat;
+        readonly TextFormatFlags imageFileSizeFormat;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -66,6 +66,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 buttonTargetOptions.PerformClick();
                 return true;
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -81,6 +82,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -169,6 +171,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     LinkTargetType targetType = (LinkTargetType)option.ItemValue;
                     return targetType;
                 }
+
                 return LinkTargetType.NONE;
             }
         }
@@ -428,6 +431,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                             HtmlImageTargetSettings.LinkOptions = editor.LinkOptions;
                             HtmlImageTargetSettings.ImageSizeName = editor.ImageBoundsSize;
                         }
+
                         return result;
                     }
                 }
@@ -454,6 +458,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                             HtmlImageTargetSettings.UpdateImageLinkOptions(hyperlinkForm.LinkTitle, hyperlinkForm.Rel, hyperlinkForm.NewWindow);
                             HtmlImageTargetSettings.LinkOptions = new LinkOptions(hyperlinkForm.NewWindow, false, null);
                         }
+
                         return result;
                     }
                 }

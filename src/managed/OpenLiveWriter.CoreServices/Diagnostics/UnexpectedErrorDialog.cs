@@ -91,6 +91,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -260,8 +261,10 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             try
             {
                 Process p = new Process();
-                ProcessStartInfo psi = new ProcessStartInfo(DiagnosticsFilePath);
-                psi.UseShellExecute = true;
+                ProcessStartInfo psi = new ProcessStartInfo(DiagnosticsFilePath)
+                {
+                    UseShellExecute = true
+                };
                 p.StartInfo = psi;
                 p.Start();
             }
@@ -286,6 +289,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                         filePath = Path.Combine(Path.GetTempPath(), newfileName);
                         i++;
                     }
+
                     m_diagnosticsFilePath = filePath;
 
                     using (StreamWriter writer = new StreamWriter(File.Create(m_diagnosticsFilePath)))
@@ -307,6 +311,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                         WriteException(m_rootCause, writer);
                     }
                 }
+
                 return m_diagnosticsFilePath;
 
             }
@@ -341,6 +346,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                 executable = Environment.CommandLine;
             }
             catch { }
+
             return executable;
         }
 
@@ -359,5 +365,4 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
 
         private readonly Exception m_rootCause;
     }
-
 }

@@ -108,6 +108,7 @@ namespace OpenLiveWriter.CoreServices
                 // succession.
                 isRunning = true;
             }
+
             ThreadHelper.NewThread(new ThreadStart(InternalStart), GetType().Name, true, false, true).Start();
         }
 
@@ -153,6 +154,7 @@ namespace OpenLiveWriter.CoreServices
                     Monitor.Wait(this, 1000);
                 }
             }
+
             return !HasCompleted;
         }
 
@@ -177,6 +179,7 @@ namespace OpenLiveWriter.CoreServices
                     Monitor.Wait(this, 1000);
                 }
             }
+
             return HasCompleted;
         }
 
@@ -237,7 +240,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return isiTarget; }
         }
-        private ISynchronizeInvoke isiTarget;
+        private readonly ISynchronizeInvoke isiTarget;
 
         /// <summary>
         /// To be overridden by the deriving class - this is where the work
@@ -300,6 +303,7 @@ namespace OpenLiveWriter.CoreServices
                 //fall back to valid values
                 complete = total;
             }
+
             lock (this)
             {
 

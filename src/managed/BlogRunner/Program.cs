@@ -135,6 +135,7 @@ namespace BlogRunner
                         xw.IndentChar = '\t';
                         providers.WriteTo(xw);
                     }
+
                     return 0;
                 }
                 catch (Exception e)

@@ -55,6 +55,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 blogs.Add(new PostSourceItem(Res.Get(StringId.Blog), new RemoteWeblogBlogPostSource(blogId), this));
             }
+
             blogs.Sort();
             Items.AddRange(blogs.ToArray());
         }
@@ -83,6 +84,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
 
             }
+
             base.Dispose(disposing);
         }
 
@@ -223,7 +225,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 topLineColor = SystemColors.ControlLight;
             }
         }
-        private ControlTheme _theme;
+        private readonly ControlTheme _theme;
 
         private int CalculateItemHeight(bool showLargeIcons)
         {
@@ -244,7 +246,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         #region Accessibility
         internal class BlogPostSourceListBoxAccessibility : ControlAccessibleObject
         {
-            private BlogPostSourceListBox _listBox;
+            private readonly BlogPostSourceListBox _listBox;
             public BlogPostSourceListBoxAccessibility(BlogPostSourceListBox ownerControl) : base(ownerControl)
             {
                 _listBox = ownerControl;
@@ -279,9 +281,9 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
         class PostSourceItem : AccessibleObject, IComparable
         {
-            private IPostEditorPostSource _source;
-            private string _accName;
-            private BlogPostSourceListBox _listbox;
+            private readonly IPostEditorPostSource _source;
+            private readonly string _accName;
+            private readonly BlogPostSourceListBox _listbox;
 
             public PostSourceItem(IPostEditorPostSource source, BlogPostSourceListBox ownerControl)
             {
@@ -418,12 +420,12 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         private int _recentPostsIndex;
 
         // images
-        private Image _draftsImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectDraftPostings.png");
-        private Image _recentPostsImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectRecentPostings.png");
-        private Image _weblogImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectWebLogPostings.png");
-        private Image _draftsImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectDraftPostingsLarge.png");
-        private Image _recentPostsImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectRecentPostingsLarge.png");
-        private Image _weblogImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectWebLogPostingsLarge.png");
+        private readonly Image _draftsImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectDraftPostings.png");
+        private readonly Image _recentPostsImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectRecentPostings.png");
+        private readonly Image _weblogImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectWebLogPostings.png");
+        private readonly Image _draftsImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectDraftPostingsLarge.png");
+        private readonly Image _recentPostsImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectRecentPostingsLarge.png");
+        private readonly Image _weblogImageLarge = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.SelectWebLogPostingsLarge.png");
 
         #endregion
     }

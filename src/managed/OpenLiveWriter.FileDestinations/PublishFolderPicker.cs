@@ -25,8 +25,8 @@ namespace OpenLiveWriter.FileDestinations
         private ImageList imageList;
         private Label label1;
         private NewFolderButton buttonNewFolder;
-        private TreeNode RootNode;
-        private ErrorHandler errorHandler;
+        private readonly TreeNode RootNode;
+        private readonly ErrorHandler errorHandler;
 
         public PublishFolderPicker(string destinationName, ErrorHandler errorCallback) : this(destinationName, errorCallback, "/")
         {
@@ -49,11 +49,12 @@ namespace OpenLiveWriter.FileDestinations
             errorHandler = errorCallback;
 
             //Root Node
-            RootNode = new TreeNode();
-
-            // configure tree
-            RootNode.Text = destinationName;
-            RootNode.Tag = rootPath;
+            RootNode = new TreeNode
+            {
+                // configure tree
+                Text = destinationName,
+                Tag = rootPath
+            };
             destinationTree.Nodes.Add(RootNode);
             destinationTree.SelectedNode = RootNode;
             destinationTree.SelectedNode.ImageIndex = 0;
@@ -78,6 +79,7 @@ namespace OpenLiveWriter.FileDestinations
                         {
                             currentPath = destination.HomeDir + "/" + currentPath;
                         }
+
                         folderPicker.SelectedPath = currentPath;
                     }
                     else
@@ -110,6 +112,7 @@ namespace OpenLiveWriter.FileDestinations
                         //is probably because no valid connection was ever established
                     }
                 }
+
                 return null;
             }
         }
@@ -126,6 +129,7 @@ namespace OpenLiveWriter.FileDestinations
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -299,6 +303,7 @@ namespace OpenLiveWriter.FileDestinations
                             //this case can occur if the path is "/"
                             continue;
                         }
+
                         TreeNode nextNode = null;
                         EnumDirectories(currNode);
                         TreeNodeCollection nodes = currNode.Nodes;
@@ -343,8 +348,10 @@ namespace OpenLiveWriter.FileDestinations
                                 break;
                             }
                         }
+
                         currNode = nextNode;
                     }
+
                     destinationTree.SelectedNode = currNode;
                 }
             }
@@ -444,6 +451,7 @@ namespace OpenLiveWriter.FileDestinations
                 if (childElements[i] != parentElements[i])
                     return false;
             }
+
             return true;
         }
 
@@ -477,6 +485,7 @@ namespace OpenLiveWriter.FileDestinations
                                 Destination.CreateDirectory(newPath);
                                 refreshNode(selectedNode);
                             }
+
                             SelectedPath = newPath;
                             destinationTree.Focus();
                         }
@@ -502,11 +511,13 @@ namespace OpenLiveWriter.FileDestinations
 
         private TreeNode createFolderNode(TreeNode parent, string dirName)
         {
-            TreeNode TempNode = new TreeNode();
-            TempNode.Text = dirName;
-            TempNode.Tag = destination.CombinePath(parent.Tag.ToString(), dirName);
-            TempNode.ImageIndex = 3;
-            TempNode.SelectedImageIndex = 2;
+            TreeNode TempNode = new TreeNode
+            {
+                Text = dirName,
+                Tag = destination.CombinePath(parent.Tag.ToString(), dirName),
+                ImageIndex = 3,
+                SelectedImageIndex = 2
+            };
             parent.Nodes.Add(TempNode);
             return TempNode;
         }
@@ -542,7 +553,6 @@ namespace OpenLiveWriter.FileDestinations
 
                 buttonNewFolder.Top = destinationTree.Top - buttonNewFolder.Height - 1;
             }
-
         }
     }
 }

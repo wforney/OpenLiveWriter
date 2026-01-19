@@ -68,8 +68,10 @@ namespace OpenLiveWriter.FileDestinations
                     return false;
                 else
                 {
-                    SiteDestinationException ex = new SiteDestinationException(e, SiteDestinationException.TransferException, GetType().Name, 0);
-                    ex.DestinationExtendedMessage = e.Message;
+                    SiteDestinationException ex = new SiteDestinationException(e, SiteDestinationException.TransferException, GetType().Name, 0)
+                    {
+                        DestinationExtendedMessage = e.Message
+                    };
                     throw ex;
                 }
             }
@@ -109,8 +111,10 @@ namespace OpenLiveWriter.FileDestinations
                     return false;
                 else
                 {
-                    SiteDestinationException ex = new SiteDestinationException(e, SiteDestinationException.TransferException, GetType().Name, 0);
-                    ex.DestinationExtendedMessage = e.Message;
+                    SiteDestinationException ex = new SiteDestinationException(e, SiteDestinationException.TransferException, GetType().Name, 0)
+                    {
+                        DestinationExtendedMessage = e.Message
+                    };
                     throw ex;
                 }
             }
@@ -178,6 +182,7 @@ namespace OpenLiveWriter.FileDestinations
                 string directory = dirs[i];
                 dirs[i] = directory.Substring(directory.LastIndexOf(@"\", StringComparison.OrdinalIgnoreCase) + 1);
             }
+
             return dirs;
         }
 
@@ -196,6 +201,7 @@ namespace OpenLiveWriter.FileDestinations
                 string file = files[i];
                 files[i] = file.Substring(file.LastIndexOf(@"\", StringComparison.OrdinalIgnoreCase) + 1);
             }
+
             return files;
         }
     }

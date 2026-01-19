@@ -21,8 +21,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     internal delegate void IHTMLElementCallback(IHTMLElement fromElement);
     internal class EditableRegionElementBehavior : HtmlEditorElementBehavior
     {
-        IHTMLElement _nextEditableRegion;
-        IHTMLElement _previousEditableRegion;
+        readonly IHTMLElement _nextEditableRegion;
+        readonly IHTMLElement _previousEditableRegion;
 
         #region Initialization and Disposal
         public EditableRegionElementBehavior(IHtmlEditorComponentContext editorContext, IHTMLElement previousEditableRegion, IHTMLElement nextEditableRegion)
@@ -159,12 +159,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                                         : HtmlUtils.EscapeEntities(attrVal));
                             }
                         }
+
                         if (bt.HasResidue)
                         {
                             if (bt.Attributes.Length == 0)
                                 output.Append(" ");
                             output.Append(bt.Residue);
                         }
+
                         if (bt.Complete)
                             output.Append(" /");
                         output.Append(">");
@@ -187,6 +189,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     else
                         output.Append(el.RawText);
                 }
+
                 html = output.ToString();
             } while (needsCleanup);
             return html;
@@ -254,6 +257,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 else
                     output.Append(el.RawText);
             }
+
             return output.ToString();
         }
 
@@ -328,9 +332,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <returns></returns>
         protected Rectangle GetPaintRectangle(Rectangle clientRectangle, RECT rcBounds)
         {
-            POINT globalPoint = new POINT();
-            globalPoint.x = clientRectangle.Left;
-            globalPoint.y = clientRectangle.Top;
+            POINT globalPoint = new POINT
+            {
+                x = clientRectangle.Left,
+                y = clientRectangle.Top
+            };
             POINT localPoint = new POINT();
             HTMLPaintSite.TransformGlobalToLocal(globalPoint, ref localPoint);
 
@@ -537,13 +543,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 throw new ArgumentException("Unsupported move direction detected: " + direction);
 
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)HTMLElement.document;
-            IDisplayPointerRaw displayPointer;
-            displayServices.CreateDisplayPointer(out displayPointer);
+            displayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer);
             IHTMLCaretRaw caret = GetCaret();
             caret.MoveDisplayPointerToCaret(displayPointer);
 
-            ILineInfo lineInfo;
-            displayPointer.GetLineInfo(out lineInfo);
+            displayPointer.GetLineInfo(out ILineInfo lineInfo);
 
             if (nextRegion != null)
             {
@@ -555,11 +559,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     caret.MoveCaretToPointer(displayPointer, true, _CARET_DIRECTION.CARET_DIRECTION_SAME);
                     if (preserveXLocation)
                     {
-                        POINT caretLocation;
-                        caret.GetLocation(out caretLocation, true);
+                        caret.GetLocation(out POINT caretLocation, true);
                         caretLocation.x = lineInfo.x;
-                        uint hitTestResults;
-                        displayPointer.MoveToPoint(caretLocation, _COORD_SYSTEM.COORD_SYSTEM_GLOBAL, nextRegion, 0, out hitTestResults);
+                        displayPointer.MoveToPoint(caretLocation, _COORD_SYSTEM.COORD_SYSTEM_GLOBAL, nextRegion, 0, out uint hitTestResults);
                         caret.MoveCaretToPointer(displayPointer, true, _CARET_DIRECTION.CARET_DIRECTION_SAME);
                     }
                     //BEP: using this line causes scrolling	(nextRegion as IHTMLElement2).focus();
@@ -573,6 +575,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                 caret.MoveCaretToPointer(displayPointer, true, _CARET_DIRECTION.CARET_DIRECTION_SAME);
             }
+
             return false;
         }
         private enum MOVE_DIRECTION { UP, DOWN, LEFT, RIGHT };
@@ -590,15 +593,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             else
                 moveUnit = _DISPLAY_MOVEUNIT.DISPLAY_MOVEUNIT_CurrentLineEnd;
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)HTMLElement.document;
-            IDisplayPointerRaw displayPointer, displayPointer2;
-            displayServices.CreateDisplayPointer(out displayPointer);
-            displayServices.CreateDisplayPointer(out displayPointer2);
+            displayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer);
+            displayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer2);
             IHTMLCaretRaw caret = GetCaret();
             caret.MoveDisplayPointerToCaret(displayPointer);
             displayPointer2.MoveToPointer(displayPointer);
             displayPointer2.MoveUnit(moveUnit, -1);
-            bool areEqual;
-            displayPointer2.IsEqualTo(displayPointer, out areEqual);
+            displayPointer2.IsEqualTo(displayPointer, out bool areEqual);
             return areEqual;
         }
         protected enum LINE_POSITION { START, END };
@@ -642,8 +643,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)HTMLElement.document;
 
             //position a display pointer on the same line as the markup pointer
-            IDisplayPointerRaw displayPointer;
-            displayServices.CreateDisplayPointer(out displayPointer);
+            displayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer);
             DisplayServices.TraceMoveToMarkupPointer(displayPointer, pointer);
 
             //position a markup pointer at the end of the line

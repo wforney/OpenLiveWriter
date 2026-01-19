@@ -46,8 +46,8 @@ namespace OpenLiveWriter.CoreServices
             else
                 return html;
         }
-        private bool _fixupSpecialHeaders;
-        private bool _escapeEmptyString;
+        private readonly bool _fixupSpecialHeaders;
+        private readonly bool _escapeEmptyString;
 
         private string BaseUrl
         {
@@ -71,6 +71,7 @@ namespace OpenLiveWriter.CoreServices
                     if (_baseUrl == null)
                         _baseUrl = Url;
                 }
+
                 return _baseUrl;
             }
         }
@@ -111,6 +112,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             base.OnBeginTag(tag);
         }
 
@@ -130,6 +132,7 @@ namespace OpenLiveWriter.CoreServices
                 if (!UrlHelper.IsUrl(url))
                     styleUrl.LiteralText = UrlHelper.EscapeRelativeURL(BaseUrl, url);
             }
+
             base.OnStyleUrl(styleUrl);
         }
 
@@ -141,8 +144,8 @@ namespace OpenLiveWriter.CoreServices
                 if (!UrlHelper.IsUrl(url))
                     styleImport.LiteralText = UrlHelper.EscapeRelativeURL(BaseUrl, url);
             }
+
             base.OnStyleImport(styleImport);
         }
-
     }
 }

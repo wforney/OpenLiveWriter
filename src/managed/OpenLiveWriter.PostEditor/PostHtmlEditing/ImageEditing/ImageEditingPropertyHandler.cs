@@ -27,9 +27,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     internal class ImageEditingPropertyHandler
     {
-        ImageInsertHandler _imageInsertHandler;
-        IImagePropertyEditingContext _propertyEditingContext;
-        IBlogPostImageEditingContext _editorContext;
+        readonly ImageInsertHandler _imageInsertHandler;
+        readonly IImagePropertyEditingContext _propertyEditingContext;
+        readonly IBlogPostImageEditingContext _editorContext;
 
         internal ImageEditingPropertyHandler(IImagePropertyEditingContext propertyEditingContext, CreateFileCallback createFileCallback, IBlogPostImageEditingContext imageEditingContext)
         {
@@ -73,8 +73,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 //clone the image data to the sidebar doesn't change it (required for preserving image undo/redo state)
                 imageData = (BlogPostImageData)imageData.Clone();
                 //this is an attached local image
-                info = new BlogPostImagePropertiesInfo(imageData, new ImageDecoratorsList(editorContext.DecoratorsManager, imageData.ImageDecoratorSettings));
-                info.ImgElement = imgHtmlElement;
+                info = new BlogPostImagePropertiesInfo(imageData, new ImageDecoratorsList(editorContext.DecoratorsManager, imageData.ImageDecoratorSettings))
+                {
+                    ImgElement = imgHtmlElement
+                };
             }
             else
             {
@@ -95,8 +97,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     imgHtmlElement.setAttribute("height", oldHeight, 0);
                 if (!String.IsNullOrEmpty(oldWidth))
                     imgHtmlElement.setAttribute("width", oldWidth, 0);
-                Uri infoUri;
-                if (Uri.TryCreate(imgSrc, UriKind.Absolute, out infoUri))
+                if (Uri.TryCreate(imgSrc, UriKind.Absolute, out Uri infoUri))
                 {
                     info = new ImagePropertiesInfo(infoUri, new Size(width, height), remoteImageDecoratorsList);
                 }
@@ -104,14 +105,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     info = new ImagePropertiesInfo(new Uri("http://www.example.com"), new Size(width, height), remoteImageDecoratorsList);
                 }
+
                 info.ImgElement = imgHtmlElement;
 
                 // Sets the correct inline image size and image size name for the remote image.
                 if (!String.IsNullOrEmpty(oldWidth) && !String.IsNullOrEmpty(oldHeight))
                 {
-                    int inlineWidth, inlineHeight;
-                    if (Int32.TryParse(oldWidth, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineWidth) &&
-                        Int32.TryParse(oldHeight, NumberStyles.Integer, CultureInfo.InvariantCulture, out inlineHeight))
+                    if (Int32.TryParse(oldWidth, NumberStyles.Integer, CultureInfo.InvariantCulture, out int inlineWidth) &&
+                        Int32.TryParse(oldHeight, NumberStyles.Integer, CultureInfo.InvariantCulture, out int inlineHeight))
                     {
                         info.InlineImageSize = new Size(inlineWidth, inlineHeight);
                     }
@@ -183,6 +184,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 oldImageFile = editorContext.SupportingFileService.GetFileByUri(new Uri((string)imgElement.getAttribute("src", 2)));
             }
             catch (UriFormatException) { }
+
             if (oldImageFile != null) //then this is a known supporting image file
             {
                 using (new WaitCursor())
@@ -246,7 +248,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         private class CreateImageFileHandler
         {
             public ISupportingFile ImageSupportingFile;
-            ISupportingFileService _fileService;
+            readonly ISupportingFileService _fileService;
             public CreateImageFileHandler(ISupportingFileService fileService, ISupportingFile supportingFile)
             {
                 _fileService = fileService;

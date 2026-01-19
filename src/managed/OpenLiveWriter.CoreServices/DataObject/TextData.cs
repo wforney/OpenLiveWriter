@@ -31,6 +31,7 @@ namespace OpenLiveWriter.CoreServices
                     return new TextData(iDataObject);
                 }
             }
+
             return null;
         }
 
@@ -68,6 +69,7 @@ namespace OpenLiveWriter.CoreServices
                     if (m_text == null)
                         m_text = string.Empty;
                 }
+
                 return m_text;
             }
         }
@@ -81,10 +83,9 @@ namespace OpenLiveWriter.CoreServices
         {
             m_dataObject = iDataObject;
         }
-        private IDataObject m_dataObject;
+        private readonly IDataObject m_dataObject;
 
         private const string OUTLOOK_FORMAT_IGNORE_TEXT = "RenPrivateMessages";
 
     }
-
 }

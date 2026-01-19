@@ -25,7 +25,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public SupportingFilesForm()
         {
@@ -74,6 +74,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
                     _fileService.FileChanged -= new SupportingFileService.AttachedFileHandler(fileService_FileChanged);
                     _fileService.FileRemoved -= new SupportingFileService.AttachedFileHandler(fileService_FileRemoved);
                 }
+
                 _fileService = value;
                 listBoxFiles.Items.Clear();
                 ResetDataSet();
@@ -116,6 +117,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -219,11 +221,15 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
         {
             if (ds == null)
             {
-                ds = new DataSet("fileProperties");
-                ds.Locale = CultureInfo.InvariantCulture;
+                ds = new DataSet("fileProperties")
+                {
+                    Locale = CultureInfo.InvariantCulture
+                };
                 dataGridProperties.DataSource = ds;
-                dataTable = new DataTable("properties");
-                dataTable.Locale = CultureInfo.InvariantCulture;
+                dataTable = new DataTable("properties")
+                {
+                    Locale = CultureInfo.InvariantCulture
+                };
                 ds.Tables.Add(dataTable);
                 nameColumn = dataTable.Columns.Add("name");
                 valueColumn = dataTable.Columns.Add("value");
@@ -231,8 +237,10 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
 
                 // Create new Table Style
                 dataGridProperties.TableStyles.Clear();
-                DataGridTableStyle ts = new DataGridTableStyle();
-                ts.MappingName = dataTable.TableName;
+                DataGridTableStyle ts = new DataGridTableStyle
+                {
+                    MappingName = dataTable.TableName
+                };
                 dataGridProperties.TableStyles.Add(ts);
 
                 //set the width of the name column

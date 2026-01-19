@@ -17,7 +17,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ApplicationDialog()
         {
@@ -64,6 +64,7 @@ namespace OpenLiveWriter.Controls
             {
                 PersistentWindowAttribute.MaybeRestore(this);
             }
+
             Form owner = this.Owner;
             if (owner != null)
                 this.TopMost = owner.TopMost;
@@ -81,6 +82,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

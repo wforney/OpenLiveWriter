@@ -63,6 +63,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -132,7 +133,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                                        _stringFormat);
             }
         }
-        private TextFormatFlags _stringFormat;
+        private readonly TextFormatFlags _stringFormat;
         private Rectangle _controlRectangle;
         private Rectangle _imageRectangle;
         private Rectangle _textRectangle;
@@ -144,6 +145,5 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
             PerformLayout();
             Invalidate();
         }
-
     }
 }

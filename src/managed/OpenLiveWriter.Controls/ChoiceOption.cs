@@ -109,6 +109,7 @@ namespace OpenLiveWriter.Controls
             {
                 g.DrawText(Heading, Res.GetFont(FontSize.XLarge, FontStyle.Regular), new Rectangle(new Point(origin.X - 1, origin.Y), headingMaxSize), ChoiceDialog.BlueText, textFormatFlags);
             }
+
             origin.Offset(0, headingSize.Height + INSIDE_VERTICAL_PADDING);
             maxWidth = headingSize.Width;
 
@@ -125,6 +126,7 @@ namespace OpenLiveWriter.Controls
                 {
                     g.DrawText(SubHeading, Res.DefaultFont, new Rectangle(origin.X, origin.Y, width - origin.X - HORIZONTAL_PADDING, height - origin.Y), ChoiceDialog.BlueText, textFormatFlags | TextFormatFlags.NoPrefix);
                 }
+
                 maxWidth = Math.Max(subHeadingSize.Width, maxWidth);
                 origin.Offset(0, subHeadingSize.Height + INSIDE_VERTICAL_PADDING);
 
@@ -137,6 +139,7 @@ namespace OpenLiveWriter.Controls
                 {
                     g.DrawImage(false, OptionImage, origin);
                 }
+
                 origin.Offset(0, OptionImage.Height);
                 maxWidth = Math.Max(OptionImage.Width, maxWidth);
             }

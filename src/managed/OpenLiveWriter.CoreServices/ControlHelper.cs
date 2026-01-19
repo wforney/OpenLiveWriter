@@ -94,14 +94,17 @@ namespace OpenLiveWriter.CoreServices
             {
                 return (scale + 0.08f);
             }
+
             if (scale < 1f)
             {
                 return 1f;
             }
+
             if (scale > 1.01f)
             {
                 return (scale + 0.08f);
             }
+
             return scale;
         }
 
@@ -143,6 +146,7 @@ namespace OpenLiveWriter.CoreServices
                     if (child != null && child.ContainsFocus)
                         return FindFocused(child);
                 }
+
                 return control;
             }
         }
@@ -267,7 +271,7 @@ namespace OpenLiveWriter.CoreServices
             string accName = _accNameStripChars.Replace(val, String.Empty);
             return accName;
         }
-        private static Regex _accNameStripChars = new Regex("(&|:)");
+        private static readonly Regex _accNameStripChars = new Regex("(&|:)");
     }
 
     public class CenterControlInControlBehavior
@@ -287,8 +291,8 @@ namespace OpenLiveWriter.CoreServices
                 _contextControl.Top + (_contextControl.Height / 2) - (_control.Height / 2));
         }
 
-        private Control _control;
-        private Control _contextControl;
+        private readonly Control _control;
+        private readonly Control _contextControl;
 
         private void _contextControl_SizeChanged(object sender, EventArgs e)
         {
@@ -415,7 +419,5 @@ namespace OpenLiveWriter.CoreServices
         {
             return new ArrayList(_controls).GetEnumerator();
         }
-
     }
-
 }

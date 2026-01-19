@@ -42,6 +42,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     return e;
                 e = e.InnerException;
             }
+
             return null;
         }
     }
@@ -67,7 +68,6 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         {
             return exceptionMessage;
         }
-
     }
 
     public abstract class ErrorCodeDynamicExceptionMessage : UnwindingDynamicExceptionMessage
@@ -119,5 +119,4 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             return ((Win32Exception)e).ErrorCode;
         }
     }
-
 }

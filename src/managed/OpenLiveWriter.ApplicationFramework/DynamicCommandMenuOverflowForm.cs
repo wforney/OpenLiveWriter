@@ -20,7 +20,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public DynamicCommandMenuOverflowForm(IMenuCommandObject[] menuCommandObjects)
         {
@@ -70,7 +70,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             public IMenuCommandObject MenuCommandObject { get { return _menuCommandObject; } }
-            private IMenuCommandObject _menuCommandObject;
+            private readonly IMenuCommandObject _menuCommandObject;
 
         }
 
@@ -86,6 +86,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -62,6 +62,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

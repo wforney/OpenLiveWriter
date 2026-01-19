@@ -55,8 +55,8 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion.WebImages
                     return;
                 }
             }
+
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
-
     }
 }

@@ -103,6 +103,7 @@ namespace OpenLiveWriter.CoreServices
                 case ".BMP":
                     return true;
             }
+
             return false;
         }
 
@@ -118,6 +119,7 @@ namespace OpenLiveWriter.CoreServices
                 case ".URL":
                     return true;
             }
+
             return false;
         }
 
@@ -134,6 +136,7 @@ namespace OpenLiveWriter.CoreServices
                 case ".HTML":
                     return true;
             }
+
             return false;
         }
 
@@ -240,10 +243,12 @@ namespace OpenLiveWriter.CoreServices
                         result.Append(el.Name);
                     }
                 }
+
                 if (i > 0 && i != infos.Length - 1)
                     result.Append(Path.DirectorySeparatorChar);
                 lastEl = el;
             }
+
             return result.ToString();
         }
 
@@ -256,6 +261,7 @@ namespace OpenLiveWriter.CoreServices
                 result.Add(curr);
                 curr = curr.Parent;
             }
+
             result.Reverse();
             return (FileSystemInfo[])result.ToArray(typeof(FileSystemInfo));
         }
@@ -295,6 +301,7 @@ namespace OpenLiveWriter.CoreServices
                 case ".M4V":
                     return true;
             }
+
             return false;
         }
 

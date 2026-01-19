@@ -56,12 +56,12 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Translation table to map a Keys value to a Shortcut value.
         /// </summary>
-        private static Hashtable keysToShortcutTable;
+        private static readonly Hashtable keysToShortcutTable;
 
         /// <summary>
         /// Translation table to map a Keys value to a AcceleratorMnemonic value.
         /// </summary>
-        private static Hashtable keysToAcceleratorMnemonicTable;
+        private static readonly Hashtable keysToAcceleratorMnemonicTable;
 
         /// <summary>
         /// Static initialization of the KeyboardHelper class.
@@ -285,7 +285,7 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        private static Regex regexCtrlShiftAlt = new Regex("(Ctrl|Shift|Alt)");
+        private static readonly Regex regexCtrlShiftAlt = new Regex("(Ctrl|Shift|Alt)");
 
         /// <summary>
         /// Format a shortcut as a string.

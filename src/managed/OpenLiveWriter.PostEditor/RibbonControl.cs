@@ -10,8 +10,8 @@ namespace OpenLiveWriter.PostEditor
 {
     public class RibbonControl
     {
-        private IHtmlEditorComponentContext componentContext;
-        private IHtmlEditorCommandSource commandSource;
+        private readonly IHtmlEditorComponentContext componentContext;
+        private readonly IHtmlEditorCommandSource commandSource;
 
         public RibbonControl(IHtmlEditorComponentContext componentContext, IHtmlEditorCommandSource commandSource)
         {

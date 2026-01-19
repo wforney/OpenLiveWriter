@@ -67,12 +67,12 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The BufferingTraceListener where we get events from.
         /// </summary>
-        private BufferingTraceListener bufferingTraceListener;
+        private readonly BufferingTraceListener bufferingTraceListener;
 
         /// <summary>
         /// The font we use to draw the log.
         /// </summary>
-        private Font itemFont = new Font("Verdana", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+        private readonly Font itemFont = new Font("Verdana", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
 
         /// <summary>
         /// The first event index being displayed.
@@ -149,6 +149,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -667,19 +668,25 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                             continue;
 
                     //	Sequence number.
-                    ListViewItem.ListViewSubItem listViewSubItemSequenceNumber = new ListViewItem.ListViewSubItem();
-                    listViewSubItemSequenceNumber.Text = bufferingTraceListenerEntry.SequenceNumberString;
-                    listViewSubItemSequenceNumber.Font = itemFont;
+                    ListViewItem.ListViewSubItem listViewSubItemSequenceNumber = new ListViewItem.ListViewSubItem
+                    {
+                        Text = bufferingTraceListenerEntry.SequenceNumberString,
+                        Font = itemFont
+                    };
 
                     //	Time.
-                    ListViewItem.ListViewSubItem listViewSubItemTime = new ListViewItem.ListViewSubItem();
-                    listViewSubItemTime.Text = bufferingTraceListenerEntry.DateTimeString;
-                    listViewSubItemTime.Font = itemFont;
+                    ListViewItem.ListViewSubItem listViewSubItemTime = new ListViewItem.ListViewSubItem
+                    {
+                        Text = bufferingTraceListenerEntry.DateTimeString,
+                        Font = itemFont
+                    };
 
                     //	Category.
-                    ListViewItem.ListViewSubItem listViewSubItemCategory = new ListViewItem.ListViewSubItem();
-                    listViewSubItemCategory.Text = bufferingTraceListenerEntry.Category;
-                    listViewSubItemCategory.Font = itemFont;
+                    ListViewItem.ListViewSubItem listViewSubItemCategory = new ListViewItem.ListViewSubItem
+                    {
+                        Text = bufferingTraceListenerEntry.Category,
+                        Font = itemFont
+                    };
 
                     //	Determine the text to display and the color.
                     string text;
@@ -700,18 +707,22 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     text.Replace('\n', ' ');
 
                     //	Text.
-                    ListViewItem.ListViewSubItem listViewSubItemText = new ListViewItem.ListViewSubItem();
-                    listViewSubItemText.Text = text;
-                    listViewSubItemText.Font = itemFont;
+                    ListViewItem.ListViewSubItem listViewSubItemText = new ListViewItem.ListViewSubItem
+                    {
+                        Text = text,
+                        Font = itemFont
+                    };
 
                     ListViewItem.ListViewSubItem[] listViewSubItemArray = new ListViewItem.ListViewSubItem[] {  listViewSubItemSequenceNumber,
                                                                                                                 listViewSubItemTime,
                                                                                                                 listViewSubItemCategory,
                                                                                                                 listViewSubItemText };
                     //	Add the item.
-                    ListViewItem listViewItem = new ListViewItem(listViewSubItemArray, -1);
-                    listViewItem.Tag = bufferingTraceListenerEntry;
-                    listViewItem.ForeColor = color;
+                    ListViewItem listViewItem = new ListViewItem(listViewSubItemArray, -1)
+                    {
+                        Tag = bufferingTraceListenerEntry,
+                        ForeColor = color
+                    };
                     listViewLog.Items.Add(listViewItem);
                 }
 

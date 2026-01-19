@@ -25,7 +25,7 @@ namespace OpenLiveWriter.Controls
             InitializeComponent();
         }
 
-        private List<ChoiceOption> _options;
+        private readonly List<ChoiceOption> _options;
         public ChoiceDialog(string heading, string subheading, string title, List<ChoiceOption> options)
         {
             InitializeComponent();

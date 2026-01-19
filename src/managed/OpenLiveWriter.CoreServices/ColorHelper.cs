@@ -47,6 +47,7 @@ namespace OpenLiveWriter.CoreServices
                     Uxtheme.CloseThemeData(hTheme);
                 }
             }
+
             return color == 0 ? substituteColor : ColorTranslator.FromWin32(color);
         }
 
@@ -67,8 +68,7 @@ namespace OpenLiveWriter.CoreServices
                 return color;
 
             //	Convert the color into an AHSB value.
-            double alpha, hue, saturation, brightness;
-            ColorToAHSB(color, out alpha, out hue, out saturation, out brightness);
+            ColorToAHSB(color, out double alpha, out double hue, out double saturation, out double brightness);
 
             //	Adjust brightness.
             return AHSBToColor(alpha, hue, saturation, Math.Max(Math.Min(brightness + amount, 1.0), 0.0));
@@ -90,8 +90,7 @@ namespace OpenLiveWriter.CoreServices
                 return color;
 
             //	Convert the color into an AHSB value.
-            double alpha, hue, saturation, brightness;
-            ColorToAHSB(color, out alpha, out hue, out saturation, out brightness);
+            ColorToAHSB(color, out double alpha, out double hue, out double saturation, out double brightness);
 
             //	Adjust saturation.
             return AHSBToColor(alpha, hue, Math.Max(Math.Min(saturation + amount, 1.0), 0.0), brightness);
@@ -116,8 +115,7 @@ namespace OpenLiveWriter.CoreServices
                 return color;
 
             //	Convert the color into an AHSB value.
-            double alpha, hue, saturation, brightness;
-            ColorToAHSB(color, out alpha, out hue, out saturation, out brightness);
+            ColorToAHSB(color, out double alpha, out double hue, out double saturation, out double brightness);
 
             //	Adjust saturation and brightness.
             return AHSBToColor(alpha,
@@ -164,6 +162,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 color = Color.FromName(colorStr);
             }
+
             return color;
         }
 
@@ -312,6 +311,7 @@ namespace OpenLiveWriter.CoreServices
                 using (Brush b = new SolidBrush(color))
                     g.FillRectangle(b, 0, 0, width, height);
             }
+
             return img;
         }
 
@@ -322,6 +322,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 strColors[i] = ColorToString(colors[i]);
             }
+
             return StringHelper.Join(strColors, ",");
         }
 
@@ -333,6 +334,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 colors[i] = StringToColor(astrColors[i]);
             }
+
             return colors;
         }
 

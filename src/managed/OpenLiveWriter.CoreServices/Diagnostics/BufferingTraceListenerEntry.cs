@@ -14,27 +14,27 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The sequence number of the entry.
         /// </summary>
-        private int sequenceNumber;
+        private readonly int sequenceNumber;
 
         /// <summary>
         /// The DateTime the entry was created.
         /// </summary>
-        private DateTime dateTime;
+        private readonly DateTime dateTime;
 
         /// <summary>
         /// The category of the entry.
         /// </summary>
-        private string category;
+        private readonly string category;
 
         /// <summary>
         /// The text of the entry.
         /// </summary>
-        private string text;
+        private readonly string text;
 
         /// <summary>
         /// The stack trace of the entry.
         /// </summary>
-        private string stackTrace;
+        private readonly string stackTrace;
 
         /// <summary>
         /// Initializes a new instance of the BufferingTraceListenerEntry class.

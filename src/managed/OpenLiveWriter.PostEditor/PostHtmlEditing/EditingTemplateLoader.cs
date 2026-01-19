@@ -72,7 +72,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// The stringbuilder that holds the post-processed HTML for the template.
         /// </summary>
-        StringBuilder _templateBuilder;
+        readonly StringBuilder _templateBuilder;
 
         #region LightWeightHTMLDocumentIterator Overrides
 
@@ -85,6 +85,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 _templateBuilder.Append("</style>");
                 AppendBehaviorObjectTag();
             }
+
             base.OnEndTag(tag);
         }
 
@@ -117,7 +118,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             //_templateBuilder.Append(@"<object id='IMG_BEHAVIOR' clsid='clsid:3C0C37AD-21B5-41f4-A25E-59259B0ED874' style='visibility: hidden' width='0px' height='0px'> </object>");
         }
 
-        private IElementBehaviorManager _behaviorManager;
+        private readonly IElementBehaviorManager _behaviorManager;
 
         #endregion
 

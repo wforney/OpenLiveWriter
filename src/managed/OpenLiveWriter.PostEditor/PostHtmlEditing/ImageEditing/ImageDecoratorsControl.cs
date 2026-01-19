@@ -98,6 +98,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -172,8 +173,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         if (!imageDecorator.IsHidden) //don't show hidden decorators in the command list
                         {
                             Command ImageDecoratorApplyCommand = imageDecorator.Command;
-                            MenuDefinitionEntryCommand imageDecoratorMenuEntry = new MenuDefinitionEntryCommand(components);
-                            imageDecoratorMenuEntry.CommandIdentifier = ImageDecoratorApplyCommand.Identifier;
+                            MenuDefinitionEntryCommand imageDecoratorMenuEntry = new MenuDefinitionEntryCommand(components)
+                            {
+                                CommandIdentifier = ImageDecoratorApplyCommand.Identifier
+                            };
                             addCommandContextMenuDefinition.Entries.Add(imageDecoratorMenuEntry);
 
                             ImageDecoratorApplyCommand.Execute += new EventHandler(imageDecoratorApplyCommand_Execute);
@@ -205,14 +208,20 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private void InitializeToolbar()
         {
-            commandBarButtonEntryAddMenu = new CommandBarButtonEntry(components);
-            commandBarButtonEntryAddMenu.CommandIdentifier = commandAddMenu.Identifier;
+            commandBarButtonEntryAddMenu = new CommandBarButtonEntry(components)
+            {
+                CommandIdentifier = commandAddMenu.Identifier
+            };
 
-            commandBarButtonEntryRemoveMenu = new CommandBarButtonEntry(components);
-            commandBarButtonEntryRemoveMenu.CommandIdentifier = commandImageRemove.Identifier;
+            commandBarButtonEntryRemoveMenu = new CommandBarButtonEntry(components)
+            {
+                CommandIdentifier = commandImageRemove.Identifier
+            };
 
-            commandBarLabel = new CommandBarLabelEntry(components);
-            commandBarLabel.Text = Res.Get(StringId.ImgSBEffectsLabel);
+            commandBarLabel = new CommandBarLabelEntry(components)
+            {
+                Text = Res.Get(StringId.ImgSBEffectsLabel)
+            };
 
             commandBarDefinition = new CommandBarDefinition(components);
             commandBarDefinition.RightCommandBarEntries.Add(commandBarButtonEntryAddMenu);
@@ -220,8 +229,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             commandBarDefinition.LeftCommandBarEntries.Add(commandBarLabel);
 
-            commandBarLightweightControl = new ImageDecoratorsCommandBarLightweightControl(components);
-            commandBarLightweightControl.LightweightControlContainerControl = this;
+            commandBarLightweightControl = new ImageDecoratorsCommandBarLightweightControl(components)
+            {
+                LightweightControlContainerControl = this
+            };
 
             commandAddMenu.CommandBarButtonContextMenuDefinition = addCommandContextMenuDefinition;
 
@@ -316,6 +327,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 ImageDecoratorsList.AddDecorator(decoratorId);
             }
+
             ReloadImageDecorators();
 
             SelectedImageDecorator = _decoratorsManager.GetImageDecorator(decoratorId);
@@ -367,8 +379,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         ImageDecorator decorator = _decoratorsManager.GetImageDecorator(decoratorId);
                         if (!decorator.IsHidden)
                         {
-                            ListViewItem listItem = new ListViewItem(decorator.DecoratorName);
-                            listItem.Tag = decorator;
+                            ListViewItem listItem = new ListViewItem(decorator.DecoratorName)
+                            {
+                                Tag = decorator
+                            };
                             listViewDecoratorsTable.Items.Add(listItem);
                         }
                     }
@@ -385,8 +399,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private class UpdateListViewEntries : IDisposable
         {
-            private ListView _listView;
-            private EventHandler _handler;
+            private readonly ListView _listView;
+            private readonly EventHandler _handler;
 
             public UpdateListViewEntries(ListView listView, EventHandler handler)
             {
@@ -452,7 +466,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 listViewDecoratorsTable.Size = new System.Drawing.Size(this.Size.Width, listViewDecoratorsTable.Size.Height);
                 listViewDecoratorsTable.Left = 0;
             }
-
         }
 
         #region ImageDecoratorEditorContext Members

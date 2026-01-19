@@ -126,12 +126,12 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The full path to the file containing the FileItem
         /// </summary>
-        private string physicalPath = null;
+        private readonly string physicalPath = null;
 
         /// <summary>
         /// FileInfo corresponding to the underlying physical file
         /// </summary>
-        private FileInfo fileInfo = null;
+        private readonly FileInfo fileInfo = null;
     }
 }
 

@@ -107,6 +107,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 newUrl = newUrl + "/";
             }
+
             return newUrl;
         }
 
@@ -230,10 +231,11 @@ namespace OpenLiveWriter.CoreServices
                     encodedUrl = encodedUrl.Replace(unsafeCharStr, HttpUtility.UrlEncode(unsafeCharStr)); //URLPathEncode doesn't encode # signs.
                 }
             }
+
             return encodedUrl;
         }
         private const string FILE_SCHEME = "file:";
-        private static char[] UNSAFE_URL_CHARS = new char[] { '#' }; //chars not escaped by UrlPathEncode that need to be encoded in the URL
+        private static readonly char[] UNSAFE_URL_CHARS = new char[] { '#' }; //chars not escaped by UrlPathEncode that need to be encoded in the URL
 
         /// <summary>
         /// Gets the host name portion of a url, not including the 'www'
@@ -279,6 +281,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 url = url.Substring(0, octPosition);
             }
+
             return url;
         }
 
@@ -291,6 +294,7 @@ namespace OpenLiveWriter.CoreServices
                 int startPos = octPosition + 1;
                 anchor = url.Substring(startPos, url.Length - startPos);
             }
+
             return anchor;
         }
 
@@ -323,6 +327,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     return false;
                 }
+
                 return true;
             }
             else
@@ -373,6 +378,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 //may occur if the URL is malformed
             }
+
             return false;
         }
 
@@ -391,7 +397,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The list of well known schemes
         /// </summary>
-        private static string[] KnownSchemes = new string[] {   Uri.UriSchemeFile, Uri.UriSchemeFtp, Uri.UriSchemeGopher,
+        private static readonly string[] KnownSchemes = new string[] {   Uri.UriSchemeFile, Uri.UriSchemeFtp, Uri.UriSchemeGopher,
                                                                 Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto,
                                                                 Uri.UriSchemeNews, Uri.UriSchemeNntp, "telnet", "wais", "ldap" };
 
@@ -408,6 +414,7 @@ namespace OpenLiveWriter.CoreServices
                 url = new Uri(url).GetLeftPart(UriPartial.Path);
 
             }
+
             return Path.GetExtension(url);
         }
 
@@ -424,6 +431,7 @@ namespace OpenLiveWriter.CoreServices
                 url = new Uri(url).GetLeftPart(UriPartial.Path);
 
             }
+
             return Path.GetFileNameWithoutExtension(url);
         }
 
@@ -440,6 +448,7 @@ namespace OpenLiveWriter.CoreServices
                 url = new Uri(url).GetLeftPart(UriPartial.Path);
 
             }
+
             return Path.GetFileName(url);
         }
 
@@ -499,6 +508,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 relativeUrl = relativeUrl.Replace(AboutBlank, "");
             }
+
             if (relativeUrl.StartsWith(About, StringComparison.OrdinalIgnoreCase))
             {
                 relativeUrl = relativeUrl.Replace(About, "");
@@ -636,6 +646,7 @@ namespace OpenLiveWriter.CoreServices
                 url = url.Replace("&", "&amp;");
                 url = url.Replace(AboutBlank, "");
             }
+
             return url;
         }
 
@@ -702,6 +713,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 bytes[i] = (byte)(chars[i] & 0xFF);
             }
+
             return bytes;
         }
 
@@ -779,6 +791,7 @@ namespace OpenLiveWriter.CoreServices
 
                 relativeUrl = String.Format(CultureInfo.InvariantCulture, "{0}!{1}", baseUrl, relativeUrl);
             }
+
             return relativeUrl;
         }
 
@@ -805,9 +818,10 @@ namespace OpenLiveWriter.CoreServices
                         return false;
 
             }
+
             return true;
         }
-        private static string[] NonlinkableSchemes = new string[] { Uri.UriSchemeFile };
+        private static readonly string[] NonlinkableSchemes = new string[] { Uri.UriSchemeFile };
 
         public static bool IsUrlDownloadable(string url)
         {
@@ -825,7 +839,7 @@ namespace OpenLiveWriter.CoreServices
 
             return isDownloadable;
         }
-        private static string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
+        private static readonly string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
 
         public static readonly string AboutBlank = "about:blank";
         public static readonly string About = "about:";

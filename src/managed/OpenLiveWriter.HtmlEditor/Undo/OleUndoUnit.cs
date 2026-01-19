@@ -10,11 +10,11 @@ namespace OpenLiveWriter.HtmlEditor.Undo
 {
     internal abstract class OleUndoUnit : IOleUndoUnit
     {
-        private MshtmlMarkupServices _markupServices;
-        private int _startPosition; //the serialized position of the start pointer
-        private int _endPosition; //the serialized position of the end pointer
-        private IMarkupContainerRaw _markupContainer;
-        private string _description;
+        private readonly MshtmlMarkupServices _markupServices;
+        private readonly int _startPosition; //the serialized position of the start pointer
+        private readonly int _endPosition; //the serialized position of the end pointer
+        private readonly IMarkupContainerRaw _markupContainer;
+        private readonly string _description;
 
         public OleUndoUnit(MshtmlMarkupServices markupServices, MarkupRange selection)
         {

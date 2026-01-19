@@ -12,7 +12,7 @@ namespace OpenLiveWriter.CoreServices.UI
     /// </summary>
     public abstract class ControlUITheme
     {
-        private Control _control;
+        private readonly Control _control;
         public ControlUITheme(Control control, bool applyTheme)
         {
             _control = control;

@@ -54,8 +54,10 @@ namespace OpenLiveWriter.PostEditor
         public ContentEditor(IMainFrameWindow mainFrameWindow, Control editorContainer, IBlogPostEditingSite postEditingSite, IInternetSecurityManager internetSecurityManager, BlogPostHtmlEditorControl.TemplateStrategy templateStrategy, int dlControlFlags)
         {
             // create a docked panel to host the editor
-            Panel panel = new Panel();
-            panel.Dock = DockStyle.Fill;
+            Panel panel = new Panel
+            {
+                Dock = DockStyle.Fill
+            };
 
             if (!BidiHelper.IsRightToLeft)
                 panel.DockPadding.Right = 0;
@@ -131,8 +133,10 @@ namespace OpenLiveWriter.PostEditor
         private void InitializeNormalEditor(IBlogPostEditingSite postEditingSite, IInternetSecurityManager internetSecurityManager, BlogPostHtmlEditorControl.TemplateStrategy templateStrategy, int dlControlFlags)
         {
             // configure editing options
-            _mshtmlOptions = new MshtmlOptions();
-            _mshtmlOptions.UseDivForCarriageReturn = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.DivNewLine);
+            _mshtmlOptions = new MshtmlOptions
+            {
+                UseDivForCarriageReturn = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.DivNewLine)
+            };
             // Commented out for now to prevent first chance exception
             //_mshtmlOptions.EditingOptions.Add(IDM.RESPECTVISIBILITY_INDESIGN, GlobalEditorOptions.SupportsFeature(ContentEditorFeature.HideNonVisibleElements));
             _mshtmlOptions.EditingOptions.Add(IDM.AUTOURLDETECT_MODE, false);
@@ -144,10 +148,12 @@ namespace OpenLiveWriter.PostEditor
             _mshtmlOptions.DocHostUIOptionKeyPath = GlobalEditorOptions.GetSetting<string>(ContentEditorSetting.MshtmlOptionKeyPath);
 
             // create the editor
-            _normalHtmlContentEditor = new BlogPostHtmlEditorControl(_mainFrameWindow, StatusBar, _mshtmlOptions, this, this, this, new SmartContentResizedListener(ResizedListener), this, new SharedCanvasImageReferenceFixer(ReferenceFixer), internetSecurityManager, CommandManager, templateStrategy, this);
-            _normalHtmlContentEditor.PostBodyInlineStyle = GetPostBodyInlineStyleOverrides();
-            // hookup services and events
-            _normalHtmlContentEditor.HtmlGenerationService = new HtmlGenerator(this);
+            _normalHtmlContentEditor = new BlogPostHtmlEditorControl(_mainFrameWindow, StatusBar, _mshtmlOptions, this, this, this, new SmartContentResizedListener(ResizedListener), this, new SharedCanvasImageReferenceFixer(ReferenceFixer), internetSecurityManager, CommandManager, templateStrategy, this)
+            {
+                PostBodyInlineStyle = GetPostBodyInlineStyleOverrides(),
+                // hookup services and events
+                HtmlGenerationService = new HtmlGenerator(this)
+            };
             _normalHtmlContentEditor.DataFormatHandlerFactory = new ExtendedHtmlEditorMashallingHandler(_normalHtmlContentEditor, this, this, postEditingSite as IDropTarget);
             _normalHtmlContentEditor.DocumentComplete += new EventHandler(htmlEditor_DocumentComplete);
             _normalHtmlContentEditor.GotFocus += htmlEditor_GotFocus;
@@ -163,14 +169,17 @@ namespace OpenLiveWriter.PostEditor
             _normalHtmlContentEditor.TrackKeyboardLanguageChanges = true;
 
             // initialize the sidebar
-            _htmlEditorSidebarHost = new HtmlEditorSidebarHost(_normalHtmlContentEditor);
-            _htmlEditorSidebarHost.Dock = !BidiHelper.IsRightToLeft ? DockStyle.Right : DockStyle.Left;
-            _htmlEditorSidebarHost.Width = Res.SidebarWidth;
+            _htmlEditorSidebarHost = new HtmlEditorSidebarHost(_normalHtmlContentEditor)
+            {
+                Dock = !BidiHelper.IsRightToLeft ? DockStyle.Right : DockStyle.Left,
+                Width = Res.SidebarWidth
+            };
             if (BidiHelper.IsRightToLeft)
             {
                 _htmlEditorSidebarHost.RightToLeft = RightToLeft.Yes;
                 BidiHelper.RtlLayoutFixup(_htmlEditorSidebarHost);
             }
+
             _editorContainer.Controls.Add(_htmlEditorSidebarHost);
             _htmlEditorSidebarHost.BringToFront();
             _htmlEditorSidebarHost.VisibleChanged += _htmlEditorSidebarHost_VisibleChanged;
@@ -207,9 +216,10 @@ namespace OpenLiveWriter.PostEditor
         private void InitializeSourceEditor()
         {
             // create the source code editor control
-            _codeHtmlContentEditor = new BlogPostHtmlSourceEditorControl(this, CommandManager, this);
-
-            _codeHtmlContentEditor.AccessibleName = "Source Editor";
+            _codeHtmlContentEditor = new BlogPostHtmlSourceEditorControl(this, CommandManager, this)
+            {
+                AccessibleName = "Source Editor"
+            };
 
             // register the control
             RegisterEditor(_codeHtmlContentEditor);
@@ -261,8 +271,10 @@ namespace OpenLiveWriter.PostEditor
             CommandManager.Add(new Command(CommandId.FontGroup)); // Has it's own icon.
             CommandManager.Add(new Command(CommandId.SemanticHtmlGroup));
 
-            MarginCommand marginCommand = new MarginCommand(CommandManager);
-            marginCommand.Enabled = false;
+            MarginCommand marginCommand = new MarginCommand(CommandManager)
+            {
+                Enabled = false
+            };
             CommandManager.Add(marginCommand);
 
             AlignmentCommand alignmentCommand = new AlignmentCommand(CommandManager);
@@ -351,13 +363,17 @@ namespace OpenLiveWriter.PostEditor
             commandInsertPicture = CommandManager.Add(CommandId.InsertPictureFromFile, commandInsertPicture_Execute);
 
             _videoProvidersFeatureEnabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.VideoProviders);
-            commandInsertVideoFromFile = new Command(CommandId.InsertVideoFromFile);
-            commandInsertVideoFromFile.Enabled = _videoProvidersFeatureEnabled;
+            commandInsertVideoFromFile = new Command(CommandId.InsertVideoFromFile)
+            {
+                Enabled = _videoProvidersFeatureEnabled
+            };
             commandInsertVideoFromFile.Execute += new EventHandler(commandInsertVideoFromFile_Execute);
             CommandManager.Add(commandInsertVideoFromFile);
 
-            commandInsertVideoFromWeb = new Command(CommandId.InsertVideoFromWeb);
-            commandInsertVideoFromWeb.Enabled = _videoProvidersFeatureEnabled;
+            commandInsertVideoFromWeb = new Command(CommandId.InsertVideoFromWeb)
+            {
+                Enabled = _videoProvidersFeatureEnabled
+            };
             commandInsertVideoFromWeb.Execute += new EventHandler(commandInsertVideoFromWeb_Execute);
             CommandManager.Add(commandInsertVideoFromWeb);
 
@@ -367,27 +383,35 @@ namespace OpenLiveWriter.PostEditor
             commandInsertEmoticon = new EmoticonsGalleryCommand(CommandId.InsertEmoticon, this);
             CommandManager.Add(commandInsertEmoticon, commandInsertEmoticon_Execute);
 
-            commandInsertVideoFromService = new Command(CommandId.InsertVideoFromService);
-            commandInsertVideoFromService.Enabled = _videoProvidersFeatureEnabled;
+            commandInsertVideoFromService = new Command(CommandId.InsertVideoFromService)
+            {
+                Enabled = _videoProvidersFeatureEnabled
+            };
             commandInsertVideoFromService.Execute += new EventHandler(commandInsertVideoFromService_Execute);
             CommandManager.Add(commandInsertVideoFromService);
 
             _mapsFeatureEnabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.Maps);
-            commandInsertMap = new Command(CommandId.InsertMap);
-            commandInsertMap.Enabled = _mapsFeatureEnabled;
+            commandInsertMap = new Command(CommandId.InsertMap)
+            {
+                Enabled = _mapsFeatureEnabled
+            };
             commandInsertMap.Execute += commandInsertMap_Execute;
             CommandManager.Add(commandInsertMap);
 
             _tagProvidersFeatureEnabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.TagProviders);
-            commandInsertTags = new Command(CommandId.InsertTags);
-            commandInsertTags.Enabled = _tagProvidersFeatureEnabled;
+            commandInsertTags = new Command(CommandId.InsertTags)
+            {
+                Enabled = _tagProvidersFeatureEnabled
+            };
             commandInsertTags.Execute += commandInsertTags_Execute;
             CommandManager.Add(commandInsertTags);
 
             commandInsertTable = new Command(CommandId.InsertTable);
             commandInsertTable.Execute += new EventHandler(commandInsertTable_Execute);
-            commandInsertTable.CommandBarButtonContextMenuDefinition = new TableContextMenuDefinition();
-            commandInsertTable.CommandBarButtonContextMenuDefinition.CommandBar = true;
+            commandInsertTable.CommandBarButtonContextMenuDefinition = new TableContextMenuDefinition
+            {
+                CommandBar = true
+            };
             CommandManager.Add(commandInsertTable);
 
             commandInsertTable2 = new Command(CommandId.InsertTable2);
@@ -430,8 +454,10 @@ namespace OpenLiveWriter.PostEditor
 
             CommandManager.CommandStateChanged += new EventHandler(CommandManager_CommandStateChanged);
 
-            wordCountTimer = new Timer();
-            wordCountTimer.Interval = 250;
+            wordCountTimer = new Timer
+            {
+                Interval = 250
+            };
             wordCountTimer.Tick += new EventHandler(wordCountUpdate);
             WordCountSettings.SettingsChanged += new EventHandler(wordCountUpdate);
         }
@@ -475,9 +501,7 @@ namespace OpenLiveWriter.PostEditor
 
             if (contentSourceId != null)
             {
-                string sourceId;
-                string contentBlockId;
-                ContentSourceManager.ParseContainingElementId(contentSourceId, out sourceId, out contentBlockId);
+                ContentSourceManager.ParseContainingElementId(contentSourceId, out string sourceId, out string contentBlockId);
 
                 if (sourceId == MapContentSource.ID)
                 {
@@ -510,6 +534,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 commandImageContextTabGroup.ContextAvailability = ContextAvailability.NotAvailable;
             }
+
             commandFormatImageTab.ContextAvailability = commandImageContextTabGroup.ContextAvailability;
 
             TableSelection tableSelection = new TableSelection(selection);
@@ -623,15 +648,19 @@ namespace OpenLiveWriter.PostEditor
             // create a dynamic command menu for the content sources
             string basePath = new Command(CommandId.InsertPictureFromFile).MainMenuPath.Split('/')[0];
 
-            DynamicCommandMenuOptions options = new DynamicCommandMenuOptions(basePath, 500, Res.Get(StringId.DynamicCommandMenuMore), Res.Get(StringId.DynamicCommandMenuInsert));
-            options.UseNumericMnemonics = false;
-            options.MaxCommandsShownOnMenu = 20;
-            options.SeparatorBegin = true;
+            DynamicCommandMenuOptions options = new DynamicCommandMenuOptions(basePath, 500, Res.Get(StringId.DynamicCommandMenuMore), Res.Get(StringId.DynamicCommandMenuInsert))
+            {
+                UseNumericMnemonics = false,
+                MaxCommandsShownOnMenu = 20,
+                SeparatorBegin = true
+            };
             IDynamicCommandMenuContext context = ContentSourceManager.CreateDynamicCommandMenuContext(options, CommandManager, this);
             DynamicCommandMenu contentSourceList = new DynamicCommandMenu(context);
 
-            CommandContextMenuDefinition insertMenuDefinition = new CommandContextMenuDefinition();
-            insertMenuDefinition.CommandBar = true;
+            CommandContextMenuDefinition insertMenuDefinition = new CommandContextMenuDefinition
+            {
+                CommandBar = true
+            };
             insertMenuDefinition.Entries.Add(CommandId.InsertLink, false, false);
             insertMenuDefinition.Entries.Add(CommandId.InsertPictureFromFile, false, false);
             insertMenuDefinition.Entries.Add(WebImageContentSource.ID, false, false);
@@ -846,8 +875,8 @@ namespace OpenLiveWriter.PostEditor
 
         }
 
-        private static Dictionary<string, string> _templateCache = new Dictionary<string, string>();
-        private static object _templateCacheLock = new object();
+        private static readonly Dictionary<string, string> _templateCache = new Dictionary<string, string>();
+        private static readonly object _templateCacheLock = new object();
         private string CreateTemplateWithBehaviors(string html, IElementBehaviorManager behaviorManager)
         {
             int htmlHashCode = StringHelper.GetHashCodeStable(html);
@@ -899,8 +928,8 @@ namespace OpenLiveWriter.PostEditor
 
         internal class SimplePublishOperation
         {
-            private IPublishOperation _imageConverter;
-            private string _html;
+            private readonly IPublishOperation _imageConverter;
+            private readonly string _html;
             public SimplePublishOperation(string html, IPublishOperation converter)
             {
                 _imageConverter = converter;
@@ -1265,7 +1294,7 @@ namespace OpenLiveWriter.PostEditor
 
         public class ContentEditorLoadSuppresser : IDisposable
         {
-            private ContentEditor _editor;
+            private readonly ContentEditor _editor;
             public ContentEditorLoadSuppresser(ContentEditor editor)
             {
                 _editor = editor;
@@ -1514,10 +1543,10 @@ namespace OpenLiveWriter.PostEditor
                         ((IContentSourceSite)this).InsertContent(contentSourceID, content, extensionData, insertionOptions);
                         undo.Commit();
                     }
+
                     Focus();
 
                 }
-
             }
         }
 
@@ -1545,6 +1574,7 @@ namespace OpenLiveWriter.PostEditor
 
                 }
             }
+
             return images.ToArray();
         }
 
@@ -1569,10 +1599,10 @@ namespace OpenLiveWriter.PostEditor
                         ((IContentSourceSite)this).InsertContent(contentSourceID, content, extensionData);
                         undo.Commit();
                     }
+
                     Focus();
 
                 }
-
             }
         }
 
@@ -1647,7 +1677,7 @@ namespace OpenLiveWriter.PostEditor
 
         private class EditorFocusControlProxy : FocusableControlProxy
         {
-            private ContentEditor _editor;
+            private readonly ContentEditor _editor;
             public EditorFocusControlProxy(ContentEditor editor)
             {
                 _editor = editor;
@@ -1845,6 +1875,7 @@ namespace OpenLiveWriter.PostEditor
                 wordCountTimer.Stop();
                 wordCountTimer.Start();
             }
+
             if (Dirty != null)
                 Dirty(this, EventArgs.Empty);
         }
@@ -1873,7 +1904,6 @@ namespace OpenLiveWriter.PostEditor
                 WordCountSettings.EnableRealTimeWordCount = false;
                 Trace.Fail("Unexpected error while trying to update word count.  Real time word count is disabled.  Error: " + ex.ToString());
             }
-
         }
 
         private void DrawMockPlayer(string message, bool error)
@@ -1888,6 +1918,7 @@ namespace OpenLiveWriter.PostEditor
                     else
                         VideoSmartContent.DrawStatusMockPlayer(img, bidiGraphics, message);
                 }
+
                 string path = TempFileManager.Instance.CreateTempFile(Guid.NewGuid().ToString() + ".png");
                 img.Save(path, ImageFormat.Png); ;
                 InsertImages(new string[] { path }, ImageInsertEntryPoint.MockVideo);
@@ -2093,6 +2124,7 @@ namespace OpenLiveWriter.PostEditor
                     _lastFontString = _mshtmlOptions.EditingOptions[IDM.COMPOSESETTINGS].ToString();
                     SetDefaultFont(_lastFontString);
                 }
+
                 SetUrlAutoDetectEnabled(false);
             }
             else if (CurrentEditingMode == EditingMode.Wysiwyg)
@@ -2164,14 +2196,16 @@ namespace OpenLiveWriter.PostEditor
                 string[] imageFiles = null;
                 if (_insertImageDialogWin7 == null)
                 {
-                    _insertImageDialogWin7 = new OpenFileDialog();
-                    _insertImageDialogWin7.Title = Res.Get(StringId.InsertPicture);
-                    _insertImageDialogWin7.Multiselect = true;
-                    // Bug 769860 - Unexpected folder navigation with photo libraries on Win7
-                    //dialog.InitialDirectory = ApplicationEnvironment.InsertImageDirectory;
-                    // So instead we just set the user to the my pictures folder.
-                    _insertImageDialogWin7.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-                    _insertImageDialogWin7.Filter = String.Format(CultureInfo.InvariantCulture, "{0}|*.gif;*.jpg;*.jpeg;*.png|{1}|*.*", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString));
+                    _insertImageDialogWin7 = new OpenFileDialog
+                    {
+                        Title = Res.Get(StringId.InsertPicture),
+                        Multiselect = true,
+                        // Bug 769860 - Unexpected folder navigation with photo libraries on Win7
+                        //dialog.InitialDirectory = ApplicationEnvironment.InsertImageDirectory;
+                        // So instead we just set the user to the my pictures folder.
+                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                        Filter = String.Format(CultureInfo.InvariantCulture, "{0}|*.gif;*.jpg;*.jpeg;*.png|{1}|*.*", Res.Get(StringId.ImagesFilterString), Res.Get(StringId.AllFilesFilterString))
+                    };
                 }
 
                 if (DialogResult.OK == _insertImageDialogWin7.ShowDialog(_mainFrameWindow))
@@ -2264,7 +2298,6 @@ namespace OpenLiveWriter.PostEditor
                 // focus the editor so we see the cursor in the first cell
                 _currentEditor.Focus();
             }
-
         }
 
         private void commandAddPlugin_Execute(object sender, EventArgs e)
@@ -2314,6 +2347,7 @@ namespace OpenLiveWriter.PostEditor
                     else
                         Debug.Fail("Unable to set PictureEditingManager.");
                 }
+
                 return _pictureEditingManager;
             }
         }
@@ -2454,7 +2488,7 @@ namespace OpenLiveWriter.PostEditor
             get { return _fileService; }
         }
 
-        private LazyLoader<ImageDecoratorsManager> _imageDecoratorsManager;
+        private readonly LazyLoader<ImageDecoratorsManager> _imageDecoratorsManager;
         public ImageDecoratorsManager DecoratorsManager
         {
             get { return _imageDecoratorsManager.Value; }
@@ -2516,6 +2550,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     return contentSourceSidebarControl.CurrentEditor;
                 }
+
                 return null;
             }
         }
@@ -2545,15 +2580,17 @@ namespace OpenLiveWriter.PostEditor
 
         private class SmartContentForceInvalidateNotify : IDisposable
         {
-            private ISmartContent _sContent;
-            private bool _originalForceInvalidate;
+            private readonly ISmartContent _sContent;
+            private readonly bool _originalForceInvalidate;
             public SmartContentForceInvalidateNotify(ISmartContent sContent)
             {
                 _sContent = sContent;
                 _originalForceInvalidate = _sContent.Properties.GetBoolean(ForceInvalidateSmartContent.FORCEINVALIDATE, false);
 
-                ForceInvalidateSmartContent smartContent = new ForceInvalidateSmartContent(sContent);
-                smartContent.ForceInvalidate = true;
+                ForceInvalidateSmartContent smartContent = new ForceInvalidateSmartContent(sContent)
+                {
+                    ForceInvalidate = true
+                };
             }
 
             #region Implementation of IDisposable
@@ -2737,12 +2774,10 @@ namespace OpenLiveWriter.PostEditor
                         !ContentSourceManager.IsSmartContent(divElement))
                         continue;
 
-                    string contentSourceId = "";
-                    string contentId = "";
 
                     // Get the contentid of the div smart content we have
-                    ContentSourceManager.ParseContainingElementId(divElement.id, out contentSourceId,
-                                                                  out contentId);
+                    ContentSourceManager.ParseContainingElementId(divElement.id, out string contentSourceId,
+                                                                  out string contentId);
 
                     if (filter(contentSourceId, contentId))
                         return divElement;
@@ -2766,11 +2801,9 @@ namespace OpenLiveWriter.PostEditor
                     if (divElement.className == null || divElement.id == null || divElement.className == ContentSourceManager.SMART_CONTENT || !ContentSourceManager.IsSmartContent(divElement))
                         continue;
 
-                    string contentSourceId = "";
-                    string contentId = "";
 
                     // Get the contentid of the div smart content we have
-                    ContentSourceManager.ParseContainingElementId(divElement.id, out contentSourceId, out contentId);
+                    ContentSourceManager.ParseContainingElementId(divElement.id, out string contentSourceId, out string contentId);
 
                     // Check to see if this smart content is one we want to update
                     int index = ArrayHelper.SearchForIndexOf<string, IExtensionData>(extensionDataList,
@@ -2821,7 +2854,6 @@ namespace OpenLiveWriter.PostEditor
                             _htmlEditorSidebarHost.ForceUpdateSidebarState();
                             undo.Commit();
                         }
-
                     }
                 }
             }
@@ -2856,7 +2888,7 @@ namespace OpenLiveWriter.PostEditor
         protected HtmlEditorSidebarHost _htmlEditorSidebarHost;
         private BlogPostHtmlSourceEditorControl _codeHtmlContentEditor;
 
-        List<IDisposable> _itemsToDisposeOnEditorClose = new List<IDisposable>();
+        readonly List<IDisposable> _itemsToDisposeOnEditorClose = new List<IDisposable>();
 
         private IBlogPostEditingContext _editingContext;
         protected bool _isPage;
@@ -2867,10 +2899,10 @@ namespace OpenLiveWriter.PostEditor
 
         protected IMainFrameWindow _mainFrameWindow;
         protected IBlogPostEditingSite _postEditingSite;
-        private Panel _editorContainer;
+        private readonly Panel _editorContainer;
         private bool _focusedRegionSupportsFormattingCommands;
 
-        private IContainer components = new Container();
+        private readonly IContainer components = new Container();
         private Timer wordCountTimer;
 
         private RefreshableContentManager _refreshSmartContentManager;
@@ -2927,6 +2959,7 @@ namespace OpenLiveWriter.PostEditor
                     string html = EditingTemplateLoader.CreateTemplateWithBehaviors(plainTextHtml, new NullElementBehaviorManager());
                     _editingTemplatePlain = new BlogEditingTemplate(html, false);
                 }
+
                 return _editingTemplatePlain;
             }
         }
@@ -2993,7 +3026,6 @@ namespace OpenLiveWriter.PostEditor
             {
                 return _currentEditor.CommandSource.SelectionFontSize;
             }
-
         }
 
         public void ApplyFontSize(float fontSize)
@@ -3191,6 +3223,7 @@ namespace OpenLiveWriter.PostEditor
                     case ImgAlignment.CENTER:
                         return EditorTextAlignment.Center;
                 }
+
                 return EditorTextAlignment.None;
             }
 
@@ -3234,9 +3267,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 // It was smart content but know we need a reference to it as ISmartContent
                 string contentId = element.id;
-                string sourceId = "";
-                string blockId = "";
-                ContentSourceManager.ParseContainingElementId(contentId, out sourceId, out blockId);
+                ContentSourceManager.ParseContainingElementId(contentId, out string sourceId, out string blockId);
                 ISmartContent content = (this as IContentSourceSidebarContext).FindSmartContent(blockId);
 
                 if (content != null)
@@ -3279,6 +3310,7 @@ namespace OpenLiveWriter.PostEditor
                     TimerHelper.CallbackOnDelay(
                         delegate () { SmartContentSelection.SelectIfSmartContentElement(editor, element); }, 25);
                 }
+
                 undo.Commit();
             }
         }
@@ -3570,9 +3602,7 @@ namespace OpenLiveWriter.PostEditor
 
                 if (elements.Length == 1 && ContentSourceManager.IsSmartContentClass(elements[0].className))
                 {
-                    string contentSourceId;
-                    string contentItemId;
-                    ContentSourceManager.ParseContainingElementId(elements[0].id, out contentSourceId, out contentItemId);
+                    ContentSourceManager.ParseContainingElementId(elements[0].id, out string contentSourceId, out string contentItemId);
                     ISmartContent content = ((IContentSourceSidebarContext)this).FindSmartContent(contentItemId);
 
                     ContentSourceInfo contentSourceInfo = ((IContentSourceSidebarContext)this).FindContentSource(contentSourceId);
@@ -3717,7 +3747,7 @@ namespace OpenLiveWriter.PostEditor
         #region EditorUndoUnit
         internal class EditorUndoUnit : IDisposable
         {
-            IUndoUnit undoUnit;
+            readonly IUndoUnit undoUnit;
             public EditorUndoUnit(IBlogPostHtmlEditor editor)
                 : this(editor, false)
             {
@@ -3749,7 +3779,6 @@ namespace OpenLiveWriter.PostEditor
                 if (undoUnit != null)
                     undoUnit.Dispose();
             }
-
         }
 
         private void _htmlEditorSidebarHost_VisibleChanged(object sender, EventArgs e)

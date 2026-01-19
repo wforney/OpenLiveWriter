@@ -9,7 +9,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
 {
     public class SimplePropertySet : IUISimplePropertySet
     {
-        PropertyDictionary _props = new PropertyDictionary();
+        readonly PropertyDictionary _props = new PropertyDictionary();
 
         //
         // Interface

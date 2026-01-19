@@ -66,7 +66,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The url
         /// </summary>
-        private string m_url;
+        private readonly string m_url;
 
     }
 }

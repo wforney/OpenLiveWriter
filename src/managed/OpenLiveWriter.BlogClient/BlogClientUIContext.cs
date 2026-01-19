@@ -36,8 +36,8 @@ namespace OpenLiveWriter.BlogClient
         public object EndInvoke(IAsyncResult result) { return _invokeTarget.EndInvoke(result); }
         public object Invoke(Delegate method, object[] args) { return _invokeTarget.Invoke(method, args); }
 
-        private IWin32Window _dialogOwner;
-        private ISynchronizeInvoke _invokeTarget;
+        private readonly IWin32Window _dialogOwner;
+        private readonly ISynchronizeInvoke _invokeTarget;
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace OpenLiveWriter.BlogClient
             BlogClientUIContext.ContextForCurrentThread = _previousUIContext;
         }
 
-        private IBlogClientUIContext _previousUIContext;
+        private readonly IBlogClientUIContext _previousUIContext;
     }
 
     public class BlogClientUIContextSilentMode : IDisposable
@@ -83,7 +83,7 @@ namespace OpenLiveWriter.BlogClient
             BlogClientUIContext.SilentModeForCurrentThread = _previousSilentMode;
         }
 
-        private bool _previousSilentMode;
+        private readonly bool _previousSilentMode;
     }
 
 

@@ -141,8 +141,10 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         public static void SetTableProperties(IHtmlEditorComponentContext editorContext, MarkupRange markupRange, TableProperties tableProperties)
         {
-            TableEditor tableEditor = new TableEditor(editorContext, markupRange);
-            tableEditor.TableProperties = tableProperties;
+            TableEditor tableEditor = new TableEditor(editorContext, markupRange)
+            {
+                TableProperties = tableProperties
+            };
         }
 
         public static void DeleteTable(IHtmlEditorComponentContext editorContext)
@@ -174,8 +176,10 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         public static void SetRowProperties(IHtmlEditorComponentContext editorContext, MarkupRange markupRange, RowProperties rowProperties)
         {
-            TableEditor tableEditor = new TableEditor(editorContext, markupRange);
-            tableEditor.RowProperties = rowProperties;
+            TableEditor tableEditor = new TableEditor(editorContext, markupRange)
+            {
+                RowProperties = rowProperties
+            };
         }
 
         public static IHTMLTableRow InsertRowAbove(IHtmlEditorComponentContext editorContext)
@@ -255,8 +259,10 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         public static void SetColumnProperties(IHtmlEditorComponentContext editorContext, MarkupRange markupRange, ColumnProperties columnProperties)
         {
-            TableEditor tableEditor = new TableEditor(editorContext, markupRange);
-            tableEditor.ColumnProperties = columnProperties;
+            TableEditor tableEditor = new TableEditor(editorContext, markupRange)
+            {
+                ColumnProperties = columnProperties
+            };
         }
 
         public static void InsertColumnLeft(IHtmlEditorComponentContext editorContext)
@@ -336,8 +342,10 @@ namespace OpenLiveWriter.PostEditor.Tables
 
         public static void SetCellProperties(IHtmlEditorComponentContext editorContext, MarkupRange markupRange, CellProperties cellProperties)
         {
-            TableEditor tableEditor = new TableEditor(editorContext, markupRange);
-            tableEditor.CellProperties = cellProperties;
+            TableEditor tableEditor = new TableEditor(editorContext, markupRange)
+            {
+                CellProperties = cellProperties
+            };
         }
 
         public static void ClearCells(IHtmlEditorComponentContext editorContext)
@@ -491,7 +499,6 @@ namespace OpenLiveWriter.PostEditor.Tables
 
                     undoUnit.Commit();
                 }
-
             }
         }
 
@@ -515,8 +522,10 @@ namespace OpenLiveWriter.PostEditor.Tables
             {
                 IHTMLTableRow row = TableSelection.BeginRow;
 
-                RowProperties rowProperties = new RowProperties();
-                rowProperties.Height = TableHelper.GetRowHeight(row);
+                RowProperties rowProperties = new RowProperties
+                {
+                    Height = TableHelper.GetRowHeight(row)
+                };
                 rowProperties.CellProperties.BackgroundColor = GetBackgroundColorForRow(row);
                 rowProperties.CellProperties.HorizontalAlignment = GetAlignmentForRow(row);
                 rowProperties.CellProperties.VerticalAlignment = GetVAlignmentForRow(row);
@@ -618,7 +627,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                     undoUnit.Commit();
                 }
             }
-
         }
 
         private void MoveRowDown()
@@ -671,6 +679,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     newSelection = _editorContext.MarkupServices.CreateMarkupRange((IHTMLElement)((IHTMLTableRow)TableSelection.Table.rows.item(nextRowIndex, nextRowIndex)).cells.item(endColumnIndex, endColumnIndex), false);
                     newSelection.Collapse(true);
                 }
+
                 newSelection.ToTextRange().select(); ;
 
                 // delete the rows
@@ -694,8 +703,10 @@ namespace OpenLiveWriter.PostEditor.Tables
             get
             {
                 HTMLTableColumn tableColumn = TableSelection.BeginColumn;
-                ColumnProperties columnProperties = new ColumnProperties();
-                columnProperties.Width = tableColumn.Width;
+                ColumnProperties columnProperties = new ColumnProperties
+                {
+                    Width = tableColumn.Width
+                };
                 columnProperties.CellProperties.BackgroundColor = tableColumn.BackgroundColor;
                 columnProperties.CellProperties.HorizontalAlignment = tableColumn.HorizontalAlignment;
                 columnProperties.CellProperties.VerticalAlignment = tableColumn.VerticalAlignment;
@@ -729,7 +740,6 @@ namespace OpenLiveWriter.PostEditor.Tables
 
                 undoUnit.Commit();
             }
-
         }
 
         private void InsertColumnRight()
@@ -743,7 +753,6 @@ namespace OpenLiveWriter.PostEditor.Tables
 
                 undoUnit.Commit();
             }
-
         }
 
         private void MoveColumnLeft()
@@ -774,7 +783,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                     undoUnit.Commit();
                 }
             }
-
         }
 
         private void MoveColumnRight()
@@ -805,7 +813,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                     undoUnit.Commit();
                 }
             }
-
         }
 
         private void DeleteColumns()
@@ -869,10 +876,12 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                CellProperties cellProperties = new CellProperties();
-                cellProperties.BackgroundColor = new CellColor(TableHelper.GetColorForHtmlColor(TableSelection.BeginCell.bgColor));
-                cellProperties.HorizontalAlignment = TableHelper.GetAlignmentForHtmlAlignment(TableSelection.BeginCell.align);
-                cellProperties.VerticalAlignment = TableHelper.GetVAlignmentForHtmlAlignment(TableSelection.BeginCell.vAlign);
+                CellProperties cellProperties = new CellProperties
+                {
+                    BackgroundColor = new CellColor(TableHelper.GetColorForHtmlColor(TableSelection.BeginCell.bgColor)),
+                    HorizontalAlignment = TableHelper.GetAlignmentForHtmlAlignment(TableSelection.BeginCell.align),
+                    VerticalAlignment = TableHelper.GetVAlignmentForHtmlAlignment(TableSelection.BeginCell.vAlign)
+                };
                 return cellProperties;
             }
             set
@@ -936,7 +945,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                 // commit
                 undoUnit.Commit();
             }
-
         }
 
         /// <summary>
@@ -1165,6 +1173,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     }
                 }
             }
+
             return cellColor;
         }
 
@@ -1218,7 +1227,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                         break;
                     }
                 }
-
             }
 
             return verticalAlignment;
@@ -1254,7 +1262,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                 HTMLElementHelper.RemoveElement(tableElement);
                 _editorContext.FireSelectionChanged();
             }
-
         }
 
         private void InsertAdjacentColumn(HTMLTableColumn column, bool after)
@@ -1287,15 +1294,15 @@ namespace OpenLiveWriter.PostEditor.Tables
                 _preservedMarkupRange.ToTextRange().select();
             }
 
-            private MarkupRange _preservedMarkupRange = null;
+            private readonly MarkupRange _preservedMarkupRange = null;
         }
 
         #endregion
 
         #region Private Data and Constants
 
-        private IHtmlEditorComponentContext _editorContext;
-        private MarkupRange _markupRange;
+        private readonly IHtmlEditorComponentContext _editorContext;
+        private readonly MarkupRange _markupRange;
         private TableSelection _tableSelection;
 
         private const string EMPTY_CELL = "&nbsp;";
@@ -1314,11 +1321,11 @@ namespace OpenLiveWriter.PostEditor.Tables
         }
 
         public int Rows { get { return _rows; } }
-        private int _rows;
+        private readonly int _rows;
         public int Columns { get { return _columns; } }
-        private int _columns;
+        private readonly int _columns;
         public TableProperties Properties { get { return _properties; } }
-        private TableProperties _properties;
+        private readonly TableProperties _properties;
 
     }
 
@@ -1457,5 +1464,4 @@ namespace OpenLiveWriter.PostEditor.Tables
         Middle,
         Bottom
     }
-
 }

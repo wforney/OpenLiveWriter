@@ -169,8 +169,10 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if (contentSubType != null && contentSubType != (string)mimeData["type"])
                         continue;
                 }
+
                 return XmlHelper.GetUrl(link, "@href", baseUri);
             }
+
             return "";
         }
 
@@ -294,6 +296,7 @@ $", RegexOptions.IgnorePatternWhitespace);
                 direction = '-';
                 offset = -offset;
             }
+
             dt.AppendFormat(CultureInfo.InvariantCulture, "{0}{1:d2}:{2:d2}",
                 direction,
                 offset.Hours,

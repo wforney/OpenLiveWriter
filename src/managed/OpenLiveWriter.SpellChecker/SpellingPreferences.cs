@@ -87,5 +87,4 @@ namespace OpenLiveWriter.SpellChecker
             SpellingSettings.FireChangedEvent();
         }
     }
-
 }

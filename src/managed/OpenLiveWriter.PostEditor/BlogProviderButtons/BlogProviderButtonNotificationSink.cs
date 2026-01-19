@@ -94,7 +94,6 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             {
                 Trace.Fail("Unexpeted exception detaching from blog provider button notification context: " + ex.ToString());
             }
-
         }
 
         private void CheckForNotifications(object state)
@@ -111,7 +110,6 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                     if (_buttonIds != null)
                         _pollingTimer.Change(_standardPollingInterval, _standardPollingInterval);
                 }
-
             }
             catch (Exception ex)
             {
@@ -130,6 +128,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                         buttons.Add(new BlogProviderButton(_blogId, _hostBlogId, _homepageUrl, _postApiUrl, buttonId));
                 }
             }
+
             return buttons.ToArray(typeof(BlogProviderButton)) as BlogProviderButton[];
         }
 
@@ -186,7 +185,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             }
         }
 
-        private static Hashtable _buttonNotificationListeners = new Hashtable();
+        private static readonly Hashtable _buttonNotificationListeners = new Hashtable();
 
         private string _blogId;
         private string _hostBlogId;

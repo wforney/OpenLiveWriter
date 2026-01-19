@@ -19,7 +19,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     {
         private Rectangle elementRect;
 
-        private BehaviorControlCollection controls;
+        private readonly BehaviorControlCollection controls;
         private int leftPadding;
         private int topPadding;
         private int rightPadding;
@@ -284,6 +284,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                     this.OnMouseWheel(CreateMouseEvent(pIEventObj));
                 }
             }
+
             return HRESULT.S_FALSE;
         }
         private bool fireClickOnMouseUp;
@@ -755,9 +756,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
 
         public Point TransformLocalToGlobal(Point p)
         {
-            POINT pntLocal = new POINT();
-            pntLocal.x = p.X;
-            pntLocal.y = p.Y;
+            POINT pntLocal = new POINT
+            {
+                x = p.X,
+                y = p.Y
+            };
             POINT pntGlobal = new POINT();
             this.HTMLPaintSite.TransformLocalToGlobal(pntLocal, ref pntGlobal);
             return new Point(pntGlobal.x, pntGlobal.y);
@@ -765,9 +768,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
 
         public Point TransformGlobalToLocal(Point p)
         {
-            POINT pntGlobal = new POINT();
-            pntGlobal.x = p.X;
-            pntGlobal.y = p.Y;
+            POINT pntGlobal = new POINT
+            {
+                x = p.X,
+                y = p.Y
+            };
             POINT pntLocal = new POINT();
             this.HTMLPaintSite.TransformGlobalToLocal(pntGlobal, ref pntLocal);
             return new Point(pntLocal.x, pntLocal.y);
@@ -795,9 +800,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         protected Point TranslateClientPointToBounds(Point p)
         {
             // calculate mouse position in local coordinates
-            POINT clientMouseLocation = new POINT();
-            clientMouseLocation.x = p.X;
-            clientMouseLocation.y = p.Y;
+            POINT clientMouseLocation = new POINT
+            {
+                x = p.X,
+                y = p.Y
+            };
             POINT localMouseLocation = new POINT();
             HTMLPaintSite.TransformGlobalToLocal(clientMouseLocation, ref localMouseLocation);
 

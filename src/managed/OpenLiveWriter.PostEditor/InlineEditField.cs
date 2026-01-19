@@ -203,6 +203,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 return IsEditField((IHTMLElement)selection);
             }
+
             return false;
         }
 
@@ -214,6 +215,7 @@ namespace OpenLiveWriter.PostEditor
                     return true;
                 element = element.parentElement;
             }
+
             return false;
         }
 
@@ -226,8 +228,10 @@ namespace OpenLiveWriter.PostEditor
                     InlineEditField editField = new InlineEditField(element, null, null, null, null);
                     return editField.IsDefaultText;
                 }
+
                 element = element.parentElement;
             }
+
             return false;
         }
 
@@ -249,6 +253,7 @@ namespace OpenLiveWriter.PostEditor
                         return true;
                 }
             }
+
             return false;
         }
 

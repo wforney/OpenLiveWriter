@@ -50,6 +50,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 // cancel any running operation
                 CancelGetRecentPostsAsync();
             }
+
             base.Dispose(disposing);
         }
 
@@ -408,7 +409,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             e.DrawFocusRectangle();
         }
 
-        private Image _blogPostImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.BlogPost.png");
+        private readonly Image _blogPostImage = ResourceHelper.LoadAssemblyResourceBitmap("OpenPost.Images.BlogPost.png");
 
         private class ControlTheme : ControlUITheme
         {
@@ -420,7 +421,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             internal Color textColorSelectedFocused;
             internal Color previewColor;
             internal Color topLineColor;
-            private BlogPostListBox _listBoxControl;
+            private readonly BlogPostListBox _listBoxControl;
 
             public ControlTheme(BlogPostListBox control, bool applyTheme) : base(control, applyTheme)
             {
@@ -441,7 +442,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 topLineColor = SystemColors.ControlLight;
             }
         }
-        private ControlTheme _theme;
+        private readonly ControlTheme _theme;
 
         private int CalculateItemHeight()
         {
@@ -527,10 +528,10 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 }
             }
 
-            private IBlogClientUIContext _uiContext;
-            private IPostEditorPostSource _postSource;
-            private RecentPostRequest _request;
-            private bool _getPages;
+            private readonly IBlogClientUIContext _uiContext;
+            private readonly IPostEditorPostSource _postSource;
+            private readonly RecentPostRequest _request;
+            private readonly bool _getPages;
         }
 
         private void CancelGetRecentPostsAsync()
@@ -588,6 +589,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 if (postInfoItem.PostInfo == item)
                     Items.Remove(postInfoItem);
             }
+
             Invalidate();
         }
 
@@ -604,6 +606,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 allPosts.Add(new PostInfoItem(blogPostInfo, this));
             }
+
             _filterCache.Add(String.Empty, allPosts.ToArray());
 
             // Update the listbox
@@ -639,8 +642,8 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                         items.Add(pii);
 
                     }
-
                 }
+
                 PostInfoItem[] itemArray = items.ToArray();
                 Items.AddRange(itemArray);
                 _filterCache.Add(Filter, itemArray);
@@ -665,6 +668,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     return false;
 
             }
+
             return true;
         }
 
@@ -697,6 +701,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     _getRecentPostsProgressControl = new GetRecentPostsProgressControl(this);
                     _getRecentPostsProgressControl.Initialize();
                 }
+
                 return _getRecentPostsProgressControl;
             }
         }
@@ -716,6 +721,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     Res.Get(StringId.OpenPostNoPagesAvailable) :
                     Res.Get(StringId.OpenPostNoPostsAvailable);
             }
+
             EmptyPostListControl.BringToFront();
         }
 
@@ -730,17 +736,20 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             {
                 if (_emptyPostListControl == null)
                 {
-                    Label label = new Label();
-                    label.BackColor = BackColor;
-                    label.ForeColor = ForeColor;
-                    label.Text = Res.Get(StringId.OpenPostNoPostsAvailable);
-                    label.FlatStyle = FlatStyle.System;
-                    label.AutoSize = true;
-                    label.TabStop = false;
+                    Label label = new Label
+                    {
+                        BackColor = BackColor,
+                        ForeColor = ForeColor,
+                        Text = Res.Get(StringId.OpenPostNoPostsAvailable),
+                        FlatStyle = FlatStyle.System,
+                        AutoSize = true,
+                        TabStop = false
+                    };
                     Parent.Controls.Add(label);
                     CenterControlInControlBehavior centerControl = new CenterControlInControlBehavior(label, this);
                     _emptyPostListControl = label;
                 }
+
                 return _emptyPostListControl;
             }
         }
@@ -761,8 +770,8 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
         class PostInfoItem : AccessibleObject
         {
-            private PostInfo _postInfo;
-            private BlogPostListBox _listbox;
+            private readonly PostInfo _postInfo;
+            private readonly BlogPostListBox _listbox;
             public PostInfoItem(PostInfo postInfo, BlogPostListBox listBox)
             {
                 _postInfo = postInfo;
@@ -828,7 +837,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 
         class BlogPostListBoxAccessibility : ControlAccessibleObject
         {
-            BlogPostListBox _listbox;
+            readonly BlogPostListBox _listbox;
             public BlogPostListBoxAccessibility(BlogPostListBox ownerControl) : base(ownerControl)
             {
                 _listbox = ownerControl;

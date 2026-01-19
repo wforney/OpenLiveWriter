@@ -447,6 +447,5 @@ namespace OpenLiveWriter.PostEditor.Tables
             IHTMLElement parentSmartContent = elementRange.Start.GetParentElement(ContentSourceManager.CreateSmartContentElementFilter());
             return parentSmartContent != null;
         }
-
     }
 }

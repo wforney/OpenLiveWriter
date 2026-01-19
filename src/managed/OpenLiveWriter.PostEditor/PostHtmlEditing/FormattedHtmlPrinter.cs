@@ -141,8 +141,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             //it to the XML stream if it is detected.
                             writer.WriteString(context.Element.innerHTML);
                         }
+
                         printElementEnd(writer, context.Element);
                     }
+
                     break;
                 case _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_Text:
                     if (text != null)
@@ -167,6 +169,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     if (!ElementFilters.RequiresEndTag(bt.Name))
                         bt.Complete = true;
                 }
+
                 sb.Append(el.ToString());
             }
 
@@ -301,6 +304,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                     }
                                 }
                             }
+
                             Debug.WriteLineIf(attrValue != null && attrName != "id", String.Format(CultureInfo.InvariantCulture, "{0}.{1} attribute value not retreived", tagName, attrName), element.outerHTML);
                         }
 
@@ -335,20 +339,22 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 text = text.Trim();
                 index = text.IndexOf('<'); //reset the index of the tag
             }
+
             while (index != -1)
             {
                 int index2 = text.IndexOf('>', index);
                 text = text.Remove(index, index2 - index + 1);
                 index = text.IndexOf('<');
             }
+
             return text;
         }
     }
 
     class HtmlWriter
     {
-        private StringBuilder sb;
-        private Stack openElements = new Stack();
+        private readonly StringBuilder sb;
+        private readonly Stack openElements = new Stack();
 
         public HtmlWriter(StringBuilder sb)
         {
@@ -426,6 +432,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     _blockTagNames["ol"] = "ol";
                     _blockTagNames["li"] = "li";
                 }
+
                 return _blockTagNames;
             }
         }
@@ -439,10 +446,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             private enum START_TAG_STATE { NONE, OPENED, CLOSED };
             private START_TAG_STATE startTagState = START_TAG_STATE.NONE;
 
-            private String tagName;
-            private int stackDepth;
-            private HtmlElementPrinter parentElementPrinter;
-            private ElementIndentStrategy indentStrategy;
+            private readonly String tagName;
+            private readonly int stackDepth;
+            private readonly HtmlElementPrinter parentElementPrinter;
+            private readonly ElementIndentStrategy indentStrategy;
             private int childCount;
             public HtmlElementPrinter(String tagName, int stackDepth, HtmlElementPrinter parentElementPrinter)
             {
@@ -584,7 +591,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// </summary>
         private class BlockElementIndentStrategy : ElementIndentStrategy
         {
-            private bool forceVisualLeadingLineBreak = true;
+            private readonly bool forceVisualLeadingLineBreak = true;
             public BlockElementIndentStrategy(HtmlElementPrinter elementPrinter)
                 : base(elementPrinter)
             {

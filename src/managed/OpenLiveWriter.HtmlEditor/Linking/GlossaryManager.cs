@@ -99,7 +99,6 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     }
                 }
             }
-
         }
 
         #region Public Methods
@@ -120,6 +119,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                         }
                     }
                 }
+
                 return _instance;
             }
         }
@@ -152,6 +152,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     return AddEntry(addForm.LinkText, addForm.Url, addForm.Title, addForm.Rel, addForm.OpenInNewWindow);
                 }
             }
+
             return null;
         }
 
@@ -179,6 +180,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                             else
                                 return null;
                         }
+
                         lock (_lock)
                         {
                             DeleteEntry(editItem.Text);
@@ -189,9 +191,9 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     {
                         return AddEntry(editForm.LinkText, editForm.Url, editForm.Title, editForm.Rel, editForm.OpenInNewWindow);
                     }
-
                 }
             }
+
             return null;
 
         }
@@ -213,6 +215,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 {
                     return (GlossaryLinkItem)_entries[text];
                 }
+
                 return null;
             }
         }
@@ -227,6 +230,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     return (foundItem.Url.Equals(url, StringComparison.OrdinalIgnoreCase) &&
                         foundItem.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase));
                 }
+
                 return false;
             }
         }
@@ -301,7 +305,6 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 {
                     finder.Add((string)entry.Key, (GlossaryLinkItem)entry.Value);
                 }
-
             }
         }
 
@@ -320,8 +323,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             string rel = NodeText(node.SelectSingleNode(REL));
 
             string openInNewWindowText = NodeText(node.SelectSingleNode(NEWWINDOW));
-            bool openInNewWindow;
-            if (!bool.TryParse(openInNewWindowText, out openInNewWindow))
+            if (!bool.TryParse(openInNewWindowText, out bool openInNewWindow))
             {
                 // Default to true if unable to parse it.
                 openInNewWindow = true;
@@ -508,6 +510,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                 length = -1;
                 return null;
             }
+
             return _trie.Find(StringHelper.Reverse(text).ToLower(CultureInfo.CurrentCulture), IsAtWordBreak, out length);
         }
 
@@ -528,5 +531,4 @@ namespace OpenLiveWriter.HtmlEditor.Linking
             return (charactersMatched >= text.Length || !char.IsLetterOrDigit(text[charactersMatched]));
         }
     }
-
 }

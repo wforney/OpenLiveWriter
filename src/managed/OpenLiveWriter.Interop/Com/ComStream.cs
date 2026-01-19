@@ -134,8 +134,7 @@ namespace OpenLiveWriter.Interop.Com
                 // which includes the length. STATFLAG_NONAME means that we don't
                 // care about the name (STATSTG.pwcsName), so there is no need for
                 // the method to allocate memory for the string.
-                System.Runtime.InteropServices.ComTypes.STATSTG statstg;
-                m_comStream.Stat(out statstg, (int)STATFLAG.NONAME);
+                m_comStream.Stat(out System.Runtime.InteropServices.ComTypes.STATSTG statstg, (int)STATFLAG.NONAME);
                 return statstg.cbSize;
             }
         }
@@ -206,8 +205,7 @@ namespace OpenLiveWriter.Interop.Com
         {
             get
             {
-                System.Runtime.InteropServices.ComTypes.STATSTG pstatstg;
-                m_comStream.Stat(out pstatstg, 0);
+                m_comStream.Stat(out System.Runtime.InteropServices.ComTypes.STATSTG pstatstg, 0);
                 return pstatstg;
             }
         }

@@ -57,6 +57,7 @@ namespace OpenLiveWriter.CoreServices
 
                     m_fileName = FileHelper.GetValidFileName(m_fileName);
                 }
+
                 return m_fileName;
             }
         }
@@ -125,7 +126,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_urlToReplace;
             }
         }
-        private string m_urlToReplace;
+        private readonly string m_urlToReplace;
 
         /// <summary>
         /// The PageDownloadInfo that parents this item.

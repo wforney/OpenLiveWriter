@@ -32,6 +32,5 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         void InsertClearBreak();
         void ChangeSelection(SelectionPosition position);
         SmartContentEditor CurrentEditor { get; }
-
     }
 }

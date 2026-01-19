@@ -59,8 +59,10 @@ namespace OpenLiveWriter.PostEditor.OpenPost
             listBoxPosts.AccessibleName = Res.Get(StringId.OpenPostItems);
 
             // Set up the timer that will be used to track when a user is done typing in the filter box
-            _filterTimer = new Timer();
-            _filterTimer.Interval = 100;
+            _filterTimer = new Timer
+            {
+                Interval = 100
+            };
             _filterTimer.Tick += new EventHandler(_timer_Tick);
 
             // We need to know when the box is refreshing so we can disable the search box
@@ -585,9 +587,9 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                 {
                     radioButtonPages.Checked = false;
                 }
+
                 radioButtonPosts.Checked = !radioButtonPages.Checked;
             }
-
         }
 
         #region High DPI Scaling
@@ -630,7 +632,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         private System.Windows.Forms.RadioButton radioButtonPosts;
         private System.Windows.Forms.RadioButton radioButtonPages;
 
-        private SettingsPersisterHelper _recentPostsSettings = PostEditorSettings.SettingsKey.GetSubSettings("RecentPostDefaults");
+        private readonly SettingsPersisterHelper _recentPostsSettings = PostEditorSettings.SettingsKey.GetSubSettings("RecentPostDefaults");
 
         /// <summary>
         /// Clean up any resources being used.
@@ -646,6 +648,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -878,11 +881,11 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         private Button buttonDelete;
         private IContainer components;
 
-        private OpenMode _openMode;
+        private readonly OpenMode _openMode;
         private bool _includeDrafts;
         private bool _allowDelete;
         private bool _filterDirty = false;
-        private Timer _filterTimer;
+        private readonly Timer _filterTimer;
 
     }
 
@@ -898,9 +901,9 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         }
 
         public IWin32Window OpenPostDialog { get { return _openPostDialog; } }
-        private IWin32Window _openPostDialog;
+        private readonly IWin32Window _openPostDialog;
         public PostInfo PostInfo { get { return _postInfo; } }
-        private PostInfo _postInfo;
+        private readonly PostInfo _postInfo;
         public bool PostIsValid { get { return _postIsValid; } set { _postIsValid = value; } }
         private bool _postIsValid;
     }

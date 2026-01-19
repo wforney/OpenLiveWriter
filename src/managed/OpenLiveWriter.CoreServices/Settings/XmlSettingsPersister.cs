@@ -187,6 +187,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             {
                 stream.Dispose();
             }
+
             base.Dispose(false);
 
         }
@@ -200,8 +201,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             }
             else
             {
-                Hashtable values, subsettings;
-                Parse(s, out values, out subsettings);
+                Parse(s, out Hashtable values, out Hashtable subsettings);
                 return new XmlFileSettingsPersister(s, values, subsettings);
             }
         }
@@ -222,6 +222,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                 Trace.WriteLine(e.ToString());
                 return;
             }
+
             System.Xml.XmlElement root = doc.DocumentElement;
             Parse(root, values, subsettings);
         }
@@ -451,6 +452,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                 {
                     values[i] = ((string[])input)[i].Replace("\\", "\\\\").Replace(",", "\\,");
                 }
+
                 output = StringHelper.Join(values, ",");
             }
             else if (input is byte[])
@@ -560,9 +562,7 @@ namespace OpenLiveWriter.CoreServices.Settings
                 object value = values[key];
                 if (value != null)
                 {
-                    ValueType valueType;
-                    string output;
-                    UnparseValue(value, out valueType, out output);
+                    UnparseValue(value, out ValueType valueType, out string output);
                     el.SetAttribute("type", valueType.ToString());
                     el.InnerText = output;
                     settings.AppendChild(el);

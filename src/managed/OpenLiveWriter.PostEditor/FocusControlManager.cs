@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor
     /// </summary>
     internal class FocusControlManager
     {
-        private ArrayList _focusControlList;
+        private readonly ArrayList _focusControlList;
         public FocusControlManager()
         {
             _focusControlList = new ArrayList();
@@ -70,6 +70,7 @@ namespace OpenLiveWriter.PostEditor
                     return control;
                 }
             }
+
             return null;
         }
 
@@ -87,6 +88,7 @@ namespace OpenLiveWriter.PostEditor
                 else
                     currIndex = currIndex - 1;
             }
+
             return currIndex;
         }
 
@@ -101,13 +103,14 @@ namespace OpenLiveWriter.PostEditor
                 if (control.ContainsFocus)
                     return i;
             }
+
             return 0;
         }
     }
 
     internal class FocusableControl : IFocusableControl
     {
-        private Control _control;
+        private readonly Control _control;
         public FocusableControl(Control control)
         {
             _control = control;
@@ -130,7 +133,7 @@ namespace OpenLiveWriter.PostEditor
 
     internal class FocusableControlProxy : IFocusableControl
     {
-        private IFocusableControl _control;
+        private readonly IFocusableControl _control;
 
         protected FocusableControlProxy()
         {
@@ -163,7 +166,6 @@ namespace OpenLiveWriter.PostEditor
                 return _control;
             }
         }
-
     }
 
     internal class NullFocusableControl : IFocusableControl
@@ -188,5 +190,4 @@ namespace OpenLiveWriter.PostEditor
             get { return false; }
         }
     }
-
 }

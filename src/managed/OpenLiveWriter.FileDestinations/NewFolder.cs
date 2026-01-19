@@ -17,7 +17,7 @@ namespace OpenLiveWriter.FileDestinations
         private Button buttonCancel;
         private TextBox newFolderName;
         private Label label1;
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public NewFolder()
         {
@@ -54,6 +54,7 @@ namespace OpenLiveWriter.FileDestinations
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

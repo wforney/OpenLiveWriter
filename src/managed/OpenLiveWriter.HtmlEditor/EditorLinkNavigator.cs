@@ -375,8 +375,10 @@ namespace OpenLiveWriter.HtmlEditor
 
                     // start timer which monitors whether the main frame is still active and
                     // hides the tooltip if it does not
-                    _frameActiveTimer = new Timer();
-                    _frameActiveTimer.Interval = 100;
+                    _frameActiveTimer = new Timer
+                    {
+                        Interval = 100
+                    };
                     _frameActiveTimer.Tick += new EventHandler(frameActiveTimer_Tick);
                     _frameActiveTimer.Start();
                 }
@@ -469,24 +471,24 @@ namespace OpenLiveWriter.HtmlEditor
         /// <summary>
         /// editor context we are attached to
         /// </summary>
-        private IHtmlEditorComponentContext _htmlEditorContext;
+        private readonly IHtmlEditorComponentContext _htmlEditorContext;
 
         /// <summary>
         /// editor context we are attached to
         /// </summary>
-        private HtmlEditorControl _htmlEditorControl;
+        private readonly HtmlEditorControl _htmlEditorControl;
 
         /// <summary>
         /// Frame we are hosted int
         /// </summary>
-        private IMainFrameWindow _editorFrame;
+        private readonly IMainFrameWindow _editorFrame;
 
-        private IStatusBar _statusBar;
+        private readonly IStatusBar _statusBar;
 
         /// <summary>
         /// Event sink for html document
         /// </summary>
-        private IMshtmlDocumentEvents _documentEvents;
+        private readonly IMshtmlDocumentEvents _documentEvents;
 
         /// <summary>
         /// Link element we are currently over
@@ -507,7 +509,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// <summary>
         /// Tooltip used to notify user that they can CTRL + click to navigate
         /// </summary>
-        private TrackingToolTip toolTip = new TrackingToolTip();
+        private readonly TrackingToolTip toolTip = new TrackingToolTip();
 
         /// <summary>
         /// Double checks that when the main window is deactivated, the tooltip is hidden.

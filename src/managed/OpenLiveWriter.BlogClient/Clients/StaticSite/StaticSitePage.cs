@@ -18,9 +18,9 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         // page-test_sub-page-test.html -> sub-page-test
         // 0001-01-01-page-test.html -> 0001-01-01-page-test
         // _pages\my-page.html -> my-page
-        private static Regex FILENAME_SLUG_REGEX = new Regex(@"^(?:(?:.*?)(?:\\|\/|_))*(.*?)\" + PUBLISH_FILE_EXTENSION + "$");
+        private static readonly Regex FILENAME_SLUG_REGEX = new Regex(@"^(?:(?:.*?)(?:\\|\/|_))*(.*?)\" + PUBLISH_FILE_EXTENSION + "$");
 
-        private static int PARENT_CRAWL_MAX_LEVELS = 32;
+        private static readonly int PARENT_CRAWL_MAX_LEVELS = 32;
 
         public StaticSitePage(StaticSiteConfig config) : base(config)
         {
@@ -127,8 +127,10 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     // Populate Name field
                     BlogPost.PageParent = new PostIdAndNameField(parent.Id, parent.BlogPost.Title);
                 }
+
                 return parent;
             }
+
             return null;
         }
 

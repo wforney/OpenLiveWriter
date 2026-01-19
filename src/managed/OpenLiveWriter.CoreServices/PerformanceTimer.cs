@@ -16,12 +16,12 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The performance counter frequency.
         /// </summary>
-        private static double performanceCounterFrequency;
+        private static readonly double performanceCounterFrequency;
 
         /// <summary>
         /// The PerformanceTimer name.
         /// </summary>
-        private string name;
+        private readonly string name;
 
         /// <summary>
         /// The performance counter as set by the last call to the Reset method.

@@ -107,6 +107,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -335,6 +336,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     //OnImageSizeChanged(EventArgs.Empty);
                     return true;
                 }
+
                 return false;
             }
             finally
@@ -414,6 +416,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     scaledImageSize = ImageUtils.GetScaledImageSize(imageSize.Width, imageSize.Height, _fullImageSize);
                 }
             }
+
             return scaledImageSize;
         }
 
@@ -492,6 +495,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                 ImageUtils.GetScaledImageSize(Int32.MaxValue, customSize.Height, _fullImageSize).Width;
                         }
                     }
+
                     return SetImageSize(customSize, true);
                 }
                 catch (Exception)

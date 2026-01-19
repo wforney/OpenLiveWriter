@@ -42,7 +42,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         private System.Windows.Forms.PictureBox pictureBoxContentSource;
         private System.Windows.Forms.Label labelContentType;
 
-        private LiveClipboardPreferences _liveClipboardPreferences;
+        private readonly LiveClipboardPreferences _liveClipboardPreferences;
 
         public LiveClipboardPreferencesPanel()
         {
@@ -103,7 +103,6 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
 
                 LayoutHelper.EqualizeButtonWidthsVert(AnchorStyles.Right, buttonChange.Width, int.MaxValue, buttonChange, buttonOptions);
             }
-
         }
 
         private void PopulateFormatList()
@@ -118,6 +117,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                 UpdateListViewItem(listViewItem, formatHandler);
                 listViewFormats.Items.Add(listViewItem);
             }
+
             listViewFormats.EndUpdate();
         }
 
@@ -221,7 +221,6 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                 groupBoxFormatDetails.Text = Res.Get(StringId.LCPrefDetails);
                 panelFormatDetails.Visible = false;
             }
-
         }
 
         private LiveClipboardFormatHandler GetSelectedFormat()
@@ -246,6 +245,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

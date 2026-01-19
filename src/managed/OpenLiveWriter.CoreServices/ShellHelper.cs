@@ -60,12 +60,11 @@ namespace OpenLiveWriter.CoreServices
 
         internal static IPropertyStore GetWindowPropertyStore(IntPtr hwnd)
         {
-            IPropertyStore propStore;
             Guid guid = new Guid(Shell32.IPropertyStore);
             int rc = Shell32.SHGetPropertyStoreForWindow(
                 hwnd,
                 ref guid,
-                out propStore);
+                out IPropertyStore propStore);
             if (rc != 0)
                 throw Marshal.GetExceptionForHR(rc);
             return propStore;
@@ -167,10 +166,12 @@ namespace OpenLiveWriter.CoreServices
         public static ExecuteFileResult ExecuteFile(string filePath, string verb)
         {
             // Execute the document using the shell.
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.UseShellExecute = true;
-            startInfo.FileName = filePath;
-            startInfo.Verb = verb;
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = filePath,
+                Verb = verb
+            };
 
             using (Process p = Process.Start(startInfo))
             {
@@ -205,13 +206,16 @@ namespace OpenLiveWriter.CoreServices
                 for (int i = 0; i < processIds.Length; i++)
                     processNames[i] = imageName;
             }
+
             return new ExecuteFileResult(false, processIds, processNames);
         }
 
         public static ExecuteFileResult ExecuteFileWithExecutable(string filePath, string executable)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo(executable);
-            startInfo.Arguments = "\"" + filePath + "\"";
+            ProcessStartInfo startInfo = new ProcessStartInfo(executable)
+            {
+                Arguments = "\"" + filePath + "\""
+            };
 
             using (Process p = Process.Start(startInfo))
             {
@@ -536,9 +540,7 @@ namespace OpenLiveWriter.CoreServices
                     arguments = string.Empty;
                 }
             }
-
         }
-
     }
 
     /// <summary>
@@ -593,12 +595,11 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Underlying HICON
         /// </summary>
-        private IntPtr hIcon = IntPtr.Zero;
+        private readonly IntPtr hIcon = IntPtr.Zero;
 
         /// <summary>
         /// .NET Icon for HICON
         /// </summary>
         private Icon icon = null;
     }
-
 }

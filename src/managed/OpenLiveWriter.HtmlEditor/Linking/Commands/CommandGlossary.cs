@@ -26,6 +26,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking.Commands
                 {
                     glossaryForm.SetSelected(linkText);
                 }
+
                 if (DialogResult.OK == glossaryForm.ShowDialog())
                 {
                     GlossaryLinkItem chosen = glossaryForm.SelectedEntry;
@@ -36,6 +37,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking.Commands
                     return true;
                 }
             }
+
             return false;
         }
     }

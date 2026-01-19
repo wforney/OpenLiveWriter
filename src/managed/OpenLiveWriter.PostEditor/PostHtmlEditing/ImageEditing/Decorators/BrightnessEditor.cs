@@ -29,7 +29,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         private int _originalContrast;
         private Size _originalSize;
 
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public BrightnessEditor()
         {
@@ -63,6 +63,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -302,11 +303,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     val = 100;
                     textBox.Text = val.ToString(CultureInfo.CurrentCulture);
                 }
+
                 if (val < -100)
                 {
                     val = -100;
                     textBox.Text = val.ToString(CultureInfo.CurrentCulture);
                 }
+
                 if (trackbar.Value != val)
                     trackbar.Value = val;
             }
@@ -341,7 +344,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             if (textBox != null)
                 textBox.SelectAll();
         }
-
     }
 }
 

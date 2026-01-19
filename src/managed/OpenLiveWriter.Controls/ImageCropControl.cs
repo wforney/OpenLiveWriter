@@ -83,6 +83,7 @@ namespace OpenLiveWriter.Controls
                 g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
                 g.DrawImage(bitmap, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), crop.Real, GraphicsUnit.Pixel);
             }
+
             Bitmap = newBitmap;
         }
 
@@ -159,14 +160,17 @@ namespace OpenLiveWriter.Controls
                     crbNormal = new CachedResizedBitmap(value, false);
                     crbGrayed = new CachedResizedBitmap(MakeGray(value), true);
 
-                    crop = new DualRects(PointF.Empty, bitmap.Size);
-                    crop.Real = new Rectangle(
-                        bitmap.Width / 4,
-                        bitmap.Height / 4,
-                        Math.Max(1, bitmap.Width / 2),
-                        Math.Max(1, bitmap.Height / 2));
+                    crop = new DualRects(PointF.Empty, bitmap.Size)
+                    {
+                        Real = new Rectangle(
+                            bitmap.Width / 4,
+                            bitmap.Height / 4,
+                            Math.Max(1, bitmap.Width / 2),
+                            Math.Max(1, bitmap.Height / 2))
+                    };
                     OnCropRectangleChanged();
                 }
+
                 PerformLayout();
                 Invalidate();
             }
@@ -180,6 +184,7 @@ namespace OpenLiveWriter.Controls
                 using (Brush b = new SolidBrush(Color.FromArgb(128, Color.Gray)))
                     g.FillRectangle(b, 0, 0, grayed.Width, grayed.Height);
             }
+
             return grayed;
         }
 
@@ -262,8 +267,7 @@ namespace OpenLiveWriter.Controls
 
         private void InvalidateGridlines(Rectangle rect)
         {
-            int x1, x2, y1, y2;
-            CalculateGridlines(rect, out x1, out x2, out y1, out y2);
+            CalculateGridlines(rect, out int x1, out int x2, out int y1, out int y2);
             using (Region gridRegion = new Region())
             {
                 gridRegion.MakeEmpty();
@@ -408,8 +412,10 @@ namespace OpenLiveWriter.Controls
                 offset.Y = (Height - (bitmap.Height * scale.Height)) / 2;
             }
 
-            crop = new DualRects(offset, scale);
-            crop.Real = realRect;
+            crop = new DualRects(offset, scale)
+            {
+                Real = realRect
+            };
 
             Size virtualBitmapSize = crop.VirtualizeRect(0, 0, bitmap.Width, bitmap.Height).Size;
             crbNormal.Resize(virtualBitmapSize);
@@ -449,8 +455,7 @@ namespace OpenLiveWriter.Controls
 
             if (gridLines)
             {
-                int x1, x2, y1, y2;
-                CalculateGridlines(crop.Virtual, out x1, out x2, out y1, out y2);
+                CalculateGridlines(crop.Virtual, out int x1, out int x2, out int y1, out int y2);
 
                 using (Brush b = new SolidBrush(Color.FromArgb(128, Color.Gray)))
                 using (Pen p = new Pen(b, 1))
@@ -470,8 +475,10 @@ namespace OpenLiveWriter.Controls
                 ControlPaint.DrawFocusRectangle(e.Graphics, focusRect);
             }
 
-            BoundsWithHandles boundsWithHandles = new BoundsWithHandles(cropStrategy.AspectRatio == null ? true : false);
-            boundsWithHandles.Bounds = cropDrawRect;
+            BoundsWithHandles boundsWithHandles = new BoundsWithHandles(cropStrategy.AspectRatio == null ? true : false)
+            {
+                Bounds = cropDrawRect
+            };
             using (Pen p = new Pen(SystemColors.ControlDarkDark, 1f))
             {
                 foreach (Rectangle rect in boundsWithHandles.GetHandles())
@@ -534,6 +541,7 @@ namespace OpenLiveWriter.Controls
                 {
                     g.DrawImage(original, 0, 0, newBitmap.Width, newBitmap.Height);
                 }
+
                 resized = newBitmap;
                 currentSize = size;
             }
@@ -744,7 +752,7 @@ namespace OpenLiveWriter.Controls
 
         public class FixedAspectRatioCropStrategy : FreeCropStrategy
         {
-            private double aspectRatio;
+            private readonly double aspectRatio;
 
             public FixedAspectRatioCropStrategy(double aspectRatio)
             {
@@ -801,10 +809,12 @@ namespace OpenLiveWriter.Controls
                 {
                     return AnchorStyles.None;
                 }
+
                 if (AnchorStyles.None == (hitTest & (AnchorStyles.Top | AnchorStyles.Bottom)))
                 {
                     return AnchorStyles.None;
                 }
+
                 return hitTest;
             }
 
@@ -857,6 +867,7 @@ namespace OpenLiveWriter.Controls
                             newRect.Location = new Point(newRect.Left, initialBounds.Bottom - newRect.Height);
                     }
                 }
+
                 return newRect;
             }
 
@@ -1030,6 +1041,7 @@ namespace OpenLiveWriter.Controls
                     handles.Add(MakeRect(bounds.Left, (bounds.Top + bounds.Bottom) / 2));
                     handles.Add(MakeRect(bounds.Right, (bounds.Top + bounds.Bottom) / 2));
                 }
+
                 handles.Add(MakeRect(bounds.Left, bounds.Bottom));
                 if (includeSideHandles)
                     handles.Add(MakeRect((bounds.Left + bounds.Right) / 2, bounds.Bottom));

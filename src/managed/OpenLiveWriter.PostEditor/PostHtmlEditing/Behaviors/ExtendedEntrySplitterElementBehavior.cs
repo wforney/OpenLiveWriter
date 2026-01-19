@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     /// </summary>
     internal class ExtendedEntrySplitterElementBehavior : ElementControlBehavior
     {
-        private SplitterControl _splitter;
+        private readonly SplitterControl _splitter;
 
         // _splitterHeight and _verticalPadding measured in 96dpi pixels
         private const int _splitterHeight = 16;
@@ -35,8 +35,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         public ExtendedEntrySplitterElementBehavior(IHtmlEditorComponentContext editorContext)
             : base(editorContext)
         {
-            _splitter = new SplitterControl(_splitterHeight);
-            _splitter.VirtualLocation = new Point(0, _verticalPadding);
+            _splitter = new SplitterControl(_splitterHeight)
+            {
+                VirtualLocation = new Point(0, _verticalPadding)
+            };
             Controls.Add(_splitter);
 
             //keep the line width synchronized with the element's width
@@ -93,6 +95,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                 }
                 catch (Exception) { } //the fact that we delete during attach causes exceptions here, so eat them.
             }
+
             return false;
         }
 
@@ -112,6 +115,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
                     (HTMLElement as IHTMLDOMNode).removeNode(true);
                     undo.Commit();
                 }
+
                 e.Cancel();
             }
         }
@@ -137,9 +141,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         /// </summary>
         private class ExtendedEntrySweeper
         {
-            private IHtmlEditorComponentContext _editorContext;
-            private IHTMLDocument3 _document;
-            private IHTMLElement _realExtendedEntry;
+            private readonly IHtmlEditorComponentContext _editorContext;
+            private readonly IHTMLDocument3 _document;
+            private readonly IHTMLElement _realExtendedEntry;
             public ExtendedEntrySweeper(IHtmlEditorComponentContext editorContext, IHTMLDocument3 document, IHTMLElement extendedEntry)
             {
                 _editorContext = editorContext;
@@ -176,12 +180,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     internal class SplitterControl : BehaviorControl
     {
         private const string IMAGE_RESOURCE_PATH = "PostHtmlEditing.Behaviors.Images.";
-        private Bitmap extendedEntrySeparatorTileImage = ResourceHelper.LoadAssemblyResourceBitmap(IMAGE_RESOURCE_PATH + "ExtendedEntrySeparatorTile.png");
+        private readonly Bitmap extendedEntrySeparatorTileImage = ResourceHelper.LoadAssemblyResourceBitmap(IMAGE_RESOURCE_PATH + "ExtendedEntrySeparatorTile.png");
 
         private Rectangle _controlRect;
         private Rectangle _lineRect;
-        private string _moreText = Res.Get(StringId.SplitterMore);
-        private Font font = Res.GetFont(FontSize.PostSplitCaption, FontStyle.Regular);
+        private readonly string _moreText = Res.Get(StringId.SplitterMore);
+        private readonly Font font = Res.GetFont(FontSize.PostSplitCaption, FontStyle.Regular);
 
         /// <summary>
         /// Instansiates a new SplitterControl

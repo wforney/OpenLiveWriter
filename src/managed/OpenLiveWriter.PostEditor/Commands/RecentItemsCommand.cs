@@ -13,8 +13,8 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     public class RecentItemsCommand : GalleryCommand<string>
     {
-        private IBlogPostEditingSite postEditingSite;
-        private List<PostInfo> postInfo = new List<PostInfo>();
+        private readonly IBlogPostEditingSite postEditingSite;
+        private readonly List<PostInfo> postInfo = new List<PostInfo>();
         // Note: The maximum number of recent items specified here should match the RecentItem's MaxCount attribute in ribbon.xml.
         public const int MaxItems = PostListCache.MaxItems;
 

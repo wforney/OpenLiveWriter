@@ -69,6 +69,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 ShowShortcut = false;
                 Shortcut = Shortcut.None;
             }
+
             Enabled = command.Enabled;
 
             //	Add event handlers for the command events.
@@ -171,6 +172,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     Trace.Assert(false, "CommandOwnerDrawMenuItem - MenuType is not supported.");
                     return;
             }
+
             if (Visible != visibleState)
                 Visible = visibleState;
         }
@@ -222,6 +224,5 @@ namespace OpenLiveWriter.ApplicationFramework
             if (MenuType == MenuType.Main)
                 Visible = command.VisibleOnMainMenu;
         }
-
     }
 }

@@ -123,7 +123,7 @@ namespace OpenLiveWriter.CoreServices
 
     internal abstract class GenericProxy : RealProxy
     {
-        private object _wrapped;
+        private readonly object _wrapped;
 
         public GenericProxy(object wrapped) : base(wrapped.GetType())
         {

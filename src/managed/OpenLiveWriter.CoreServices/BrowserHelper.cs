@@ -147,6 +147,7 @@ namespace OpenLiveWriter.CoreServices
                             break;
                     }
                 }
+
                 return defaultBrowserPath;
             }
         }

@@ -182,7 +182,6 @@ namespace OpenLiveWriter.PostEditor.Video
             {
                 _content.Properties.SetString(VIDEO_CAPTION, value);
             }
-
         }
 
         public VideoAspectRatioType AspectRatioType
@@ -293,7 +292,6 @@ namespace OpenLiveWriter.PostEditor.Video
                         DrawStatusMockPlayer(img, bidiGraphics, message);
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -378,8 +376,10 @@ namespace OpenLiveWriter.PostEditor.Video
                                             null,
                                             HtmlSize.Width,
                                             HtmlSize.Height,
-                                            VideoAspectRatioType.Unknown);
-                    video.Username = _content.Properties.GetString(VIDEO_USERNAME, null);
+                                            VideoAspectRatioType.Unknown)
+                    {
+                        Username = _content.Properties.GetString(VIDEO_USERNAME, null)
+                    };
 
                     IVideoPublisher newPublisher;
                     if (Provider.IsYouTube)
@@ -428,6 +428,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 // return the status message
                 return publishStatus.DisplayMessage;
             }
+
             return String.Empty;
         }
 
@@ -587,8 +588,7 @@ namespace OpenLiveWriter.PostEditor.Video
         private string GeneratePublishVideoHtml(VideoContext context)
         {
             //check for special cases--whitelist blog providers and such
-            string output;
-            if (VideoProviderManager.CheckForWhitelist(context.BlogProviderId, ProviderId, Id, HtmlSize, out output))
+            if (VideoProviderManager.CheckForWhitelist(context.BlogProviderId, ProviderId, Id, HtmlSize, out string output))
             {
                 return String.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", output);
             }
@@ -654,28 +654,28 @@ namespace OpenLiveWriter.PostEditor.Video
             }
         }
 
-        private string VIDEO_PROGRESS_PATH = "ProgressImage.gif";
-        private string VIDEO_STATUS = "Video.status";
-        private string VIDEO_HAS_ERROR = "Video.hasError";
-        private string VIDEO_HAS_PROGRESS = "Video.videoHasProgress";
-        private string VIDEO_AUTHOR = "Video.videoAuthor";
-        private string VIDEO_ID = "Video.videoId";
-        private string VIDEO_URL = "Video.videoUrl";
-        private string VIDEO_THUMBNAIL_URL = "Video.videoThumbnailUrl";
-        private string VIDEO_EMBED = "Video.videoEmbed";
-        private string VIDEO_EDITOR_FORMAT = "Video.videoEditorFormat";
-        private string VIDEO_PROVIDER_ID = "Video.videoProviderId";
+        private readonly string VIDEO_PROGRESS_PATH = "ProgressImage.gif";
+        private readonly string VIDEO_STATUS = "Video.status";
+        private readonly string VIDEO_HAS_ERROR = "Video.hasError";
+        private readonly string VIDEO_HAS_PROGRESS = "Video.videoHasProgress";
+        private readonly string VIDEO_AUTHOR = "Video.videoAuthor";
+        private readonly string VIDEO_ID = "Video.videoId";
+        private readonly string VIDEO_URL = "Video.videoUrl";
+        private readonly string VIDEO_THUMBNAIL_URL = "Video.videoThumbnailUrl";
+        private readonly string VIDEO_EMBED = "Video.videoEmbed";
+        private readonly string VIDEO_EDITOR_FORMAT = "Video.videoEditorFormat";
+        private readonly string VIDEO_PROVIDER_ID = "Video.videoProviderId";
 
-        private string VIDEO_PUBLISH_IMAGE = "Video.videoPublishImage";
+        private readonly string VIDEO_PUBLISH_IMAGE = "Video.videoPublishImage";
 
-        private string NEW_WINDOW = "Video.new_window";
-        private string VIDEO_WIDTH = "Video.video_width";
-        private string VIDEO_HEIGHT = "Video.video_height";
+        private readonly string NEW_WINDOW = "Video.new_window";
+        private readonly string VIDEO_WIDTH = "Video.video_width";
+        private readonly string VIDEO_HEIGHT = "Video.video_height";
 
-        private string VIDEO_CAPTION = "Video.caption";
-        private string VIDEO_USERNAME = "Video.userName";
-        private string VIDEO_PERMISSION = "Video.permission";
-        private string VIDEO_ASPECT_RATIO = "Video.aspectRatio";
+        private readonly string VIDEO_CAPTION = "Video.caption";
+        private readonly string VIDEO_USERNAME = "Video.userName";
+        private readonly string VIDEO_PERMISSION = "Video.permission";
+        private readonly string VIDEO_ASPECT_RATIO = "Video.aspectRatio";
 
         private VideoProvider _provider = null;
 

@@ -95,8 +95,8 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        private static SettingsPersisterHelper _settingsKey;
-        private static SettingsPersisterHelper _readSettingsKey;
+        private static readonly SettingsPersisterHelper _settingsKey;
+        private static readonly SettingsPersisterHelper _readSettingsKey;
 
         static WebProxySettings()
         {
@@ -135,6 +135,4 @@ namespace OpenLiveWriter.CoreServices
 
         #endregion
     }
-
-
 }

@@ -321,6 +321,7 @@ namespace OpenLiveWriter.CoreServices.Layout
                     using (Graphics g = c.CreateGraphics())
                         textOnly = Size.Ceiling(g.MeasureString(c.Text, c.Font));
                 }
+
                 measuredWidthPadding = prefSize.Width - textOnly.Width;
                 measuredHeightPadding = (prefSize.Height - textOnly.Height);
                 width -= measuredWidthPadding;

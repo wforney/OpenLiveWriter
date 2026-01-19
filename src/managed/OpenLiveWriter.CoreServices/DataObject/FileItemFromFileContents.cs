@@ -142,6 +142,7 @@ namespace OpenLiveWriter.CoreServices
                     contentsPath = Path.Combine(tempDirectory, FileHelper.GetValidFileName(this.fileDescriptor.fileName));
                     Write(contentsPath);
                 }
+
                 return contentsPath;
             }
         }
@@ -266,10 +267,9 @@ namespace OpenLiveWriter.CoreServices
                     // block in a single call (if we wanted to use managed file io
                     // methods we would have to copy the entire memory block into
                     // unmanaged memory first)
-                    uint bytesWritten;
                     bool success = Kernel32.WriteFile(
                         destination.SafeFileHandle, globalMem.Memory, globalMem.Size.ToUInt32(),
-                        out bytesWritten, IntPtr.Zero);
+                        out uint bytesWritten, IntPtr.Zero);
                     if (!success)
                     {
                         throw new Win32Exception(Marshal.GetLastWin32Error(),
@@ -288,11 +288,11 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Underlying OleDataObject that the FileContents will be fetched from
         /// </summary>
-        private OleDataObject oleDataObject;
+        private readonly OleDataObject oleDataObject;
 
         /// <summary>
         /// Index of file to be fetched
         /// </summary>
-        private int fileIndex;
+        private readonly int fileIndex;
     }
 }

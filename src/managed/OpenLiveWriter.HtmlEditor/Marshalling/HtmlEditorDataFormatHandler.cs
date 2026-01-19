@@ -35,6 +35,6 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         protected IHtmlMarshallingTarget EditorContext { get { return editorContext; } }
 
         // private members accessed via properties by subclasses
-        private IHtmlMarshallingTarget editorContext;
+        private readonly IHtmlMarshallingTarget editorContext;
     }
 }

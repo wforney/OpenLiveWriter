@@ -87,6 +87,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                         break;
                     }
                 }
+
                 if (itemToSelect != null)
                     SelectedItem = itemToSelect;
             }
@@ -121,13 +122,13 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             }
 
             public VEMapStyle MapStyle { get { return _mapStyle; } }
-            private VEMapStyle _mapStyle;
+            private readonly VEMapStyle _mapStyle;
 
             public Image Image { get { return _image; } }
-            private Image _image;
+            private readonly Image _image;
 
             public override string ToString() { return _caption; }
-            private string _caption;
+            private readonly string _caption;
 
             public override bool Equals(object obj) { return (obj as ComboItem).MapStyle == MapStyle; }
             public override int GetHashCode() { return MapStyle.GetHashCode(); }

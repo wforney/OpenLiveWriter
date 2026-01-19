@@ -93,5 +93,4 @@ namespace OpenLiveWriter.CoreServices.Settings
         /// <returns></returns>
         string[] GetSubSettings();
     }
-
 }

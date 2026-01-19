@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public WeblogConfigurationWizardPanelSharePointBasicInfo()
         {
@@ -94,17 +94,22 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 if (credentials == null)
                 {
-                    credentials = new TemporaryBlogCredentials();
-                    credentials.Username = "";
-                    credentials.Password = "";
+                    credentials = new TemporaryBlogCredentials
+                    {
+                        Username = "",
+                        Password = ""
+                    };
                 }
+
                 return credentials;
             }
             set
             {
-                credentials = new TemporaryBlogCredentials();
-                credentials.Username = value.Username;
-                credentials.Password = value.Password;
+                credentials = new TemporaryBlogCredentials
+                {
+                    Username = value.Username,
+                    Password = value.Password
+                };
             }
         }
         private TemporaryBlogCredentials credentials;
@@ -131,6 +136,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 ShowValidationError(textBoxHomepageUrl, MessageId.HomepageUrlRequired);
                 return false;
             }
+
             return true;
         }
 
@@ -146,6 +152,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -206,6 +213,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             // adds http:// if necessary
             HomepageUrl = HomepageUrl;
         }
-
     }
 }

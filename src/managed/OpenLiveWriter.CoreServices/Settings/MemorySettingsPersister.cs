@@ -12,8 +12,8 @@ namespace OpenLiveWriter.CoreServices.Settings
     public class MemorySettingsPersister : ISettingsPersister
     {
         private object defaultVal;
-        private Hashtable data;
-        private DefaultHashtable children;
+        private readonly Hashtable data;
+        private readonly DefaultHashtable children;
 
         public MemorySettingsPersister()
         {
@@ -109,6 +109,7 @@ namespace OpenLiveWriter.CoreServices.Settings
             {
                 names[i++] = key;
             }
+
             Array.Sort(names);
             return (string[])ArrayHelper.Compact(names);
         }

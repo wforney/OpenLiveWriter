@@ -42,9 +42,11 @@ namespace OpenLiveWriter.Mshtml
                             p.Right(true, markupContext);
                         currentElement = markupContext.Element;
                     }
+
                     if (currentElement != null)
                         document = (IHTMLDocument2)currentElement.document;
                 }
+
                 return document;
             }
         }
@@ -55,8 +57,7 @@ namespace OpenLiveWriter.Mshtml
         /// </summary>
         public IHTMLDocument2 GetOwningDoc()
         {
-            IHTMLDocument2 doc;
-            Container.OwningDoc(out doc);
+            Container.OwningDoc(out IHTMLDocument2 doc);
             return doc;
         }
 

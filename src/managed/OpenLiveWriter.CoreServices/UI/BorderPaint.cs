@@ -35,12 +35,12 @@ namespace OpenLiveWriter.CoreServices.UI
         private const int BOTTOMRIGHT = 8;
         private const int SLICECOUNT = BOTTOMRIGHT + 1;
 
-        private Bitmap _bitmap;
-        private bool _imageIsOwned;
-        private IntPtr _hBitmap;
-        private Rectangle[] _slices;
-        private Bitmap[] _sliceCache;
-        private BorderPaintMode _flags;
+        private readonly Bitmap _bitmap;
+        private readonly bool _imageIsOwned;
+        private readonly IntPtr _hBitmap;
+        private readonly Rectangle[] _slices;
+        private readonly Bitmap[] _sliceCache;
+        private readonly BorderPaintMode _flags;
         private ImageAttributes _imageAttributes;
 
         public BorderPaint(Bitmap image, bool imageIsOwned, BorderPaintMode flags, int vert1, int vert2, int horiz1, int horiz2)
@@ -124,6 +124,7 @@ namespace OpenLiveWriter.CoreServices.UI
                 if (_imageIsOwned)
                     _bitmap.Dispose();
             }
+
             GC.KeepAlive(this);
         }
 
@@ -238,6 +239,7 @@ namespace OpenLiveWriter.CoreServices.UI
                 if (pTarget != IntPtr.Zero)
                     g.ReleaseHdc(pTarget);
             }
+
             GC.KeepAlive(this);
         }
 
@@ -390,5 +392,4 @@ namespace OpenLiveWriter.CoreServices.UI
         /// </summary>
         PaintMiddleCenter = 8,
     }
-
 }

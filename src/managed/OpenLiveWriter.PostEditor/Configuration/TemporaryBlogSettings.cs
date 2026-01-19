@@ -31,17 +31,19 @@ namespace OpenLiveWriter.PostEditor.Configuration
         {
             using (BlogSettings blogSettings = BlogSettings.ForBlogId(blogId))
             {
-                TemporaryBlogSettings tempSettings = new TemporaryBlogSettings(blogId);
-                tempSettings.IsNewWeblog = false;
-                tempSettings.IsSpacesBlog = blogSettings.IsSpacesBlog;
-                tempSettings.IsSharePointBlog = blogSettings.IsSharePointBlog;
-                tempSettings.IsGoogleBloggerBlog = blogSettings.IsGoogleBloggerBlog;
-                tempSettings.IsStaticSiteBlog = blogSettings.IsStaticSiteBlog;
-                tempSettings.HostBlogId = blogSettings.HostBlogId;
-                tempSettings.BlogName = blogSettings.BlogName;
-                tempSettings.HomepageUrl = blogSettings.HomepageUrl;
-                tempSettings.ForceManualConfig = blogSettings.ForceManualConfig;
-                tempSettings.ManifestDownloadInfo = blogSettings.ManifestDownloadInfo;
+                TemporaryBlogSettings tempSettings = new TemporaryBlogSettings(blogId)
+                {
+                    IsNewWeblog = false,
+                    IsSpacesBlog = blogSettings.IsSpacesBlog,
+                    IsSharePointBlog = blogSettings.IsSharePointBlog,
+                    IsGoogleBloggerBlog = blogSettings.IsGoogleBloggerBlog,
+                    IsStaticSiteBlog = blogSettings.IsStaticSiteBlog,
+                    HostBlogId = blogSettings.HostBlogId,
+                    BlogName = blogSettings.BlogName,
+                    HomepageUrl = blogSettings.HomepageUrl,
+                    ForceManualConfig = blogSettings.ForceManualConfig,
+                    ManifestDownloadInfo = blogSettings.ManifestDownloadInfo
+                };
                 tempSettings.SetProvider(blogSettings.ProviderId, blogSettings.ServiceName, blogSettings.PostApiUrl, blogSettings.ClientType);
                 tempSettings.Credentials = blogSettings.Credentials;
                 tempSettings.LastPublishFailed = blogSettings.LastPublishFailed;
@@ -76,6 +78,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
                 {
                     tempSettings.TemplateFiles = editSettings.EditorTemplateHtmlFiles;
                 }
+
                 return tempSettings;
             }
         }
@@ -645,7 +648,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
         private string _serviceName = String.Empty;
         private string _clientType = String.Empty;
         private string _postApiUrl = String.Empty;
-        private TemporaryBlogCredentials _credentials = new TemporaryBlogCredentials();
+        private readonly TemporaryBlogCredentials _credentials = new TemporaryBlogCredentials();
         private bool _lastPublishFailed = false;
         private BlogEditingTemplateFile[] _templateFiles = new BlogEditingTemplateFile[0];
         private bool _isNewWeblog = true;
@@ -664,7 +667,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
         private BlogInfo[] _hostBlogs = new BlogInfo[] { };
         private FileUploadSupport _fileUploadSupport = FileUploadSupport.Weblog;
         private TemporaryFileUploadSettings _fileUploadSettings = new TemporaryFileUploadSettings();
-        private TemporaryFileUploadSettings _atomPublishingProtocolSettings = new TemporaryFileUploadSettings();
+        private readonly TemporaryFileUploadSettings _atomPublishingProtocolSettings = new TemporaryFileUploadSettings();
         private SettingsPersisterHelper _pluginSettings = new SettingsPersisterHelper(new MemorySettingsPersister());
         private BlogInfo[] _availableImageEndpoints;
         private bool _instrumentationOptIn = false;
@@ -828,7 +831,6 @@ namespace OpenLiveWriter.PostEditor.Configuration
             newSettings.CopyFrom(this);
             return newSettings;
         }
-
     }
 
     public class TemporaryBlogCredentials : IBlogCredentials
@@ -889,7 +891,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
             _values.Clear();
         }
 
-        private Hashtable _values = new Hashtable();
+        private readonly Hashtable _values = new Hashtable();
 
     }
 
@@ -926,7 +928,7 @@ namespace OpenLiveWriter.PostEditor.Configuration
             _values.Clear();
         }
 
-        private Hashtable _values = new Hashtable();
+        private readonly Hashtable _values = new Hashtable();
 
         public object Clone()
         {
@@ -937,8 +939,6 @@ namespace OpenLiveWriter.PostEditor.Configuration
 
             return newSettings;
         }
-
     }
-
 }
 

@@ -13,7 +13,7 @@ namespace OpenLiveWriter.CoreServices
     public class TransientFile : TransientFileSystemItem
     {
         private string name;
-        private Stream data;
+        private readonly Stream data;
 
         public TransientFile(string name, Stream data, bool allowUnicodeName)
         {

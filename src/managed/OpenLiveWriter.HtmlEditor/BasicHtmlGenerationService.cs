@@ -16,7 +16,7 @@ namespace OpenLiveWriter.HtmlEditor
     /// </summary>
     public class BasicHtmlGenerationService : IHtmlGenerationService
     {
-        private DefaultBlockElement _defaultBlockElement;
+        private readonly DefaultBlockElement _defaultBlockElement;
 
         public BasicHtmlGenerationService(DefaultBlockElement defaultBlockElement)
         {
@@ -44,6 +44,7 @@ namespace OpenLiveWriter.HtmlEditor
                         HtmlUtils.EscapeEntities(Path.GetFileNameWithoutExtension(file)));
                 }
             }
+
             return html.ToString();
         }
 
@@ -59,14 +60,17 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 link.Append(" target='_blank'");
             }
+
             if (String.Empty != linkTitle && null != linkTitle)
             {
                 link.Append(" title=\"{2}\"");
             }
+
             if (String.Empty != rel && null != rel)
             {
                 link.Append(" rel=\"{3}\"");
             }
+
             link.Append(">{1}</a>");
             return String.Format(CultureInfo.InvariantCulture, link.ToString(), url, linkText, linkTitle, rel);
         }
@@ -77,6 +81,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 html = new RelativeUrlReplacer(html, baseUrl).DoReplace();
             }
+
             return html;
         }
 
@@ -97,7 +102,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         public class RelativeUrlReplacer : LightWeightHTMLDocumentIterator
         {
-            private string _baseUrl;
+            private readonly string _baseUrl;
             private StringBuilder _htmlBuilder = new StringBuilder();
 
             public RelativeUrlReplacer(string html, string baseUrl) : base(html)
@@ -136,6 +141,7 @@ namespace OpenLiveWriter.HtmlEditor
                             attr.Value = UrlHelper.EscapeRelativeURL(_baseUrl, url);
                     }
                 }
+
                 base.OnBeginTag(tag);
             }
         }

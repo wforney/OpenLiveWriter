@@ -20,7 +20,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         #region Component Designer generated code
 
         private System.Windows.Forms.Label labelPanelName;
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         #endregion Component Designer generated code
 
@@ -71,6 +71,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -27,7 +27,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private ImageViewer _imageViewer;
 
@@ -101,6 +101,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

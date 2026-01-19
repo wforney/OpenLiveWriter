@@ -107,7 +107,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return m_handle; }
         }
-        private IntPtr m_handle;
+        private readonly IntPtr m_handle;
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return m_path; }
         }
-        private string m_path;
+        private readonly string m_path;
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return m_stream; }
         }
-        private Stream m_stream = null;
+        private readonly Stream m_stream = null;
     }
 
     /// <summary>
@@ -309,7 +309,6 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return m_storage; }
         }
-        private Storage m_storage = null;
+        private readonly Storage m_storage = null;
     }
-
 }

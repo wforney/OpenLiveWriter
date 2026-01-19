@@ -14,10 +14,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     internal delegate void ApplyDecoratorCallback();
     internal class ImageDecoratorEditorContextImpl : ImageDecoratorEditorContext
     {
-        ApplyDecoratorCallback _applyDecoratorCallback;
-        IProperties _settings;
-        ImagePropertiesInfo _imageProperties;
-        IUndoUnitFactory _undoHost;
+        readonly ApplyDecoratorCallback _applyDecoratorCallback;
+        readonly IProperties _settings;
+        readonly ImagePropertiesInfo _imageProperties;
+        readonly IUndoUnitFactory _undoHost;
         public ImageDecoratorEditorContextImpl(IProperties settings, ApplyDecoratorCallback applyDecoratorCallback, ImagePropertiesInfo imageProperties, IUndoUnitFactory undoHost, CommandManager commandManager)
         {
             _applyDecoratorCallback = applyDecoratorCallback;
@@ -86,7 +86,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         internal class ImageDecoratorUndoUnitAdapter : IUndoUnit, IImageDecoratorUndoUnit
         {
-            private IUndoUnit _undo;
+            private readonly IUndoUnit _undo;
             public ImageDecoratorUndoUnitAdapter(IUndoUnit undo)
             {
                 _undo = undo;
@@ -103,7 +103,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
         }
 
-        private CommandManager _commandManager;
+        private readonly CommandManager _commandManager;
         public CommandManager CommandManager
         {
             get

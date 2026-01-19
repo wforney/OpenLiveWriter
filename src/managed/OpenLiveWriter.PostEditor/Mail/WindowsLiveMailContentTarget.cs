@@ -107,5 +107,4 @@ namespace OpenLiveWriter.Mail
             }
         }
     }
-
 }

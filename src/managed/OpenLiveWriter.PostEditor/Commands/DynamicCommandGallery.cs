@@ -34,6 +34,7 @@ namespace OpenLiveWriter.PostEditor.Commands
             {
                 OnExecute(EventArgs.Empty);
             }
+
             return HRESULT.S_OK;
         }
 
@@ -66,6 +67,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                 sps.Add(PropertyKeys.CategoryId, new PropVariant(item.CategoryIndex));
                 return true;
             }
+
             return false;
         }
 
@@ -74,12 +76,12 @@ namespace OpenLiveWriter.PostEditor.Commands
             List<IUISimplePropertySet> list = new List<IUISimplePropertySet>();
             foreach (GalleryItem item in Items)
             {
-                SimplePropertySet sps;
-                if (LoadCommandSimplePropertySet(item, out sps))
+                if (LoadCommandSimplePropertySet(item, out SimplePropertySet sps))
                 {
                     list.Add(sps);
                 }
             }
+
             newValue.SetIUnknown(new BasicCollection(list));
         }
 

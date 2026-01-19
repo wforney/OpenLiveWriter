@@ -19,7 +19,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private GroupBox groupBoxProxy;
         private Panel panelProxySettings;
         private TextBox proxyPassword;
@@ -32,7 +32,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         private Label proxyServerLabel;
         private CheckBox proxyEnabled;
 
-        private WebProxyPreferences _webProxyPreferences;
+        private readonly WebProxyPreferences _webProxyPreferences;
 
         public WebProxyPreferencesPanel()
         {
@@ -91,6 +91,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                 if (proxyServer.Text == String.Empty)
                     proxyEnabled.Checked = false;
             }
+
             if (proxyServer.Text == String.Empty)
                 proxyEnabled.Checked = false;
 
@@ -165,6 +166,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

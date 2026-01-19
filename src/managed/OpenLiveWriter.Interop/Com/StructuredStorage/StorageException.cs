@@ -55,7 +55,7 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
                 return nativeErrorCode;
             }
         }
-        private int nativeErrorCode;
+        private readonly int nativeErrorCode;
 
         public const int NO_ERROR_CODE = 0;
 

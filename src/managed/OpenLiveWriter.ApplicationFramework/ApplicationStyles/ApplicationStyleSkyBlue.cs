@@ -12,7 +12,7 @@ namespace OpenLiveWriter.ApplicationFramework.ApplicationStyles
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ApplicationStyleSkyBlue()
         {
@@ -32,6 +32,7 @@ namespace OpenLiveWriter.ApplicationFramework.ApplicationStyles
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

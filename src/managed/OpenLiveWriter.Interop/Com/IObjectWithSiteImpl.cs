@@ -57,9 +57,8 @@ namespace OpenLiveWriter.Interop.Com
             if (m_IUnkSite != null)
             {
                 // manually call Marshal.QueryInterface to delegate the request
-                IntPtr pReturned;
                 IntPtr pUnk = Marshal.GetIUnknownForObject(m_IUnkSite);
-                Marshal.QueryInterface(pUnk, ref riid, out pReturned);
+                Marshal.QueryInterface(pUnk, ref riid, out IntPtr pReturned);
                 Marshal.Release(pUnk);
 
                 // set site if we got an interface returned

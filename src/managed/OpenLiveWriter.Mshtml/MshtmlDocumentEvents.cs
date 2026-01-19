@@ -670,6 +670,7 @@ namespace OpenLiveWriter.Mshtml
                         if (LostFocusEventHandler != null)
                             LostFocusEventHandler(this, EventArgs.Empty);
                     }
+
                     wasFocused = hasFocus;
                 }
             }
@@ -695,9 +696,11 @@ namespace OpenLiveWriter.Mshtml
                     {
                         supportsIE6Events = 0;
                     }
+
                     if (supportsIE6Events == 0)
                         Trace.WriteLine("Using IE6 event compatibility mode");
                 }
+
                 return supportsIE6Events == 1;
             }
         }

@@ -23,7 +23,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public BlogClientLoginDialog()
         {
@@ -50,6 +50,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -133,7 +134,6 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 Width += (blogClientLoginControl.Left - buttonOK.Left);
             }
-
         }
 
         public string UserName

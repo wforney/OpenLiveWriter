@@ -66,8 +66,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     mapForm.LoadMap(-0.3515603f, 0.3515625f, null, "r", 1, null);
                     if (mapForm.ShowDialog(dialogOwner) == DialogResult.OK)
                     {
-                        MapSettings settings = new MapSettings(content.Properties);
-                        settings.MapId = "map-" + Guid.NewGuid().ToString();
+                        MapSettings settings = new MapSettings(content.Properties)
+                        {
+                            MapId = "map-" + Guid.NewGuid().ToString()
+                        };
                         settings.UpdateSettings(mapForm.Latitude, mapForm.Longitude, mapForm.Reserved, mapForm.ZoomLevel, mapForm.MapStyle, mapForm.Pushpins, mapForm.BirdseyeScene);
                         _pluginOptions.DefaultDialogSize = mapForm.Size;
 
@@ -83,8 +85,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         private string GenerateHtml(ISmartContent content, bool editor, string blogId)
         {
-            MapSettings settings = new MapSettings(content.Properties);
-            settings.PublishTargetId = blogId;
+            MapSettings settings = new MapSettings(content.Properties)
+            {
+                PublishTargetId = blogId
+            };
 
             Uri imageUri = content.Files.GetUri(settings.ImageFileId);
 
@@ -126,6 +130,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                 //append the caption HTML
                 mapHtml += String.Format(CultureInfo.InvariantCulture, _pluginOptions.CaptionHtmlFormat, HtmlServices.HtmlEncode(settings.Caption), settings.MapId);
             }
+
             return mapHtml;
         }
 
@@ -140,6 +145,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
             {
                 anchorInnerHtml = mapAddress;
             }
+
             return anchorInnerHtml;
         }
 
@@ -162,8 +168,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         public override void OnResizing(ISmartContent content, Size newSize)
         {
-            MapSettings settings = new MapSettings(content.Properties);
-            settings.Size = newSize;
+            MapSettings settings = new MapSettings(content.Properties)
+            {
+                Size = newSize
+            };
         }
 
         public override void OnResizeComplete(ISmartContent content, Size newSize)

@@ -21,7 +21,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         private readonly static string SETTING_PADDING_BOTTOM = "microsoft.internal.paddingBottom";
         private readonly static string SETTING_PADDING_LEFT = "microsoft.internal.paddingLeft";
 
-        private IExtensionData _extensionData;
+        private readonly IExtensionData _extensionData;
 
         public SmartContent(IExtensionData extensionData)
         {
@@ -219,6 +219,5 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get { return _extensionData.Id; }
         }
-
     }
 }

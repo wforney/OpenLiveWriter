@@ -29,7 +29,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return FileHelper.StripInvalidChars(name); }
         }
-        private string name = null;
+        private readonly string name = null;
 
         /// <summary>
         /// Clsid of the file (defines the type of the file)

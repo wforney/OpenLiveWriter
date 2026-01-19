@@ -73,6 +73,7 @@ namespace OpenLiveWriter.CoreServices
                         {
                             action(args, true);
                         }
+
                         return;
                     }
                     finally
@@ -163,7 +164,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         internal class LaunchActionThreadWithState
         {
-            private string[] _args;
+            private readonly string[] _args;
             private readonly LaunchAction _launchAction;
             private bool _returnValue;
 

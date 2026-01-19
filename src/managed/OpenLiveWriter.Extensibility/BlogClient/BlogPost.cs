@@ -399,7 +399,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         public static readonly string PlainTextHorizontalLine = "--------------------------------------------------------------------------------"; // 80 dashes
         public static readonly string ExtendedEntryBreak = "<!--more-->";  //the more text comment
         public static readonly string ExtendedEntryBreakMoreText = "more"; //the value of the more text comment
-        private static Regex ExtendedEntryBreakRegex = new Regex("<!--more-->"); //regex for detecting the more text comment
+        private static readonly Regex ExtendedEntryBreakRegex = new Regex("<!--more-->"); //regex for detecting the more text comment
 
         public object Clone()
         {
@@ -559,9 +559,9 @@ namespace OpenLiveWriter.Extensibility.BlogClient
             return new PostIdAndNameField(_id, _name);
         }
 
-        private string _id = String.Empty;
-        private string _name = String.Empty;
-        private string _emptyFieldText = String.Empty;
+        private readonly string _id = String.Empty;
+        private readonly string _name = String.Empty;
+        private readonly string _emptyFieldText = String.Empty;
     }
 }
 

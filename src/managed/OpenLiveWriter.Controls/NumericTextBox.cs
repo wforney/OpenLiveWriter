@@ -62,6 +62,5 @@ namespace OpenLiveWriter.Controls
             // default processing
             base.WndProc(ref m);
         }
-
     }
 }

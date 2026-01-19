@@ -34,8 +34,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
-        private Kernel32.CodePageDelegate m_codePageDelegate;
+        private readonly System.ComponentModel.Container components = null;
+        private readonly Kernel32.CodePageDelegate m_codePageDelegate;
         private System.Windows.Forms.GroupBox groupBoxOptions;
         private System.Windows.Forms.Label lblScripts;
         private System.Windows.Forms.Label lblEmbeds;
@@ -44,7 +44,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         private System.Windows.Forms.GroupBox groupBoxXHTML;
         private System.Windows.Forms.Label labelXHTML;
         private System.Windows.Forms.ComboBox comboXHTML;
-        private ArrayList codepages = new ArrayList();
+        private readonly ArrayList codepages = new ArrayList();
 
         private SupportsFeature clientSupportsScripts;
         private SupportsFeature clientSupportsEmbeds;
@@ -255,6 +255,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             {
                 Debug.WriteLine("Error while getting system code pages: " + ex.ToString());
             }
+
             return true;
         }
 
@@ -270,6 +271,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -438,6 +440,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.CHARACTER_SET, selected.ItemValue.WebName);
                 }
             }
+
             TemporaryBlogSettingsModified = true;
         }
 
@@ -450,6 +453,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             {
                 TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_SCRIPTS, selected.OptionVal);
             }
+
             TemporaryBlogSettingsModified = true;
         }
 
@@ -461,6 +465,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
             {
                 TemporaryBlogSettings.UserOptionOverrides.Add(BlogClientOptions.SUPPORTS_EMBEDS, selected.OptionVal);
             }
+
             TemporaryBlogSettingsModified = true;
         }
 
@@ -473,6 +478,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 bool requireXHTML = comboXHTML.SelectedIndex == 2;
                 TemporaryBlogSettings.UserOptionOverrides[BlogClientOptions.REQUIRES_XHTML] = requireXHTML;
             }
+
             TemporaryBlogSettingsModified = true;
         }
 
@@ -522,6 +528,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                         return true;
                     return newOne.ItemValue.Equals(ItemValue);
                 }
+
                 return false;
             }
 
@@ -584,6 +591,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     SupportsOptionItem newOne = (SupportsOptionItem)obj;
                     return newOne.ItemValue.Equals(ItemValue);
                 }
+
                 return false;
             }
 

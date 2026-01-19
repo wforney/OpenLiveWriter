@@ -16,11 +16,11 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
     /// </summary>
     internal class SupportingFileService : ISupportingFileService
     {
-        private Hashtable _supportingFilesByUri;
-        private Hashtable _supportingFilesById;
-        private Hashtable _factoriesById;
-        private Hashtable _fileNameUniqueTokenTable;
-        private BlogPostSupportingFileStorage _fileStorage;
+        private readonly Hashtable _supportingFilesByUri;
+        private readonly Hashtable _supportingFilesById;
+        private readonly Hashtable _factoriesById;
+        private readonly Hashtable _fileNameUniqueTokenTable;
+        private readonly BlogPostSupportingFileStorage _fileStorage;
         public SupportingFileService(BlogPostSupportingFileStorage fileStorage)
         {
             _fileStorage = fileStorage;
@@ -62,6 +62,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
                 _factoriesById[fileFactory.FileId] = fileFactory;
                 file = fileFactory.CreateSupportingFile(sourceUri, fileName, CreateUniqueFileNameToken(fileName + "_linked"), false);
             }
+
             return file;
         }
 
@@ -153,7 +154,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             string uniqueFileName = String.Format(CultureInfo.InvariantCulture, uniqueFileNameFormat, fileNameWithoutExtension, uniqueToken, fileExtension);
             return uniqueFileName;
         }
-        string uniqueFileNameFormat = "{0}_{1}{2}";
+        readonly string uniqueFileNameFormat = "{0}_{1}{2}";
 
         internal string CreateUniqueFileNameToken(string fileName)
         {

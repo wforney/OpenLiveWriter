@@ -41,6 +41,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             if (sb == null)
                 return xmlString;
             else
@@ -70,6 +71,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 reader = new SafeXmlTextReader(reader);
             }
+
             return reader;
         }
 
@@ -79,7 +81,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         private class SafeXmlTextReader : TextReader
         {
-            TextReader _reader;
+            readonly TextReader _reader;
             public SafeXmlTextReader(TextReader reader)
             {
                 _reader = reader;
@@ -92,6 +94,7 @@ namespace OpenLiveWriter.CoreServices
                     //this is an invalid character, so replace it with whitespace (since that is almost always safe)
                     currentReadVal = ' ';
                 }
+
                 return currentReadVal;
             }
             int currentReadVal = -2;

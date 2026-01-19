@@ -33,8 +33,8 @@ namespace OpenLiveWriter.Api
         /// <param name="previewLink">Link to navigate to when users click the preview image.</param>
         public AdaptiveHtmlObject(string objectHtml, string previewLink)
         {
-            _objectHtml = String.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
-            _previewLink = previewLink;
+            _objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
+            PreviewLink = previewLink;
         }
 
         /// <summary>
@@ -45,30 +45,20 @@ namespace OpenLiveWriter.Api
         /// <param name="previewLink">Link to navigate to when users click the preview image.</param>
         public AdaptiveHtmlObject(string objectHtml, string previewImageSrc, string previewLink)
         {
-            _objectHtml = String.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
-            _previewLink = previewLink;
-            _previewImageSrc = previewImageSrc;
+            _objectHtml = string.Format(CultureInfo.InvariantCulture, "<div>{0}</div>", objectHtml);
+            PreviewLink = previewLink;
+            PreviewImageSrc = previewImageSrc;
         }
 
         /// <summary>
         /// HREF for image file to use as a preview for the object tag.
         /// </summary>
-        public string PreviewImageSrc
-        {
-            get { return _previewImageSrc; }
-            set { _previewImageSrc = value; }
-        }
-        private string _previewImageSrc;
+        public string PreviewImageSrc { get; set; }
 
         /// <summary>
         /// Link to navigate to when users click the preview image.
         /// </summary>
-        public string PreviewLink
-        {
-            get { return _previewLink; }
-            set { _previewLink = value; }
-        }
-        private string _previewLink;
+        public string PreviewLink { get; set; }
 
         /// <summary>
         /// <para>Size which the preview-image should be rendered at.</para>
@@ -86,12 +76,7 @@ namespace OpenLiveWriter.Api
         /// <summary>
         /// Open the preview link in a new browser window (defaults to false).
         /// </summary>
-        public bool OpenPreviewInNewWindow
-        {
-            get { return _openPreviewInNewWindow; }
-            set { _openPreviewInNewWindow = value; }
-        }
-        private bool _openPreviewInNewWindow = false;
+        public bool OpenPreviewInNewWindow { get; set; } = false;
 
         /// <summary>
         /// Generate the specified type of Html.
@@ -116,7 +101,7 @@ namespace OpenLiveWriter.Api
 
         private string GeneratePreviewHtml()
         {
-            return GenerateHtml(String.Empty);
+            return GenerateHtml(string.Empty);
         }
 
         private string GenerateAdaptiveHtml()
@@ -128,9 +113,9 @@ namespace OpenLiveWriter.Api
             string jsEscapedHtmlContent = LiteralElementMethods.JsEscape(_objectHtml, '"');
 
             // generate and html escape the onLoad attribute
-            string onLoadScript = String.Format(CultureInfo.InvariantCulture, "var downlevelDiv = document.getElementById('{0}'); downlevelDiv.innerHTML = \"{1}\";", containerId, jsEscapedHtmlContent);
+            string onLoadScript = string.Format(CultureInfo.InvariantCulture, "var downlevelDiv = document.getElementById('{0}'); downlevelDiv.innerHTML = \"{1}\";", containerId, jsEscapedHtmlContent);
             onLoadScript = HtmlServices.HtmlEncode(onLoadScript);
-            string onLoadAttribute = String.Format(CultureInfo.InvariantCulture, "onload=\"{0}\"", onLoadScript);
+            string onLoadAttribute = string.Format(CultureInfo.InvariantCulture, "onload=\"{0}\"", onLoadScript);
 
             // generate the upgradable image html
             StringBuilder downgradableHtml = new StringBuilder();
@@ -143,13 +128,13 @@ namespace OpenLiveWriter.Api
         private string GenerateHtml(string onLoadAttribute)
         {
             // see if the caller wants a new window
-            string newWindowAttribute = OpenPreviewInNewWindow ? "target=\"_new\"" : String.Empty;
+            string newWindowAttribute = OpenPreviewInNewWindow ? "target=\"_new\"" : string.Empty;
 
             // see if the user has requested a size override
-            string imageHtmlSize = !PreviewImageSize.IsEmpty ? String.Format(CultureInfo.InvariantCulture, "width=\"{0}\" height=\"{1}\"", PreviewImageSize.Width, PreviewImageSize.Height) : String.Empty;
+            string imageHtmlSize = !PreviewImageSize.IsEmpty ? string.Format(CultureInfo.InvariantCulture, "width=\"{0}\" height=\"{1}\"", PreviewImageSize.Width, PreviewImageSize.Height) : string.Empty;
 
             // return the preview html
-            return String.Format(CultureInfo.InvariantCulture, "<div><a href=\"{0}\" {1}><img src=\"{2}\" style=\"border-style: none\"  galleryimg=\"no\" {3} {4} alt=\"\"></a></div>",
+            return string.Format(CultureInfo.InvariantCulture, "<div><a href=\"{0}\" {1}><img src=\"{2}\" style=\"border-style: none\"  galleryimg=\"no\" {3} {4} alt=\"\"></a></div>",
                                  HtmlUtils.EscapeEntities(PreviewLink),
                                  newWindowAttribute,
                                  HtmlUtils.EscapeEntities(PreviewImageSrc),
@@ -158,7 +143,7 @@ namespace OpenLiveWriter.Api
 
         }
 
-        private string _objectHtml;
+        private readonly string _objectHtml;
     }
 
     /// <summary>

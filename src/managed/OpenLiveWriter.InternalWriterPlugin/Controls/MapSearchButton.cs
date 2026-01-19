@@ -20,5 +20,4 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
             this.Cursor = Cursors.Hand;
         }
     }
-
 }

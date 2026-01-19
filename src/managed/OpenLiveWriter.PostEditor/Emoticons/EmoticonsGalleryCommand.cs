@@ -16,8 +16,8 @@ namespace OpenLiveWriter.PostEditor.Emoticons
         private const int RecentIndex = 0;
         private const int PopularIndex = 1;
 
-        private IBlogPostImageEditingContext _imageEditingContext;
-        private List<GalleryItem> recentEmoticonsGalleryItems = new List<GalleryItem>();
+        private readonly IBlogPostImageEditingContext _imageEditingContext;
+        private readonly List<GalleryItem> recentEmoticonsGalleryItems = new List<GalleryItem>();
 
         public EmoticonsGalleryCommand(CommandId commandId, IBlogPostImageEditingContext imageEditingContext)
             : base(commandId, false)
@@ -60,5 +60,4 @@ namespace OpenLiveWriter.PostEditor.Emoticons
             OnStateChanged(EventArgs.Empty);
         }
     }
-
 }

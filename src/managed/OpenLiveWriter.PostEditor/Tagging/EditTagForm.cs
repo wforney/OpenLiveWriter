@@ -69,7 +69,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public EditTagForm()
         {
@@ -134,6 +134,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
                 LayoutHelper.NaturalizeHeightAndDistribute(2, label2, textBoxPreview);
             }
+
             Height += panelDetails.Height - origHeight;
 
             LayoutHelper.FixupOKCancel(buttonOk, buttonCancel);
@@ -153,6 +154,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -439,6 +441,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     _captionText = textBoxCaption.Text;
                 textBoxCaption.Text = textBoxName.Text + " " + _captionText;
             }
+
             GeneratePreview();
         }
 

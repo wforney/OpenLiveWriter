@@ -20,6 +20,7 @@ namespace LocUtil
             if (skipFirstLine)
             {
                 while (NextWord() != null) { }
+
                 NextLine();
             }
         }
@@ -76,11 +77,11 @@ namespace LocUtil
                                 throw new ArgumentException("Malformed CSV: unexpected character after string \"" + sb.ToString() + "\"");
                         }
                     }
-
                 }
                 else
                     sb.Append((char)c);
             }
+
             Debug.Fail("Unterminated quoted string: " + sb.ToString());
             return sb.ToString();
         }
@@ -149,7 +150,7 @@ namespace LocUtil
 
         private class LineEnumerator : IEnumerator
         {
-            CsvParser parent;
+            readonly CsvParser parent;
             string[] line;
 
             public LineEnumerator(CsvParser parent)

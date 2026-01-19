@@ -19,9 +19,9 @@ namespace OpenLiveWriter.HtmlEditor
     /// </summary>
     internal class HtmlEditorSelection : IHtmlEditorSelection
     {
-        IHTMLDocument2 _document;
-        MshtmlEditor _editor;
-        MshtmlMarkupServices MarkupServices;
+        readonly IHTMLDocument2 _document;
+        readonly MshtmlEditor _editor;
+        readonly MshtmlMarkupServices MarkupServices;
         public HtmlEditorSelection(MshtmlEditor editor, IHTMLDocument2 document)
         {
             _document = document;
@@ -273,6 +273,7 @@ namespace OpenLiveWriter.HtmlEditor
                                                         editableRange.Start);
                 selection.Collapse(true);
             }
+
             selection.ToTextRange().select();
             return selection;
         }
@@ -285,6 +286,7 @@ namespace OpenLiveWriter.HtmlEditor
                 if (selectedRange.IsEmpty() || MarkupHelpers.GetEditableRange(selectedRange.Start.CurrentScope, MarkupServices) != null)
                     return true;
             }
+
             return false;
         }
 

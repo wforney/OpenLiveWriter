@@ -54,16 +54,17 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 result = CredentialsPromptResult.Abort;
             }
+
             return result;
         }
 
         private class PromptHelper
         {
-            private IWin32Window _owner;
+            private readonly IWin32Window _owner;
             private string _username;
             private string _password;
             private CredentialsPromptResult _result;
-            private ICredentialsDomain _domain;
+            private readonly ICredentialsDomain _domain;
             public PromptHelper(IWin32Window owner, string username, string password, ICredentialsDomain domain)
             {
                 _owner = owner;

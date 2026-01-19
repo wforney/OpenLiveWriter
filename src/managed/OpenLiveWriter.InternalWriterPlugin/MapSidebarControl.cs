@@ -23,7 +23,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
     {
         private MapSettings _mapSettings;
         private System.ComponentModel.IContainer components;
-        private ISmartContentEditorSite _contentEditorSite;
+        private readonly ISmartContentEditorSite _contentEditorSite;
 
         private SectionHeaderControl headerLayout;
         private System.Windows.Forms.Label labelTextWrapping;
@@ -47,7 +47,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         private MapSidebarControl.MarginsComboBox comboBoxMargins;
         private Label labelMargins;
 
-        private MapOptions _mapOptions;
+        private readonly MapOptions _mapOptions;
 
         public MapSidebarControl(MapOptions mapOptions, ISmartContentEditorSite contentEditorSite)
         {
@@ -280,6 +280,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -317,6 +318,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                             break;
                         }
                     }
+
                     if (itemToSelect != null)
                         SelectedItem = itemToSelect;
                 }
@@ -349,13 +351,13 @@ namespace OpenLiveWriter.InternalWriterPlugin
                 }
 
                 public Alignment Alignment { get { return _alignment; } }
-                private Alignment _alignment;
+                private readonly Alignment _alignment;
 
                 public Image Image { get { return _image; } }
-                private Image _image;
+                private readonly Image _image;
 
                 public override string ToString() { return _caption; }
-                private string _caption;
+                private readonly string _caption;
 
                 public override bool Equals(object obj) { return (obj as ComboItem).Alignment == Alignment; }
                 public override int GetHashCode() { return Alignment.GetHashCode(); }
@@ -699,6 +701,5 @@ namespace OpenLiveWriter.InternalWriterPlugin
             if (upDown != null)
                 upDown.Select(0, upDown.Text.Length);
         }
-
     }
 }

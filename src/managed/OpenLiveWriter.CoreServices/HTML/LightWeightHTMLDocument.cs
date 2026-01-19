@@ -37,12 +37,13 @@ namespace OpenLiveWriter.CoreServices
                     if (_name == string.Empty)
                         _name = Url;
                 }
+
                 return _name;
             }
         }
         private string _name;
-        private string _tagName;
-        private string _url;
+        private readonly string _tagName;
+        private readonly string _url;
 
         public UrlInfo(string url, string tagName) : this(null, url, tagName)
         {
@@ -58,6 +59,7 @@ namespace OpenLiveWriter.CoreServices
                 _name = _name.Replace("\n", " ");
                 _name = _name.Replace("\r", " ");
             }
+
             _url = url;
             _tagName = tagName;
         }
@@ -69,7 +71,7 @@ namespace OpenLiveWriter.CoreServices
         {
             _beginTag = tag;
         }
-        private BeginTag _beginTag = null;
+        private readonly BeginTag _beginTag = null;
 
         public string Name
         {
@@ -260,14 +262,12 @@ namespace OpenLiveWriter.CoreServices
             // Get the IOleContainer for the for the html document (this requires that
             // the document is the root document in the browser)
             IOleContainer oleContainer = (IOleContainer)htmlDocument;
-            IEnumUnknown enumUnknown;
 
             // Enumerate the controls in the browser
-            oleContainer.EnumObjects(OLECONTF.EMBEDDINGS, out enumUnknown);
+            oleContainer.EnumObjects(OLECONTF.EMBEDDINGS, out IEnumUnknown enumUnknown);
 
             // Iterate through the controls
-            object unknown;
-            for (int i = 0; HRESULT.S_OK == enumUnknown.Next(1, out unknown, IntPtr.Zero); i++)
+            for (int i = 0; HRESULT.S_OK == enumUnknown.Next(1, out object unknown, IntPtr.Zero); i++)
             {
                 // Only subframes should cast to IWebBrowser2
                 IWebBrowser2 webBrowser = unknown as IWebBrowser2;
@@ -299,6 +299,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             return (LightWeightHTMLDocument[])frameLightWeightDocuments.ToArray(typeof(LightWeightHTMLDocument));
         }
 
@@ -311,7 +312,7 @@ namespace OpenLiveWriter.CoreServices
                 return new LightWeightTag[0];
         }
 
-        private Hashtable _tagTable = new Hashtable();
+        private readonly Hashtable _tagTable = new Hashtable();
 
         public LightWeightHTMLDocument[] Frames
         {
@@ -406,7 +407,7 @@ namespace OpenLiveWriter.CoreServices
                 return _name;
             }
         }
-        private string _name = null;
+        private readonly string _name = null;
 
         public bool HasFramesOrStyles
         {
@@ -420,6 +421,7 @@ namespace OpenLiveWriter.CoreServices
                                             GetTagsByName(HTMLTokens.Link).Length > 0);
                     _hasFramesOrStylesInit = true;
                 }
+
                 return _hasFramesOrStyles;
             }
         }
@@ -494,10 +496,11 @@ namespace OpenLiveWriter.CoreServices
                     _resourceUrlInfos.AddRange(urls);
                     _generated = true;
                 }
+
                 return (UrlInfo[])_resourceUrlInfos.ToArray(typeof(UrlInfo));
             }
         }
-        private ArrayList _resourceUrlInfos = new ArrayList();
+        private readonly ArrayList _resourceUrlInfos = new ArrayList();
         private bool _generated = false;
 
         public void AddReference(UrlInfo urlInfo)
@@ -660,8 +663,8 @@ namespace OpenLiveWriter.CoreServices
                     else
                         _collectingForTag = currentTag;
                 }
-
             }
+
             base.OnBeginTag(tag);
         }
         private bool _nextTextIsTitleText = false;
@@ -680,6 +683,7 @@ namespace OpenLiveWriter.CoreServices
                         _collectingForTagDepth--;
                 }
             }
+
             base.OnEndTag(tag);
         }
 
@@ -690,6 +694,7 @@ namespace OpenLiveWriter.CoreServices
                 _title = HttpUtility.HtmlDecode(text.ToString());
                 _nextTextIsTitleText = false;
             }
+
             if (_collectingForTag != null)
                 _collectingForTag.Name = _collectingForTag.Name + text.RawText;
             base.OnText(text);
@@ -700,14 +705,14 @@ namespace OpenLiveWriter.CoreServices
             _literalUrlInfos.Add(new UrlInfo(styleUrl.LiteralText, HTMLTokens.Style));
             base.OnStyleUrl(styleUrl);
         }
-        private ArrayList _literalUrlInfos = new ArrayList();
+        private readonly ArrayList _literalUrlInfos = new ArrayList();
 
         protected override void OnStyleImport(StyleImport styleImport)
         {
             _styleImports.Add(new UrlInfo(styleImport.LiteralText, HTMLTokens.Import));
             base.OnStyleImport(styleImport);
         }
-        private ArrayList _styleImports = new ArrayList();
+        private readonly ArrayList _styleImports = new ArrayList();
 
         private ArrayList GetUrlInfosForTable(Hashtable elementTable)
         {
@@ -727,6 +732,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             return urlInfos;
         }
 
@@ -796,7 +802,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_resourceElements;
             }
         }
-        private static Hashtable m_resourceElements = null;
+        private static readonly Hashtable m_resourceElements = null;
 
         public static Hashtable AnchorElements
         {
@@ -805,7 +811,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_anchors;
             }
         }
-        private static Hashtable m_anchors = null;
+        private static readonly Hashtable m_anchors = null;
 
         /// <summary>
         /// User visible elements are references in a page that are visible to a user
@@ -817,7 +823,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_userVisibleElements;
             }
         }
-        private static Hashtable m_userVisibleElements = null;
+        private static readonly Hashtable m_userVisibleElements = null;
 
         /// <summary>
         /// Non resource elements are elements that cannot be downloaded when a page or snippet is captured
@@ -829,7 +835,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_nonResourceElements;
             }
         }
-        private static Hashtable m_nonResourceElements = null;
+        private static readonly Hashtable m_nonResourceElements = null;
 
         public static Hashtable FrameElements
         {
@@ -838,7 +844,7 @@ namespace OpenLiveWriter.CoreServices
                 return _frameElements;
             }
         }
-        private static Hashtable _frameElements = null;
+        private static readonly Hashtable _frameElements = null;
 
         public static ArrayList ParamsUrlElements
         {
@@ -847,7 +853,7 @@ namespace OpenLiveWriter.CoreServices
                 return _paramsUrlElements;
             }
         }
-        private static ArrayList _paramsUrlElements = null;
+        private static readonly ArrayList _paramsUrlElements = null;
 
         public static ArrayList LinksUrlElements
         {
@@ -856,7 +862,7 @@ namespace OpenLiveWriter.CoreServices
                 return _linkUrlElements;
             }
         }
-        private static ArrayList _linkUrlElements = null;
+        private static readonly ArrayList _linkUrlElements = null;
 
         public static Hashtable AllUrlElements
         {
@@ -865,6 +871,6 @@ namespace OpenLiveWriter.CoreServices
                 return _allUrlElements;
             }
         }
-        private static Hashtable _allUrlElements = null;
+        private static readonly Hashtable _allUrlElements = null;
     }
 }

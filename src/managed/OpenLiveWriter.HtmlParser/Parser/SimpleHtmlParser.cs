@@ -18,7 +18,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
     /// </summary>
     public class SimpleHtmlParser : IElementSource
     {
-        private bool supportTrailingEnd = false;
+        private readonly bool supportTrailingEnd = false;
 
         private readonly Stack<Element> elementStack = new Stack<Element>(5);
         private readonly List<Element> peekElements = new List<Element>();
@@ -68,12 +68,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         {
             get
             {
-                if (peekElements.Count != 0)
-                    return peekElements[0].Offset;
-                if (elementStack.Count != 0)
-                    return elementStack.Peek().Offset;
-                else
-                    return pos;
+                return peekElements.Count == 0 ? elementStack.Count == 0 ? pos : elementStack.Peek().Offset : peekElements[0].Offset;
             }
         }
 
@@ -83,16 +78,14 @@ namespace OpenLiveWriter.HtmlParser.Parser
             while (peekElements.Count <= offset && (e = Next(false)) != null)
                 peekElements.Add(e);
 
-            if (peekElements.Count > offset)
-                return peekElements[offset];
-            else
-                return null;
+            return peekElements.Count > offset ? peekElements[offset] : null;
         }
 
         public Element Next()
         {
             return Next(true);
         }
+
         /// <summary>
         /// Retrieves the next element from the stream, or null
         /// if the end of the stream has been reached.
@@ -132,10 +125,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 if (pos >= dataLen)
                 {
                     // EOF has been reached.
-                    if (tokenStart != pos)
-                        return new Text(data, tokenStart, pos - tokenStart);
-                    else
-                        return null;
+                    return tokenStart == pos ? (Element)null : new Text(data, tokenStart, pos - tokenStart);
                 }
 
                 // We started parsing right on a tag-looking thing.  Try
@@ -144,9 +134,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
                 int oldPos = pos;
 
-                Element element;
-                EndTag trailingEnd;
-                int len = ParseMarkup(out element, out trailingEnd);
+                int len = ParseMarkup(out Element element, out EndTag trailingEnd);
                 if (len >= 0)
                 {
                     pos += len;
@@ -156,13 +144,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         // empty-element tag detected, add implicit end tag
                         elementStack.Push(trailingEnd);
                     }
-                    else if (element is BeginTag)
+                    else if (element is BeginTag beginTag)
                     {
                         // look for <script> or <style> body
 
                         Regex consumeTextUntil = null;
 
-                        BeginTag tag = (BeginTag)element;
+                        BeginTag tag = beginTag;
                         if (tag.NameEquals("script"))
                             consumeTextUntil = endScript;
                         else if (tag.NameEquals("style"))
@@ -213,16 +201,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 {
                     break;
                 }
-                if (el is BeginTag && ((BeginTag)el).NameEquals(endTagName))
+
+                if (el is BeginTag beginTag && beginTag.NameEquals(endTagName))
                 {
                     tagCount++;
                 }
-                else if (el is EndTag && ((EndTag)el).NameEquals(endTagName))
+                else if (el is EndTag endTag && endTag.NameEquals(endTagName))
                 {
                     if (--tagCount == 0)
                         break;
                 }
-                else if (el is Text)
+                else if (el is Text text)
                 {
                     // TODO: Instead of adding a single space
                     // between text nodes, we could add the appropriate space as
@@ -234,7 +223,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                     // buf before returning.
                     if (buf.Length != 0)
                         buf.Append(' ');
-                    buf.Append(((Text)el).ToString());
+                    buf.Append(text.ToString());
                 }
             }
 
@@ -261,15 +250,17 @@ namespace OpenLiveWriter.HtmlParser.Parser
                 {
                     break;
                 }
-                if (el is BeginTag && ((BeginTag)el).NameEquals(endTagName))
+
+                if (el is BeginTag beginTag && beginTag.NameEquals(endTagName))
                 {
                     tagCount++;
                 }
-                else if (el is EndTag && ((EndTag)el).NameEquals(endTagName))
+                else if (el is EndTag endTag && endTag.NameEquals(endTagName))
                 {
                     if (--tagCount == 0)
                         break;
                 }
+
                 buf.Append(data, el.Offset, el.Length);
             }
 
@@ -340,6 +331,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                         if (supportTrailingEnd)
                             trailingEnd = new EndTag(data, tagPos, 0, tagName, true);
                     }
+
                     break;
                 }
 
@@ -418,14 +410,14 @@ namespace OpenLiveWriter.HtmlParser.Parser
             int end = match.Success ? match.Index : data.Length;
 
             // HACK: this code should not be aware of parser types
-            IElementSource source = (stopAt == endScript) ? (IElementSource)new JavascriptParser(data, offset, end - offset) : (IElementSource)new CssParser(data, offset, end - offset);
+            IElementSource source = (stopAt == endScript) ? new JavascriptParser(data, offset, end - offset) : (IElementSource)new CssParser(data, offset, end - offset);
             Stack stack = new Stack();
             Element element;
-            int last = pos;
             while (null != (element = source.Next()))
             {
                 stack.Push(element);
             }
+
             foreach (Element el in stack)
             {
                 elementStack.Push(el);
@@ -476,10 +468,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
                     PerformMatch(pos);
                 }
 
-                if (lastMatch.Success && pos == lastMatch.Index)
-                    return lastMatch;
-                else
-                    return null;
+                return lastMatch.Success && pos == lastMatch.Index ? lastMatch : null;
             }
 
             private void PerformMatch(int pos)
@@ -506,16 +495,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
     internal class LazySubstring
     {
         private readonly string baseString;
-        private readonly int offset;
-        private readonly int length;
-
         private string substring;
 
         public LazySubstring(string baseString, int offset, int length)
         {
             this.baseString = baseString;
-            this.offset = offset;
-            this.length = length;
+            Offset = offset;
+            Length = length;
         }
 
         public string Value
@@ -523,28 +509,18 @@ namespace OpenLiveWriter.HtmlParser.Parser
             get
             {
                 if (substring == null)
-                    substring = baseString.Substring(offset, length);
+                    substring = baseString.Substring(Offset, Length);
                 return substring;
             }
         }
 
-        public int Offset
-        {
-            get { return offset; }
-        }
+        public int Offset { get; }
 
-        public int Length
-        {
-            get { return length; }
-        }
+        public int Length { get; }
 
         public static LazySubstring MaybeCreate(string val)
         {
-            if (val == null)
-                return null;
-            else
-                return new LazySubstring(val, 0, val.Length);
+            return val == null ? null : new LazySubstring(val, 0, val.Length);
         }
     }
-
 }

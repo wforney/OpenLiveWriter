@@ -50,15 +50,18 @@ namespace OpenLiveWriter.FileDestinations
             {
                 return null;
             }
-            DestinationProfile profile = new DestinationProfile();
-            profile.Id = key;
-            profile.Name = settings.GetString(PROFILE_NAME_KEY, "");
-            profile.WebsiteURL = settings.GetString(PROFILE_WEBSITE_URL_KEY, "");
-            profile.FtpServer = settings.GetString(PROFILE_FTP_SERVER_KEY, "");
-            profile.UserName = settings.GetString(PROFILE_FTP_USER_KEY, "");
-            profile.FtpPublishPath = settings.GetString(PROFILE_FTP_PUBLISH_DIR_KEY, "");
-            profile.LocalPublishPath = settings.GetString(PROFILE_PUBLISH_DIR_KEY, "");
-            profile.Type = (DestinationProfile.DestType)settings.GetInt32(PROFILE_DESTINATION_TYPE_KEY, 0);
+
+            DestinationProfile profile = new DestinationProfile
+            {
+                Id = key,
+                Name = settings.GetString(PROFILE_NAME_KEY, ""),
+                WebsiteURL = settings.GetString(PROFILE_WEBSITE_URL_KEY, ""),
+                FtpServer = settings.GetString(PROFILE_FTP_SERVER_KEY, ""),
+                UserName = settings.GetString(PROFILE_FTP_USER_KEY, ""),
+                FtpPublishPath = settings.GetString(PROFILE_FTP_PUBLISH_DIR_KEY, ""),
+                LocalPublishPath = settings.GetString(PROFILE_PUBLISH_DIR_KEY, ""),
+                Type = (DestinationProfile.DestType)settings.GetInt32(PROFILE_DESTINATION_TYPE_KEY, 0)
+            };
 
             //load the decrypted password
             try
@@ -129,6 +132,7 @@ namespace OpenLiveWriter.FileDestinations
                 {
                     profiles[i] = loadProfile(keys[i]);
                 }
+
                 return profiles;
             }
         }
@@ -179,9 +183,8 @@ namespace OpenLiveWriter.FileDestinations
             {
                 return ApplicationEnvironment.UserSettingsRoot;
             }
-
         }
-        private string _destinationKey;
+        private readonly string _destinationKey;
 
         #endregion
 
@@ -205,5 +208,4 @@ namespace OpenLiveWriter.FileDestinations
         #endregion
 
     }
-
 }

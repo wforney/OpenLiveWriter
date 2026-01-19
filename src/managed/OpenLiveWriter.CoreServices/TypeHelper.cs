@@ -22,6 +22,7 @@ namespace OpenLiveWriter.CoreServices
 
                 toCheck = toCheck.BaseType;
             }
+
             return false;
         }
     }

@@ -50,6 +50,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                 canceled = true;
                 Monitor.Pulse(bufferLock);
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -86,8 +87,10 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     {
                         return;
                     }
+
                     Monitor.Pulse(bufferLock);
                 }
+
                 Thread.Sleep(10);
             }
         }
@@ -164,6 +167,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                                     streamWriter.Write(le.Value.ToString());
                                 }
                             }
+
                             break; // writes succeeded, don't try again
                         }
                         catch
@@ -200,7 +204,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
 
     public class CsvLogEntry
     {
-        private string[] words;
+        private readonly string[] words;
 
         public CsvLogEntry(params string[] words)
         {
@@ -215,5 +219,4 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             return StringHelper.Join(escaped, ",") + "\r\n";
         }
     }
-
 }

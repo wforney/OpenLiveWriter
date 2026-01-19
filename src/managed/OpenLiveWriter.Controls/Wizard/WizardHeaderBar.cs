@@ -23,9 +23,9 @@ namespace OpenLiveWriter.Controls.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
-        private HeaderBarUITheme _uiTheme;
+        private readonly HeaderBarUITheme _uiTheme;
         public WizardHeaderBar()
         {
             // This call is required by the Windows.Forms Form Designer.
@@ -47,6 +47,7 @@ namespace OpenLiveWriter.Controls.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -178,7 +179,7 @@ namespace OpenLiveWriter.Controls.Wizard
 
         private class HeaderBarUITheme : ControlUITheme
         {
-            WizardHeaderBar _headerBar;
+            readonly WizardHeaderBar _headerBar;
             public HeaderBarUITheme(WizardHeaderBar headerBar) : base(headerBar, false)
             {
                 _headerBar = headerBar;

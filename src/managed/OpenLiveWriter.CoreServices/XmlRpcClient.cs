@@ -85,8 +85,7 @@ namespace OpenLiveWriter.CoreServices
 
             // WinLive 616: The response encoding may not necessarily be the same as our request encoding. Attempt to
             // use the encoding specified in the HTTP header.
-            string characterSet;
-            if (TryGetCharacterSet(response, out characterSet))
+            if (TryGetCharacterSet(response, out string characterSet))
             {
                 encodingToUse = StringHelper.GetEncoding(characterSet, encodingToUse);
             }
@@ -112,6 +111,7 @@ namespace OpenLiveWriter.CoreServices
                             LogXmlRpcResponse(xmlRpcString);
                         }
                     }
+
                     return xmlRpcResponse;
                 }
                 catch (Exception ex)
@@ -120,7 +120,6 @@ namespace OpenLiveWriter.CoreServices
                     throw;
                 }
             }
-
         }
 
         /// <summary>
@@ -184,16 +183,17 @@ namespace OpenLiveWriter.CoreServices
         private static byte[] GetRequestBytes(Encoding encoding, string methodName, XmlRpcValue[] parameters, bool logging)
         {
             MemoryStream request = new MemoryStream();
-            XmlTextWriter writer = new XmlTextWriter(request, encoding);
-
-            // Amazingly, some configs of WordPress complain
-            // about malformed XML when uploading large posts/images (greater than
-            // 100,000 bytes) if we don't indent. More precisely, there needs to be
-            // fewer than 100,000 bytes before the first line break. Let's just
-            // indent and be done with it.
-            writer.Formatting = Formatting.Indented;
-            writer.Indentation = 1;
-            writer.IndentChar = ' ';
+            XmlTextWriter writer = new XmlTextWriter(request, encoding)
+            {
+                // Amazingly, some configs of WordPress complain
+                // about malformed XML when uploading large posts/images (greater than
+                // 100,000 bytes) if we don't indent. More precisely, there needs to be
+                // fewer than 100,000 bytes before the first line break. Let's just
+                // indent and be done with it.
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = ' '
+            };
 
             writer.WriteStartDocument();
             using (new WriteXmlElement(writer, "methodCall"))
@@ -210,6 +210,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             writer.WriteEndDocument();
             writer.Flush();
 
@@ -217,10 +218,10 @@ namespace OpenLiveWriter.CoreServices
         }
 
         //private Encoding _utf8EncodingNoBOM = new UTF8Encoding(false) ;
-        private string _hostname;
-        private string _userAgent;
-        private HttpRequestFilter _requestFilter;
-        private string _transportEncoding;
+        private readonly string _hostname;
+        private readonly string _userAgent;
+        private readonly HttpRequestFilter _requestFilter;
+        private readonly string _transportEncoding;
     }
 
     public abstract class XmlRpcValue
@@ -258,7 +259,7 @@ namespace OpenLiveWriter.CoreServices
 
         protected abstract void WriteValue(XmlWriter writer, object value);
 
-        private object _value;
+        private readonly object _value;
         private readonly bool _suppressLog;
     }
 
@@ -337,7 +338,7 @@ namespace OpenLiveWriter.CoreServices
 
     public class BloggerXmlRpcFormatTime : XmlRpcValue
     {
-        private string formatString;
+        private readonly string formatString;
         public BloggerXmlRpcFormatTime(DateTime value, string format)
             : base(value)
         {
@@ -360,7 +361,7 @@ namespace OpenLiveWriter.CoreServices
 
     public class XmlRpcFormatTime : XmlRpcValue
     {
-        private string formatString;
+        private readonly string formatString;
         public XmlRpcFormatTime(DateTime value, string format)
             : base(value)
         {
@@ -508,7 +509,6 @@ namespace OpenLiveWriter.CoreServices
                     XmlNode errorString = document.SelectSingleNode("/methodResponse/fault/value/struct/member[name='faultString']/value");
                     _faultString = errorString.InnerText;
                 }
-
             }
             catch (Exception ex)
             {
@@ -523,7 +523,7 @@ namespace OpenLiveWriter.CoreServices
                 return _response;
             }
         }
-        private XmlNode _response = null;
+        private readonly XmlNode _response = null;
 
         public bool FaultOccurred
         {
@@ -532,7 +532,7 @@ namespace OpenLiveWriter.CoreServices
                 return _faultOccurred;
             }
         }
-        private bool _faultOccurred = false;
+        private readonly bool _faultOccurred = false;
 
         public string FaultCode
         {
@@ -541,7 +541,7 @@ namespace OpenLiveWriter.CoreServices
                 return _faultCode;
             }
         }
-        private string _faultCode = String.Empty;
+        private readonly string _faultCode = String.Empty;
 
         public string FaultString
         {
@@ -550,7 +550,7 @@ namespace OpenLiveWriter.CoreServices
                 return _faultString;
             }
         }
-        private string _faultString = String.Empty;
+        private readonly string _faultString = String.Empty;
 
     }
 
@@ -581,6 +581,6 @@ namespace OpenLiveWriter.CoreServices
             _writer.WriteEndElement();
         }
 
-        private XmlWriter _writer;
+        private readonly XmlWriter _writer;
     }
 }

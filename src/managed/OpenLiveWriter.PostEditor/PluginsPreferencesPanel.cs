@@ -43,7 +43,7 @@ namespace OpenLiveWriter.PostEditor
         private System.Windows.Forms.LinkLabel linkLabelDownloadPlugins;
         private System.Windows.Forms.PictureBox pictureBoxAddPlugin;
 
-        private PluginsPreferences _pluginsPreferences;
+        private readonly PluginsPreferences _pluginsPreferences;
 
         public PluginsPreferencesPanel()
         {
@@ -138,9 +138,11 @@ namespace OpenLiveWriter.PostEditor
             foreach (ContentSourceInfo pluginContentSource in pluginContentSources)
             {
                 imageListPlugins.Images.Add(BidiHelper.Mirror(pluginContentSource.Image));
-                ListViewItem listViewItem = new ListViewItem();
-                listViewItem.Tag = pluginContentSource;
-                listViewItem.ImageIndex = imageIndex++;
+                ListViewItem listViewItem = new ListViewItem
+                {
+                    Tag = pluginContentSource,
+                    ImageIndex = imageIndex++
+                };
                 RefreshListViewItem(listViewItem);
                 listViewInstalledPlugins.Items.Add(listViewItem);
             }
@@ -263,7 +265,6 @@ namespace OpenLiveWriter.PostEditor
                 labelNoPluginSelected.Visible = true;
                 panelPluginDetails.Visible = false;
             }
-
         }
 
         private ContentSourceInfo GetSelectedPlugin()
@@ -289,6 +290,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

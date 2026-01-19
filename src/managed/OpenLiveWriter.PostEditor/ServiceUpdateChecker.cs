@@ -50,8 +50,10 @@ namespace OpenLiveWriter.PostEditor
                     ServiceUpdateSettingsDetectionContext settingsDetectionContext = new ServiceUpdateSettingsDetectionContext(_blogId);
 
                     // fire-up a blog settings detector to query for changes
-                    BlogSettingsDetector settingsDetector = new BlogSettingsDetector(settingsDetectionContext);
-                    settingsDetector.SilentMode = true;
+                    BlogSettingsDetector settingsDetector = new BlogSettingsDetector(settingsDetectionContext)
+                    {
+                        SilentMode = true
+                    };
                     using (RegistryKey key = Registry.CurrentUser.OpenSubKey(ApplicationEnvironment.SettingsRootKeyName + @"\Weblogs\" + _blogId + @"\HomepageOptions"))
                     {
                         if (key != null)
@@ -64,6 +66,7 @@ namespace OpenLiveWriter.PostEditor
                             settingsDetector.IncludeInsecureOperations = false;
                         }
                     }
+
                     settingsDetector.IncludeImageEndpoints = false;
                     settingsDetector.DetectSettings(SilentProgressHost.Instance);
 
@@ -80,7 +83,6 @@ namespace OpenLiveWriter.PostEditor
                         _settingsChangedHandler(_blogId, false);
                     }
                 }
-
             }
             catch (ManualKeepaliveOperationException)
             {
@@ -91,8 +93,8 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private string _blogId;
-        private WeblogSettingsChangedHandler _settingsChangedHandler;
+        private readonly string _blogId;
+        private readonly WeblogSettingsChangedHandler _settingsChangedHandler;
         private readonly static object _serviceUpdateLock = new object();
     }
 
@@ -151,7 +153,7 @@ namespace OpenLiveWriter.PostEditor
         {
             get { return _blogSupportsCategories; }
         }
-        private bool _blogSupportsCategories;
+        private readonly bool _blogSupportsCategories;
 
         public string PostApiUrl
         {
@@ -160,7 +162,7 @@ namespace OpenLiveWriter.PostEditor
                 return _postApiUrl;
             }
         }
-        private string _postApiUrl;
+        private readonly string _postApiUrl;
 
         public IBlogCredentialsAccessor Credentials
         {
@@ -169,7 +171,7 @@ namespace OpenLiveWriter.PostEditor
                 return new BlogCredentialsAccessor(_blogId, _credentials);
             }
         }
-        private IBlogCredentials _credentials = new TemporaryBlogCredentials();
+        private readonly IBlogCredentials _credentials = new TemporaryBlogCredentials();
 
         public string HomepageUrl
         {
@@ -178,7 +180,7 @@ namespace OpenLiveWriter.PostEditor
                 return _homepageUrl;
             }
         }
-        private string _homepageUrl;
+        private readonly string _homepageUrl;
 
         public string ProviderId
         {
@@ -187,7 +189,7 @@ namespace OpenLiveWriter.PostEditor
                 return _providerId;
             }
         }
-        private string _providerId;
+        private readonly string _providerId;
 
         public string HostBlogId
         {
@@ -196,7 +198,7 @@ namespace OpenLiveWriter.PostEditor
                 return _hostBlogId;
             }
         }
-        private string _hostBlogId;
+        private readonly string _hostBlogId;
 
         public WriterEditingManifestDownloadInfo ManifestDownloadInfo
         {
@@ -309,7 +311,7 @@ namespace OpenLiveWriter.PostEditor
                 return _userOptionOverrides;
             }
         }
-        private IDictionary _userOptionOverrides;
+        private readonly IDictionary _userOptionOverrides;
 
         public IDictionary OptionOverrides
         {
@@ -348,10 +350,10 @@ namespace OpenLiveWriter.PostEditor
         private IDictionary _homepageOptionOverrides;
         private IDictionary _optionOverrides;
 
-        private string _blogId;
+        private readonly string _blogId;
 
-        private string _initialBlogSettingsContents;
-        private string _initialCategoriesContents;
+        private readonly string _initialBlogSettingsContents;
+        private readonly string _initialCategoriesContents;
         private readonly string _initialCategoryScheme;
 
         private string GetBlogSettingsContents(BlogSettings blogSettings)
@@ -429,6 +431,7 @@ namespace OpenLiveWriter.PostEditor
                 foreach (BlogPostCategory category in categories)
                     categoriesBuilder.AppendFormat("Category:{0}/{1}/{2}", category.Id, category.Name, category.Parent);
             }
+
             return categoriesBuilder.ToString();
         }
 
@@ -482,7 +485,5 @@ namespace OpenLiveWriter.PostEditor
                 return xKey.CompareTo(yKey);
             }
         }
-
     }
-
 }

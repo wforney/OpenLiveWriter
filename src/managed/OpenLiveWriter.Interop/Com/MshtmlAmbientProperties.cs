@@ -39,5 +39,4 @@ namespace OpenLiveWriter.Interop.Com
         public const int OFFLINEIFNOTCONNECTED = unchecked((int)0x80000000);
         public const int OFFLINE = OFFLINEIFNOTCONNECTED;
     }
-
 }

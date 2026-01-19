@@ -16,7 +16,7 @@ namespace OpenLiveWriter.Controls.Wizard
     /// </summary>
     public class WizardController
     {
-        private IList wizardSteps;
+        private readonly IList wizardSteps;
         private int wizardStepIndex = 0;
         private WizardForm _wizardForm;
         public delegate void DisplayCallback(Object stepControl);
@@ -455,6 +455,7 @@ namespace OpenLiveWriter.Controls.Wizard
             {
                 Wizard.addWizardSubStep(NextWizardSubStep);
             }
+
             base.Next();
         }
 

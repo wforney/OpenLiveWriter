@@ -46,9 +46,11 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                ColumnProperties columnProperties = new ColumnProperties();
-                columnProperties.Width = columnWidthControl.ColumnWidth;
-                columnProperties.CellProperties = cellPropertiesControl.CellProperties;
+                ColumnProperties columnProperties = new ColumnProperties
+                {
+                    Width = columnWidthControl.ColumnWidth,
+                    CellProperties = cellPropertiesControl.CellProperties
+                };
                 return columnProperties;
             }
         }

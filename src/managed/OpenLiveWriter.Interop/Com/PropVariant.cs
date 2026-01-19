@@ -323,8 +323,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetStringVector(string[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromStringVector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromStringVector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
 
         }
@@ -335,8 +334,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetBoolVector(bool[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromBooleanVector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromBooleanVector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -346,8 +344,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetShortVector(short[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromInt16Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromInt16Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -357,8 +354,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetUShortVector(ushort[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromUInt16Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromUInt16Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -368,8 +364,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetIntVector(int[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromInt32Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromInt32Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -379,8 +374,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetUIntVector(uint[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromUInt32Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromUInt32Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -390,8 +384,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetLongVector(long[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromInt64Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromInt64Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -401,8 +394,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetULongVector(ulong[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromUInt64Vector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromUInt64Vector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -412,8 +404,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetDoubleVector(double[] value)
         {
-            PropVariant propVar;
-            Propsys.InitPropVariantFromDoubleVector(value, (uint)value.Length, out propVar);
+            Propsys.InitPropVariantFromDoubleVector(value, (uint)value.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -431,8 +422,7 @@ namespace OpenLiveWriter.Interop.Com
                 fileTimeArr[i] = DateTimeTotFileTime(value[i]);
             }
 
-            PropVariant propVar;
-            Propsys.InitPropVariantFromFileTimeVector(fileTimeArr, (uint)fileTimeArr.Length, out propVar);
+            Propsys.InitPropVariantFromFileTimeVector(fileTimeArr, (uint)fileTimeArr.Length, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -464,9 +454,8 @@ namespace OpenLiveWriter.Interop.Com
         {
             valueType = (ushort)VarEnum.VT_FILETIME;
 
-            PropVariant propVar;
             System.Runtime.InteropServices.ComTypes.FILETIME ft = DateTimeTotFileTime(value);
-            Propsys.InitPropVariantFromFileTime(ref ft, out propVar);
+            Propsys.InitPropVariantFromFileTime(ref ft, out PropVariant propVar);
             CopyData(propVar);
         }
 
@@ -581,8 +570,7 @@ namespace OpenLiveWriter.Interop.Com
         {
             long[] valueArr = new long[] { value };
 
-            PropVariant propVar;
-            Propsys.InitPropVariantFromInt64Vector(valueArr, 1, out propVar);
+            Propsys.InitPropVariantFromInt64Vector(valueArr, 1, out PropVariant propVar);
 
             CreatePropVariantFromVectorElement(propVar);
         }
@@ -593,9 +581,8 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="value">The new value to set.</param>
         public void SetULong(ulong value)
         {
-            PropVariant propVar;
             ulong[] valueArr = new ulong[] { value };
-            Propsys.InitPropVariantFromUInt64Vector(valueArr, 1, out propVar);
+            Propsys.InitPropVariantFromUInt64Vector(valueArr, 1, out PropVariant propVar);
 
             CreatePropVariantFromVectorElement(propVar);
         }
@@ -608,8 +595,7 @@ namespace OpenLiveWriter.Interop.Com
         {
             double[] valueArr = new double[] { value };
 
-            PropVariant propVar;
-            Propsys.InitPropVariantFromDoubleVector(valueArr, 1, out propVar);
+            Propsys.InitPropVariantFromDoubleVector(valueArr, 1, out PropVariant propVar);
 
             CreatePropVariantFromVectorElement(propVar);
         }
@@ -848,9 +834,11 @@ namespace OpenLiveWriter.Interop.Com
         {
             long hFT = value.ToFileTime();
             System.Runtime.InteropServices.ComTypes.FILETIME ft =
-                new System.Runtime.InteropServices.ComTypes.FILETIME();
-            ft.dwLowDateTime = (int)(hFT & 0xFFFFFFFF);
-            ft.dwHighDateTime = (int)(hFT >> 32);
+                new System.Runtime.InteropServices.ComTypes.FILETIME
+                {
+                    dwLowDateTime = (int)(hFT & 0xFFFFFFFF),
+                    dwHighDateTime = (int)(hFT >> 32)
+                };
             return ft;
         }
 
@@ -875,6 +863,7 @@ namespace OpenLiveWriter.Interop.Com
             {
                 throw new NotSupportedException();
             }
+
             Marshal.Copy(pBlobData, blobData, 0, lVal);
 
             return blobData;
@@ -892,44 +881,37 @@ namespace OpenLiveWriter.Interop.Com
             {
                 if (typeof(T) == typeof(Int16))
                 {
-                    short val;
-                    Propsys.PropVariantGetInt16Elem(ref this, i, out val);
+                    Propsys.PropVariantGetInt16Elem(ref this, i, out short val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(UInt16))
                 {
-                    ushort val;
-                    Propsys.PropVariantGetUInt16Elem(ref this, i, out val);
+                    Propsys.PropVariantGetUInt16Elem(ref this, i, out ushort val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(Int32))
                 {
-                    int val;
-                    Propsys.PropVariantGetInt32Elem(ref this, i, out val);
+                    Propsys.PropVariantGetInt32Elem(ref this, i, out int val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(UInt32))
                 {
-                    uint val;
-                    Propsys.PropVariantGetUInt32Elem(ref this, i, out val);
+                    Propsys.PropVariantGetUInt32Elem(ref this, i, out uint val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(Int64))
                 {
-                    long val;
-                    Propsys.PropVariantGetInt64Elem(ref this, i, out val);
+                    Propsys.PropVariantGetInt64Elem(ref this, i, out long val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(UInt64))
                 {
-                    ulong val;
-                    Propsys.PropVariantGetUInt64Elem(ref this, i, out val);
+                    Propsys.PropVariantGetUInt64Elem(ref this, i, out ulong val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(DateTime))
                 {
-                    System.Runtime.InteropServices.ComTypes.FILETIME val;
-                    Propsys.PropVariantGetFileTimeElem(ref this, i, out val);
+                    Propsys.PropVariantGetFileTimeElem(ref this, i, out System.Runtime.InteropServices.ComTypes.FILETIME val);
 
                     long fileTime = FileTimeToDateTime(ref val);
 
@@ -937,20 +919,17 @@ namespace OpenLiveWriter.Interop.Com
                 }
                 else if (typeof(T) == typeof(Boolean))
                 {
-                    bool val;
-                    Propsys.PropVariantGetBooleanElem(ref this, i, out val);
+                    Propsys.PropVariantGetBooleanElem(ref this, i, out bool val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(Double))
                 {
-                    double val;
-                    Propsys.PropVariantGetDoubleElem(ref this, i, out val);
+                    Propsys.PropVariantGetDoubleElem(ref this, i, out double val);
                     arr.SetValue(val, i);
                 }
                 else if (typeof(T) == typeof(String))
                 {
-                    string val;
-                    Propsys.PropVariantGetStringElem(ref this, i, out val);
+                    Propsys.PropVariantGetStringElem(ref this, i, out string val);
                     arr.SetValue(val, i);
                 }
             }
@@ -1014,8 +993,7 @@ namespace OpenLiveWriter.Interop.Com
             // Can't pass "this" by ref, so make a bitwise copy on the stack, to call API with
             PropVariant var = this;
 
-            PropVariant clone;
-            Ole32.PropVariantCopy(out clone, ref var);
+            Ole32.PropVariantCopy(out PropVariant clone, ref var);
 
             return clone;
         }
@@ -1024,8 +1002,10 @@ namespace OpenLiveWriter.Interop.Com
         {
             get
             {
-                PropVariant empty = new PropVariant();
-                empty.valueType = (ushort)VarEnum.VT_EMPTY;
+                PropVariant empty = new PropVariant
+                {
+                    valueType = (ushort)VarEnum.VT_EMPTY
+                };
                 empty.wReserved1 = empty.wReserved2 = empty.wReserved3 = 0;
                 //empty.p = IntPtr.Zero;
                 //empty.p2 = 0;
@@ -1044,8 +1024,10 @@ namespace OpenLiveWriter.Interop.Com
 
         public static PropVariantRef From(PropVariant value)
         {
-            PropVariantRef obj = new PropVariantRef();
-            obj.PropVariant = value;
+            PropVariantRef obj = new PropVariantRef
+            {
+                PropVariant = value
+            };
             return obj;
         }
     }

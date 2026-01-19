@@ -26,7 +26,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         private const string PUBLISH_TARGET = "publish.targetId";
         private const string MAP_IMAGE_INVALIDATED = "map.invalidated";
 
-        private IProperties _settings;
+        private readonly IProperties _settings;
         public MapSettings(IProperties settings)
         {
             _settings = settings;
@@ -50,6 +50,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                 BirdseyeSceneId = null;
                 BirdseyeOrientation = null;
             }
+
             MapImageInvalidated = true;
         }
 
@@ -72,6 +73,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     mapId = Guid.NewGuid().ToString();
                     _settings.SetString(MAP_ID, mapId);
                 }
+
                 return mapId;
             }
             set
@@ -225,6 +227,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     string photoUrl = pinProps.GetString(PUSHPIN_PHOTO_URL, "");
                     pushpins[i] = new VEPushpin(pinId, new VELatLong(latitude, longitude, reserved), imageUrl, title, details, moreInfoUrl, photoUrl);
                 }
+
                 return pushpins;
             }
 

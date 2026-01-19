@@ -13,7 +13,7 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 {
     public class StaticSiteConfigValidator
     {
-        private StaticSiteConfig _config;
+        private readonly StaticSiteConfig _config;
 
         public StaticSiteConfigValidator(StaticSiteConfig config)
         {

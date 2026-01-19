@@ -108,6 +108,7 @@ namespace OpenLiveWriter.Mshtml
                 insertAt.MoveAdjacentToElement(currentBlock, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterEnd);
                 return;
             }
+
             testRange.Start.MoveAdjacentToElement(currentBlock, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterBegin);
             testRange.End.MoveToPointer(insertAt);
             if (testRange.IsEmptyOfContent())
@@ -206,7 +207,6 @@ namespace OpenLiveWriter.Mshtml
                         {
                             returnRange = range.ToTextRange();
                         }
-
                     }
 
                     return returnRange;
@@ -254,7 +254,6 @@ namespace OpenLiveWriter.Mshtml
                 Debug.WriteLine("Failure in IHTMLTxtRangePool: " + ex);
                 cache = null;
             }
-
         }
 
         internal static void Clear(IMarkupServicesRaw markupServices)

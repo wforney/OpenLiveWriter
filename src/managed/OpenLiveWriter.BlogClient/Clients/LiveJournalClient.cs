@@ -280,7 +280,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                 else
                     blogPost.Contents = content;
             }
-
         }
 
         private XmlRpcValue FormatBlogPost(BlogPost post)
@@ -291,7 +290,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             string blogPostBody = String.Format(CultureInfo.InvariantCulture, "<title>{0}</title>{1}", GetPostTitleForXmlValue(post), content);
             return new XmlRpcBase64(_utf8EncodingNoBOM.GetBytes(blogPostBody));
         }
-        private Encoding _utf8EncodingNoBOM = new UTF8Encoding(false);
+        private readonly Encoding _utf8EncodingNoBOM = new UTF8Encoding(false);
 
         private class FotobilderRequestManager
         {
@@ -430,7 +429,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                     }
                 }
             }
-
         }
     }
 }

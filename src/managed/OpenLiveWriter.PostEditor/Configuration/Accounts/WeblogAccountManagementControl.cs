@@ -99,6 +99,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
                             listViewWeblogs.Focus();
                         }
                     }
+
                     return;
 
                 }
@@ -190,7 +191,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
             {
                 UnexpectedErrorMessage.Show(ex);
             }
-
         }
 
         private void DeleteSelectedWeblog()
@@ -238,6 +238,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

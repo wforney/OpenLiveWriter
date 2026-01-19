@@ -79,6 +79,7 @@ namespace OpenLiveWriter.PostEditor
                 if (pf.PersistToPostFile)
                     smartContent.Files.Remove(pf.SmartContentName);
             }
+
             smartContent.Properties.Remove(listId);
         }
 
@@ -120,8 +121,10 @@ namespace OpenLiveWriter.PostEditor
                 switch (chunks[0])
                 {
                     case "I":
-                        PersistedFile persistedFile = new PersistedFile(true, chunks[2]);
-                        persistedFile.SmartContentName = chunks[1];
+                        PersistedFile persistedFile = new PersistedFile(true, chunks[2])
+                        {
+                            SmartContentName = chunks[1]
+                        };
                         results.Add(persistedFile);
                         break;
                     case "E":

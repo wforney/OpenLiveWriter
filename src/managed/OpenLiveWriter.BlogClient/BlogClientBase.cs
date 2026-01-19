@@ -41,7 +41,7 @@ namespace OpenLiveWriter.BlogClient
         {
             get { return _credentials; }
         }
-        private IBlogCredentialsAccessor _credentials;
+        private readonly IBlogCredentialsAccessor _credentials;
 
         /// <summary>
         /// Forces a synchronous login.
@@ -73,6 +73,7 @@ namespace OpenLiveWriter.BlogClient
                 Debug.Assert(transientCredential != null, "Transient credential should never be null, throw an exception instead");
                 Credentials.TransientCredentials = transientCredential;
             }
+
             return transientCredential;
         }
 
@@ -156,6 +157,7 @@ namespace OpenLiveWriter.BlogClient
                 {
                     VerifyCredentials(tc);
                 }
+
                 return null;
             }
             catch (Exception e)

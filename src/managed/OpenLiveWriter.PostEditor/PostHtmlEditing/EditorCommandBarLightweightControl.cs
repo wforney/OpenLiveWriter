@@ -16,9 +16,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     public class EditorCommandBarLightweightControl : CommandBarLightweightControl
     {
-        private Bitmap _contextMenuArrowBitmap = ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.BlackDropArrow.png");
-        private Bitmap _contextMenuArrowBitmapDisabled = ImageHelper.MakeDisabled(ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.BlackDropArrow.png"));
-        private Bitmap _dropShadowTop = ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.DropShadowTop.png");
+        private readonly Bitmap _contextMenuArrowBitmap = ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.BlackDropArrow.png");
+        private readonly Bitmap _contextMenuArrowBitmapDisabled = ImageHelper.MakeDisabled(ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.BlackDropArrow.png"));
+        private readonly Bitmap _dropShadowTop = ResourceHelper.LoadAssemblyResourceBitmap(typeof(Command).Assembly, "Images.HIG.DropShadowTop.png");
 
         public EditorCommandBarLightweightControl(IContainer container) : base(container)
         {
@@ -149,7 +149,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 using (Pen p = new Pen(ColorizedResources.Instance.BorderDarkColor))
                     e.Graphics.DrawLine(p, _verticalLineX, r.Y, _verticalLineX, VirtualClientRectangle.Bottom);
             }
-
         }
     }
 }

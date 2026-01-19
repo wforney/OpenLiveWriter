@@ -34,7 +34,6 @@ namespace OpenLiveWriter.PostEditor.Video
                     Invalidate();
                 }
             }
-
         }
 
         internal VideoWebPreviewCommand()
@@ -63,10 +62,10 @@ namespace OpenLiveWriter.PostEditor.Video
 
     internal class VideoEditorControl : AlignmentMarginContentEditor
     {
-        private System.ComponentModel.IContainer components;
+        private readonly System.ComponentModel.IContainer components;
 
         private VideoSmartContent _VideoContent;
-        private ISmartContentEditorSite _contentEditorSite;
+        private readonly ISmartContentEditorSite _contentEditorSite;
 
         public VideoEditorControl(ISmartContentEditorSite contentEditorSite)
         {
@@ -271,6 +270,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

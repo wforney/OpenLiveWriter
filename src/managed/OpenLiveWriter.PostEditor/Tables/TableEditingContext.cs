@@ -43,7 +43,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         }
 
         private const string CELL_ELEMENT_BEHAVIORS = "CellElementBehaviors";
-        private ArrayList _cellElementBehaviors;
+        private readonly ArrayList _cellElementBehaviors;
 
     }
 }

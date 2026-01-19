@@ -27,7 +27,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// The entry list.
         /// </summary>
-        private ArrayList entryList = new ArrayList();
+        private readonly ArrayList entryList = new ArrayList();
 
         /// <summary>
         /// The changed event.

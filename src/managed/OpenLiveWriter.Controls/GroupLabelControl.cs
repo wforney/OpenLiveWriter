@@ -39,6 +39,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -72,6 +73,7 @@ namespace OpenLiveWriter.Controls
                     );
                 GraphicsHelper.TileFillScaledImageHorizontally(g, bevel, leftRectangle);
             }
+
             if (textRectangle.Right != ClientRectangle.Right)
             {
                 int startX = textRectangle.Right + 3;

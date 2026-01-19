@@ -30,7 +30,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private string _homepageUrl;
         private IBlogCredentials _credentials;
@@ -236,6 +236,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -390,8 +391,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return Id.GetHashCode();
             }
 
-            private IBlogProviderDescription _provider;
-            private string _postApiUrl;
+            private readonly IBlogProviderDescription _provider;
+            private readonly string _postApiUrl;
 
             // special "select provider" proxy
 
@@ -419,9 +420,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     }
                 }
             }
-
         }
-
     }
-
 }

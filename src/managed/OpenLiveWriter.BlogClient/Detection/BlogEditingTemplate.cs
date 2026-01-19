@@ -108,7 +108,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             return blogTemplateDir;
         }
 
-        private static string defaultDocType = "";
+        private static readonly string defaultDocType = "";
 
     }
 }

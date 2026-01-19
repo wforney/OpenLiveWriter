@@ -24,6 +24,5 @@ namespace OpenLiveWriter.Mshtml
             [In] uint dwOptionSetMask,
             [In] uint dwEnabledOptions);
     }
-
 }
 

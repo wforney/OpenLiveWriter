@@ -421,7 +421,7 @@ namespace OpenLiveWriter.BrowserControl
         /// <summary>
         /// ID of native browser command
         /// </summary>
-        private OLECMDID m_cmdID;
+        private readonly OLECMDID m_cmdID;
     }
 
     /// <summary>
@@ -476,8 +476,10 @@ namespace OpenLiveWriter.BrowserControl
                     if (target is IHTMLDocument2)
                     {
                         // command to be queried
-                        OLECMD oleCmd = new OLECMD();
-                        oleCmd.cmdID = m_cmdID;
+                        OLECMD oleCmd = new OLECMD
+                        {
+                            cmdID = m_cmdID
+                        };
 
                         // query for the command's status
                         target.QueryStatus(
@@ -570,12 +572,12 @@ namespace OpenLiveWriter.BrowserControl
         /// <summary>
         /// ID of private command
         /// </summary>
-        private uint m_cmdID;
+        private readonly uint m_cmdID;
 
         /// <summary>
         /// Command Group ID for private WebBrowser commands
         /// </summary>
-        private static Guid CGID_IWebBrowserPrivate =
+        private static readonly Guid CGID_IWebBrowserPrivate =
             new Guid(0xED016940, 0xBD5B, 0x11cf, 0xBA, 0x4E, 0x00, 0xC0, 0x4F, 0xD7, 0x08, 0x16);
     }
 

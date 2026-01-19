@@ -13,7 +13,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The tab lightweight control.
         /// </summary>
-        private TabLightweightControl tabLightweightControl;
+        private readonly TabLightweightControl tabLightweightControl;
 
         /// <summary>
         /// Gets the tab lightweight control.
@@ -29,7 +29,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The tab page control.
         /// </summary>
-        private TabPageControl tabPageControl;
+        private readonly TabPageControl tabPageControl;
 
         /// <summary>
         /// Gets the tab page control.
@@ -45,7 +45,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The tab selector lightweight control.
         /// </summary>
-        private TabSelectorLightweightControl tabSelectorLightweightControl;
+        private readonly TabSelectorLightweightControl tabSelectorLightweightControl;
 
         /// <summary>
         /// Gets the tab control.

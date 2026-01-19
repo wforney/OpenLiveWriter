@@ -80,7 +80,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The tab entry list, sorted by tab number.
         /// </summary>
-        private SortedList tabEntryList = new SortedList();
+        private readonly SortedList tabEntryList = new SortedList();
 
         /// <summary>
         /// The selected tab entry.
@@ -172,6 +172,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -434,9 +435,11 @@ namespace OpenLiveWriter.ApplicationFramework
                     {
                         IncrementTab();
                     }
+
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -588,6 +591,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     width -= 6;
                 }
             }
+
             width += 6;
 
             //	Pad height.
@@ -1162,6 +1166,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 TabEntry tabEntry = (TabEntry)tabEntryList[i];
                 list.Add(tabEntry.TabSelectorLightweightControl);
             }
+
             base.AddAccessibleControlsToList(list);
         }
         #endregion

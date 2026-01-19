@@ -14,7 +14,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
     /// </summary>
     public class InsertImageTabControl : TabPageControl
     {
-        private UITheme _uiTheme;
+        private readonly UITheme _uiTheme;
         public InsertImageTabControl() : base()
         {
             _uiTheme = new UITheme(this);

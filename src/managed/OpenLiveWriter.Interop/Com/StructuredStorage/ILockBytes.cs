@@ -90,6 +90,5 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
             [Out] out System.Runtime.InteropServices.ComTypes.STATSTG pstatstg,
             [In] STATFLAG grfStatFlag);
     }
-
 }
 

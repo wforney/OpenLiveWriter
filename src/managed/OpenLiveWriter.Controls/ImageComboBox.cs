@@ -14,7 +14,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ImageComboBox(Size imageSize)
         {
@@ -49,6 +49,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -78,12 +79,14 @@ namespace OpenLiveWriter.Controls
                 backColor = SystemColors.Window;
                 textColor = SystemColors.ControlText;
             }
+
             Rectangle area = e.Bounds;
             //overlap issue in RTL builds in the selected box area ONLY
             if (area.X == 21)
             {
                 area = ClientRectangle;
             }
+
             BidiGraphics g = new BidiGraphics(e.Graphics, area);
 
             // draw background (always paint white over it first)

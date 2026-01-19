@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
@@ -23,24 +24,15 @@ namespace LocUtil
 {
     class Values
     {
-        private object val;
-        private string comment;
-
         public Values(object val, string comment)
         {
-            this.val = val;
-            this.comment = comment;
+            Val = val;
+            Comment = comment;
         }
 
-        public object Val
-        {
-            get { return val; }
-        }
+        public object Val { get; }
 
-        public string Comment
-        {
-            get { return comment; }
-        }
+        public string Comment { get; }
     }
 
     class AppMain
@@ -91,12 +83,9 @@ namespace LocUtil
 
             if(commandFiles.Length + dialogFiles.Length > 0)
             {
-                HashSet ribbonIds;
-                Hashtable ribbonValues;
                 Console.WriteLine("Parsing commands from " + StringHelper.Join(commandFiles, ";"));
-                if (!ParseRibbonXml(ribbonFiles, pairsLoc, pairsNonLoc, typeof(Command), "//ribbon:Command", "Command.{0}.{1}", out ribbonIds, out ribbonValues))
+                if (!ParseRibbonXml(ribbonFiles, pairsLoc, pairsNonLoc, typeof(Command), "//ribbon:Command", "Command.{0}.{1}", out HashSet ribbonIds, out Hashtable ribbonValues))
                     return 1;
-                HashSet commandIds;
                 Console.WriteLine("Parsing commands from " + StringHelper.Join(commandFiles, ";"));
 
                 string[] transformedCommandFiles = commandFiles;
@@ -125,11 +114,10 @@ namespace LocUtil
                     return 1;
                 }
 
-                if (!ParseCommandXml(transformedCommandFiles, pairsLoc, pairsNonLoc, typeof(Command), "/Commands/Command", "Command.{0}.{1}", out commandIds))
+                if (!ParseCommandXml(transformedCommandFiles, pairsLoc, pairsNonLoc, typeof(Command), "/Commands/Command", "Command.{0}.{1}", out HashSet commandIds))
                     return 1;
-                HashSet dialogIds;
                 Console.WriteLine("Parsing messages from " + StringHelper.Join(dialogFiles, ";"));
-                if (!ParseCommandXml(dialogFiles, pairsLoc, pairsNonLoc, typeof(DisplayMessage), "/Messages/Message", "DisplayMessage.{0}.{1}", out dialogIds))
+                if (!ParseCommandXml(dialogFiles, pairsLoc, pairsNonLoc, typeof(DisplayMessage), "/Messages/Message", "DisplayMessage.{0}.{1}", out HashSet dialogIds))
                     return 1;
 
                 string propsFile = (string)clo.GetValue("props", null);
@@ -151,6 +139,7 @@ namespace LocUtil
                     if (!GenerateEnum(commandIds, "CommandId", cenum, null, ribbonValues))
                         return 1;
                 }
+
                 if (clo.IsArgPresent("denum"))
                 {
                     string denum = (string)clo.GetValue("denum", null);
@@ -164,7 +153,7 @@ namespace LocUtil
             {
                 Hashtable pairs = new Hashtable();
                 Console.WriteLine("Reading strings");
-                foreach (string sPath in clo.GetValues("s"))
+                foreach (string sPath in clo.GetValues("s").Cast<string>())
                 {
                     using (CsvParser csvParser = new CsvParser(new StreamReader(new FileStream(Path.GetFullPath(sPath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default), true))
                     {
@@ -185,6 +174,7 @@ namespace LocUtil
                     if (!GenerateEnum(new HashSet(pairs), "StringId", senum, pairs, null))
                         return 1;
                 }
+
                 if (clo.IsArgPresent("strings"))
                 {
                     string stringsResx = (string)clo.GetValue("strings", null);
@@ -277,6 +267,7 @@ namespace LocUtil
                 {
                     writer.AddResource(key, ((Values)pairs[key]).Val);
                 }
+
                 writer.Close();
             }
 
@@ -351,10 +342,9 @@ namespace OpenLiveWriter.Localization
                     const string VALUELESS_TEMPLATE = "{0}";
                     ArrayList pairs = new ArrayList();
                     ArrayList unmappedCommands = new ArrayList();
-                    foreach (string command in commandList.ToArray())
+                    foreach (string command in commandList.ToArray().Cast<string>())
                     {
-                        string value = values[command] as string;
-                        if (value != null)
+                        if (values[command] is string value)
                         {
                             pairs.Add(string.Format(CultureInfo.InvariantCulture, VALUE_TEMPLATE, command, value));
                         }
@@ -380,7 +370,7 @@ namespace OpenLiveWriter.Localization
 
                     // Now add the commands that were not mapped to a value
                     int index = 1;
-                    foreach (string command in unmappedCommands.ToArray())
+                    foreach (string command in unmappedCommands.ToArray().Cast<string>())
                     {
                         if (index == 1)
                             pairs.Add(string.Format(CultureInfo.InvariantCulture, VALUE_TEMPLATE, command, index));
@@ -395,12 +385,13 @@ namespace OpenLiveWriter.Localization
                 {
                     const string DESC_TEMPLATE = "/// <summary>\n        /// {0}\n        /// </summary>\n        {1}";
                     ArrayList descs = new ArrayList();
-                    foreach (string command in commandList.ToArray())
+                    foreach (string command in commandList.ToArray().Cast<string>())
                     {
                         string description = ((Values)descriptions[command]).Val as string;
                         description = description.Replace("\n", "\n        /// ").Replace("/// \r\n", "///\r\n");
                         descs.Add(string.Format(CultureInfo.InvariantCulture, DESC_TEMPLATE, description, command));
                     }
+
                     sw.Write(string.Format(CultureInfo.InvariantCulture, TEMPLATE, enumName, StringHelper.Join(descs.ToArray(), ",\r\n        ")));
                 }
                 else
@@ -483,13 +474,11 @@ namespace OpenLiveWriter.Localization
                                     throw new ConfigurationErrorsException(string.Format(CultureInfo.InvariantCulture, "Invalid attribute value: {0}=\"{1}\"", attr.Name, attr.Value));
                                 }
                             }
-                            else if (thisProp.PropertyType == typeof(string))
-                            {
-                                val = attr.Value;
-                            }
                             else
                             {
-                                throw new ConfigurationErrorsException("Unexpected attribute: " + attr.Name);
+                                val = thisProp.PropertyType == typeof(string)
+                                    ? (object)attr.Value
+                                    : throw new ConfigurationErrorsException("Unexpected attribute: " + attr.Name);
                             }
 
                             string comment = GetComment(el, name);
@@ -556,10 +545,12 @@ namespace OpenLiveWriter.Localization
                                 continue;
 
                             object val;
-                            PropertyInfo thisProp = propTable[name] as PropertyInfo;
-                            if (thisProp == null)
-                                throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, "Attribute {0} does not have a corresponding property", name));
-
+                            PropertyInfo thisProp = propTable[name] as PropertyInfo
+                                ?? throw new ConfigurationErrorsException(
+                                    string.Format(
+                                        CultureInfo.CurrentCulture,
+                                        "Attribute {0} does not have a corresponding property",
+                                        name));
                             if (thisProp.PropertyType.IsEnum)
                             {
                                 try
@@ -582,13 +573,11 @@ namespace OpenLiveWriter.Localization
                                     throw new ConfigurationErrorsException(string.Format(CultureInfo.InvariantCulture, "Invalid attribute value: {0}=\"{1}\"", attr.Name, attr.Value));
                                 }
                             }
-                            else if (thisProp.PropertyType == typeof(string))
-                            {
-                                val = attr.Value;
-                            }
                             else
                             {
-                                throw new ConfigurationErrorsException("Unexpected attribute: " + attr.Name);
+                                val = thisProp.PropertyType == typeof(string)
+                                    ? (object)attr.Value
+                                    : throw new ConfigurationErrorsException("Unexpected attribute: " + attr.Name);
                             }
 
                             string comment = GetComment(el, name);
@@ -641,13 +630,11 @@ namespace OpenLiveWriter.Localization
 
         private static void BuildMenuString(StringBuilder structure, XmlElement el, HashSet commandIds, Hashtable pairs)
         {
-            int startLen = structure.Length;
             int pos = 0;
             bool lastWasSeparator = false;
             foreach (XmlNode childNode in el.ChildNodes)
             {
-                XmlElement childEl = childNode as XmlElement;
-                if (childEl == null)
+                if (!(childNode is XmlElement childEl))
                     continue;
 
                 if (childEl.HasAttribute("Position"))
@@ -677,7 +664,7 @@ namespace OpenLiveWriter.Localization
                             throw new ConfigurationErrorsException("Main menu definition uses unknown command id: " + id);
                     }
 
-                    string idWithOrder = string.Format(CultureInfo.InvariantCulture, "{0}{1}@{2}", separator, id, (pos++ * 10));
+                    string idWithOrder = string.Format(CultureInfo.InvariantCulture, "{0}{1}@{2}", separator, id, pos++ * 10);
 
                     if (structure.Length != 0)
                         structure.Append(" ");

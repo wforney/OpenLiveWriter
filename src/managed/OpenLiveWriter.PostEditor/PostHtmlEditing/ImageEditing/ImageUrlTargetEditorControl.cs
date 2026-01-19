@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ImageUrlTargetEditorControl()
         {
@@ -41,6 +41,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

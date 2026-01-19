@@ -71,11 +71,11 @@ namespace OpenLiveWriter.Api
 
         private void SubscribeToEvents()
         {
-            _htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(_htmlScreenCapture_HtmlDocumentAvailable);
-            _htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(_htmlScreenCapture_HtmlScreenCaptureAvailable);
+            _htmlScreenCapture.HtmlDocumentAvailable += new HtmlDocumentAvailableHandlerCore(HtmlScreenCapture_HtmlDocumentAvailable);
+            _htmlScreenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(HtmlScreenCapture_HtmlScreenCaptureAvailable);
         }
 
-        private void _htmlScreenCapture_HtmlDocumentAvailable(object sender, HtmlDocumentAvailableEventArgsCore e)
+        private void HtmlScreenCapture_HtmlDocumentAvailable(object sender, HtmlDocumentAvailableEventArgsCore e)
         {
             if (HtmlDocumentAvailable != null)
             {
@@ -85,7 +85,7 @@ namespace OpenLiveWriter.Api
             }
         }
 
-        private void _htmlScreenCapture_HtmlScreenCaptureAvailable(object sender, HtmlScreenCaptureAvailableEventArgsCore e)
+        private void HtmlScreenCapture_HtmlScreenCaptureAvailable(object sender, HtmlScreenCaptureAvailableEventArgsCore e)
         {
             if (HtmlScreenCaptureAvailable != null)
             {
@@ -95,7 +95,7 @@ namespace OpenLiveWriter.Api
             }
         }
 
-        private HtmlScreenCaptureCore _htmlScreenCapture;
+        private readonly HtmlScreenCaptureCore _htmlScreenCapture;
     }
 
     /// <summary>
@@ -109,17 +109,13 @@ namespace OpenLiveWriter.Api
         /// <param name="bitmap">Currently available HTML screen shot.</param>
         public HtmlScreenCaptureAvailableEventArgs(Bitmap bitmap)
         {
-            _bitmap = bitmap;
+            Bitmap = bitmap;
         }
 
         /// <summary>
         /// Currently available HTML screen shot.
         /// </summary>
-        public Bitmap Bitmap
-        {
-            get { return _bitmap; }
-        }
-        private Bitmap _bitmap;
+        public Bitmap Bitmap { get; }
 
         /// <summary>
         /// Value indicating whether the screen capture has been completed. Set this value to
@@ -127,12 +123,7 @@ namespace OpenLiveWriter.Api
         /// in the case where the content to be captured has a secondary loading step (such as
         /// a media player loading a video) which must occur before the screen capture is completed.
         /// </summary>
-        public bool CaptureCompleted
-        {
-            get { return _captureCompleted; }
-            set { _captureCompleted = value; }
-        }
-        private bool _captureCompleted = true;
+        public bool CaptureCompleted { get; set; } = true;
     }
 
     /// <summary>
@@ -146,17 +137,13 @@ namespace OpenLiveWriter.Api
         /// <param name="document">HTML document (guaranteed to be castable to an IHTMLDocument2)</param>
         public HtmlDocumentAvailableEventArgs(object document)
         {
-            _document = document;
+            Document = document;
         }
 
         /// <summary>
         /// HTML document (guaranteed to be castable to an IHTMLDocument2)
         /// </summary>
-        public object Document
-        {
-            get { return _document; }
-        }
-        private object _document;
+        public object Document { get; }
 
         /// <summary>
         /// Value indicating whether the document is ready for a screen capture. Set this value
@@ -164,13 +151,7 @@ namespace OpenLiveWriter.Api
         /// documents that load in stages, such as documents that use embedded JavaScript to
         /// fetch and render additional content after the main document has loaded.
         /// </summary>
-        public bool DocumentReady
-        {
-            get { return _documentReady; }
-            set { _documentReady = value; }
-        }
-        private bool _documentReady = true;
-
+        public bool DocumentReady { get; set; } = true;
     }
 
     /// <summary>

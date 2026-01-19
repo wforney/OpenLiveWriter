@@ -18,7 +18,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
 
     internal class MapPushpinForm : MiniForm
     {
-        private string UNTITLED_PUSHPIN = Res.Get(StringId.PushpinUntitled);
+        private readonly string UNTITLED_PUSHPIN = Res.Get(StringId.PushpinUntitled);
         private System.Windows.Forms.Label labelTitle;
         private System.Windows.Forms.TextBox textBoxTitle;
         private System.Windows.Forms.Label labelNotes;
@@ -32,9 +32,9 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private MapPushpinEditedHandler _pushpinEditedHandler;
+        private readonly MapPushpinEditedHandler _pushpinEditedHandler;
 
         public MapPushpinForm(IWin32Window parentFrame, Point location, MapPushpinEditedHandler pushpinEditedHandler)
             : this(parentFrame, location, pushpinEditedHandler, null)
@@ -157,6 +157,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

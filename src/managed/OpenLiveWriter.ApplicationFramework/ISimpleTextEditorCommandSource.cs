@@ -100,8 +100,6 @@ namespace OpenLiveWriter.ApplicationFramework
                 CommandManager.UnignoreShortcut(Shortcut.CtrlV);
                 CommandManager.UnignoreShortcut(Shortcut.Del);
             }
-
         }
-
     }
 }

@@ -16,8 +16,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
     {
         public class SizeCommand
         {
-            private CommandId _widthId;
-            private CommandId _heightId;
+            private readonly CommandId _widthId;
+            private readonly CommandId _heightId;
 
             private readonly Size MinSize = new Size(1, 1);
             private readonly Size MaxSize = new Size(9999, 9999);
@@ -84,8 +84,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             }
         }
 
-        private SizeCommand sizeCommand;
-        private IContainer components = null;
+        private readonly SizeCommand sizeCommand;
+        private readonly IContainer components = null;
         protected ImageSizeControl imageSizeControl;
 
         public HtmlImageResizeEditor(CommandManager commandManager)
@@ -122,6 +122,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
                 sizeCommand.SizeChanged -= new EventHandler(imageSizeControl_ImageSizeChanged);
             }
+
             base.Dispose(disposing);
         }
 

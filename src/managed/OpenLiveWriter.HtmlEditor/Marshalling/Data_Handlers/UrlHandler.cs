@@ -103,7 +103,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 return _url;
             }
         }
-        private string _url;
+        private readonly string _url;
 
         protected string Title
         {
@@ -112,7 +112,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling.Data_Handlers
                 return _title;
             }
         }
-        private string _title;
+        private readonly string _title;
 
         /// <summary>
         /// Grabs HTML copied in the clipboard and pastes it into the document (pulls in a copy of embedded content too)

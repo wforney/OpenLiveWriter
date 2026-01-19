@@ -23,8 +23,8 @@ namespace OpenLiveWriter.Localization
         [ThreadStatic]
         private static Font italicFont;
 
-        private static ResourceManager resMan;
-        private static ResourceManager propResMan;
+        private static readonly ResourceManager resMan;
+        private static readonly ResourceManager propResMan;
         private static readonly float SIZE_NORMAL;
         private static readonly float SIZE_LARGE;
         private static readonly float SIZE_XLARGE;
@@ -96,8 +96,7 @@ namespace OpenLiveWriter.Localization
         static float GetFontSize(FontSize fontSize, float defaultSize)
         {
             string fontSizeString = propResMan.GetString("Font.Size." + fontSize);
-            float fontSizeFloat;
-            if (!String.IsNullOrEmpty(fontSizeString) && float.TryParse(fontSizeString.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out fontSizeFloat))
+            if (!String.IsNullOrEmpty(fontSizeString) && float.TryParse(fontSizeString.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out float fontSizeFloat))
                 return fontSizeFloat;
             else
                 return defaultSize;
@@ -190,8 +189,7 @@ namespace OpenLiveWriter.Localization
                 {
                     string fontName = propResMan.GetString("Font") ?? DefaultFontName;
 
-                    float fontSize;
-                    if (!float.TryParse(propResMan.GetString("Font.Size.Normal"), NumberStyles.Float, CultureInfo.InvariantCulture, out fontSize))
+                    if (!float.TryParse(propResMan.GetString("Font.Size.Normal"), NumberStyles.Float, CultureInfo.InvariantCulture, out float fontSize))
                         fontSize = DefaultNormalFontSize;
 
                     defaultFont = new Font(fontName, fontSize, GraphicsUnit.Point);
@@ -210,8 +208,7 @@ namespace OpenLiveWriter.Localization
         {
             get
             {
-                int sidebarWidth;
-                if (int.TryParse(propResMan.GetString("Sidebar.WidthInPixels"), NumberStyles.Integer, CultureInfo.InvariantCulture, out sidebarWidth))
+                if (int.TryParse(propResMan.GetString("Sidebar.WidthInPixels"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int sidebarWidth))
                     return sidebarWidth;
                 else
                     return DefaultSidebarWidth;
@@ -227,8 +224,7 @@ namespace OpenLiveWriter.Localization
         {
             get
             {
-                int wizardHeight;
-                if (int.TryParse(propResMan.GetString("ConfigurationWizard.Height"), NumberStyles.Integer, CultureInfo.InvariantCulture, out wizardHeight))
+                if (int.TryParse(propResMan.GetString("ConfigurationWizard.Height"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int wizardHeight))
                     return wizardHeight;
                 else
                     return DefaultWizardHeight;
@@ -244,8 +240,7 @@ namespace OpenLiveWriter.Localization
         {
             get
             {
-                bool useItalics;
-                if (bool.TryParse(propResMan.GetString("Culture.UseItalics"), out useItalics))
+                if (bool.TryParse(propResMan.GetString("Culture.UseItalics"), out bool useItalics))
                     return useItalics;
                 else
                     return DefaultUseItalics;
@@ -283,6 +278,7 @@ namespace OpenLiveWriter.Localization
                     size = SIZE_SMALL;
                     break;
             }
+
             return new Font(DefaultFont.FontFamily, size, fontStyle, GraphicsUnit.Point);
         }
 
@@ -350,6 +346,7 @@ namespace OpenLiveWriter.Localization
                             errors.Add("The font requested could not be loaded. Requested: \"" + fontFamilyName +
                                        "\", loaded: \"" + f.Name + "\"");
                         }
+
                         break;
                 }
             }
@@ -407,6 +404,7 @@ namespace OpenLiveWriter.Localization
                 errors.Add(string.Format(CultureInfo.InvariantCulture, "{0} could not be parsed: {1}", fontSizeName, fontSize));
                 return;
             }
+
             if (f > 25)
                 errors.Add(string.Format(CultureInfo.InvariantCulture, "{0} is supiciously large: {1} => {2}", fontSizeName, fontSize, f));
             else if (f < 6)

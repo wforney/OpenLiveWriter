@@ -17,26 +17,26 @@ namespace OpenLiveWriter.SpellChecker
     public class SpellingHighlighter : IDisposable
     {
 
-        static int TIMER_INTERVAL = 10;
-        static int NUMBER_OF_WORDS_TO_CHECK = 30;
+        static readonly int TIMER_INTERVAL = 10;
+        static readonly int NUMBER_OF_WORDS_TO_CHECK = 30;
 
-        private ISpellingChecker _spellingChecker ;
+        private readonly ISpellingChecker _spellingChecker ;
 
-        private IHighlightRenderingServicesRaw _highlightRenderingServices;
+        private readonly IHighlightRenderingServicesRaw _highlightRenderingServices;
 
-        private IDisplayServicesRaw _displayServices;
+        private readonly IDisplayServicesRaw _displayServices;
 
-        private IMarkupServicesRaw _markupServicesRaw;
+        private readonly IMarkupServicesRaw _markupServicesRaw;
 
-        private MshtmlMarkupServices _markupServices;
+        private readonly MshtmlMarkupServices _markupServices;
 
-        private IHTMLDocument4 _htmlDocument;
+        private readonly IHTMLDocument4 _htmlDocument;
 
         private HighlightSegmentTracker _tracker;
 
         private Queue _workerQueue;
 
-        private SpellingTimer _timer;
+        private readonly SpellingTimer _timer;
 
         private bool _fatalSpellingError = false ;
 
@@ -137,8 +137,7 @@ namespace OpenLiveWriter.SpellChecker
                     // advance to the next word
                     wordRange.Next() ;
                     // check the spelling
-                    int offset, length;
-                    if (ProcessWord(wordRange, out offset, out length))
+                    if (ProcessWord(wordRange, out int offset, out int length))
                     {
                         MarkupRange highlightRange = wordRange.CurrentWordRange.Clone();
                         MarkupHelpers.AdjustMarkupRange(ref stagingTextRange, highlightRange, offset, length);
@@ -146,8 +145,10 @@ namespace OpenLiveWriter.SpellChecker
                         //note: cannot just push the current word range here, as it moves before we get to the highlighting step
                         highlightwords.Add(highlightRange);
                     }
+
                     i++;
                 }
+
                 MarkupPointer end = wordRange.CurrentWordRange.End;
 
                 //got our words, clear the checked range and then add the misspellings
@@ -187,19 +188,19 @@ namespace OpenLiveWriter.SpellChecker
                     return true;
                 }
             }
+
             return false;
         }
 
         private bool ProcessWord(string word)
         {
-            int offset, length;
-            string otherWord ;
             SpellCheckResult result;
-            result = _spellingChecker.CheckWord( word, out otherWord, out offset, out length ) ;
+            result = _spellingChecker.CheckWord( word, out string otherWord, out int offset, out int length ) ;
             if (result == SpellCheckResult.Correct)
             {
                 return false;
             }
+
             return true;
         }
 
@@ -222,6 +223,7 @@ namespace OpenLiveWriter.SpellChecker
                     _highlightWordStyle.textBackgroundColor = "transparent";
                     _highlightWordStyle.textColor = "transparent";
                 }
+
                 return _highlightWordStyle;
             }
         }
@@ -230,15 +232,12 @@ namespace OpenLiveWriter.SpellChecker
         {
             try
             {
-                IHighlightSegmentRaw segment;
-                IDisplayPointerRaw start;
-                IDisplayPointerRaw end;
-                _displayServices.CreateDisplayPointer(out start);
-                _displayServices.CreateDisplayPointer(out end);
+                _displayServices.CreateDisplayPointer(out IDisplayPointerRaw start);
+                _displayServices.CreateDisplayPointer(out IDisplayPointerRaw end);
                 DisplayServices.TraceMoveToMarkupPointer(start, word.Start);
                 DisplayServices.TraceMoveToMarkupPointer(end, word.End);
 
-                _highlightRenderingServices.AddSegment(start, end, HighlightWordStyle, out segment);
+                _highlightRenderingServices.AddSegment(start, end, HighlightWordStyle, out IHighlightSegmentRaw segment);
                 _tracker.AddSegment(segment,
                     MarkupHelpers.UseStagingTextRange(ref stagingTextRange, word, rng => rng.text),
                     _markupServicesRaw);

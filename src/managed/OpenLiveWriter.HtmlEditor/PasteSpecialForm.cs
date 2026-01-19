@@ -33,7 +33,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public PasteSpecialForm()
         {
@@ -82,6 +82,7 @@ namespace OpenLiveWriter.HtmlEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -268,6 +269,5 @@ namespace OpenLiveWriter.HtmlEditor
         }
 
         public enum PasteType { RemoveFormatting, Standard, KeepFormatting }
-
     }
 }

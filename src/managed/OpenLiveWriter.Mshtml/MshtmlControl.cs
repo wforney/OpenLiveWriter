@@ -171,14 +171,12 @@ namespace OpenLiveWriter.Mshtml
         public void LoadFromUrl(string url)
         {
             // create moniker for url
-            IMoniker urlMoniker;
-            int hr = UrlMon.CreateURLMoniker(null, url, out urlMoniker);
+            int hr = UrlMon.CreateURLMoniker(null, url, out IMoniker urlMoniker);
             if (hr != HRESULT.S_OK)
                 throw new COMException("Error creating url moniker for " + url, hr);
 
             // create a binding context
-            IBindCtx bindCtx;
-            hr = Ole32.CreateBindCtx(0, out bindCtx);
+            hr = Ole32.CreateBindCtx(0, out IBindCtx bindCtx);
             if (hr != HRESULT.S_OK)
                 throw new COMException("Error creating binding context for " + url, hr);
 
@@ -285,6 +283,7 @@ namespace OpenLiveWriter.Mshtml
                     IOleWindow window = (IOleWindow)htmlDocument;
                     window.GetWindow(out hWnd);
                 }
+
                 return hWnd;
             }
         }
@@ -372,6 +371,7 @@ namespace OpenLiveWriter.Mshtml
                     htmlEditServices = (IHTMLEditServicesRaw)ComHelper.QueryService(
                         htmlDocument, EDIT_SERVICES_SID, typeof(IHTMLEditServicesRaw).GUID);
                 }
+
                 return htmlEditServices;
             }
         }
@@ -385,6 +385,7 @@ namespace OpenLiveWriter.Mshtml
                     oleUndoManager = (IOleUndoManager)ComHelper.QueryService(
                         htmlDocument, typeof(IOleUndoManager).GUID, typeof(IOleUndoManager).GUID);
                 }
+
                 return oleUndoManager;
             }
         }
@@ -401,6 +402,7 @@ namespace OpenLiveWriter.Mshtml
                     HTMLEditServices.GetSelectionServices(
                         MarkupContainer as IMarkupContainerRaw, out selectionServices);
                 }
+
                 return selectionServices;
             }
         }
@@ -416,6 +418,7 @@ namespace OpenLiveWriter.Mshtml
                 {
                     markupServices = new MshtmlMarkupServices(htmlDocument as IMarkupServicesRaw);
                 }
+
                 return markupServices;
             }
         }
@@ -428,6 +431,7 @@ namespace OpenLiveWriter.Mshtml
                 {
                     markupServicesRaw = htmlDocument as IMarkupServicesRaw;
                 }
+
                 return markupServicesRaw;
             }
         }
@@ -443,6 +447,7 @@ namespace OpenLiveWriter.Mshtml
                 {
                     displayServices = htmlDocument as IDisplayServicesRaw;
                 }
+
                 return displayServices;
             }
         }
@@ -458,6 +463,7 @@ namespace OpenLiveWriter.Mshtml
                 {
                     markupContainer = htmlDocument as IMarkupContainer2Raw;
                 }
+
                 return markupContainer;
             }
         }
@@ -473,6 +479,7 @@ namespace OpenLiveWriter.Mshtml
                 {
                     highlightRenderingServices = (IHighlightRenderingServicesRaw)htmlDocument;
                 }
+
                 return highlightRenderingServices;
             }
         }
@@ -661,8 +668,7 @@ namespace OpenLiveWriter.Mshtml
                 Marshal.ThrowExceptionForHR(result);
 
             // Get the boundaries of the container
-            RECT containerRect;
-            GetContainerRect(out containerRect);
+            GetContainerRect(out RECT containerRect);
 
             // In-Place Activate the MSHTML ActiveDocument (will result in a call to
             // IOleDocumentSite.ActivateMe where initialization will continue)
@@ -696,11 +702,13 @@ namespace OpenLiveWriter.Mshtml
 
         public IntPtr WndProcDelegate(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
         {
-            Message msg = new Message();
-            msg.LParam = lParam;
-            msg.WParam = wParam;
-            msg.Msg = (int)uMsg;
-            msg.HWnd = hWnd;
+            Message msg = new Message
+            {
+                LParam = lParam,
+                WParam = wParam,
+                Msg = (int)uMsg,
+                HWnd = hWnd
+            };
             bool handled = PreProcessMessage(ref msg);
 
             if (msg.Result != IntPtr.Zero || handled)
@@ -923,8 +931,7 @@ namespace OpenLiveWriter.Mshtml
             ppDoc = (IOleInPlaceUIWindow)this;
 
             // Get our window-rect
-            RECT containerRect;
-            GetContainerRect(out containerRect);
+            GetContainerRect(out RECT containerRect);
 
             // Set position within the container (allow it to fill the container)
             lprcPosRect = containerRect;
@@ -1494,13 +1501,15 @@ namespace OpenLiveWriter.Mshtml
         /// <returns>true if the message was handled, else false</returns>
         public override bool PreProcessMessage(ref Message msg)
         {
-            MSG message = new MSG();
-            message.hwnd = msg.HWnd;
-            message.message = (uint)msg.Msg;
-            message.wParam = (uint)msg.WParam.ToInt32();
-            message.lParam = msg.LParam.ToInt32();
-            message.time = 0;
-            message.pt = new POINT();
+            MSG message = new MSG
+            {
+                hwnd = msg.HWnd,
+                message = (uint)msg.Msg,
+                wParam = (uint)msg.WParam.ToInt32(),
+                lParam = msg.LParam.ToInt32(),
+                time = 0,
+                pt = new POINT()
+            };
 
             // see if MSHTML wants to handle the input
             // @SharedCanvas - if shortcut keys dont work, first look here
@@ -1532,7 +1541,6 @@ namespace OpenLiveWriter.Mshtml
             {
                 return base.IsInputKey(keyData);
             }
-
         }
 
         /// <summary>
@@ -1614,8 +1622,7 @@ namespace OpenLiveWriter.Mshtml
             // update the RECT of the view if our size changes
             if (oleDocumentView != null)
             {
-                RECT containerRect;
-                GetContainerRect(out containerRect);
+                GetContainerRect(out RECT containerRect);
                 try
                 {
                     oleDocumentView.SetRect(ref containerRect);
@@ -1637,11 +1644,13 @@ namespace OpenLiveWriter.Mshtml
         /// <param name="containerRect">out parameter for returning the container rect</param>
         private void GetContainerRect(out RECT containerRect)
         {
-            containerRect = new RECT();
-            containerRect.left = 0;
-            containerRect.top = 0;
-            containerRect.right = this.Width;
-            containerRect.bottom = this.Height;
+            containerRect = new RECT
+            {
+                left = 0,
+                top = 0,
+                right = this.Width,
+                bottom = this.Height
+            };
         }
 
         #endregion

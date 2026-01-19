@@ -70,8 +70,8 @@ namespace OpenLiveWriter.CoreServices
                         delim = delimiter;
                     }
                 }
-
             }
+
             return o.ToString();
         }
 
@@ -109,24 +109,22 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // strips spaces and tabs from around hard returns
-        private static LazyLoader<Regex> _stripSpaces;
+        private static readonly LazyLoader<Regex> _stripSpaces;
         private static Regex StripSpacesRegex
         {
             get
             {
                 return _stripSpaces.Value;
             }
-
         }
         // turns single hard return into a space
-        private static LazyLoader<Regex> _stripSingleLineFeeds;
+        private static readonly LazyLoader<Regex> _stripSingleLineFeeds;
         private static Regex StripSingleLineFeedsRegex
         {
             get
             {
                 return _stripSingleLineFeeds.Value;
             }
-
         }
 
         static StringHelper()
@@ -245,6 +243,7 @@ namespace OpenLiveWriter.CoreServices
                     return content.Substring(0, lastWordIndex).TrimEnd(Whitespace);
                 }
             }
+
             return content;
         }
 
@@ -321,6 +320,7 @@ namespace OpenLiveWriter.CoreServices
                 num = FormatNum((double)bytes / GB);
                 format = Res.Get(StringId.GigabytesFormat);
             }
+
             return string.Format(CultureInfo.CurrentCulture, format, num);
         }
 
@@ -398,6 +398,7 @@ namespace OpenLiveWriter.CoreServices
                         return strVal.Substring(0, pos);
                 }
             }
+
             return strVal;  // all whitespace
         }
 
@@ -442,6 +443,7 @@ namespace OpenLiveWriter.CoreServices
                         return false;
                 }
             }
+
             return defaultValue;
         }
 
@@ -476,9 +478,11 @@ namespace OpenLiveWriter.CoreServices
                     {
                         break;
                     }
+
                     num2 = (((num2 << 5) + num2) + (num2 >> 0x1b)) ^ numPtr[1];
                     numPtr += 2;
                 }
+
                 return (num + (num2 * 0x5d588b65));
             }
         }

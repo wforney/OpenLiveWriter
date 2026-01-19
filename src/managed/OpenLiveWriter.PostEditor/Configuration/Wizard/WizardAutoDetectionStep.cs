@@ -89,7 +89,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 _asyncOperation.Cancel();
                 ExitAsyncOperation();
             }
-
         }
 
         protected virtual void HandleAuthenticationError()
@@ -178,9 +177,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             get { return Control as WeblogConfigurationWizardPanelAutoDetection; }
         }
 
-        private IBlogClientUIContext _uiContext;
+        private readonly IBlogClientUIContext _uiContext;
         protected TemporaryBlogSettings _temporarySettings;
-        private IWizardAutoDetectionOperation _autoDetectionOperation;
+        private readonly IWizardAutoDetectionOperation _autoDetectionOperation;
         private AsyncOperation _asyncOperation;
 
     }

@@ -33,6 +33,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 if (cellBehavior != null)
                     selectedCellBehaviors[cellElement.sourceIndex] = cellBehavior;
             }
+
             Hashtable lastSelectedCellBehaviors = new Hashtable();
             foreach (IHTMLElement cellElement in _lastSelectedCells)
             {
@@ -59,8 +60,8 @@ namespace OpenLiveWriter.PostEditor.Tables
             _lastSelectedCells = selectedCells;
         }
 
-        private TableEditingElementBehavior _tableElementBehavior;
-        private TableEditingContext _tableEditingContext;
+        private readonly TableEditingElementBehavior _tableElementBehavior;
+        private readonly TableEditingContext _tableEditingContext;
 
         private ArrayList _lastSelectedCells = new ArrayList();
 

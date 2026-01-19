@@ -66,7 +66,7 @@ namespace BlogRunnerGui
             this.btnSelectNone.TabIndex = 2;
             this.btnSelectNone.Text = "Select &None";
             this.btnSelectNone.UseVisualStyleBackColor = true;
-            this.btnSelectNone.Click += new System.EventHandler(this.btnSelectNone_Click);
+            this.btnSelectNone.Click += new System.EventHandler(this.BtnSelectNone_Click);
             //
             // btnSelectAll
             //
@@ -77,7 +77,7 @@ namespace BlogRunnerGui
             this.btnSelectAll.TabIndex = 1;
             this.btnSelectAll.Text = "Select &All";
             this.btnSelectAll.UseVisualStyleBackColor = true;
-            this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
+            this.btnSelectAll.Click += new System.EventHandler(this.BtnSelectAll_Click);
             //
             // listProviders
             //
@@ -90,7 +90,7 @@ namespace BlogRunnerGui
             this.listProviders.Name = "listProviders";
             this.listProviders.Size = new System.Drawing.Size(427, 124);
             this.listProviders.TabIndex = 0;
-            this.listProviders.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listProviders_ItemCheck);
+            this.listProviders.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListProviders_ItemCheck);
             //
             // label1
             //
@@ -122,7 +122,7 @@ namespace BlogRunnerGui
             this.btnRun.TabIndex = 8;
             this.btnRun.Text = "&Run";
             this.btnRun.UseVisualStyleBackColor = true;
-            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            this.btnRun.Click += new System.EventHandler(this.BtnRun_Click);
             //
             // btnClose
             //
@@ -134,7 +134,7 @@ namespace BlogRunnerGui
             this.btnClose.TabIndex = 9;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
             //
             // chkVerbose
             //
@@ -145,7 +145,7 @@ namespace BlogRunnerGui
             this.chkVerbose.TabIndex = 7;
             this.chkVerbose.Text = "Enable &verbose logging";
             this.chkVerbose.UseVisualStyleBackColor = true;
-            this.chkVerbose.CheckedChanged += new System.EventHandler(this.chkVerbose_CheckedChanged);
+            this.chkVerbose.CheckedChanged += new System.EventHandler(this.ChkVerbose_CheckedChanged);
             //
             // fileOutput
             //
@@ -158,7 +158,7 @@ namespace BlogRunnerGui
             this.fileOutput.Size = new System.Drawing.Size(439, 36);
             this.fileOutput.TabIndex = 2;
             this.fileOutput.Text = "&Output file path (optional)";
-            this.fileOutput.PathChanged += new System.EventHandler(this.fileOutput_PathChanged);
+            this.fileOutput.PathChanged += new System.EventHandler(this.FileOutput_PathChanged);
             //
             // fileConfig
             //
@@ -171,7 +171,7 @@ namespace BlogRunnerGui
             this.fileConfig.Size = new System.Drawing.Size(439, 36);
             this.fileConfig.TabIndex = 1;
             this.fileConfig.Text = "Path to &Config.xml";
-            this.fileConfig.PathChanged += new System.EventHandler(this.fileConfig_PathChanged);
+            this.fileConfig.PathChanged += new System.EventHandler(this.FileConfig_PathChanged);
             //
             // fileBlogProviders
             //
@@ -184,7 +184,7 @@ namespace BlogRunnerGui
             this.fileBlogProviders.Size = new System.Drawing.Size(439, 37);
             this.fileBlogProviders.TabIndex = 0;
             this.fileBlogProviders.Text = "Path to Blog&Providers.xml";
-            this.fileBlogProviders.PathChanged += new System.EventHandler(this.fileBlogProviders_PathChanged);
+            this.fileBlogProviders.PathChanged += new System.EventHandler(this.FileBlogProviders_PathChanged);
             //
             // Form1
             //

@@ -37,6 +37,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 SelectedIndexChanged -= new EventHandler(ImageSizePickerComboBox_SelectedIndexChanged);
             }
+
             base.Dispose(disposing);
         }
 
@@ -117,9 +118,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 }
             }
 
-            private ImageSize _imageSize;
-            private string _displayName;
-            private GetScaledImageSizeDelegate _scaledImageSizeDelegate;
+            private readonly ImageSize _imageSize;
+            private readonly string _displayName;
+            private readonly GetScaledImageSizeDelegate _scaledImageSizeDelegate;
         }
 
         private GetScaledImageSizeDelegate _scaledImageSizeDelegate;

@@ -244,5 +244,4 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         TOPALIGN = 0x0400
     }
-
 }

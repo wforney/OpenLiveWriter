@@ -31,6 +31,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 context.InvocationSource == ImageDecoratorInvocationSource.Reset)
             {
             }
+
             context.Image = ImageUtils.ApplyDropShadowOutside(context.Image, settings.BackgroundColor, settings.ShadowColor, SHADOW_WIDTH, BORDER_WIDTH);
 
             //update the margin value to reflect the border added by this decorator.

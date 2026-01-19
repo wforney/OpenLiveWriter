@@ -50,7 +50,6 @@ namespace OpenLiveWriter.PostEditor.Video
         {
             return this.CategoryName.CompareTo(other.CategoryName);
         }
-
     }
 
     internal class SecurityItem

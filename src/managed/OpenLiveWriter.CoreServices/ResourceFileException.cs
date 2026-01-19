@@ -56,10 +56,10 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // the hash table that will hold the resource managers by type
-        private static Hashtable m_resourceManagers = new Hashtable();
+        private static readonly Hashtable m_resourceManagers = new Hashtable();
 
         // standard filename for the exceptions resource file name
-        private static string EXCEPTION_FILENAME = "Exceptions";
+        private static readonly string EXCEPTION_FILENAME = "Exceptions";
 
         /// <summary>
         /// format an exception message based on its type and optional arguments
@@ -109,7 +109,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return message;
             }
-
         }
     }
 }

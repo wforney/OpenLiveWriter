@@ -50,7 +50,7 @@ namespace OpenLiveWriter.CoreServices
             _parentControl = parentControl;
 
         }
-        private Control _parentControl = null;
+        private readonly Control _parentControl = null;
 
         /// <summary>
         /// The list of pages to download.  Note that you need to call 'DownloadPageInfo' prior to accessing
@@ -95,7 +95,7 @@ namespace OpenLiveWriter.CoreServices
         }
         private ArrayList _errors = new ArrayList();
 
-        private Hashtable _headerInfo = new Hashtable();
+        private readonly Hashtable _headerInfo = new Hashtable();
 
         /// <summary>
         /// Actually downloads the pages
@@ -135,6 +135,7 @@ namespace OpenLiveWriter.CoreServices
                     else
                         headerInfo = ContentTypeHelper.InexpensivelyGetUrlContentType(url);
                 }
+
                 _headerInfo.Add(safeUrl, headerInfo);
             }
 
@@ -182,6 +183,7 @@ namespace OpenLiveWriter.CoreServices
                                         htmlDoc.UpdateBasedUponHTMLDocumentData(downloader.HtmlDocument, url);
                                     }
                                 }
+
                                 thisPageToDownload = new PageToDownload(htmlDoc, url, null, parentPageToDownload);
                                 if (htmlDoc.StyleResourcesUrls != null)
                                     foreach (HTMLDocumentHelper.ResourceUrlInfo styleUrl in htmlDoc.StyleResourcesUrls)
@@ -217,6 +219,7 @@ namespace OpenLiveWriter.CoreServices
                             ProgressTick otherPagesdownloadProgress = new ProgressTick(progress, TOTALTICKS - thisPageTicks, TOTALTICKS);
                             downloadedPages.AddRange(GetSubPagesToDownload(otherPagesdownloadProgress, downloadedPages, thisPageToDownload));
                         }
+
                         downloadWorked = true;
                         firstPagedownloadProgress.UpdateProgress(1, 1);
 
@@ -269,9 +272,11 @@ namespace OpenLiveWriter.CoreServices
             {
                 downloader.DownloadHTMLDocument(progress);
                 lightWeightDoc = LightWeightHTMLDocument.FromIHTMLDocument2(downloader.HtmlDocument, downloader.Url);
-                thisPageToDownload = new PageToDownload(lightWeightDoc, url, null, parent);
-                // Reset the url in the event that a redirect occurred
-                thisPageToDownload.AbsoluteUrl = downloader.Url;
+                thisPageToDownload = new PageToDownload(lightWeightDoc, url, null, parent)
+                {
+                    // Reset the url in the event that a redirect occurred
+                    AbsoluteUrl = downloader.Url
+                };
             }
 
             foreach (HTMLDocumentHelper.ResourceUrlInfo styleUrl in lightWeightDoc.StyleResourcesUrls)
@@ -299,6 +304,7 @@ namespace OpenLiveWriter.CoreServices
                     subPages.AddRange(DownloadPages(tick, subUrl, null, parentPage));
                 }
             }
+
             return (PageToDownload[])subPages.ToArray(typeof(PageToDownload));
         }
 
@@ -320,6 +326,7 @@ namespace OpenLiveWriter.CoreServices
                         }
                     }
                 }
+
                 return _rootPage;
             }
         }
@@ -375,6 +382,7 @@ namespace OpenLiveWriter.CoreServices
                     return false;
                 currentParent = currentParent.ParentInfo;
             }
+
             return true;
 
         }
@@ -398,6 +406,7 @@ namespace OpenLiveWriter.CoreServices
                     subFrames.AddRange(GetFramePagesToDownload(subFramePageToDownload));
                 }
             }
+
             return (PageToDownload[])subFrames.ToArray(typeof(PageToDownload));
         }
 
@@ -453,11 +462,11 @@ namespace OpenLiveWriter.CoreServices
         #endregion
 
         private int _currentDepth = -1;
-        private string _url;
-        private PageDownloadContext _context;
+        private readonly string _url;
+        private readonly PageDownloadContext _context;
         private PageToDownload[] _pagesToDownload;
         private PageToDownload _rootPage = null;
-        private LightWeightHTMLDocument _lightWeightHTMLDocument = null;
+        private readonly LightWeightHTMLDocument _lightWeightHTMLDocument = null;
 
         public static int TOTALTICKS = 100000000;
         public static int FIRSTPAGETICKS = 20000000;

@@ -75,11 +75,13 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 foreach (ContentSourceInfo csi in plugins)
                 {
                     imgListPlugins.Images.Add(BidiHelper.Mirror(csi.Image));
-                    ListViewItem item = new ListViewItem();
-                    item.Tag = csi;
-                    item.Text = " " + csi.Name;
-                    item.ImageIndex = imgListPlugins.Images.Count - 1;
-                    item.Checked = settings.IsEnabled(csi.Id) ?? false;
+                    ListViewItem item = new ListViewItem
+                    {
+                        Tag = csi,
+                        Text = " " + csi.Name,
+                        ImageIndex = imgListPlugins.Images.Count - 1,
+                        Checked = settings.IsEnabled(csi.Id) ?? false
+                    };
                     listViewPlugins.Items.Add(item);
                 }
 
@@ -186,6 +188,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
 
             base.Save();
         }
-
     }
 }

@@ -63,6 +63,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -135,7 +136,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
         private Button buttonInsert;
         private Button buttonCancel;
-        private Container components = null;
+        private readonly Container components = null;
         private TagEditor tagEditor;
 
         private void buttonInsert_Click(object sender, EventArgs e)
@@ -145,6 +146,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 DisplayMessage.Show(MessageId.NoTags, this);
                 return;
             }
+
             DialogResult = DialogResult.OK;
         }
 
@@ -152,6 +154,5 @@ namespace OpenLiveWriter.PostEditor.Tagging
         {
             DialogResult = DialogResult.Cancel;
         }
-
     }
 }

@@ -106,9 +106,11 @@ namespace OpenLiveWriter.PostEditor.Autoreplace
                         phrases.Add(
                             new AutoreplacePhrase(phrase, replacephraseSettings.GetString(phrase, null)));
                     }
+
                     _autoreplacePhrases = phrases.ToArray();
 
                 }
+
                 return _autoreplacePhrases;
             }
             set

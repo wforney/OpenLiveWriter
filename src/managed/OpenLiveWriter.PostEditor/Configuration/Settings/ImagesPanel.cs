@@ -32,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public ImagesPanel()
             : base()
@@ -177,6 +177,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

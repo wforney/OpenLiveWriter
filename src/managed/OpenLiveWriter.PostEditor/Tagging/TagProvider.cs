@@ -102,6 +102,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 {
                     _htmlFormatString = string.Format(CultureInfo.InvariantCulture, DEFAULT_FORMAT, "http://www.example.com/" + TAG_ENCODED_TOKEN, TAG_TOKEN);
                 }
+
                 return _htmlFormatString;
             }
             set
@@ -195,7 +196,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
         private string _name;
         private string _caption;
-        private bool _new = false;
+        private readonly bool _new = false;
         private string _htmlFormatString;
 
         public const string TAG_TOKEN = "{tag}";

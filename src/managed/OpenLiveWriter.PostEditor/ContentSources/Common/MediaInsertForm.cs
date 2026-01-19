@@ -25,13 +25,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
     /// </summary>
     public class MediaInsertForm : ApplicationDialog, IRtlAware
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         //top tab control
         private LightweightControlContainerControl mainTabControl;
-        private TabLightweightControl tabs;
+        private readonly TabLightweightControl tabs;
 
-        private List<MediaTab> _sources;
+        private readonly List<MediaTab> _sources;
         private MediaTab activeSource = null;
 
         private Button buttonInsert;
@@ -83,11 +83,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
             //
             // tabs
             //
-            tabs = new TabLightweightControl();
-            tabs.VirtualBounds = new Rectangle(0, 5, 450, 485);
-            tabs.LightweightControlContainerControl = mainTabControl;
-            tabs.DrawSideAndBottomTabPageBorders = false;
-            tabs.ColorizeBorder = false;
+            tabs = new TabLightweightControl
+            {
+                VirtualBounds = new Rectangle(0, 5, 450, 485),
+                LightweightControlContainerControl = mainTabControl,
+                DrawSideAndBottomTabPageBorders = false,
+                ColorizeBorder = false
+            };
 
             int i = 0;
             foreach (MediaTab mediaSource in _sources)
@@ -183,11 +185,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
                 {
                     components.Dispose();
                 }
+
                 foreach (MediaTab source in _sources)
                 {
                     source.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

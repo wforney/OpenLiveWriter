@@ -13,7 +13,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// The LightweightControl.
         /// </summary>
-        private LightweightControl lightweightControl;
+        private readonly LightweightControl lightweightControl;
 
         /// <summary>
         /// Gets the LightweightControl.

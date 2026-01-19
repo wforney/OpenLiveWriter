@@ -145,8 +145,7 @@ namespace OpenLiveWriter.Interop.Windows
         {
             get
             {
-                uint flags;
-                return InternetGetConnectedState(out flags, 0);
+                return InternetGetConnectedState(out uint flags, 0);
             }
         }
 
@@ -414,8 +413,8 @@ namespace OpenLiveWriter.Interop.Windows
                     Debug.Assert(false, "Error getting current directory");
                     return "/";
                 }
-
             }
+
             return stringBuffer.ToString();
         }
 
@@ -426,7 +425,6 @@ namespace OpenLiveWriter.Interop.Windows
         public static string GetExtendedInfo()
         {
             // holder for any error code
-            uint errorCode;
 
             // the starting bufferLength
             uint bufferLength = 512;
@@ -437,7 +435,7 @@ namespace OpenLiveWriter.Interop.Windows
             // try to get the extended information.  If this returns false, there was an
             // error (likely, the buffer isn't large enough)
             if (!WinInet.InternetGetLastResponseInfo(
-                out errorCode,
+                out uint errorCode,
                 stringBuffer,
                 ref bufferLength))
             {
@@ -459,12 +457,10 @@ namespace OpenLiveWriter.Interop.Windows
                 {
                     Debug.Assert(false, "Error getting extended info");
                 }
-
             }
 
             return stringBuffer.ToString();
         }
-
     }
 
     public struct FLAG_ICC

@@ -40,15 +40,15 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private string _originalHostname;
-        private string _originalUsername;
-        private string _originalPassword;
-        private string _originalPath;
-        private string _originalUrlMapping;
+        private readonly string _originalHostname;
+        private readonly string _originalUsername;
+        private readonly string _originalPassword;
+        private readonly string _originalPath;
+        private readonly string _originalUrlMapping;
         private System.Windows.Forms.CheckBox checkBoxSavePassword;
-        private FtpUploaderSettings _ftpSettings;
+        private readonly FtpUploaderSettings _ftpSettings;
 
         public FTPSettingsForm(FtpUploaderSettings ftpSettings)
         {
@@ -167,7 +167,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
 
                 DialogResult = DialogResult.OK;
             }
-
         }
 
         private bool ValidateForm(bool requirePassword)
@@ -216,6 +215,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 textBoxUrlMapping.Focus();
                 return false;
             }
+
             return true;
         }
 
@@ -295,6 +295,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                         Trace.Fail("Unknown destination validation exception: " + ex.ToString());
                 }
             }
+
             return true;
         }
 
@@ -346,6 +347,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -575,10 +577,10 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                         //be sure to clear the cached FTP credentials
                         FTPBlogFileUploader.ClearCachedCredentials(blogSettings.Id);
                     }
+
                     return result;
                 }
             }
-
         }
     }
 }

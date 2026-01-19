@@ -26,7 +26,7 @@ namespace OpenLiveWriter.CoreServices
             Cursor.Current = _previousCursor;
         }
 
-        Cursor _previousCursor;
-        DateTime _targetEndTime;
+        readonly Cursor _previousCursor;
+        readonly DateTime _targetEndTime;
     }
 }

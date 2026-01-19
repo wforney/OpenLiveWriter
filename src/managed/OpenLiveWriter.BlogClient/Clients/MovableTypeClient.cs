@@ -35,7 +35,6 @@ namespace OpenLiveWriter.BlogClient.Clients
             clientOptions.SupportsExcerpt = true;
             clientOptions.SupportsExtendedEntries = true;
         }
-
     }
 }
 

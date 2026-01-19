@@ -52,8 +52,7 @@ namespace OpenLiveWriter
 
                 if (_options.IsArgPresent(CULTURE))
                 {
-                    string culture = _options.GetValue(CULTURE, null) as string;
-                    if (culture != null)
+                    if (_options.GetValue(CULTURE, null) is string culture)
                     {
                         CultureHelper.ApplyUICulture(culture);
                     }
@@ -127,7 +126,13 @@ namespace OpenLiveWriter
             bool success = options.Parse(args, false);
             if (!success)
             {
-                MessageBox.Show(options.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, (BidiHelper.IsRightToLeft ? (MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading) : 0));
+                MessageBox.Show(
+                    options.ErrorMessage,
+                    Application.ProductName,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1,
+                    BidiHelper.IsRightToLeft ? (MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading) : 0);
                 return null;
             }
             else

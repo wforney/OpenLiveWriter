@@ -68,6 +68,7 @@ namespace OpenLiveWriter.CoreServices
                     {
                         throw;
                     }
+
                     Thread.Sleep(1000);
                 }
             }
@@ -88,7 +89,6 @@ namespace OpenLiveWriter.CoreServices
                         LoadPluginsFromAssembly(assembly);
                     }
                 }
-
             }
             catch (ReflectionTypeLoadException e)
             {
@@ -143,6 +143,7 @@ namespace OpenLiveWriter.CoreServices
                 list = new TypeRegistrationCallbackList(pluginType);
                 _typeHandlers[pluginType] = list;
             }
+
             list.AddRegisterTypeCallback(loadedCallback);
         }
 

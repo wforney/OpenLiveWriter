@@ -8,7 +8,7 @@ namespace OpenLiveWriter.CoreServices
 {
     public class SimpleHeap
     {
-        private ArrayList list;
+        private readonly ArrayList list;
         public IComparer comparer;
 
         public SimpleHeap(IComparer comparer)

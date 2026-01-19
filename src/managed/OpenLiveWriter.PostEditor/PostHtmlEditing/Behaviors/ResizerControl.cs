@@ -42,7 +42,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         private Size _resizeInitialSize;
         private bool _allowAspectRatioDistortion = true;
         private Size _aspectRatioOffset = Size.Empty;
-        private ElementFocusPainter focusPainter;
+        private readonly ElementFocusPainter focusPainter;
 
         public ResizerControl()
         {
@@ -242,6 +242,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
             {
                 newSize = Utility.GetScaledMaxSize(_resizeInitialSize - _aspectRatioOffset, newSize - _aspectRatioOffset) + _aspectRatioOffset;
             }
+
             SizerSize = newSize;
         }
 

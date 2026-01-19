@@ -32,7 +32,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private MapActiveObject _activeObject;
         private string _address;
@@ -60,15 +60,18 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     explorerBrowserControl.Dispose();
                     explorerBrowserControl = null;
                 }
+
                 if (MapActiveObject != null)
                 {
                     MapActiveObject = null;
                 }
+
                 if (components != null)
                 {
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -362,6 +365,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                         _activeObject.ShowMapContextMenu -= new MapContextMenuHandler(_activeObject_ShowMapContextMenu);
                         _activeObject.ShowPushpinContextMenu -= new MapPushpinContextMenuHandler(_activeObject_ShowPushpinContextMenu);
                     }
+
                     _activeObject = value;
                     if (_activeObject != null)
                     {

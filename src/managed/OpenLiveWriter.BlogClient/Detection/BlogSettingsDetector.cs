@@ -162,7 +162,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         }
         private bool _useManifestCache = false;
 
-        private LazyHomepageDownloader _homepageAccessor;
+        private readonly LazyHomepageDownloader _homepageAccessor;
 
         public object DetectSettings(IProgressHost progressHost)
         {
@@ -317,7 +317,6 @@ namespace OpenLiveWriter.BlogClient.Detection
                 {
                     //not an actual encoding
                 }
-
             }
 
             string docType = new LightWeightHTMLMetaData(_homepageAccessor.HtmlDocument).DocType;
@@ -544,7 +543,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         }
 
         // detection context
-        private IBlogSettingsDetectionContext _context;
+        private readonly IBlogSettingsDetectionContext _context;
 
         // helper class for wrapping progress around steps
         private class ProgressContext : IDisposable
@@ -561,9 +560,8 @@ namespace OpenLiveWriter.BlogClient.Detection
                     throw new OperationCancelledException();
             }
 
-            private IProgressHost _progressHost;
+            private readonly IProgressHost _progressHost;
 
         }
     }
-
 }

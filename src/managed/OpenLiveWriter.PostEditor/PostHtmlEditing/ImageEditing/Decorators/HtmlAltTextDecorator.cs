@@ -73,6 +73,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 imageName = HttpUtility.UrlDecode(imageName);
                 altText = Path.GetFileNameWithoutExtension(imageName);
             }
+
             return altText;
         }
 
@@ -83,7 +84,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
     }
     internal class HtmlAltTextDecoratorSettings
     {
-        IHTMLElement ImgElement;
+        readonly IHTMLElement ImgElement;
         public HtmlAltTextDecoratorSettings(IHTMLElement imgElement)
         {
             ImgElement = imgElement;

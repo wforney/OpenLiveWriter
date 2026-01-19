@@ -79,8 +79,10 @@ namespace OpenLiveWriter.ApplicationFramework
             Controls.Add(commandContextMenuControl);
 
             // create action button (don't add it yet)
-            _actionButton = new BitmapButton();
-            _actionButton.TabIndex = 1;
+            _actionButton = new BitmapButton
+            {
+                TabIndex = 1
+            };
             _actionButton.Click += new EventHandler(_actionButton_Click);
             _actionButton.BackColor = BACKGROUND_COLOR;
             _actionButton.Font = ApplicationManager.ApplicationStyle.NormalApplicationFont;
@@ -251,22 +253,22 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Handle to parent frame window
         /// </summary>
-        private IWin32Window _parentFrame;
+        private readonly IWin32Window _parentFrame;
 
         /// <summary>
         /// Command we are associated with
         /// </summary>
-        private Command _command;
+        private readonly Command _command;
 
         /// <summary>
         /// Context menu control handler
         /// </summary>
-        private ICommandContextMenuControlHandler _contextMenuControlHandler;
+        private readonly ICommandContextMenuControlHandler _contextMenuControlHandler;
 
         /// <summary>
         /// Button user clicks to take action
         /// </summary>
-        private BitmapButton _actionButton;
+        private readonly BitmapButton _actionButton;
 
         /// <summary>
         /// Button face bitmap

@@ -121,7 +121,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 _editor.suppressChangeEvent = true;
             }
 
-            private TagEditor _editor;
+            private readonly TagEditor _editor;
 
             public void Dispose()
             {
@@ -141,6 +141,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -221,7 +222,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
         private TextBoxWithAutoComplete textBoxTags;
         private Label labelTechTags;
-        private Container components = null;
+        private readonly Container components = null;
 
         private void textBoxTags_TextChanged(object sender, EventArgs e)
         {

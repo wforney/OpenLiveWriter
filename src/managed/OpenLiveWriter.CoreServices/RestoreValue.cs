@@ -19,8 +19,8 @@ namespace OpenLiveWriter.CoreServices
     /// </summary>
     public class RestoreBool : IDisposable
     {
-        private bool _originalValue;
-        private RestoreBoolDelegate _restore;
+        private readonly bool _originalValue;
+        private readonly RestoreBoolDelegate _restore;
         public RestoreBool(ref bool value, bool tempValue, RestoreBoolDelegate restore)
         {
             _originalValue = value;

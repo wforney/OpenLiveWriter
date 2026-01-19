@@ -20,8 +20,8 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         private const string INFO_SDK = "OLW Custom SDK";
         private const string INFO_SDK_VERSION = "0.1";
 
-        private Uri endpoint;
-        private string osVersion;
+        private readonly Uri endpoint;
+        private readonly string osVersion;
 
         private static readonly Lazy<HockeyAppProxy> instance = new Lazy<HockeyAppProxy>(() => new HockeyAppProxy());
 
@@ -135,6 +135,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             {
                 builder.AppendFormat("&contact={0}", Uri.EscapeDataString(this.Contact));
             }
+
             if (description != null)
             {
                 builder.AppendFormat("&description={0}", Uri.EscapeDataString(description));
@@ -157,7 +158,6 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     stream.Write(byteArray, 0, byteArray.Length);
                     stream.Flush();
                 }
-
             });
             response.Close();
 

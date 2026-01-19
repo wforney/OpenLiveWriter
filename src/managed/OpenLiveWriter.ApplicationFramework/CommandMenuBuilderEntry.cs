@@ -21,12 +21,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The CommandMenuBuilder for this CommandMenuBuilderEntry.
         /// </summary>
-        private CommandMenuBuilder commandMenuBuilder;
+        private readonly CommandMenuBuilder commandMenuBuilder;
 
         /// <summary>
         ///	Merge menu entry level.
         /// </summary>
-        private int level;
+        private readonly int level;
 
         /// <summary>
         /// Gets the merge menu entry level.
@@ -42,7 +42,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         ///	Merge menu entry position.
         /// </summary>
-        private int position;
+        private readonly int position;
 
         /// <summary>
         /// Gets the merge menu entry position.
@@ -58,7 +58,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Merge menu entry text.
         /// </summary>
-        private string text;
+        private readonly string text;
 
         /// <summary>
         /// Gets the merge menu entry text.
@@ -74,7 +74,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Merge menu entry command.
         /// </summary>
-        private Command command;
+        private readonly Command command;
 
         /// <summary>
         /// Gets the merge menu entry command.
@@ -90,7 +90,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Child merge menu entries.
         /// </summary>
-        private SortedList childMergeMenuEntries = new SortedList();
+        private readonly SortedList childMergeMenuEntries = new SortedList();
 
         /// <summary>
         /// Initializes a new instance of the CommandMenuBuilderEntry class.
@@ -176,7 +176,6 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 return position + text.GetHashCode();
             }
-
         }
 
         /// <summary>

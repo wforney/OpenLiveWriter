@@ -215,5 +215,4 @@ namespace OpenLiveWriter.CoreServices
         #endregion
 
     }
-
 }

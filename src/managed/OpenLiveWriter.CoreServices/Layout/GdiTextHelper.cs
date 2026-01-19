@@ -34,8 +34,10 @@ namespace OpenLiveWriter.CoreServices.Layout
                         StringBuilder sb = new StringBuilder(text);
                         RECT rect = textBounds;
                         rect.bottom = rect.top; // set height to 0
-                        User32.DRAWTEXTPARAMS dtparams = new User32.DRAWTEXTPARAMS();
-                        dtparams.cbSize = (uint)Marshal.SizeOf(typeof(User32.DRAWTEXTPARAMS));
+                        User32.DRAWTEXTPARAMS dtparams = new User32.DRAWTEXTPARAMS
+                        {
+                            cbSize = (uint)Marshal.SizeOf(typeof(User32.DRAWTEXTPARAMS))
+                        };
                         if (0 == User32.DrawTextEx(hdc, sb, sb.Length, ref rect, User32.DT.CALCRECT | User32.DT.WORDBREAK | User32.DT.END_ELLIPSIS, ref dtparams))
                             throw new Win32Exception(Marshal.GetLastWin32Error());
                         return rect;
@@ -54,7 +56,6 @@ namespace OpenLiveWriter.CoreServices.Layout
             {
                 User32.ReleaseDC(context.Handle, hdc);
             }
-
         }
 
         public static void DrawString(Control context, Font font, string text, Rectangle textBounds, bool useMnemonics, GdiTextDrawMode textMode)
@@ -75,8 +76,10 @@ namespace OpenLiveWriter.CoreServices.Layout
                         {
                             StringBuilder sb = new StringBuilder(text);
                             RECT rect = textBounds;
-                            User32.DRAWTEXTPARAMS dtparams = new User32.DRAWTEXTPARAMS();
-                            dtparams.cbSize = (uint)Marshal.SizeOf(typeof(User32.DRAWTEXTPARAMS));
+                            User32.DRAWTEXTPARAMS dtparams = new User32.DRAWTEXTPARAMS
+                            {
+                                cbSize = (uint)Marshal.SizeOf(typeof(User32.DRAWTEXTPARAMS))
+                            };
                             User32.DT flags =
                                 textMode == GdiTextDrawMode.EndEllipsis ? User32.DT.END_ELLIPSIS
                                 : textMode == GdiTextDrawMode.WordBreak ? User32.DT.WORDBREAK | User32.DT.END_ELLIPSIS
@@ -105,7 +108,6 @@ namespace OpenLiveWriter.CoreServices.Layout
             {
                 User32.ReleaseDC(context.Handle, hdc);
             }
-
         }
     }
 

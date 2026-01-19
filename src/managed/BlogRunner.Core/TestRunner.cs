@@ -18,7 +18,7 @@ namespace BlogRunner.Core
 {
     public class TestRunner
     {
-        IEnumerable<Test> tests;
+        readonly IEnumerable<Test> tests;
 
         public TestRunner(IEnumerable<Test> tests)
         {
@@ -29,9 +29,11 @@ namespace BlogRunner.Core
         {
             using (new BlogClientUIContextSilentMode()) //suppress prompting for credentials
             {
-                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials();
-                credentials.Username = blog.Username;
-                credentials.Password = blog.Password;
+                TemporaryBlogCredentials credentials = new TemporaryBlogCredentials
+                {
+                    Username = blog.Username,
+                    Password = blog.Password
+                };
                 BlogCredentialsAccessor credentialsAccessor = new BlogCredentialsAccessor(Guid.NewGuid().ToString(), credentials);
                 IBlogClient client = BlogClientManager.CreateClient(provider.ClientType, blog.ApiUrl, credentialsAccessor);
 

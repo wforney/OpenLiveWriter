@@ -39,8 +39,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     BeginTag bt = el as BeginTag;
                     Attr idAttr = bt.GetAttribute("id");
 
-                    String contentSourceId, contentItemId;
-                    ContentSourceManager.ParseContainingElementId(idAttr.Value, out contentSourceId, out contentItemId);
+                    ContentSourceManager.ParseContainingElementId(idAttr.Value, out string contentSourceId, out string contentItemId);
                     ISmartContent smartContent = sourceContext.FindSmartContent(contentItemId);
                     if (smartContent != null)
                     {
@@ -70,8 +69,10 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         ContentSourceManager.RemoveSmartContentAttributes(bt);
                     }
                 }
+
                 output.Append(el.ToString());
             }
+
             return output.ToString();
         }
 
@@ -166,8 +167,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
 
             // Let the context provider know the smart content was edited.
-            string contentSourceId, contentId;
-            ContentSourceManager.ParseContainingElementId(element.id, out contentSourceId, out contentId);
+            ContentSourceManager.ParseContainingElementId(element.id, out string contentSourceId, out string contentId);
             contentSourceContext.OnSmartContentEdited(contentId);
         }
 
@@ -317,6 +317,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 ex.Parser.CollectHtmlUntil("div");
                 pos = ex.Parser.Position;
             }
+
             sb.Append(html, pos, html.Length - pos);
             return sb.ToString();
         }

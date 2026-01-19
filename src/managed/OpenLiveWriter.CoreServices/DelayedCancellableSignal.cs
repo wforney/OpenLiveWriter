@@ -12,9 +12,9 @@ namespace OpenLiveWriter.CoreServices
     /// </summary>
     public class DelayedCancellableSignal
     {
-        private object lockObj = new object();
+        private readonly object lockObj = new object();
         private long signalTime = long.MaxValue;
-        private double delay;
+        private readonly double delay;
 
         public DelayedCancellableSignal(double millisecondsDelayed)
         {

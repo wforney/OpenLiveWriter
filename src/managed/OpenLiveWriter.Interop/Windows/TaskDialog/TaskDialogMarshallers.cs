@@ -36,9 +36,9 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
     internal class StructArrayMarshaller<T> : IDisposable
     {
-        private int elementSize;
+        private readonly int elementSize;
         private IntPtr buffer;
-        private int cButtons;
+        private readonly int cButtons;
 
         public unsafe StructArrayMarshaller(params T[] buttons)
         {
@@ -72,6 +72,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
                         new IntPtr(temp.ToInt64() + i * elementSize),
                         typeof(T));
                 }
+
                 Marshal.FreeHGlobal(temp);
             }
         }

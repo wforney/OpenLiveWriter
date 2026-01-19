@@ -48,7 +48,6 @@ namespace OpenLiveWriter.CoreServices
                     // So we will skip loading html that we cannot load
                     return null;
                 }
-
             }
             else if (HtmlDocumentClassFormatPresent(iDataObject))
             {
@@ -185,6 +184,7 @@ namespace OpenLiveWriter.CoreServices
                     else
                         _lightWeightDocument = LightWeightHTMLDocument.FromString(HTML, SourceURL);
                 }
+
                 return _lightWeightDocument;
             }
         }
@@ -282,6 +282,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     m_onlyLinkTitle = (string)OnlyLink.innerText;
                 }
+
                 return m_onlyLinkTitle;
             }
         }
@@ -337,6 +338,7 @@ namespace OpenLiveWriter.CoreServices
                         m_onlyImageTitle = "img";
 
                 }
+
                 return m_onlyImageTitle;
             }
         }
@@ -359,6 +361,7 @@ namespace OpenLiveWriter.CoreServices
                     if (NormalizeInnerText(HTMLDocument.body.innerText) == NormalizeInnerText(image.innerText))
                         m_onlyImageElement = image;
                 }
+
                 return m_onlyImageElement;
             }
         }
@@ -395,6 +398,7 @@ namespace OpenLiveWriter.CoreServices
                             m_rootLink = link;
                     }
                 }
+
                 return m_rootLink;
             }
         }
@@ -442,7 +446,7 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // Hashtable caches headers as they get read
-        private Hashtable m_HTMLFormatHeaders = new Hashtable(StringComparer.OrdinalIgnoreCase);
+        private readonly Hashtable m_HTMLFormatHeaders = new Hashtable(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Helper function to extract and UTF8-decode the underlying CF_HTML.
@@ -536,7 +540,6 @@ namespace OpenLiveWriter.CoreServices
                 // always unlock the global memory handle
                 Kernel32.GlobalUnlock(storage.Handle);
             }
-
         }
 
         /// <summary>
@@ -547,11 +550,9 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                int result;
-                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.StartHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
+                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.StartHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out int result);
                 return result;
             }
-
         }
 
         /// <summary>
@@ -562,11 +563,9 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                int result;
-                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.EndHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
+                Int32.TryParse(GetHTMLFormatHeader(HTMLDataObject.Headers.EndHTML), NumberStyles.Integer, CultureInfo.InvariantCulture, out int result);
                 return result;
             }
-
         }
 
         /// <summary>
@@ -582,7 +581,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return Convert.ToInt32(GetHTMLFormatHeader(HTMLDataObject.Headers.StartFragment), CultureInfo.InvariantCulture);
             }
-
         }
 
         /// <summary>
@@ -595,7 +593,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return Convert.ToInt32(GetHTMLFormatHeader(HTMLDataObject.Headers.EndFragment), CultureInfo.InvariantCulture);
             }
-
         }
 
         /// <summary>
@@ -608,7 +605,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return Convert.ToInt32(GetHTMLFormatHeader(HTMLDataObject.Headers.StartSelection), CultureInfo.InvariantCulture);
             }
-
         }
 
         /// <summary>
@@ -621,7 +617,6 @@ namespace OpenLiveWriter.CoreServices
             {
                 return Convert.ToInt32(GetHTMLFormatHeader(HTMLDataObject.Headers.EndSelection), CultureInfo.InvariantCulture);
             }
-
         }
 
         /// <summary>
@@ -634,6 +629,6 @@ namespace OpenLiveWriter.CoreServices
             m_dataObject = iDataObject;
             m_HTMLDocument = iHTMLDocument;
         }
-        private IDataObject m_dataObject;
+        private readonly IDataObject m_dataObject;
     }
 }

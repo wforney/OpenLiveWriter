@@ -53,7 +53,7 @@ namespace OpenLiveWriter.Api
                     throw new ArgumentNullException("WriterPlugin.Id");
 
                 if (!ValidateGuid(value))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "The value specifed ({0}) was not a GUID", value), "WriterPlugin.Id");
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, "The value specifed ({0}) was not a GUID", value), "WriterPlugin.Id");
 
                 _id = value;
             }
@@ -71,10 +71,7 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.Name");
-
-                _name = value;
+                _name = value ?? throw new ArgumentNullException("WriterPlugin.Name");
             }
         }
         private string _name;
@@ -90,19 +87,7 @@ namespace OpenLiveWriter.Api
         /// to 16x16, or, if only the center 16x16 pixels of the 20x18 are non-transparent,
         /// the image will simply be cropped to 16x16.
         /// </remarks>
-        public string ImagePath
-        {
-            get
-            {
-
-                return _imagePath;
-            }
-            set
-            {
-                _imagePath = value;
-            }
-        }
-        private string _imagePath;
+        public string ImagePath { get; set; }
 
         /// <summary>
         /// Short description (1-2 sentences) of the plugin (displayed in the Plugins Preferences panel). Optional.
@@ -115,13 +100,10 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.Description");
-
-                _description = value;
+                _description = value ?? throw new ArgumentNullException("WriterPlugin.Description");
             }
         }
-        private string _description = String.Empty;
+        private string _description = string.Empty;
 
         /// <summary>
         /// URL of the publisher for the Plugin (linked to from Plugins Preferences panel). Optional.
@@ -134,30 +116,16 @@ namespace OpenLiveWriter.Api
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("WriterPlugin.PublisherUrl");
-
-                _publisherUrl = value;
+                _publisherUrl = value ?? throw new ArgumentNullException("WriterPlugin.PublisherUrl");
             }
         }
-        private string _publisherUrl = String.Empty;
+        private string _publisherUrl = string.Empty;
 
         /// <summary>
         /// Indicates whether the Plugin has editable options. That is, whether it overrides the EditOptions
         /// method of the WriterPlugin base class. Default is false.
         /// </summary>
-        public bool HasEditableOptions
-        {
-            get
-            {
-                return _hasEditableOptions;
-            }
-            set
-            {
-                _hasEditableOptions = value;
-            }
-        }
-        private bool _hasEditableOptions = false;
+        public bool HasEditableOptions { get; set; } = false;
 
         private bool ValidateGuid(string id)
         {

@@ -46,6 +46,5 @@ namespace OpenLiveWriter.HtmlEditor
                 MessageBox.Show(item.Range.Start.GetDocument().body.outerHTML);
             }
         }
-
     }
 }

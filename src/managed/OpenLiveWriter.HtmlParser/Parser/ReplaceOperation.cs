@@ -61,7 +61,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
     public abstract class AttributeAndLiteralReplaceOperation : ReplaceOperation
     {
-        private Hashtable elements = new Hashtable();
+        private readonly Hashtable elements = new Hashtable();
 
         public AttributeAndLiteralReplaceOperation()
         {
@@ -80,32 +80,27 @@ namespace OpenLiveWriter.HtmlParser.Parser
 
         protected override string Replace(Element el)
         {
-            if (el is BeginTag)
+            if (el is BeginTag beginTag)
             {
-                BeginTag tag = (BeginTag)el;
-                string lowerName = tag.Name.ToLowerInvariant();
+                string lowerName = beginTag.Name.ToLowerInvariant();
                 if (elements.ContainsKey(lowerName))
                 {
-                    Hashtable attrs = elements[lowerName] as Hashtable;
-                    if (attrs != null)
+                    if (elements[lowerName] is Hashtable attrs)
                     {
-                        foreach (Attr attr in tag.Attributes)
+                        foreach (Attr attr in beginTag.Attributes)
                         {
                             if (attrs.Contains(attr.Name.ToLowerInvariant()))
-                                return OnMatchingAttr(tag, attr);
+                                return OnMatchingAttr(beginTag, attr);
                         }
                     }
-
                 }
             }
-            else if (el is ScriptLiteral)
+            else if (el is ScriptLiteral scriptLiteral)
             {
-                return OnScriptLiteral((ScriptLiteral)el);
+                return OnScriptLiteral(scriptLiteral);
             }
 
             return base.Replace(el);
         }
-
     }
-
 }

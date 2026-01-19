@@ -14,11 +14,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     public class ImageDecoratorsList : IEnumerable
     {
-        private static string APPLIED_DECORATORS = "decoratorsList";
-        List<ImageDecorator> _decoratorsList = new List<ImageDecorator>();
-        Hashtable _decoratorsTable = new Hashtable();
-        BlogPostSettingsBag _decoratorsSettingsBag;
-        ImageDecoratorsManager _decoratorsManager;
+        private static readonly string APPLIED_DECORATORS = "decoratorsList";
+        readonly List<ImageDecorator> _decoratorsList = new List<ImageDecorator>();
+        readonly Hashtable _decoratorsTable = new Hashtable();
+        readonly BlogPostSettingsBag _decoratorsSettingsBag;
+        readonly ImageDecoratorsManager _decoratorsManager;
 
         internal ImageDecoratorsList(ImageDecoratorsManager decoratorsManager, BlogPostSettingsBag settingsBag)
             : this(decoratorsManager, settingsBag, true)
@@ -70,6 +70,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (!_decoratorsList.Contains(decorator))
                     decorators.Add(decorator);
             }
+
             AddDecorator(decorators.ToArray());
         }
 
@@ -81,6 +82,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 Trace.Fail("Attempted to add unregistered decorator " + decoratorId);
                 return;
             }
+
             AddDecorator(decorator);
         }
 
@@ -150,6 +152,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 decorator.AdjustOriginalSize(GetImageDecoratorSettings(decorator), ref originalSize);
             }
+
             return originalSize;
         }
 
@@ -162,6 +165,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     sb.Append(",");
                 sb.Append(decorator.Id);
             }
+
             _decoratorsSettingsBag.SetString(APPLIED_DECORATORS, sb.ToString());
         }
 
@@ -172,6 +176,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (decorator.SettingsNamespace == settingsNamespace)
                     return true;
             }
+
             return false;
         }
 
@@ -294,6 +299,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 decoratorIds[i] = ((ImageDecorator)_decoratorsList[i]).Id;
             }
+
             return decoratorIds;
         }
 

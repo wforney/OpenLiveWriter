@@ -64,8 +64,7 @@ namespace OpenLiveWriter.CoreServices
         public int GetData(ref FORMATETC pFormatEtc, ref STGMEDIUM pMedium)
         {
             // check to see if we have data of the requested type
-            int dataFormatIndex;
-            int result = FindDataFormat(ref pFormatEtc, out dataFormatIndex);
+            int result = FindDataFormat(ref pFormatEtc, out int dataFormatIndex);
 
             // if we do then return a clone of it (returns error code if an
             // error occurs during the clone)
@@ -116,8 +115,7 @@ namespace OpenLiveWriter.CoreServices
         /// the format, medium, and target device to use for the query</param>
         public int QueryGetData(ref FORMATETC pFormatEtc)
         {
-            int dataFormatIndex;
-            return FindDataFormat(ref pFormatEtc, out dataFormatIndex);
+            return FindDataFormat(ref pFormatEtc, out int dataFormatIndex);
         }
 
         /// <summary>
@@ -165,8 +163,7 @@ namespace OpenLiveWriter.CoreServices
         public int SetData(ref FORMATETC pFormatEtc, ref STGMEDIUM pMedium, bool fRelease)
         {
             // check and see if we have an existing format of this type
-            int dataFormatIndex;
-            int result = FindDataFormat(ref pFormatEtc, out dataFormatIndex);
+            int result = FindDataFormat(ref pFormatEtc, out int dataFormatIndex);
 
             // if we have an existing format of this type then free it and
             // remove it from the list
@@ -385,7 +382,7 @@ namespace OpenLiveWriter.CoreServices
         /// Track the enumerators that we have returned so that a .NET reference
         /// is maintained to them
         /// </summary>
-        private ArrayList enumerators = new ArrayList();
+        private readonly ArrayList enumerators = new ArrayList();
 
     }
 
@@ -478,15 +475,17 @@ namespace OpenLiveWriter.CoreServices
         /// <returns></returns>
         public void Clone(out IEnumFORMATETC ppenum)
         {
-            EnumFORMATETC clone = new EnumFORMATETC(oleDataEntries);
-            clone.currentItem = currentItem;
+            EnumFORMATETC clone = new EnumFORMATETC(oleDataEntries)
+            {
+                currentItem = currentItem
+            };
             ppenum = clone;
         }
 
         /// <summary>
         /// List of data entries we are enumerating
         /// </summary>
-        private ArrayList oleDataEntries;
+        private readonly ArrayList oleDataEntries;
 
         /// <summary>
         /// Item are enumerator is currently positioned over
@@ -494,6 +493,5 @@ namespace OpenLiveWriter.CoreServices
         private int currentItem = -1;
 
     }
-
 }
 

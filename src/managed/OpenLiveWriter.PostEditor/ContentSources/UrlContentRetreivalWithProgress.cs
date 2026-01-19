@@ -56,7 +56,6 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         return false;
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -102,7 +101,6 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         return false;
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -147,7 +145,6 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 return false;
             }
         }
-
     }
 
     internal abstract class UrlContentRetreivalAsyncOperation : OpenLiveWriter.CoreServices.AsyncOperation
@@ -204,9 +201,9 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private string _url;
+        private readonly string _url;
         private string _title;
-        private WriterPlugin _contentSource;
+        private readonly WriterPlugin _contentSource;
         private Exception _contentRetrievalException;
     }
 
@@ -245,7 +242,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             (ContentSource as SmartContentSource).CreateContentFromUrl(Url, ref title, _newContent);
         }
 
-        private ISmartContent _newContent;
+        private readonly ISmartContent _newContent;
     }
 }
 

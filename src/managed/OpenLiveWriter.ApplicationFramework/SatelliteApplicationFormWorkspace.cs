@@ -18,18 +18,18 @@ namespace OpenLiveWriter.ApplicationFramework
     internal class SatelliteApplicationFormWorkspace : UserControl, IWorkspaceBorderManager
     {
         private Control _mainControl = null;
-        private Panel panelLeft;
-        private Panel panelTop;
-        private Panel panelRight;
-        private Panel panelBottom;
-        private Panel panelMain;
+        private readonly Panel panelLeft;
+        private readonly Panel panelTop;
+        private readonly Panel panelRight;
+        private readonly Panel panelBottom;
+        private readonly Panel panelMain;
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
-        private int _workspaceInset;
+        private readonly int _workspaceInset;
 
         public SatelliteApplicationFormWorkspace()
             : this(4) // for designer
@@ -44,29 +44,39 @@ namespace OpenLiveWriter.ApplicationFramework
             SuspendLayout();
 
             // create main panel
-            panelMain = new Panel();
-            panelMain.Dock = DockStyle.Fill;
+            panelMain = new Panel
+            {
+                Dock = DockStyle.Fill
+            };
             Controls.Add(panelMain);
 
             // create border panels
-            panelLeft = new Panel();
-            panelLeft.Width = _workspaceInset;
-            panelLeft.Dock = DockStyle.Left;
+            panelLeft = new Panel
+            {
+                Width = _workspaceInset,
+                Dock = DockStyle.Left
+            };
             Controls.Add(panelLeft);
 
-            panelRight = new Panel();
-            panelRight.Width = _workspaceInset;
-            panelRight.Dock = DockStyle.Right;
+            panelRight = new Panel
+            {
+                Width = _workspaceInset,
+                Dock = DockStyle.Right
+            };
             Controls.Add(panelRight);
 
-            panelTop = new Panel();
-            panelTop.Height = _workspaceInset;
-            panelTop.Dock = DockStyle.Top;
+            panelTop = new Panel
+            {
+                Height = _workspaceInset,
+                Dock = DockStyle.Top
+            };
             Controls.Add(panelTop);
 
-            panelBottom = new Panel();
-            panelBottom.Height = _workspaceInset; // was -2
-            panelBottom.Dock = DockStyle.Bottom;
+            panelBottom = new Panel
+            {
+                Height = _workspaceInset, // was -2
+                Dock = DockStyle.Bottom
+            };
             Controls.Add(panelBottom);
 
             ResumeLayout();
@@ -125,9 +135,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
-
     }
 
     [Flags]

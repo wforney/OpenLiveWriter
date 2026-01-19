@@ -103,8 +103,7 @@ namespace OpenLiveWriter.BlogClient
 
         public int? GetOrder(string pluginId)
         {
-            int order;
-            if (int.TryParse(GetStringValue(pluginId, 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out order))
+            if (int.TryParse(GetStringValue(pluginId, 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int order))
                 return order;
             return null;
         }
@@ -185,5 +184,4 @@ namespace OpenLiveWriter.BlogClient
         }
         private readonly string _eTag;
     }
-
 }

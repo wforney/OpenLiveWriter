@@ -21,14 +21,14 @@ namespace OpenLiveWriter.CoreServices
             if (!_urlsToReplace.Contains(urlToReplace))
                 _urlsToReplace.Add(urlToReplace);
         }
-        private ArrayList _urlsToReplace = new ArrayList();
+        private readonly ArrayList _urlsToReplace = new ArrayList();
 
         public string DoReplace()
         {
             Parse();
             return _cssBuilder.ToString();
         }
-        private StringBuilder _cssBuilder = new StringBuilder();
+        private readonly StringBuilder _cssBuilder = new StringBuilder();
 
         protected override void OnStyleComment(StyleComment styleComment)
         {
@@ -77,6 +77,5 @@ namespace OpenLiveWriter.CoreServices
             if (styleElement != null)
                 _cssBuilder.Append(styleElement.ToString());
         }
-
     }
 }

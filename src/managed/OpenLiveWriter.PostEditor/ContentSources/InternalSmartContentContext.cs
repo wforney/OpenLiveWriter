@@ -11,8 +11,8 @@ namespace OpenLiveWriter.PostEditor.ContentSources
     /// </summary>
     public class InternalSmartContentContext : IInternalSmartContentContext
     {
-        private SmartContentEditor _smartContentEditor;
-        private IInternalSmartContentContextSource _contextSource;
+        private readonly SmartContentEditor _smartContentEditor;
+        private readonly IInternalSmartContentContextSource _contextSource;
         public InternalSmartContentContext(IInternalSmartContentContextSource contextSource, string contentSourceId)
         {
             _contextSource = contextSource;

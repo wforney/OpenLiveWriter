@@ -97,6 +97,7 @@ namespace OpenLiveWriter.CoreServices
                     return i;
                 }
             }
+
             return i;
         }
 
@@ -124,6 +125,7 @@ namespace OpenLiveWriter.CoreServices
                         return i;
                 }
             }
+
             return i;
         }
 
@@ -149,6 +151,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             return false;
         }
 
@@ -357,6 +360,7 @@ namespace OpenLiveWriter.CoreServices
                             if (!char.IsWhiteSpace(c))
                                 return false;
                         }
+
                         return true;
                     }
                 default:
@@ -391,11 +395,13 @@ namespace OpenLiveWriter.CoreServices
                                 case "ID":
                                     return true;
                             }
+
                             return attrName.StartsWith("on", StringComparison.OrdinalIgnoreCase);
                         }
                     }
                 }
             }
+
             return false;
         }
     }

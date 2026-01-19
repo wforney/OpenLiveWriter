@@ -119,10 +119,12 @@ namespace OpenLiveWriter.BlogClient.Clients
                     catch
                     {
                     }
+
                     if (!success)
                         throw;  // rethrow the exception from the update, not the post
                 }
             }
+
             uploadContext.Settings.SetString(EDIT_MEDIA_LINK, editUri);
 
             PicasaRefererBlockingWorkaround(uploadContext.BlogId, uploadContext.Role, ref srcUrl);
@@ -189,6 +191,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         }
                     }
                 }
+
                 srcUrl += ((srcUrl.IndexOf('?') >= 0) ? "&" : "?") + "imgmax=800";
             }
             catch (Exception ex)
@@ -222,6 +225,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 string categoryName = ((XmlElement)categoryNode).GetAttribute("term");
                 categoryList.Add(new BlogPostCategory(categoryName));
             }
+
             return (BlogPostCategory[])categoryList.ToArray(typeof(BlogPostCategory));
         }
 
@@ -328,6 +332,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 inEditPostRecovery = false;
             }
+
             etag = null;
             remotePost = null;
             return false;
@@ -414,6 +419,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 uri = alternateUri;
                 return true;
             }
+
             return false;
         }
 
@@ -480,13 +486,13 @@ namespace OpenLiveWriter.BlogClient.Clients
                             XmlNode numPhotosRemainingNode = entryEl.SelectSingleNode("gphoto:numphotosremaining/text()", nsMgr2);
                             if (numPhotosRemainingNode != null)
                             {
-                                int numPhotosRemaining;
-                                if (int.TryParse(numPhotosRemainingNode.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out numPhotosRemaining))
+                                if (int.TryParse(numPhotosRemainingNode.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numPhotosRemaining))
                                 {
                                     if (numPhotosRemaining < 1)
                                         continue;
                                 }
                             }
+
                             string selfHref = AtomEntry.GetLink(entryEl, _nsMgr, FEED_REL, "application/atom+xml", null, reqUri);
                             if (selfHref.Length > 1)
                                 return selfHref;
@@ -506,6 +512,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         throw new BlogClientOperationCancelledException();
                     }
                 }
+
                 throw;
             }
 
@@ -580,6 +587,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     else
                         throw;
                 }
+
                 using (Stream s = response.GetResponseStream())
                     ParseMediaEntry(s, out srcUrl, out newEditUri);
                 if (!conflict)
@@ -766,6 +774,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 credentials.Token = cred = new GDataCredentials();
             }
+
             return cred;
         }
 
@@ -886,6 +895,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                                 showUi = false;
                                 ShowError(MessageId.WeblogConnectionError, we.Message);
                             }
+
                             throw;
                         }
                     }
@@ -905,6 +915,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                                 showUi = false;
                                 ShowError(MessageId.GoogleAuthTokenNotFound);
                             }
+
                             throw new BlogClientInvalidServerResponseException(uri, "No Auth token was present in the response.", string.Empty);
                         }
                     }
@@ -944,6 +955,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                                 {
                                     ShellHelper.LaunchUrl(GLink.Instance.YouTubeRegister);
                                 }
+
                                 return;
                             }
 
@@ -957,8 +969,8 @@ namespace OpenLiveWriter.BlogClient.Clients
                             {
                                 ShowError(MessageId.BloggerError, TranslateError(error));
                             }
-
                         }
+
                         throw new BlogClientAuthenticationException(error, TranslateError(error));
                     }
                     else
@@ -968,6 +980,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             showUi = false;
                             ShowError(MessageId.BloggerError, response.StatusCode + ": " + response.StatusDescription);
                         }
+
                         throw new BlogClientAuthenticationException(response.StatusCode + "", response.StatusDescription);
                     }
                 }
@@ -983,6 +996,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 {
                     ShowError(MessageId.UnexpectedErrorLogin, e.Message);
                 }
+
                 throw;
             }
         }
@@ -1030,7 +1044,6 @@ namespace OpenLiveWriter.BlogClient.Clients
 
                 return request;
             }
-
         }
 
         private void ShowError(MessageId messageId, params object[] args)
@@ -1099,6 +1112,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                         ht[chunks[0]] = chunks[1];
                 }
             }
+
             return ht;
         }
 
@@ -1128,6 +1142,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     }
                 }
             }
+
             return null;
         }
 
@@ -1138,6 +1153,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 return authValue.ReturnedUsername;
             }
+
             return username;
 
         }

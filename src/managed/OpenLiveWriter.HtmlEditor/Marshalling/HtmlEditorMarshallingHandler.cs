@@ -12,7 +12,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
     /// </summary>
     public class HtmlEditorMarshallingHandler : IDataFormatHandlerFactory
     {
-        IHtmlMarshallingTarget editorContext;
+        readonly IHtmlMarshallingTarget editorContext;
         protected DataFormatHandlerRegistry dataFormatRegistry;
         public HtmlEditorMarshallingHandler(IHtmlMarshallingTarget editorContext)
         {

@@ -29,7 +29,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 {
     public class BlogServiceDetector : BlogServiceDetectorBase
     {
-        private IBlogSettingsAccessor _blogSettings;
+        private readonly IBlogSettingsAccessor _blogSettings;
 
         public BlogServiceDetector(IBlogClientUIContext uiContext, Control hiddenBrowserParentControl, IBlogSettingsAccessor blogSettings, IBlogCredentialsAccessor credentials)
             : base(uiContext, hiddenBrowserParentControl, blogSettings.Id, blogSettings.HomepageUrl, credentials)
@@ -189,13 +189,13 @@ namespace OpenLiveWriter.BlogClient.Detection
 
                 return true;
             }
+
             return false;
         }
 
         private string GetAbsoluteUrl(string url, string linkUrl)
         {
-            Uri absoluteUrl;
-            if (Uri.TryCreate(linkUrl, UriKind.Absolute, out absoluteUrl))
+            if (Uri.TryCreate(linkUrl, UriKind.Absolute, out Uri absoluteUrl))
             {
                 return linkUrl;
             }
@@ -462,7 +462,6 @@ namespace OpenLiveWriter.BlogClient.Detection
                     throw new NoSupportedRsdClientTypeException();
                 }
             }
-
         }
 
         private class NoSupportedRsdClientTypeException : ApplicationException
@@ -479,7 +478,7 @@ namespace OpenLiveWriter.BlogClient.Detection
     /// </summary>
     public class SharePointBlogDetector : BlogServiceDetectorBase
     {
-        private IBlogCredentials _blogCredentials;
+        private readonly IBlogCredentials _blogCredentials;
         public SharePointBlogDetector(IBlogClientUIContext uiContext, Control hiddenBrowserParentControl, string localBlogId, string homepageUrl, IBlogCredentialsAccessor credentials, IBlogCredentials blogCredentials)
             : base(uiContext, hiddenBrowserParentControl, localBlogId, homepageUrl, credentials)
         {
@@ -516,6 +515,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                                 homepagePath = "/";
                         }
                     }
+
                     if (homepagePath != "/" && homepagePath.EndsWith("/", StringComparison.OrdinalIgnoreCase)) //trim off trailing slash
                         homepagePath = homepagePath.Substring(0, homepagePath.Length - 1);
 
@@ -563,6 +563,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     ReportError(MessageId.WeblogDetectionUnexpectedError, ex.Message);
                 }
             }
+
             return this;
         }
 
@@ -873,12 +874,12 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             // try download the weblog home page
             UpdateProgress(progressHost, 25, Res.Get(StringId.ProgressAnalyzingHomepage));
-            string responseUri;
-            IHTMLDocument2 weblogDOM = HTMLDocumentHelper.SafeGetHTMLDocumentFromUrl(_homepageUrl, out responseUri);
+            IHTMLDocument2 weblogDOM = HTMLDocumentHelper.SafeGetHTMLDocumentFromUrl(_homepageUrl, out string responseUri);
             if (responseUri != null && responseUri != _homepageUrl)
             {
                 _homepageUrl = responseUri;
             }
+
             if (weblogDOM != null)
             {
                 // default the blog name to the title of the document
@@ -996,7 +997,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         protected IBlogCredentialsAccessor _credentials;
 
         // BlogTemplateDetector
-        private BlogEditingTemplateDetector _blogEditingTemplateDetector;
+        private readonly BlogEditingTemplateDetector _blogEditingTemplateDetector;
 
         /// <summary>
         /// Results of scanning

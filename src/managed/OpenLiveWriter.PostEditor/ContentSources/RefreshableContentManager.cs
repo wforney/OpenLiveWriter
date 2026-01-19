@@ -44,8 +44,10 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
             _extensionDataList.RefreshableCallbackTriggered += _extensionDataList_RefreshableCallbackTriggered;
 
-            _refreshableContentTimer = new Timer();
-            _refreshableContentTimer.Interval = INTERVAL_TICK;
+            _refreshableContentTimer = new Timer
+            {
+                Interval = INTERVAL_TICK
+            };
             _refreshableContentTimer.Tick += refreshableContentTimer_Tick;
         }
 
@@ -123,5 +125,4 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
         #endregion
     }
-
 }

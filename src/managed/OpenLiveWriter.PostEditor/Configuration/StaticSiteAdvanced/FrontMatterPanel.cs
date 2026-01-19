@@ -34,7 +34,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private DataGridViewTextBoxColumn colProperty;
         private DataGridViewTextBoxColumn colKey;
@@ -97,6 +97,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

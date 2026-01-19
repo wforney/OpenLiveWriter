@@ -55,7 +55,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_hWnd;
             }
         }
-        private IntPtr m_hWnd;
+        private readonly IntPtr m_hWnd;
 
         public override int GetHashCode()
         {

@@ -35,7 +35,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                     horizontalAlignmentControl.NaturalizeHeight();
                 }
             }
-
         }
 
         public override string Text
@@ -54,10 +53,12 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             get
             {
-                CellProperties cellProperties = new CellProperties();
-                cellProperties.BackgroundColor = _cellColor;
-                cellProperties.HorizontalAlignment = horizontalAlignmentControl.HorizontalAlignment;
-                cellProperties.VerticalAlignment = verticalAlignmentControl.VerticalAlignment;
+                CellProperties cellProperties = new CellProperties
+                {
+                    BackgroundColor = _cellColor,
+                    HorizontalAlignment = horizontalAlignmentControl.HorizontalAlignment,
+                    VerticalAlignment = verticalAlignmentControl.VerticalAlignment
+                };
                 return cellProperties;
             }
             set

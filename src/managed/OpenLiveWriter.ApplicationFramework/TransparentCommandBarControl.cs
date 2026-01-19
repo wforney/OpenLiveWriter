@@ -23,6 +23,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (_parent != null && !_parent.IsDisposed)
                     _parent.Invalidated -= new InvalidateEventHandler(TransparentCommandBarControl_Invalidated);
             }
+
             base.Dispose(disposing);
         }
 
@@ -38,6 +39,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 _parent = (Control)VirtualTransparency.VirtualParent(this);
                 _parent.Invalidated += new InvalidateEventHandler(TransparentCommandBarControl_Invalidated);
             }
+
             VirtualTransparency.VirtualPaint((IVirtualTransparencyHost)_parent, this, pevent);
         }
 

@@ -20,10 +20,10 @@ namespace OpenLiveWriter.PostEditor.OpenPost
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private AnimatedBitmapControl progressAnimatedBitmap;
 
-        private Control _parentControl;
+        private readonly Control _parentControl;
 
         public GetRecentPostsProgressControl(Control parentControl)
         {
@@ -88,8 +88,10 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                         string resourceName = String.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
+
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));
                 }
+
                 return _animationBitmaps;
             }
         }
@@ -107,6 +109,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

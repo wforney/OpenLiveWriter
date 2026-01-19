@@ -77,7 +77,7 @@ namespace OpenLiveWriter.Api
         /// </example>
         public static TResult ExecuteWithResponsiveUI<TParam, TResult>(TParam arg, Task<TParam, TResult> task)
         {
-            TResult result = default(TResult);
+            TResult result = default;
 
             if (Application.MessageLoop)
             {

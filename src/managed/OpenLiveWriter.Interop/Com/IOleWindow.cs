@@ -54,6 +54,5 @@ namespace OpenLiveWriter.Interop.Com
         [DispId(-2147412996)]
         object readyState {[return: MarshalAs(UnmanagedType.Struct)] [PreserveSig, MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime), DispId(-2147412996)] get; }
     }
-
 }
 

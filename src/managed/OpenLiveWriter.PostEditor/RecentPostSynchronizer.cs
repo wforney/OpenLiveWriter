@@ -136,7 +136,6 @@ namespace OpenLiveWriter.PostEditor
                     return editingContext;
                 }
             }
-
         }
 
         private static void MergeTrackbacksFromClient(BlogPost serverBlogPost, BlogPost clientBlogPost)
@@ -336,11 +335,11 @@ namespace OpenLiveWriter.PostEditor
                 }
             }
 
-            private string _blogId;
-            private BlogPost _blogPost;
+            private readonly string _blogId;
+            private readonly BlogPost _blogPost;
             private BlogPost _serverBlogPost;
             private bool _noPostAvailable = false;
-            private IBlogClientUIContext _uiContext;
+            private readonly IBlogClientUIContext _uiContext;
 
         }
 
@@ -390,7 +389,7 @@ namespace OpenLiveWriter.PostEditor
 
         class ImageReferenceFixer
         {
-            Hashtable urlFixupTable = new Hashtable();
+            readonly Hashtable urlFixupTable = new Hashtable();
             internal ImageReferenceFixer(BlogPostImageDataList list, string blogId)
             {
                 string uploadDestinationContext = BlogFileUploader.GetFileUploadDestinationContext(blogId);

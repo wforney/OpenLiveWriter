@@ -86,8 +86,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             try
             {
                 //save the thumbnail to disk
-                ImageFormat imageFormat;
-                ImageHelper2.GetImageFormat(srcFileName, out extension, out imageFormat);
+                ImageHelper2.GetImageFormat(srcFileName, out extension, out ImageFormat imageFormat);
                 string filename = createFileCallback(Path.GetFileNameWithoutExtension(srcFileName) + extension);
                 try
                 {
@@ -98,6 +97,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     {
                         ImageHelper2.SaveImage(image, imageFormat, fs);
                     }
+
                     return filename;
                 }
                 catch (Exception e)
@@ -113,6 +113,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     {
                         ImageHelper2.SaveImage(image, ImageFormat.Png, fs);
                     }
+
                     return filename;
                 }
             }
@@ -130,9 +131,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 FixImageOrientation(sourceImage);
                 using (Stream imageOut = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
                 {
-                    ImageFormat format;
-                    string fileExt;
-                    ImageHelper2.GetImageFormat(sourceFile, out fileExt, out format);
+                    ImageHelper2.GetImageFormat(sourceFile, out string fileExt, out ImageFormat format);
                     if (preserveConstraints)
                     {
                         ImageHelper2.SaveScaledThumbnailImage(width, height, sourceImage, format, imageOut);
@@ -143,6 +142,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             if (preserveConstraints)
             {
                 using (Bitmap img = new Bitmap(outputFile))

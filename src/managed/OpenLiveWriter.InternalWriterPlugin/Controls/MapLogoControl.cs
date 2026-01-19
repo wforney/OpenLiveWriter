@@ -20,9 +20,9 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private Bitmap _bingLogoBitmap;
+        private readonly Bitmap _bingLogoBitmap;
 
         private const int HORIZONTAL_INSET = 8;
         private const int VERTICAL_INSET = 12;
@@ -68,6 +68,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

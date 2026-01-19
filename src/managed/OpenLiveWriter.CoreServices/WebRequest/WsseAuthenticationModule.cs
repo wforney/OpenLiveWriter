@@ -24,8 +24,7 @@ namespace OpenLiveWriter.CoreServices
             string username = credential.UserName;
             string password = credential.Password;
 
-            string created, nonce;
-            string passwordDigest = GeneratePasswordDigest(password, out created, out nonce);
+            string passwordDigest = GeneratePasswordDigest(password, out string created, out string nonce);
 
             request.Headers.Add("X-WSSE", string.Format(
                                               CultureInfo.InvariantCulture,
@@ -55,6 +54,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 rng.GetBytes(nonceBytes);
             }
+
             nonce = Convert.ToBase64String(nonceBytes);
             created = DateTimeHelper.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture);
 
@@ -63,10 +63,11 @@ namespace OpenLiveWriter.CoreServices
             {
                 hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(nonce + created + password));
             }
+
             return Convert.ToBase64String(hashBytes);
         }
 
-        private static RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-        private static SHA1Managed sha1 = new SHA1Managed();
+        private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        private static readonly SHA1Managed sha1 = new SHA1Managed();
     }
 }

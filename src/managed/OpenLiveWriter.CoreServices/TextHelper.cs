@@ -81,6 +81,7 @@ namespace OpenLiveWriter.CoreServices
                             }
                         }
                     }
+
                     break;
                 case Units.Pixels:
                     {
@@ -96,7 +97,6 @@ namespace OpenLiveWriter.CoreServices
                                 title = title + " ";
                                 measuredSize = TextRenderer.MeasureText(title, Res.DefaultFont);
                             }
-
                         }
                         else
                         {
@@ -108,8 +108,8 @@ namespace OpenLiveWriter.CoreServices
                                 measuredSize = TextRenderer.MeasureText(title + Ellipsis, Res.DefaultFont);
                             }
                         }
-
                     }
+
                     break;
                 default:
                     break;
@@ -193,6 +193,7 @@ namespace OpenLiveWriter.CoreServices
                     {
                         output.Append(HtmlUtils.EscapeEntities(text.Substring(pos, match.Index - pos)));
                     }
+
                     pos = match.Index + match.Length;
                     output.AppendFormat("<a href=\"{0}\">{0}</a>", HtmlUtils.EscapeEntities(match.Value));
                 }
@@ -364,6 +365,7 @@ namespace OpenLiveWriter.CoreServices
                 else
                     sb.Append(line).Append('\n');
             }
+
             return sb.ToString();
         }
 
@@ -375,6 +377,7 @@ namespace OpenLiveWriter.CoreServices
                 if (s1[i] != s2[i])
                     return s1.Substring(0, i);
             }
+
             return s1.Substring(0, i);
         }
 
@@ -392,6 +395,7 @@ namespace OpenLiveWriter.CoreServices
                         return strVal.Substring(0, pos);
                 }
             }
+
             return strVal;  // all whitespace
         }
 
@@ -403,6 +407,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 output.Append(RtfEscape(c));
             }
+
             return output.ToString();
         }
 
@@ -549,6 +554,7 @@ namespace OpenLiveWriter.CoreServices
                     lineLength++;
                 }
             }
+
             return stringBuilder.Length == 0 ? null : stringBuilder.ToString();
         }
 

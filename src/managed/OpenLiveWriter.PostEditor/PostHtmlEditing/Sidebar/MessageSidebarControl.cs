@@ -9,12 +9,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
 {
     public class MessageSidebarControl : SidebarControl
     {
-        LabelControl labelControl;
+        readonly LabelControl labelControl;
         public MessageSidebarControl(string messageText)
         {
-            labelControl = new LabelControl();
-            labelControl.BackColor = Color.Transparent;
-            labelControl.Text = messageText;
+            labelControl = new LabelControl
+            {
+                BackColor = Color.Transparent,
+                Text = messageText
+            };
             Controls.Add(labelControl);
         }
 

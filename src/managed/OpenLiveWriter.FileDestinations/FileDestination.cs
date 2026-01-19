@@ -61,7 +61,6 @@ namespace OpenLiveWriter.FileDestinations
                 // Add this to the hashtable of created paths
                 m_createdDirectories.Add(path, true);
             }
-
         }
 
         /// <summary>
@@ -229,15 +228,15 @@ namespace OpenLiveWriter.FileDestinations
         /// </summary>
         protected string m_path;
 
-        private int m_retryCount;
+        private readonly int m_retryCount;
 
-        private int m_retryPause;
+        private readonly int m_retryPause;
 
         /// <summary>
         /// Stores a hash table of directories that were created during the transfer
         /// to this file destination.
         /// </summary>
-        private Hashtable m_createdDirectories = new Hashtable();
+        private readonly Hashtable m_createdDirectories = new Hashtable();
         #region IDisposable Members
 
         public void Dispose()

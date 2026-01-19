@@ -50,6 +50,7 @@ namespace LocEdit
                     dataGridView.Rows.Add(new LocDataGridViewRow(line[0], value, comment));
                 }
             }
+
             dataGridView.AutoResizeRows();
 
         }
@@ -74,7 +75,7 @@ namespace LocEdit
 
                 sb.Append($"{Helpers.CsvizeString(key)},");
                 sb.Append($"{Helpers.CsvizeString(value)},");
-                sb.Append($"{Helpers.CsvizeString(comment == null ? "" : comment)}");
+                sb.Append($"{Helpers.CsvizeString(comment ?? "")}");
                 sb.AppendLine();
             }
 
@@ -93,6 +94,7 @@ namespace LocEdit
                     dataGridView.CurrentCell = dataGridView.Rows[y].Cells[0];
                     return;
                 }
+
                 y++;
             }
 
@@ -219,7 +221,7 @@ namespace LocEdit
             if (shouldQuote)
             {
                 sb.Append('"');
-                sb.Append(input.Replace("\"", "\"\"")); // Replace double-quotes with double-double-quotes 
+                sb.Append(input.Replace("\"", "\"\"")); // Replace double-quotes with double-double-quotes
                 sb.Append('"');
             }
             else
@@ -227,16 +229,15 @@ namespace LocEdit
                 sb.Append(input);
             }
 
-
             return sb.ToString();
         }
     }
 
     internal class LocDataGridViewRow : DataGridViewRow
     {
-        private DataGridViewCell keyCell;
-        private DataGridViewCell valueCell;
-        private DataGridViewCell commentCell;
+        private readonly DataGridViewCell keyCell;
+        private readonly DataGridViewCell valueCell;
+        private readonly DataGridViewCell commentCell;
 
         public LocDataGridViewRow(string key, string value, string comment) : base()
         {

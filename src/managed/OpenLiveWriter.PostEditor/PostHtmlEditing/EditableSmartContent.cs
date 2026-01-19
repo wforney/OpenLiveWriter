@@ -17,15 +17,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     class EditableSmartContent : ISmartContent, IDisposable, IInternalContent
     {
         private ISmartContent _smartContent;
-        private string _contentSourceId;
+        private readonly string _contentSourceId;
         private String _smartContentId;
-        private IContentSourceSidebarContext _contentSourceContext;
-        private IHTMLElement _smartContentElement;
-        private SmartContentSource _contentSource;
-        private EditableRootProperties _properties;
-        private EditableLayoutStyle _layout;
-        EditableSupportingFiles _supportingFiles;
-        private IExtensionData _extensionData;
+        private readonly IContentSourceSidebarContext _contentSourceContext;
+        private readonly IHTMLElement _smartContentElement;
+        private readonly SmartContentSource _contentSource;
+        private readonly EditableRootProperties _properties;
+        private readonly EditableLayoutStyle _layout;
+        readonly EditableSupportingFiles _supportingFiles;
+        private readonly IExtensionData _extensionData;
         public EditableSmartContent(IContentSourceSidebarContext context, SmartContentSource contentSource, IHTMLElement smartContentElement)
         {
             GC.SuppressFinalize(this);
@@ -243,7 +243,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 get { return LayoutStyleRaw.LeftMargin; }
                 set { LayoutStyleRaw.LeftMargin = value; }
             }
-
         }
 
         class EditableRootProperties : EditableProperties
@@ -272,8 +271,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         class EditableSubProperties : EditableProperties
         {
-            String _name;
-            EditableProperties _parent;
+            readonly String _name;
+            readonly EditableProperties _parent;
 
             public EditableSubProperties(String name, EditableProperties parent)
             {

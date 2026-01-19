@@ -29,7 +29,7 @@ namespace OpenLiveWriter.ApplicationFramework
             /// <summary>
             ///	The command instance collection.
             /// </summary>
-            private CommandCollection commandInstanceCollection = new CommandCollection();
+            private readonly CommandCollection commandInstanceCollection = new CommandCollection();
 
             /// <summary>
             /// Initializes a new instance of the CommandInstanceManager class.
@@ -105,7 +105,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The command Command table, keyed by command identifier.
         /// </summary>
-        private Hashtable commandTable = new Hashtable();
+        private readonly Hashtable commandTable = new Hashtable();
 
         /// <summary>
         ///	The cross-referenced set of active Shortcuts.  Keyed by Command.Shortcut.  This table
@@ -213,6 +213,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -292,6 +293,7 @@ namespace OpenLiveWriter.ApplicationFramework
                             if (CommandStateChanged != null)
                                 CommandStateChanged(entry.Key, entry.Value);
                         }
+
                         batchedCommands.Clear();
 
                         OnChanged(EventArgs.Empty);
@@ -316,7 +318,7 @@ namespace OpenLiveWriter.ApplicationFramework
         }
 
         private const int MAX_BATCHED_INVALIDATIONS = 90;
-        private Dictionary<object, EventArgs> batchedCommands = new Dictionary<object, EventArgs>(MAX_BATCHED_INVALIDATIONS);
+        private readonly Dictionary<object, EventArgs> batchedCommands = new Dictionary<object, EventArgs>(MAX_BATCHED_INVALIDATIONS);
 
         private void OnCommandStateChanged(object sender, EventArgs e)
         {
@@ -337,7 +339,6 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (CommandStateChanged != null)
                     CommandStateChanged(sender, e);
             }
-
         }
 
         public Command Add(CommandId commandId, EventHandler handler)
@@ -563,16 +564,16 @@ namespace OpenLiveWriter.ApplicationFramework
             return command;
         }
 
-        Dictionary<CommandId, string> commandIdToString = new Dictionary<CommandId, string>();
+        readonly Dictionary<CommandId, string> commandIdToString = new Dictionary<CommandId, string>();
 
         public Command Get(CommandId commandIdentifier)
         {
-            string str;
-            if (!commandIdToString.TryGetValue(commandIdentifier, out str))
+            if (!commandIdToString.TryGetValue(commandIdentifier, out string str))
             {
                 str = commandIdentifier.ToString();
                 commandIdToString.Add(commandIdentifier, str);
             }
+
             CommandInstanceManager commandInstanceManager = (CommandInstanceManager)commandTable[str];
             Command command = (commandInstanceManager == null) ? null : commandInstanceManager.ActiveCommandInstance;
             return command;
@@ -810,7 +811,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         #endregion Private Methods
 
-        private static PropertyKey[] ImageKeys = new[] { PropertyKeys.SmallImage, PropertyKeys.SmallHighContrastImage, PropertyKeys.LargeImage, PropertyKeys.LargeHighContrastImage };
+        private static readonly PropertyKey[] ImageKeys = new[] { PropertyKeys.SmallImage, PropertyKeys.SmallHighContrastImage, PropertyKeys.LargeImage, PropertyKeys.LargeHighContrastImage };
         public void InvalidateAllImages()
         {
             foreach (CommandInstanceManager commandInstanceManager in commandTable.Values)

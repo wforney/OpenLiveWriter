@@ -15,7 +15,7 @@ namespace OpenLiveWriter.CoreServices
     {
         public static readonly Guid VersionHostServiceId = new Guid("371ea634-dc5c-11d1-ba57-00c04fc2040e");
 
-        private List<IVersionHost> _versionHosts;
+        private readonly List<IVersionHost> _versionHosts;
 
         public VersionHostServiceProvider(params IVersionHost[] versionHosts)
             : this((IEnumerable<IVersionHost>)versionHosts)

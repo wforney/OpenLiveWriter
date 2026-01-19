@@ -231,6 +231,7 @@ namespace OpenLiveWriter.ApplicationFramework
                             return;
                         }
                     }
+
                     break;
                 case MESSAGE_PERFLOG_FLUSH:
                     if (ApplicationPerformance.IsEnabled)
@@ -259,6 +260,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     DockPadding.Left = 0;
                     DockPadding.Right = 0;
                 }
+
                 ResumeLayout();
             }
         }
@@ -335,7 +337,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
             base.Dispose(disposing);
         }
-        private IContainer components = new Container();
+        private readonly IContainer components = new Container();
 
         /// <summary>
         /// Reference to main control hosted on the form
@@ -428,11 +430,10 @@ namespace OpenLiveWriter.ApplicationFramework
                         splashScreen.Dispose();
                     }
                 }
-
             }
 
-            private Type _formType;
-            private object[] _parameters;
+            private readonly Type _formType;
+            private readonly object[] _parameters;
         }
 
         private static readonly bool NEW_FRAME_UI_ENABLED = false;
@@ -456,5 +457,4 @@ namespace OpenLiveWriter.ApplicationFramework
         void OnClosing(CancelEventArgs e);
         void OnClosed();
     }
-
 }

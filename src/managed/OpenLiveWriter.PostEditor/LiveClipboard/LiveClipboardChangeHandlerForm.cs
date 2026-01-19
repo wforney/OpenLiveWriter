@@ -32,7 +32,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
         private System.Windows.Forms.ImageList imageListComponents;
         private System.ComponentModel.IContainer components;
 
-        private LiveClipboardFormat _targetFormat;
+        private readonly LiveClipboardFormat _targetFormat;
 
         public LiveClipboardChangeHandlerForm(LiveClipboardFormatHandler existingHandler)
         {
@@ -61,10 +61,12 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
             {
                 LiveClipboardComponentDisplay componentDisplay = new LiveClipboardComponentDisplay(contentSource);
                 imageListComponents.Images.Add(componentDisplay.Icon);
-                ListViewItem listViewItem = new ListViewItem();
-                listViewItem.Tag = contentSource;
-                listViewItem.ImageIndex = imageListComponents.Images.Count - 1;
-                listViewItem.Text = " " + componentDisplay.Name;
+                ListViewItem listViewItem = new ListViewItem
+                {
+                    Tag = contentSource,
+                    ImageIndex = imageListComponents.Images.Count - 1,
+                    Text = " " + componentDisplay.Name
+                };
                 listViewComponents.Items.Add(listViewItem);
                 if (contentSource.Equals(existingHandler.ContentSource))
                     listViewItem.Selected = true;
@@ -100,6 +102,7 @@ namespace OpenLiveWriter.PostEditor.LiveClipboard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

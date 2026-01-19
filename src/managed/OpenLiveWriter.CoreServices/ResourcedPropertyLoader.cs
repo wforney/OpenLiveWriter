@@ -19,8 +19,8 @@ namespace OpenLiveWriter.CoreServices
         private readonly Type _type;
         private readonly ArrayList _localizedProperties = new ArrayList();
         private readonly ArrayList _invariantProperties = new ArrayList();
-        private ResourceManager _localizedResourceManager;
-        private ResourceManager _invariantResourceManager;
+        private readonly ResourceManager _localizedResourceManager;
+        private readonly ResourceManager _invariantResourceManager;
 
         public ResourcedPropertyLoader(Type type, ResourceManager localizedResourceManager, ResourceManager invariantResourceManager)
         {
@@ -58,6 +58,7 @@ namespace OpenLiveWriter.CoreServices
                 Debug.Fail("Can't apply resources to a null value");
                 throw new ArgumentNullException("obj", "Can't apply resources to a null value");
             }
+
             if (!_type.IsInstanceOfType(obj))
             {
                 Debug.Fail("Can't apply resources to an object of type " + obj.GetType().Name);
@@ -67,7 +68,7 @@ namespace OpenLiveWriter.CoreServices
             Apply(_localizedResourceManager, _localizedProperties, obj, id, true);
             Apply(_invariantResourceManager, _invariantProperties, obj, id, false);
         }
-        List<string> props = new List<string>();
+        readonly List<string> props = new List<string>();
         private void Apply(ResourceManager rm, ArrayList properties, object obj, string id, bool localized)
         {
             foreach (PropertyInfo prop in properties)
@@ -166,6 +167,5 @@ namespace OpenLiveWriter.CoreServices
                 }
             }
         }
-
     }
 }

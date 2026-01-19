@@ -35,7 +35,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private MapBirdsEyeButton buttonGotoBirdseye;
         private MapSearchButton buttonSearch;
@@ -53,7 +53,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
         private const int PAN_OFFSET = 50;
         private MapZoomMinusButton buttonZoomMinus;
 
-        private MapOptions _mapOptions;
+        private readonly MapOptions _mapOptions;
 
         internal static bool ValidateLiveLocalConnection(bool showUI)
         {
@@ -178,11 +178,13 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     mapControl.ShowPushpinContextMenu -= new MapPushpinContextMenuHandler(mapControl_ShowPushpinContextMenu);
                     mapControl = null;
                 }
+
                 if (components != null)
                 {
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -643,6 +645,7 @@ namespace OpenLiveWriter.InternalWriterPlugin
                     Debug.Fail("Unknown mapStyle: " + comboBoxStyle.MapStyle.ToString());
                     break;
             }
+
             ManageMapStyleControls();
             mapControl.Style = mapStyle;
         }
@@ -778,9 +781,11 @@ namespace OpenLiveWriter.InternalWriterPlugin
                 {
                     comboBoxStyle.MapStyle = VEMapStyle.Aerial;
                 }
+
                 comboBoxStyle.HideBirdsEye();
                 buttonGotoBirdseye.Visible = false;
             }
+
             if (comboBoxStyle.MapStyle == VEMapStyle.Birdseye)
             {
                 UpdateBirdseyeControls();
@@ -854,10 +859,10 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         private class ContextMenuHandler
         {
-            private MapContextMenuEvent _event;
-            private MapControl _mapControl;
-            private MapOptions _mapOptions;
-            private MapForm _mapForm;
+            private readonly MapContextMenuEvent _event;
+            private readonly MapControl _mapControl;
+            private readonly MapOptions _mapOptions;
+            private readonly MapForm _mapForm;
             private const int StreetLevel = 16;
             private const int CityLevel = 11;
             private const int RegionLevel = 6;
@@ -957,11 +962,11 @@ namespace OpenLiveWriter.InternalWriterPlugin
 
         private class PushpinContextMenuHandler
         {
-            private MapForm _mapForm;
-            private MapContextMenuEvent _event;
-            private MapControl _mapControl;
-            private MapOptions _mapOptions;
-            private string _pushpinId;
+            private readonly MapForm _mapForm;
+            private readonly MapContextMenuEvent _event;
+            private readonly MapControl _mapControl;
+            private readonly MapOptions _mapOptions;
+            private readonly string _pushpinId;
 
             internal PushpinContextMenuHandler(MapForm parentFrame, MapControl mapControl, MapOptions mapOptions,
                                                MapContextMenuEvent e, string pushpinId)
@@ -1003,10 +1008,12 @@ namespace OpenLiveWriter.InternalWriterPlugin
                 VEPushpin pushpin = _mapControl.GetPushpin(_pushpinId);
                 if (pushpin != null)
                 {
-                    MapPushpinInfo pushpinInfo = new MapPushpinInfo(pushpin.Title);
-                    pushpinInfo.Notes = pushpin.Details;
-                    pushpinInfo.MoreInfoUrl = pushpin.MoreInfoUrl;
-                    pushpinInfo.PhotoUrl = pushpin.PhotoUrl;
+                    MapPushpinInfo pushpinInfo = new MapPushpinInfo(pushpin.Title)
+                    {
+                        Notes = pushpin.Details,
+                        MoreInfoUrl = pushpin.MoreInfoUrl,
+                        PhotoUrl = pushpin.PhotoUrl
+                    };
                     MapPushpinForm pushpinForm =
                         new MapPushpinForm(_mapForm, _mapControl.PointToScreen(new Point(_event.X, _event.Y)),
                                            new MapPushpinEditedHandler(_mapPushpinEditedHandler), pushpinInfo);
@@ -1024,6 +1031,5 @@ namespace OpenLiveWriter.InternalWriterPlugin
                                       pushpinInfo.MoreInfoUrl, pushpinInfo.PhotoUrl));
             }
         }
-
     }
 }

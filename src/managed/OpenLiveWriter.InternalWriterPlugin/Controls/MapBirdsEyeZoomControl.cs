@@ -29,11 +29,11 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        private Bitmap _backgroundBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomFrame.png");
-        private Bitmap _smallZoomBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomSmallEnabled.png");
-        private Bitmap _smallZoomCheckedBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomSmallSelected.png");
-        private Bitmap _largeZoomBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomLargeEnabled.png");
-        private Bitmap _largeZoomCheckedBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomLargeSelected.png");
+        private readonly Bitmap _backgroundBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomFrame.png");
+        private readonly Bitmap _smallZoomBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomSmallEnabled.png");
+        private readonly Bitmap _smallZoomCheckedBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomSmallSelected.png");
+        private readonly Bitmap _largeZoomBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomLargeEnabled.png");
+        private readonly Bitmap _largeZoomCheckedBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.BEVZoomLargeSelected.png");
 
         private Rectangle _smallZoomBounds;
         private Rectangle _largeZoomBounds;
@@ -80,7 +80,6 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                     Invalidate();
                 }
             }
-
         }
         private BirdsEyeZoomLevel _zoomLevel;
 
@@ -129,6 +128,7 @@ namespace OpenLiveWriter.InternalWriterPlugin.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

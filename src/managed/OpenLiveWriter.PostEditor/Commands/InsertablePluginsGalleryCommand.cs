@@ -41,5 +41,4 @@ namespace OpenLiveWriter.PostEditor.Commands
             base.LoadItems();
         }
     }
-
 }

@@ -40,6 +40,7 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

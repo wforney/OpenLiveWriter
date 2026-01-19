@@ -62,7 +62,6 @@ namespace OpenLiveWriter.BlogClient.Detection
                 Trace.Fail("Unexpected error attempting to detect Blog service: " + ex.ToString());
                 return null;
             }
-
         }
 
         /// <summary>
@@ -123,8 +122,10 @@ namespace OpenLiveWriter.BlogClient.Detection
         private static RsdServiceDescription ReadFromRsdStream(Stream rsdStream, string url)
         {
             // initialize a blog service to return
-            RsdServiceDescription rsdServiceDescription = new RsdServiceDescription();
-            rsdServiceDescription.SourceUrl = url;
+            RsdServiceDescription rsdServiceDescription = new RsdServiceDescription
+            {
+                SourceUrl = url
+            };
 
             ArrayList blogApis = new ArrayList();
 
@@ -185,6 +186,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                                                 break;
                                         }
                                     }
+
                                     blogApis.Add(api);
                                     break;
                                 case "SETTING":
@@ -198,6 +200,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                                             lastRsdApi.Settings.Add(name, value);
                                         }
                                     }
+
                                     break;
                             }
                         }
@@ -223,7 +226,6 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 return null;
             }
-
         }
 
         private static string ToAbsoluteUrl(string baseUrl, string url)
@@ -232,6 +234,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 url = UrlHelper.EscapeRelativeURL(baseUrl, url);
             }
+
             return url;
         }
 
@@ -245,5 +248,4 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private const string WINDOWS_LIVE_WRITER_NAMESPACE = "http://www.microsoft.com/schemas/livewriter";
     }
-
 }

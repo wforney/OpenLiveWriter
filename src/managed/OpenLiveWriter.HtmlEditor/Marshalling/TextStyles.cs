@@ -34,8 +34,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
             IHTMLDocument2 document = markupPointer.Container.Document;
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)document;
-            IHTMLComputedStyle computedStyle;
-            displayServices.GetComputedStyle(markupPointer.PointerRaw, out computedStyle);
+            displayServices.GetComputedStyle(markupPointer.PointerRaw, out IHTMLComputedStyle computedStyle);
 
             MarkupPointer = markupPointer;
             ComputedStyle = computedStyle;

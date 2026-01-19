@@ -21,8 +21,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
         public override void Decorate(ImageDecoratorContext context)
         {
-            HtmlBorderDecoratorSettings settings = new HtmlBorderDecoratorSettings(context.ImgElement);
-            settings.InheritBorder = true;
+            HtmlBorderDecoratorSettings settings = new HtmlBorderDecoratorSettings(context.ImgElement)
+            {
+                InheritBorder = true
+            };
 
             if (context.ImageEmbedType == ImageEmbedType.Embedded)
             {
@@ -43,7 +45,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
     internal class HtmlBorderDecoratorSettings
     {
-        IHTMLElement ImgElement;
+        readonly IHTMLElement ImgElement;
         public HtmlBorderDecoratorSettings(IHTMLElement imgElement)
         {
             ImgElement = imgElement;

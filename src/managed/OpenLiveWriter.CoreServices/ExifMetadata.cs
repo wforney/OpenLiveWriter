@@ -20,7 +20,7 @@ namespace OpenLiveWriter.CoreServices
             internal const int Orientation = 0x112;
         }
 
-        private Image _image;
+        private readonly Image _image;
         private ExifMetadata(Image image)
         {
             _image = image;
@@ -47,6 +47,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     _image.RemovePropertyItem(ExifTags.Orientation);
                 }
+
                 PropertyItem orientation = GetProperty(ExifTags.Orientation);
                 orientation.Value[0] = (byte)value;
                 _image.SetPropertyItem(orientation);

@@ -21,7 +21,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
     public class WeblogAccountListView : ListView
     {
         private IContainer components;
-        private ArrayList _blogIcons = new ArrayList();
+        private readonly ArrayList _blogIcons = new ArrayList();
 
         public WeblogAccountListView(IContainer container)
         {
@@ -152,6 +152,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -189,6 +190,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
                     Columns[0].Width = Width - 8;
             }
         }
-
     }
 }

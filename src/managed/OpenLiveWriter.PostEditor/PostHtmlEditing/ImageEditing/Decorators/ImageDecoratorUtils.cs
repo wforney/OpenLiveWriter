@@ -39,6 +39,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     newRotation = RotateFlipType.RotateNoneFlipNone;
                     break;
             }
+
             return newRotation;
         }
 
@@ -65,6 +66,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     newRotation = RotateFlipType.RotateNoneFlipNone;
                     break;
             }
+
             return newRotation;
         }
     }

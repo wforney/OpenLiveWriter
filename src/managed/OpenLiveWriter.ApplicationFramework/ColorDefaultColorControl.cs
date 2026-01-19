@@ -57,6 +57,5 @@ namespace OpenLiveWriter.ApplicationFramework
                 selected = (value == Color.Empty);
             }
         }
-
     }
 }

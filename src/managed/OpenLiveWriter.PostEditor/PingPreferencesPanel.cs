@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor
     public class PingPreferencesPanel : PreferencesPanel
     {
         private System.Windows.Forms.CheckBox chkPing;
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
         private System.Windows.Forms.TextBox txtUrls;
         private bool loading;
 
@@ -60,6 +60,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -170,6 +171,7 @@ namespace OpenLiveWriter.PostEditor
                     }
                 }
             }
+
             return true;
         }
 
@@ -182,6 +184,7 @@ namespace OpenLiveWriter.PostEditor
                 if (trimmed.Length > 0 && !urls.Contains(trimmed))
                     urls.Add(trimmed);
             }
+
             PostEditorSettings.PingUrls = (string[])urls.ToArray(typeof(string));
             PostEditorSettings.Ping = chkPing.Checked;
             DoLoad();

@@ -34,6 +34,5 @@ namespace OpenLiveWriter.Interop.Com
 
         void Clone(out IEnumFORMATETC ppenum);
     }
-
 }
 

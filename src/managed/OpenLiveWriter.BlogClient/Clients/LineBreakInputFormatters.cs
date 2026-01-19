@@ -33,7 +33,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             return content;
         }
 
-        private static Regex usesHtmlLineBreaks = new Regex(@"<(p|br)(\s|/?>)", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        private static readonly Regex usesHtmlLineBreaks = new Regex(@"<(p|br)(\s|/?>)", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         static private string ReplaceLineFormattedBreaks(string html)
         {
             if (usesHtmlLineBreaks.IsMatch(html))
@@ -49,6 +49,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 sb.AppendFormat("<p>{0}</p>", pBuilder.ToString());
                 pBuilder.Length = 0;
             }
+
             if (pBuilder.Length > 0)
             {
                 if (paragraphsAdded) //only wrap the last paragraph in <p> if other paragraphs where present in the post.
@@ -76,11 +77,13 @@ namespace OpenLiveWriter.BlogClient.Clients
                     paragraphBuilder.Append("<br>");
                     pendingLineBreaks = 0;
                 }
+
                 paragraphBuilder.Append(line);
 
                 pendingLineBreaks++;
                 line = reader.ReadLine();
             }
+
             return false;
         }
     }
@@ -105,7 +108,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             return content;
         }
 
-        private static Regex usesHtmlLineBreaks = new Regex(@"<(br)(\s|/?>)", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        private static readonly Regex usesHtmlLineBreaks = new Regex(@"<(br)(\s|/?>)", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         static private string ReplaceLineFormattedBreaks(string html)
         {
             if (usesHtmlLineBreaks.IsMatch(html))
@@ -120,6 +123,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 sb.Append("<br>");
                 line = reader.ReadLine();
             }
+
             string newHtml = sb.ToString();
             return newHtml;
         }

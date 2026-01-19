@@ -33,6 +33,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     return true;
                 }
             }
+
             return false;
         }
     }

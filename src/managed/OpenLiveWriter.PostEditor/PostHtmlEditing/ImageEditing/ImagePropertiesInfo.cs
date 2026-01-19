@@ -17,7 +17,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     public class BlogPostImagePropertiesInfo : ImagePropertiesInfo
     {
-        private BlogPostImageData _imageData;
+        private readonly BlogPostImageData _imageData;
         public BlogPostImagePropertiesInfo(BlogPostImageData imageData, ImageDecoratorsList decorators)
         {
             _imageData = imageData;
@@ -513,6 +513,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     targetDecoratorSettings = new HtmlImageTargetDecoratorSettings(ImageDecorators.GetImageDecoratorSettings(HtmlImageTargetDecorator.Id), _imgElement);
                 }
+
                 return targetDecoratorSettings;
             }
         }
@@ -526,6 +527,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _inlineImageSettings = new HtmlImageResizeDecoratorSettings(ImageDecorators.GetImageDecoratorSettings(HtmlImageResizeDecorator.Id), _imgElement);
                 }
+
                 return _inlineImageSettings;
             }
         }
@@ -539,6 +541,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _inlineAlignmentSettings = new HtmlAlignDecoratorSettings(ImageDecorators.GetImageDecoratorSettings(HtmlAlignDecorator.Id), _imgElement);
                 }
+
                 return _inlineAlignmentSettings;
             }
         }
@@ -552,6 +555,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _inlineMarginSettings = new HtmlMarginDecoratorSettings(ImageDecorators.GetImageDecoratorSettings(HtmlMarginDecorator.Id), _imgElement);
                 }
+
                 return _inlineMarginSettings;
             }
         }

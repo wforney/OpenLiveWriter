@@ -13,7 +13,7 @@ namespace OpenLiveWriter.CoreServices
     {
         public delegate object DefaultValuePump(object key);
 
-        private DefaultValuePump defaultValuePump;
+        private readonly DefaultValuePump defaultValuePump;
 
         public DefaultHashtable(DefaultValuePump valuePump)
         {

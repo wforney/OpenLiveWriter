@@ -94,7 +94,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             _blogCategories.AddRange(categories);
             DoChange(ChangeType.Category);
         }
-        private ArrayList _blogCategories = new ArrayList();
+        private readonly ArrayList _blogCategories = new ArrayList();
 
         public void SetNewCategories(BlogPostCategory[] categories)
         {
@@ -116,7 +116,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             // fire the change event
             DoChange(ChangeType.Category);
         }
-        private ArrayList _newCategories = new ArrayList();
+        private readonly ArrayList _newCategories = new ArrayList();
 
         public void CommitNewCategory(BlogPostCategory newCategory)
         {
@@ -283,7 +283,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
 
         public class CategoryChangedEventArgs : EventArgs
         {
-            private ChangeType _changeType;
+            private readonly ChangeType _changeType;
 
             public CategoryChangedEventArgs(ChangeType changeType) : base()
             {
@@ -298,7 +298,6 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 }
             }
         }
-
     }
 
     internal class BlogPostCategoryListItem : IComparable, ICloneable
@@ -316,13 +315,13 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
         }
 
         public BlogPostCategory Category { get { return _category; } }
-        private BlogPostCategory _category;
+        private readonly BlogPostCategory _category;
 
         public int IndentLevel { get { return _indentLevel; } }
-        private int _indentLevel;
+        private readonly int _indentLevel;
 
         public ArrayList Children { get { return _children; } }
-        private ArrayList _children;
+        private readonly ArrayList _children;
 
         public int CompareTo(object obj)
         {
@@ -408,7 +407,5 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
 
             return flattenedList;
         }
-
     }
-
 }

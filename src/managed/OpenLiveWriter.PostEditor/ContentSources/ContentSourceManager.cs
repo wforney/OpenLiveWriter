@@ -79,9 +79,9 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         public string ContentBlockId { get { return _contentBlockId; } }
         public SmartContent SmartContent { get { return _smartContent; } }
 
-        private string _contentSourceId;
-        private string _contentBlockId;
-        private SmartContent _smartContent;
+        private readonly string _contentSourceId;
+        private readonly string _contentBlockId;
+        private readonly SmartContent _smartContent;
     }
 
     public class ContentSourceInfo
@@ -184,6 +184,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     else
                         bitmap = ImageHelper2.CreateResizedBitmap(bitmap, IMAGE_WIDTH, IMAGE_HEIGHT, bitmap.RawFormat);
                 }
+
                 return bitmap;
             }
         }
@@ -238,16 +239,16 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private CustomLocalizedPluginAttribute _customLocalizedPlugin;
+        private readonly CustomLocalizedPluginAttribute _customLocalizedPlugin;
 
         // core plugin attributes
-        private WriterPluginAttribute _writerPlugin;
+        private readonly WriterPluginAttribute _writerPlugin;
         public bool WriterPluginHasEditableOptions { get { return _writerPlugin.HasEditableOptions; } }
         public string WriterPluginPublisherUrl { get { return _writerPlugin.PublisherUrl; } }
         public string WriterPluginDescription { get { return GetLocalizedString("WriterPlugin.Description", _writerPlugin.Description); } }
 
         // insertable content source
-        private InsertableContentSourceAttribute _insertableContentSource;
+        private readonly InsertableContentSourceAttribute _insertableContentSource;
         public bool CanCreateNew { get { return _insertableContentSource != null; } }
         public string InsertableContentSourceMenuText
         {
@@ -274,7 +275,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         private const int MAX_SIDEBAR_TEXT_LENGTH = 20;
 
         // url content source
-        private UrlContentSourceAttribute _urlContentSource;
+        private readonly UrlContentSourceAttribute _urlContentSource;
         public bool CanCreateFromUrl { get { return _urlContentSource != null; } }
         public string UrlContentSourceUrlPattern { get { return _urlContentSource.UrlPattern; } }
         public bool UrlContentSourceRequiresProgress { get { return _urlContentSource != null && _urlContentSource.RequiresProgress; } }
@@ -283,7 +284,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
 
         // live clipboard content source metadata
         internal LiveClipboardFormatHandler[] LiveClipboardFormatHandlers { get { return _liveClipboardFormatHandlers; } }
-        private LiveClipboardFormatHandler[] _liveClipboardFormatHandlers;
+        private readonly LiveClipboardFormatHandler[] _liveClipboardFormatHandlers;
 
         public bool Enabled
         {
@@ -393,10 +394,10 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private Type _pluginType;
+        private readonly Type _pluginType;
         private WriterPlugin _plugin;
-        private SettingsPersisterHelper _settings;
-        private static SettingsPersisterHelper _parentSettings = PostEditorSettings.SettingsKey.GetSubSettings("ContentSources");
+        private readonly SettingsPersisterHelper _settings;
+        private static readonly SettingsPersisterHelper _parentSettings = PostEditorSettings.SettingsKey.GetSubSettings("ContentSources");
     }
 
     internal sealed class ContentSourceManager
@@ -482,6 +483,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         AddContentSource(pluginContentSources, type, showErrors);
                     pluginContentSources.Sort(new ContentSourceInfo.NameComparer());
                 }
+
                 _pluginContentSources = pluginContentSources.ToArray(typeof(ContentSourceInfo)) as ContentSourceInfo[];
 
                 // list of all installed content sources
@@ -805,6 +807,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     string newContent = String.Empty; // default
                     try { if (sourceSite.SelectedHtml != null) newContent = sourceSite.SelectedHtml; }
                     catch { } // safely try to provide selected html
+
                     if (sSource.CreateContent(sourceSite.DialogOwner, ref newContent) == DialogResult.OK)
                     {
                         sourceSite.InsertContent(newContent, contentSource.Id == WebImageContentSource.ID);
@@ -829,6 +832,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             {
                 return true;
             }
+
             return false;
         }
 
@@ -845,8 +849,10 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 {
                     return true;
                 }
+
                 element = element.parentElement;
             }
+
             return false;
         }
 
@@ -889,6 +895,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     return elements[0];
                 }
             }
+
             return null;
         }
 
@@ -900,6 +907,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 if (el.id != null)
                     ids.Add(el.id);
             }
+
             return (string[])ids.ToArray(typeof(string));
         }
 
@@ -908,9 +916,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             string[] contentIds = GetSmartContentIds(range);
             foreach (string contentId in contentIds)
             {
-                string sourceId;
-                string contentBlockId;
-                ParseContainingElementId(contentId, out sourceId, out contentBlockId);
+                ParseContainingElementId(contentId, out string sourceId, out string contentBlockId);
                 if (sourceId == contentSourceId)
                     return true;
             }
@@ -1020,6 +1026,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     IHandlesMultipleUrls plugin = (IHandlesMultipleUrls)Activator.CreateInstance(contentSource.Type);
                     return plugin.HasUrlMatch(url);
                 }
+
                 Regex regex = new Regex(contentSource.UrlContentSourceUrlPattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
                 return regex.IsMatch(url);
             }
@@ -1073,6 +1080,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     return contentSourceInfo;
                 }
             }
+
             return null;
         }
     }
@@ -1135,8 +1143,8 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private IContentSourceSite _insertionSite;
-        private ContentSourceInfo _contentSourceInfo;
+        private readonly IContentSourceSite _insertionSite;
+        private readonly ContentSourceInfo _contentSourceInfo;
     }
 
     internal class ContentSourceCommandMenuContext : IDynamicCommandMenuContext
@@ -1152,13 +1160,13 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         {
             get { return _options; }
         }
-        private DynamicCommandMenuOptions _options;
+        private readonly DynamicCommandMenuOptions _options;
 
         public CommandManager CommandManager
         {
             get { return _commandManager; }
         }
-        private CommandManager _commandManager;
+        private readonly CommandManager _commandManager;
 
         public IMenuCommandObject[] GetMenuCommandObjects()
         {
@@ -1180,6 +1188,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                 if (command != null)
                     menuCommandObjects.Add(command);
             }
+
             return menuCommandObjects.ToArray(typeof(IMenuCommandObject)) as IMenuCommandObject[];
         }
 
@@ -1188,7 +1197,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             (menuCommandObject as ContentSourceCommand).PerformExecute();
         }
 
-        private IContentSourceSite _insertionSite;
+        private readonly IContentSourceSite _insertionSite;
     }
 
     internal class PluginAttributeException : ApplicationException
@@ -1212,9 +1221,9 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private Type _pluginType;
-        private Type _attributeType;
-        private string _attributeFieldName;
+        private readonly Type _pluginType;
+        private readonly Type _attributeType;
+        private readonly string _attributeFieldName;
     }
 
     internal abstract class PluginAttributeImageResourceException : PluginAttributeException
@@ -1277,8 +1286,8 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private Type _pluginType;
-        private string _regex;
+        private readonly Type _pluginType;
+        private readonly string _regex;
 
     }
 
@@ -1297,7 +1306,6 @@ namespace OpenLiveWriter.PostEditor.ContentSources
             }
         }
 
-        private Type _pluginType;
+        private readonly Type _pluginType;
     }
-
 }

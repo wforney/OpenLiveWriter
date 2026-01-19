@@ -34,11 +34,11 @@ namespace OpenLiveWriter.CoreServices
             AllFlags = 0xffff
         }
 
-        private Hashtable _individualTagStack = new Hashtable();
+        private readonly Hashtable _individualTagStack = new Hashtable();
         private StringBuilder _htmlBuilder = new StringBuilder();
         private int suspendTagDepth = 0;
-        private StringCollection _tagStack = new StringCollection();
-        private ulong _flagMask;
+        private readonly StringCollection _tagStack = new StringCollection();
+        private readonly ulong _flagMask;
 
         /// <summary>
         /// Summary description for LightWeightHTMLReplacer.
@@ -178,6 +178,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             base.OnDocumentEnd();
         }
 
@@ -230,6 +231,7 @@ namespace OpenLiveWriter.CoreServices
                 string newText = badStartTag.Replace(text.RawText, "");
                 text = new Text(newText, 0, newText.Length);
             }
+
             base.OnText(text);
         }
 
@@ -254,6 +256,7 @@ namespace OpenLiveWriter.CoreServices
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -284,6 +287,7 @@ namespace OpenLiveWriter.CoreServices
                         return IsScript(attribute.Value);
                 }
             }
+
             return false;
         }
 
@@ -326,8 +330,8 @@ namespace OpenLiveWriter.CoreServices
             }
         }
 
-        static Regex badStartTag = new Regex(@"\<[a-z\!].*?(?:\>|$)", RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
-        static Regex requiresEndTag = new Regex(@"\b(a|b|blockquote|cite|code|div|dl|em|font|form|h[1-6]|i|ol|pre|select|span|strong|style|table|textarea|tt|ul)\b", RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
+        static readonly Regex badStartTag = new Regex(@"\<[a-z\!].*?(?:\>|$)", RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
+        static readonly Regex requiresEndTag = new Regex(@"\b(a|b|blockquote|cite|code|div|dl|em|font|form|h[1-6]|i|ol|pre|select|span|strong|style|table|textarea|tt|ul)\b", RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
 
         private Regex _llegalTagTreeName;
         private Regex IllegalTagTreeName
@@ -342,10 +346,11 @@ namespace OpenLiveWriter.CoreServices
 
                     _llegalTagTreeName = CreateStringListRegex(sb.ToString());
                 }
+
                 return _llegalTagTreeName;
             }
         }
-        private string ILLEGAL_DOCUMENT_TAG_TREE_NAMES = "head";
+        private readonly string ILLEGAL_DOCUMENT_TAG_TREE_NAMES = "head";
 
         private Regex _llegalTagName;
         private Regex IllegalTagName
@@ -364,12 +369,13 @@ namespace OpenLiveWriter.CoreServices
 
                     _llegalTagName = CreateStringListRegex(sb.ToString());
                 }
+
                 return _llegalTagName;
             }
         }
-        private string ILLEGAL_SCRIPT_TAG_NAMES = "script";
-        private string ILLEGAL_STYLE_TAG_NAMES = "style|font";
-        private string ILLEGAL_DOCUMENT_TAG_NAMES = "body|html|base";
+        private readonly string ILLEGAL_SCRIPT_TAG_NAMES = "script";
+        private readonly string ILLEGAL_STYLE_TAG_NAMES = "style|font";
+        private readonly string ILLEGAL_DOCUMENT_TAG_NAMES = "body|html|base";
 
         private Regex _illegalAttribute;
         private Regex IllegalAttribute
@@ -386,12 +392,13 @@ namespace OpenLiveWriter.CoreServices
 
                     _illegalAttribute = CreateStringListRegex(sb.ToString());
                 }
+
                 return _illegalAttribute;
             }
         }
-        private string ILLEGAL_ATTR_NAMES = "^(([^x][^m][^l].*|.?.?):.*)"; //Matches all strings with a colon that do not start with "xml"
-        private string ILLEGAL_STYLE_ATTR_NAMES = "font|class|style|face";
-        private string ILLEGAL_SCRIPT_ATTR_NAMES = "onload|onclick|onblur|onchange|onerror|onfocus|onmouseout|onmouseover|onreset|onsubmit|onselect|onunload";
+        private readonly string ILLEGAL_ATTR_NAMES = "^(([^x][^m][^l].*|.?.?):.*)"; //Matches all strings with a colon that do not start with "xml"
+        private readonly string ILLEGAL_STYLE_ATTR_NAMES = "font|class|style|face";
+        private readonly string ILLEGAL_SCRIPT_ATTR_NAMES = "onload|onclick|onblur|onchange|onerror|onfocus|onmouseout|onmouseover|onreset|onsubmit|onselect|onunload";
 
         /// <summary>
         /// Pushes the specified tagname onto the stack, and returns the number of tags with the same name now on the stack.

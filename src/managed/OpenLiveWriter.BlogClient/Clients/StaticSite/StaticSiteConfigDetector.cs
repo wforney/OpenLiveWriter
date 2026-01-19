@@ -13,10 +13,10 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 {
     public class StaticSiteConfigDetector
     {
-        private static string[] IMG_DIR_CANDIDATES = new string[] { "images", "image", "img", "assets/img", "assets/images" };
+        private static readonly string[] IMG_DIR_CANDIDATES = new string[] { "images", "image", "img", "assets/img", "assets/images" };
 
-        private StaticSiteConfig config;
-        private string localSitePath;
+        private readonly StaticSiteConfig config;
+        private readonly string localSitePath;
 
         public StaticSiteConfigDetector(StaticSiteConfig config)
         {

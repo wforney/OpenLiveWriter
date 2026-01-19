@@ -30,8 +30,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         public static readonly string ADJUST_COLOR_GROUP = "Adjust Color";
         public static readonly string HTML_GROUP = "Html";
         public readonly CommandManager CommandManager;
-        private IContainer components;
-        Hashtable _decorators = new Hashtable();
+        private readonly IContainer components;
+        readonly Hashtable _decorators = new Hashtable();
         public ImageDecoratorsManager(IContainer components, CommandManager commandManager, bool includeInheritBorder)
         {
             this.components = components;
@@ -144,8 +144,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get { return (ImageDecoratorGroup[])_groups.Clone(); }
         }
-        private Hashtable _imageDecoratorGroups = new Hashtable();
-        private ImageDecoratorGroup[] _groups;
+        private readonly Hashtable _imageDecoratorGroups = new Hashtable();
+        private readonly ImageDecoratorGroup[] _groups;
 
         public ImageDecorator[] GetDefaultRemoteImageDecorators()
         {
@@ -276,14 +276,14 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     public class ImageDecorator : IImageDecorator, IImageDecoratorOriginalSizeAdjuster, IComparable
     {
-        string _decoratorId;
-        string _decoratorName;
-        Type _decoratorType;
-        string _groupName;
-        bool _decoratorHidden;
-        bool _decoratorEditable;
-        bool _decoratorDefaultable;
-        bool _webImageSupported;
+        readonly string _decoratorId;
+        readonly string _decoratorName;
+        readonly Type _decoratorType;
+        readonly string _groupName;
+        readonly bool _decoratorHidden;
+        readonly bool _decoratorEditable;
+        readonly bool _decoratorDefaultable;
+        readonly bool _webImageSupported;
         Command _command;
 
         /// <summary>
@@ -420,6 +420,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _rawImageDecorator = (IImageDecorator)Activator.CreateInstance(_decoratorType);
                 }
+
                 return _rawImageDecorator;
             }
         }
@@ -481,13 +482,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get { return _groupName; }
         }
-        private string _groupName;
+        private readonly string _groupName;
 
         public bool MutuallyExclusive
         {
             get { return _mutuallyExclusive; }
         }
-        private bool _mutuallyExclusive;
+        private readonly bool _mutuallyExclusive;
 
         public void AddDecorator(params ImageDecorator[] decorators)
         {
@@ -503,12 +504,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get { return _decorators.ToArray(); }
         }
-        private List<ImageDecorator> _decorators;
+        private readonly List<ImageDecorator> _decorators;
     }
 
     internal class ImageDecoratorSettingsBagAdapter : IProperties
     {
-        BlogPostSettingsBag _settingsBag;
+        readonly BlogPostSettingsBag _settingsBag;
         public ImageDecoratorSettingsBagAdapter(BlogPostSettingsBag settingsBag)
         {
             _settingsBag = settingsBag;

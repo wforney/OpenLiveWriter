@@ -97,7 +97,7 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = new Container();
+        private readonly Container components = new Container();
         #endregion
 
         #region Initialization/Disposal
@@ -170,12 +170,16 @@ namespace OpenLiveWriter.PostEditor
             _editingManager.UserDeletedPost += new EventHandler(_editingManager_UserDeletedPost);
 
             // initialize auto-save timer
-            _autoSaveTimer = new System.Windows.Forms.Timer(this.components);
-            _autoSaveTimer.Interval = 5000;
+            _autoSaveTimer = new System.Windows.Forms.Timer(this.components)
+            {
+                Interval = 5000
+            };
             _autoSaveTimer.Tick += new EventHandler(_autoSaveTimer_Tick);
 
-            _autoSaveMessageDismissTimer = new Timer(components);
-            _autoSaveMessageDismissTimer.Interval = 450;
+            _autoSaveMessageDismissTimer = new Timer(components)
+            {
+                Interval = 450
+            };
             _autoSaveMessageDismissTimer.Tick += _autoSaveMessageDismissTimer_Tick;
         }
 
@@ -214,8 +218,10 @@ namespace OpenLiveWriter.PostEditor
             postGallery.Execute += commandOpenRecentPosts_Execute;
 
             // publish command bar context menu
-            _savePostContextMenuDefinition = new CommandContextMenuDefinition(this.components);
-            _savePostContextMenuDefinition.CommandBar = true;
+            _savePostContextMenuDefinition = new CommandContextMenuDefinition(this.components)
+            {
+                CommandBar = true
+            };
             _savePostContextMenuDefinition.Entries.Add(CommandId.SavePost, false, true);
             _savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraft, false, false);
             _savePostContextMenuDefinition.Entries.Add(CommandId.PostAsDraftAndEditOnline, false, false);
@@ -240,8 +246,10 @@ namespace OpenLiveWriter.PostEditor
                 _htmlEditor.CommandManager.Add(CommandId.TerminateProcess, delegate { Process.GetCurrentProcess().Kill(); });
             }
 
-            commandColorize = new Command(CommandId.Colorize);
-            commandColorize.CommandBarButtonContextMenuHandler = new CommandBarButtonContextMenuHandler(new ColorizationContextHelper().Handler);
+            commandColorize = new Command(CommandId.Colorize)
+            {
+                CommandBarButtonContextMenuHandler = new CommandBarButtonContextMenuHandler(new ColorizationContextHelper().Handler)
+            };
             _htmlEditor.CommandManager.Add(commandColorize);
 
             _htmlEditor.CommandManager.EndUpdate();
@@ -254,9 +262,11 @@ namespace OpenLiveWriter.PostEditor
         private void commandShowAtomImageEndpointSelector_Execute(object sender, EventArgs e)
         {
             OpenLiveWriter.Controls.Wizard.WizardController controller = new OpenLiveWriter.Controls.Wizard.WizardController();
-            WeblogConfigurationWizardPanelSelectBlog selectBlogControl = new WeblogConfigurationWizardPanelSelectBlog();
-            selectBlogControl.HeaderText = Res.Get(StringId.ConfigWizardSelectImageEndpoint);
-            selectBlogControl.LabelText = Res.Get(StringId.CWSelectImageEndpointText);
+            WeblogConfigurationWizardPanelSelectBlog selectBlogControl = new WeblogConfigurationWizardPanelSelectBlog
+            {
+                HeaderText = Res.Get(StringId.ConfigWizardSelectImageEndpoint),
+                LabelText = Res.Get(StringId.CWSelectImageEndpointText)
+            };
             selectBlogControl.PrepareForAdd();
             controller.addWizardStep(new OpenLiveWriter.Controls.Wizard.WizardStep(selectBlogControl, StringId.ConfigWizardSelectImageEndpoint, null, null, null, null, null));
 
@@ -283,6 +293,7 @@ namespace OpenLiveWriter.PostEditor
 
                 cmd = CommandContextMenu.ShowModal(this, menuLocation, alternativeLocation, (MenuItem[])mainMenuItems.ToArray(typeof(MenuItem)));
             }
+
             if (cmd != null)
                 cmd.PerformExecute();
         }
@@ -295,8 +306,10 @@ namespace OpenLiveWriter.PostEditor
             {
                 try
                 {
-                    ColorPickerForm form = new ColorPickerForm();
-                    form.Color = ColorizedResources.AppColor;
+                    ColorPickerForm form = new ColorPickerForm
+                    {
+                        Color = ColorizedResources.AppColor
+                    };
                     form.ColorSelected += new ColorSelectedEventHandler(form_ColorSelected);
                     form.Closed += new EventHandler(form_Closed);
 
@@ -334,8 +347,10 @@ namespace OpenLiveWriter.PostEditor
             else
                 DockPadding.Right = 0;
 
-            _mainEditorPanel = new Panel();
-            _mainEditorPanel.Dock = DockStyle.Fill;
+            _mainEditorPanel = new Panel
+            {
+                Dock = DockStyle.Fill
+            };
 
             //Controls.Add(_publishBar);
             Controls.Add(_mainEditorPanel);
@@ -496,6 +511,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     ribbon.GetHeight(out ribbonHeight);
                 }
+
                 _mainEditorPanel.DockPadding.Top = (int)ribbonHeight;
             }
 
@@ -568,13 +584,15 @@ namespace OpenLiveWriter.PostEditor
             public string SelectedHtml { get { return _parent._htmlEditor.SelectedHtml; } }
             public void InsertHtml(string content, bool moveSelectionRight) { _parent._htmlEditor.InsertHtml(content, moveSelectionRight); }
             public void InsertLink(string url, string linkText, string linkTitle, string rel, bool newWindow) { _parent._htmlEditor.InsertLink(url, linkText, linkTitle, rel, newWindow); }
-            private PostEditorMainControl _parent;
+            private readonly PostEditorMainControl _parent;
         }
 
         private void InitializePostPropertyEditors()
         {
-            _styleComboControl = new HtmlStylePicker(this._htmlEditor);
-            _styleComboControl.Enabled = false;
+            _styleComboControl = new HtmlStylePicker(this._htmlEditor)
+            {
+                Enabled = false
+            };
         }
 
         internal BlogPostEditingManager BlogPostEditingManager
@@ -611,6 +629,7 @@ namespace OpenLiveWriter.PostEditor
                 BlogSettings.BlogSettingsDeleted -= new BlogSettings.BlogSettingsListener(HandleBlogDeleted);
                 commandPluginsGallery.StateChanged -= new EventHandler(commandPluginsGallery_StateChanged);
             }
+
             base.Dispose(disposing);
         }
 
@@ -836,6 +855,7 @@ namespace OpenLiveWriter.PostEditor
                             byte[] bytes = Encoding.UTF8.GetBytes(resultsHtml);
                             fileStream.Write(bytes, 0, bytes.Length);
                         }
+
                         ShellHelper.LaunchUrl(tempFile);
                     }
                 }
@@ -895,6 +915,7 @@ namespace OpenLiveWriter.PostEditor
                     return (DialogResult.Yes == DisplayMessage.Show(MessageId.SpellCheckCancelledStillPost, _mainFrameWindow));
                 }
             }
+
             return true;
         }
 
@@ -925,6 +946,7 @@ namespace OpenLiveWriter.PostEditor
                         _htmlEditor.StatusBar.PopStatusMessage();
                         throw;
                     }
+
                     _autoSaveMessageDismissTimer.Start();
                 }
             }
@@ -1214,13 +1236,12 @@ namespace OpenLiveWriter.PostEditor
                 {
                     using (BlogSettings settings = BlogSettings.ForBlogId(blogID))
                     {
-                        Color? backgroundColor;
                         BlogEditingTemplateFile[] templates = BlogEditingTemplateDetector.DetectTemplate(
                             new BlogClientUIContextImpl(_mainFrameWindow, _mainFrameWindow),
                             this,
                             settings,
                             !_editingManager.BlogIsAutoUpdatable,
-                            out backgroundColor); // only probe if we do not support auto-update
+                            out Color? backgroundColor); // only probe if we do not support auto-update
 
                         if (templates.Length != 0)
                         {
@@ -1233,10 +1254,10 @@ namespace OpenLiveWriter.PostEditor
 
                                 settings.HomePageOverrides = hpo;
                             }
+
                             FireWeblogSettingsChangedEvent(blogID, true);
                             return true;
                         }
-
                     }
                 }
             }
@@ -1248,8 +1269,7 @@ namespace OpenLiveWriter.PostEditor
         {
             using (new WaitCursor())
             {
-                bool switchToWeblog;
-                string newBlogId = WeblogConfigurationWizardController.Add(this, true, out switchToWeblog);
+                string newBlogId = WeblogConfigurationWizardController.Add(this, true, out bool switchToWeblog);
                 if (newBlogId != null)
                 {
                     (this as IBlogPostEditingSite).NotifyWeblogAccountListEdited();
@@ -1408,7 +1428,6 @@ namespace OpenLiveWriter.PostEditor
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -1416,7 +1435,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private static Hashtable _postListChangedListeners = new Hashtable();
+        private static readonly Hashtable _postListChangedListeners = new Hashtable();
 
         #endregion
 
@@ -1477,7 +1496,6 @@ namespace OpenLiveWriter.PostEditor
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -1485,9 +1503,9 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private static Hashtable _weblogSettingsChangedListeners = new Hashtable();
+        private static readonly Hashtable _weblogSettingsChangedListeners = new Hashtable();
 
-        private static Hashtable _weblogListChangedListeners = new Hashtable();
+        private static readonly Hashtable _weblogListChangedListeners = new Hashtable();
         private static void FireWeblogListChangedEvent()
         {
             try
@@ -1513,7 +1531,6 @@ namespace OpenLiveWriter.PostEditor
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -1585,25 +1602,26 @@ namespace OpenLiveWriter.PostEditor
                         Trace.Fail("Ribbon error: " + uReasonCode);
                         break;
                     case ViewVerb.Size:
-                        uint ribbonHeight;
-                        if (ComHelper.SUCCEEDED(ribbon.GetHeight(out ribbonHeight)))
+                        if (ComHelper.SUCCEEDED(ribbon.GetHeight(out uint ribbonHeight)))
                         {
                             Debug.Assert(ribbonHeight >= 0);
                             OnSizeChanged(EventArgs.Empty);
                         }
+
                         break;
                     default:
                         Debug.Assert(false, "Unexpected ViewVerb!");
                         break;
                 }
             }
+
             return HRESULT.S_OK;
         }
 
         /// <summary>
         /// All instances of Writer use the same Ribbon.dat file, so we need to be careful of race conditions.
         /// </summary>
-        private static object _ribbonSettingsLock = new object();
+        private static readonly object _ribbonSettingsLock = new object();
         private static bool _ribbonSettingsLoadSaveActive = false;
 
         public void LoadRibbonSettings()
@@ -1715,8 +1733,7 @@ namespace OpenLiveWriter.PostEditor
                 if (create)
                     mode |= STGM.CREATE;
                 const int FILE_ATTRIBUTE_NORMAL = 0x00000080;
-                IStream stream;
-                int hr = Shlwapi.SHCreateStreamOnFileEx(filename, (int)mode, FILE_ATTRIBUTE_NORMAL, create, IntPtr.Zero, out stream);
+                int hr = Shlwapi.SHCreateStreamOnFileEx(filename, (int)mode, FILE_ATTRIBUTE_NORMAL, create, IntPtr.Zero, out IStream stream);
                 if (hr != HRESULT.S_OK)
                 {
                     Trace.WriteLine("Failed to create ribbon stream for " + filename + ": hr = " + hr.ToString("X8", CultureInfo.InvariantCulture));

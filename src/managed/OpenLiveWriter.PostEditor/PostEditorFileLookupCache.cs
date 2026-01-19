@@ -72,8 +72,7 @@ namespace OpenLiveWriter.PostEditor
             // This step should also be cheap, no I/O involved.
             foreach (FileIdentity fid in new List<FileIdentity>(filesInCache.Keys))
             {
-                FileIdentity fidDisk;
-                if (!filesOnDisk.TryGetValue(fid.Filename, out fidDisk))
+                if (!filesOnDisk.TryGetValue(fid.Filename, out FileIdentity fidDisk))
                     fidDisk = null;
 
                 if (fidDisk == null || !fidDisk.Equals(fid))

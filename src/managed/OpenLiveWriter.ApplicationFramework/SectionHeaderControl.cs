@@ -16,7 +16,7 @@ namespace OpenLiveWriter.ApplicationFramework
 {
     public class SectionHeaderControl : Control
     {
-        private UITheme _uiTheme;
+        private readonly UITheme _uiTheme;
         private readonly Font _font;
         public SectionHeaderControl()
         {
@@ -51,8 +51,10 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             BidiGraphics g = new BidiGraphics(e.Graphics, ClientRectangle);
 
-            StringFormat format = new StringFormat();
-            format.LineAlignment = StringAlignment.Center;
+            StringFormat format = new StringFormat
+            {
+                LineAlignment = StringAlignment.Center
+            };
             Rectangle rectangle = ClientRectangle;
 
             // draw text
@@ -86,6 +88,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     TextColor = Color.White;
                 }
+
                 base.ApplyTheme(highContrast);
             }
         }

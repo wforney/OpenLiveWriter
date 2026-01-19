@@ -12,8 +12,8 @@ namespace OpenLiveWriter.CoreServices.Progress
     /// </summary>
     public class ProgressTick : IProgressHost, IDisposable
     {
-        private IProgressHost ParentProgress;
-        private double StartPercentage; //the base %complete that this tick adds progress to.
+        private readonly IProgressHost ParentProgress;
+        private readonly double StartPercentage; //the base %complete that this tick adds progress to.
         private int TickAllocation; //the number of ticks allocated to this object
         private int TickTotal; //the total number of ticks that the parent progress contains.
         private double lastCompletionPercentage; //the %complete of this tick.
@@ -104,6 +104,7 @@ namespace OpenLiveWriter.CoreServices.Progress
                 // Debug.Fail("Rounding error detected.");
                 allocationTotal = 1.0 - StartPercentage;
             }
+
             double relativeCompletionFraction = ((fractionalComplete * allocationTotal) + StartPercentage);
 
             //update the ticks to make them relative to the parent.

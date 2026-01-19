@@ -27,11 +27,11 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private GroupBox groupBoxPublishing;
         private CheckBox checkBoxViewWeblog;
 
-        private PostEditorPreferences _postEditorPreferences;
+        private readonly PostEditorPreferences _postEditorPreferences;
         private System.Windows.Forms.CheckBox checkBoxCloseWindow;
         private System.Windows.Forms.GroupBox groupBoxPostWindows;
         private System.Windows.Forms.RadioButton radioButtonOpenNewWindowIfDirty;
@@ -48,7 +48,7 @@ namespace OpenLiveWriter.PostEditor
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button buttonBrowserDialog;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-        private WordCountPreferences _wordCountPreferences;
+        private readonly WordCountPreferences _wordCountPreferences;
         private System.Windows.Forms.CheckBox checkBoxFormatHTML;
         private string _originalFolder = string.Empty;
 
@@ -316,6 +316,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

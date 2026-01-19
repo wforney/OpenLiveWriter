@@ -60,5 +60,4 @@ namespace OpenLiveWriter.Interop.Com.ActiveDocuments
             [Out] out IOleDocumentView ppViewNew);
 
     }
-
 }

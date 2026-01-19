@@ -70,6 +70,5 @@ namespace OpenLiveWriter.Interop.Com.ActiveDocuments
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
         public int[] width;
     }
-
 }
 

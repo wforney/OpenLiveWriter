@@ -81,6 +81,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     sb.Append("</span>");
                 }
             }
+
             return sb.ToString();
         }
 
@@ -99,8 +100,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (m.Success)
                 {
                     string preserveId = m.Groups[1].Value;
-                    string preservedValue;
-                    if (preserved.TryGetValue(preserveId, out preservedValue))
+                    if (preserved.TryGetValue(preserveId, out string preservedValue))
                     {
                         sb.Append(preservedValue);
                         ex.CollectTextUntil("span");
@@ -111,6 +111,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             sb.Append(html, pos, html.Length - pos);
             return sb.ToString();
         }

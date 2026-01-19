@@ -29,7 +29,7 @@ namespace OpenLiveWriter.BlogClient.Clients
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public GDataCaptchaForm()
         {
@@ -79,6 +79,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

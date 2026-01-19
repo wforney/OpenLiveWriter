@@ -11,10 +11,10 @@ namespace OpenLiveWriter.CoreServices.Layout
 {
     public class AutoGrow : IDisposable
     {
-        private Control _container;
+        private readonly Control _container;
         private Size _margin;
-        private AnchorStyles _direction;
-        private bool _allowShrink;
+        private readonly AnchorStyles _direction;
+        private readonly bool _allowShrink;
         private bool _allowAnchoring = false;
 
         private bool canceled = false;
@@ -53,6 +53,7 @@ namespace OpenLiveWriter.CoreServices.Layout
                 right = Math.Max(right, c.Right);
                 bottom = Math.Max(bottom, c.Bottom);
             }
+
             return new Point(right, bottom);
         }
 

@@ -426,6 +426,7 @@ namespace OpenLiveWriter.CoreServices
                         sb.Append(i.ToString(CultureInfo.InvariantCulture));
                         delim = ",";
                     }
+
                     PreferencesSettingsRoot.SetString(CUSTOMCOLORS_NAME, sb.ToString());
                 }
             }
@@ -464,6 +465,7 @@ namespace OpenLiveWriter.CoreServices
                         String.Format(CultureInfo.InvariantCulture, "{0}.log", DefaultProductName));
                     _applicationDiagnostics = new ApplicationDiagnostics(templogPath, Assembly.GetCallingAssembly().GetName().Name);
                 }
+
                 return _applicationDiagnostics;
             }
         }
@@ -483,8 +485,7 @@ namespace OpenLiveWriter.CoreServices
         public static string FormatUserAgentString(string productName, bool browserBased)
         {
             // get browser version
-            int majorBrowserVersion, minorBrowserVersion;
-            SafeGetBrowserVersion(out majorBrowserVersion, out minorBrowserVersion);
+            SafeGetBrowserVersion(out int majorBrowserVersion, out int minorBrowserVersion);
 
             // get os version
             Version osVersion = Environment.OSVersion.Version;
@@ -519,8 +520,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                int majorBrowserVersion, minorBrowserVersion;
-                SafeGetBrowserVersion(out majorBrowserVersion, out minorBrowserVersion);
+                SafeGetBrowserVersion(out int majorBrowserVersion, out int minorBrowserVersion);
                 return new Version(majorBrowserVersion, minorBrowserVersion);
             }
         }

@@ -23,7 +23,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 SettingsKey.SetString(LAST_SERVICE_NAME, value);
                 _serviceNames.SetString(value, String.Empty);
             }
-
         }
         private const string LAST_SERVICE_NAME = "LastServiceName";
 

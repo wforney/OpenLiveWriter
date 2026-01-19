@@ -272,6 +272,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             {
                 throw new ArgumentException("You must specify a value for checkAgainMinutes");
             }
+
             TimeSpan pollingInterval = TimeSpan.FromMinutes(checkAgainMinutes);
 
             // notification text

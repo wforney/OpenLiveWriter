@@ -208,6 +208,7 @@ namespace OpenLiveWriter.ApplicationFramework
                         _attachedControl.MouseMove += new MouseEventHandler(_attachedControl_MouseMove);
                         _attachedControl.MouseUp += new MouseEventHandler(_attachedControl_MouseUp);
                     }
+
                     PerformLayout();
                     Invalidate();
                 }

@@ -81,6 +81,7 @@ namespace OpenLiveWriter.CoreServices
                         _description = TextHelper.CompactWhiteSpace(_description);
                     }
                 }
+
                 return _description;
             }
             set
@@ -101,6 +102,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     _keywords = GetKeywordsFromString(TextHelper.CompactWhiteSpace(KeywordString));
                 }
+
                 return _keywords;
             }
             set
@@ -132,6 +134,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     _robots = GetMetaDataValue(ROBOTS);
                 }
+
                 return _robots;
             }
             set
@@ -251,7 +254,6 @@ namespace OpenLiveWriter.CoreServices
                                     m_charset = subParts[1];
                                     break;
                                 }
-
                             }
                         }
                     }
@@ -288,7 +290,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_HTMLDocument;
             }
         }
-        private LightWeightHTMLDocument m_HTMLDocument = null;
+        private readonly LightWeightHTMLDocument m_HTMLDocument = null;
 
         /// <summary>
         /// Gets a particular metadata tag's value.  Return null if the meta tag doesn't exist
@@ -327,20 +329,20 @@ namespace OpenLiveWriter.CoreServices
                                     m_metaTags.Add(metaName, content.Value);
                                     break;
                                 }
-
                             }
                         }
                     }
+
                     m_metaTableGenerated = true;
                 }
 
                 return m_metaTags;
             }
         }
-        private Hashtable m_metaTags = new Hashtable();
+        private readonly Hashtable m_metaTags = new Hashtable();
         private bool m_metaTableGenerated = false;
 
-        private static string[] NAME_ATTRIBUTES = { "NAME", "HTTP-EQUIV" };
+        private static readonly string[] NAME_ATTRIBUTES = { "NAME", "HTTP-EQUIV" };
 
         private static readonly Regex multiSpaces = new Regex("[ \t]+");
 

@@ -30,11 +30,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public const string CLICK_HANDLER = "wlClickHandler";
 
-        private IBlogPostSidebarContext _sidebarContext;
-        private IHtmlEditorComponentContext _editorContext;
-        private IContentSourceSidebarContext _contentSourceContext;
+        private readonly IBlogPostSidebarContext _sidebarContext;
+        private readonly IHtmlEditorComponentContext _editorContext;
+        private readonly IContentSourceSidebarContext _contentSourceContext;
         private SmartContentSource _contentSource;
-        private SmartContentResizedListener _resizedListener;
+        private readonly SmartContentResizedListener _resizedListener;
         private bool _realtimeResizing = false;
         private IUndoUnit _resizeUndo;
         private bool _disposed;
@@ -108,6 +108,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _editFields = GetChildren(HTMLElement, InlineEditField.IsEditField);
                 }
+
                 return _editFields;
             }
         }
@@ -141,6 +142,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         if (!altKey)
                             return;
                     }
+
                     break;
             }
 
@@ -241,7 +243,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     return HRESULT.S_FALSE;
                 }
-
             }
             else if (Selected && IsChildEditFieldSelected(HTMLElement, EditorContext.Selection.SelectedMarkupRange))
             {
@@ -440,8 +441,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             MarkupRange editFieldRange = EditorContext.MarkupServices.CreateMarkupRange(selectedEditField, false);
             // If we're navigating up, then position a display pointer on the top line.
             // If we're going down, then position a display pointer on the bottom line.
-            IDisplayPointerRaw displayPointer;
-            displayServices.CreateDisplayPointer(out displayPointer);
+            displayServices.CreateDisplayPointer(out IDisplayPointerRaw displayPointer);
             DisplayServices.TraceMoveToMarkupPointer(displayPointer, keyCode == Keys.Up ? editFieldRange.Start : editFieldRange.End);
 
             // Now determine if the display pointer is in the top/bottom line rect.
@@ -463,6 +463,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                             }
                         }
+
                         break;
                     case Keys.Up:
                     case Keys.Down:
@@ -475,6 +476,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                 e.Handled = true;
                             }
                         }
+
                         break;
                     case Keys.Enter:
                         {
@@ -570,9 +572,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                string contentSourceId;
-                string contentId;
-                ContentSourceManager.ParseContainingElementId(HTMLElement.id, out contentSourceId, out contentId);
+                ContentSourceManager.ParseContainingElementId(HTMLElement.id, out string contentSourceId, out string contentId);
                 return (SmartContent)_contentSourceContext.FindSmartContent(contentId);
             }
         }
@@ -581,9 +581,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             get
             {
-                string contentSourceId;
-                string contentId;
-                ContentSourceManager.ParseContainingElementId(HTMLElement.id, out contentSourceId, out contentId);
+                ContentSourceManager.ParseContainingElementId(HTMLElement.id, out string contentSourceId, out string contentId);
                 return contentSourceId;
             }
         }
@@ -604,9 +602,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             _preserveAspectRatio = preserveAspectRatio;
 
             // initialize smart content
-            string contentSourceId;
-            string contentId;
-            ContentSourceManager.ParseContainingElementId(HTMLElement.id, out contentSourceId, out contentId);
+            ContentSourceManager.ParseContainingElementId(HTMLElement.id, out string contentSourceId, out string contentId);
 
             // clone the smart content for resizing so that settings changes made during the resize
             //operation are undoable
@@ -726,6 +722,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
                 EditorContext.DamageServices.AddDamage(EditorContext.MarkupServices.CreateMarkupRange(HTMLElement, false));
             }
+
             return targetElementSize;
         }
 
@@ -742,6 +739,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             return HTMLElement;
         }
 

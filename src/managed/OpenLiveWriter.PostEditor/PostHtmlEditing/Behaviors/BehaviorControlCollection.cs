@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         /// <summary>
         ///	The Behavior control container that owns this Behavior control collection.
         /// </summary>
-        private IBehaviorControlContainerControl owner;
+        private readonly IBehaviorControlContainerControl owner;
 
         /// <summary>
         ///	Initializes a new instance of <see cref='OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors.BehaviorControlCollection'/>.
@@ -266,8 +266,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
         /// </summary>
         public class BehaviorControlEnumerator : object, IEnumerator
         {
-            private IEnumerator baseEnumerator;
-            private IEnumerable temp;
+            private readonly IEnumerator baseEnumerator;
+            private readonly IEnumerable temp;
 
             /// <summary>
             /// Initializes a new instance of the BehaviorControlEnumerator class.

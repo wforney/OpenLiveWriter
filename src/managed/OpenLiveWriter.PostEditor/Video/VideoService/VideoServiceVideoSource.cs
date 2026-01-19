@@ -17,11 +17,11 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
     public class VideoServiceVideoSource : MediaTab, IRtlAware
     {
         private VideoListBoxControl _listBoxVideos;
-        private SidebarListBox<IVideoService> _sidebarService;
-        private LoginStatusControl _videoLoginStatusControl;
-        private VideoPagingControl _videoPagingControl;
-        private VideoRequestTypeComboBox _videoRequestComboBox;
-        private PanelLoginControl _videoLoginControl;
+        private readonly SidebarListBox<IVideoService> _sidebarService;
+        private readonly LoginStatusControl _videoLoginStatusControl;
+        private readonly VideoPagingControl _videoPagingControl;
+        private readonly VideoRequestTypeComboBox _videoRequestComboBox;
+        private readonly PanelLoginControl _videoLoginControl;
 
         public VideoServiceVideoSource()
         {
@@ -35,14 +35,20 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
             _sidebarService = new SidebarListBox<IVideoService>();
             _sidebarService.Initialize();
 
-            _videoLoginStatusControl = new LoginStatusControl();
-            _videoLoginStatusControl.ShowLoginButton = false;
+            _videoLoginStatusControl = new LoginStatusControl
+            {
+                ShowLoginButton = false
+            };
 
-            _videoPagingControl = new VideoPagingControl();
-            _videoPagingControl.RightToLeft = BidiHelper.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
+            _videoPagingControl = new VideoPagingControl
+            {
+                RightToLeft = BidiHelper.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No
+            };
 
-            _videoRequestComboBox = new VideoRequestTypeComboBox();
-            _videoRequestComboBox.Visible = false;
+            _videoRequestComboBox = new VideoRequestTypeComboBox
+            {
+                Visible = false
+            };
 
             _videoLoginControl = new PanelLoginControl();
 
@@ -71,6 +77,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
             {
                 controls.Add(_videoLoginStatusControl);
             }
+
             controls.Add(_sidebarService);
             controls.Add(_videoRequestComboBox);
             controls.Add(_listBoxVideos);
@@ -95,6 +102,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 _listBoxVideos.Dispose();
                 _listBoxVideos = null;
             }
+
             base.Dispose(disposing);
         }
 
@@ -232,13 +240,12 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                 _listBoxVideos.QueryStatusText = Res.Get(StringId.Plugin_Video_Soapbox_Retrieve_Msg);
                 _listBoxVideos.Update();
 
-                int videosAvailable;
                 try
                 {
                     IVideo[] videos = service.GetVideos(_videoRequestComboBox.SelectedRequestType, 10000,
                                                         _videoPagingControl.NumberOfVideosPerPage,
                                                         _videoPagingControl.CurrentPage,
-                                                        out videosAvailable);
+                                                        out int videosAvailable);
 
                     _videoPagingControl.NumberOfVideos = videosAvailable;
                     _listBoxVideos.DisplayVideos(videos);
@@ -302,6 +309,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                     _sidebarService.SelectedIndex = 0;
                     Application.DoEvents();
                 }
+
                 _setOnce = true;
             }
 

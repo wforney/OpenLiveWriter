@@ -17,7 +17,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         private Button buttonClose;
         private RichTextBox richTextBox;
@@ -68,6 +68,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

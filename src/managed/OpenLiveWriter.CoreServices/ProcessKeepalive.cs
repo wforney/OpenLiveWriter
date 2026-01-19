@@ -104,8 +104,7 @@ namespace OpenLiveWriter.CoreServices
 
         private static ProcessKeepalive DefaultFactory(bool taskHasNonBackgroundThread)
         {
-            IntPtr ptr;
-            if (ExplorerKeepalive.Acquire(out ptr))
+            if (ExplorerKeepalive.Acquire(out IntPtr ptr))
             {
                 return new ExplorerKeepalive(ptr);
             }
@@ -152,12 +151,12 @@ namespace OpenLiveWriter.CoreServices
     public class DotNetKeepalive : ProcessKeepalive
     {
         private static int refcount;
-        private static object classLock = new object();
+        private static readonly object classLock = new object();
         private static Thread keepaliveThread;
 
         private bool disposed = false;
 #if DEBUG
-        private StackTrace stackTrace;
+        private readonly StackTrace stackTrace;
 #endif
         internal DotNetKeepalive()
         {
@@ -267,6 +266,7 @@ namespace OpenLiveWriter.CoreServices
                 local = ptr;
                 ptr = IntPtr.Zero;
             }
+
             if (local != IntPtr.Zero)
             {
                 Marshal.Release(local);

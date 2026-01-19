@@ -225,5 +225,4 @@ namespace OpenLiveWriter.CoreServices
 
         private readonly SettingsPersisterHelper _settings = ApplicationEnvironment.UserSettingsRoot.GetSubSettings("glinks");
     }
-
 }

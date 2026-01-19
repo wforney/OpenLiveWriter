@@ -41,7 +41,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public AccountPanel()
             : base()
@@ -173,6 +173,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -379,6 +380,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                     form.ShowDialog(FindForm());
             }
         }
-
     }
 }

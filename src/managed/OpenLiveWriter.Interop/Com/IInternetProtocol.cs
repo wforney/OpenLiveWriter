@@ -1484,6 +1484,5 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         QUERY_IS_SAFE,
     }
-
 }
 

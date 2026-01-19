@@ -24,7 +24,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
         {
             _properties = properties;
         }
-        private IProperties _properties;
+        private readonly IProperties _properties;
 
         public TagProvider[] TagProviders
         {
@@ -80,6 +80,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
             {
                 TagProviderOptions.RemoveSubProperties(provider.Id);
             }
+
             _properties.RemoveSubProperties(SUPPRESSED);
         }
 
@@ -92,6 +93,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 if (!mergedProviders.Contains(provider) && !IsSuppressed(provider))
                     mergedProviders.Add(provider);
             }
+
             return (TagProvider[])mergedProviders.ToArray(typeof(TagProvider));
         }
 
@@ -125,6 +127,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
                     _tagProviders = LoadXmlTagProviders(false);
                 }
+
                 return _tagProviders;
             }
         }

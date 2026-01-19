@@ -93,6 +93,7 @@ namespace OpenLiveWriter.CoreServices.Marketization
                 //only return this market's param if it exists
                 return ((FeatureDescription)table[name]).GetParamValue(parameter);
             }
+
             return null;
         }
 
@@ -205,7 +206,6 @@ namespace OpenLiveWriter.CoreServices.Marketization
                     return (string)_parameters[paramName];
                 return null;
             }
-
         }
     }
 
@@ -244,7 +244,7 @@ namespace OpenLiveWriter.CoreServices.Marketization
             this.uri = new Uri(url);
         }
 
-        private Uri uri;
+        private readonly Uri uri;
 
         public Uri Uri
         {
@@ -261,6 +261,7 @@ namespace OpenLiveWriter.CoreServices.Marketization
                 {
                     WordpressSettings.value = new WordpressSettings();
                 }
+
                 return WordpressSettings.value;
             }
         }

@@ -12,7 +12,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
 {
     internal class PublishDateTimePicker : DateTimePicker
     {
-        private ToolTip _toolTip = new ToolTip();
+        private readonly ToolTip _toolTip = new ToolTip();
         private bool _isSetting;
 
         public PublishDateTimePicker()

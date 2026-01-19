@@ -53,8 +53,10 @@ namespace OpenLiveWriter.PostEditor
                     if (currentBlogId == blog.Id)
                         selectedIndex = i;
                 }
+
                 i++;
             }
+
             base.LoadItems();
         }
 
@@ -172,8 +174,10 @@ namespace OpenLiveWriter.PostEditor
         private CommandContextMenuDefinition GetWeblogContextMenuDefinition(bool includeAllCommands)
         {
             // initialize context-menu definition
-            CommandContextMenuDefinition weblogContextMenuDefinition = new CommandContextMenuDefinition(this.components);
-            weblogContextMenuDefinition.CommandBar = true;
+            CommandContextMenuDefinition weblogContextMenuDefinition = new CommandContextMenuDefinition(this.components)
+            {
+                CommandBar = true
+            };
 
             if (includeAllCommands)
             {
@@ -277,11 +281,14 @@ namespace OpenLiveWriter.PostEditor
                 if (_options == null)
                 {
                     _options = new DynamicCommandMenuOptions(
-                        new Command(CommandId.ViewWeblog).MainMenuPath.Split('/')[0], 100, Res.Get(StringId.MoreWeblogs), Res.Get(StringId.SwitchWeblogs));
-                    _options.UseNumericMnemonics = false;
-                    _options.MaxCommandsShownOnMenu = 25;
-                    _options.SeparatorBegin = true;
+                        new Command(CommandId.ViewWeblog).MainMenuPath.Split('/')[0], 100, Res.Get(StringId.MoreWeblogs), Res.Get(StringId.SwitchWeblogs))
+                    {
+                        UseNumericMnemonics = false,
+                        MaxCommandsShownOnMenu = 25,
+                        SeparatorBegin = true
+                    };
                 }
+
                 return _options;
             }
         }
@@ -310,14 +317,14 @@ namespace OpenLiveWriter.PostEditor
         private DynamicCommandMenu _switchWeblogCommandMenu;
 
         private BlogPostEditingManager _editingManager;
-        private IBlogPostEditingSite _editingSite;
+        private readonly IBlogPostEditingSite _editingSite;
 
         private CommandWeblogPicker commandWeblogPicker;
         private Command commandConfigureWeblog;
         private SelectBlogGalleryCommand commandSelectBlog;
         private Command commandAddWeblog;
 
-        private IContainer components = new Container();
+        private readonly IContainer components = new Container();
 
         private class SwitchWeblogMenuCommand : IMenuCommandObject
         {
@@ -330,19 +337,18 @@ namespace OpenLiveWriter.PostEditor
             }
 
             public string BlogId { get { return _blogId; } }
-            private string _blogId;
+            private readonly string _blogId;
 
             Bitmap IMenuCommandObject.Image { get { return null; } }
 
             string IMenuCommandObject.Caption { get { return _caption; } }
             string IMenuCommandObject.CaptionNoMnemonic { get { return _caption; } }
-            private string _caption;
+            private readonly string _caption;
 
             bool IMenuCommandObject.Latched { get { return _latched; } }
-            private bool _latched;
+            private readonly bool _latched;
 
             bool IMenuCommandObject.Enabled { get { return true; } }
         }
-
     }
 }

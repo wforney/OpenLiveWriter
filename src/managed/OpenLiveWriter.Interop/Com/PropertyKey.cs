@@ -14,8 +14,8 @@ namespace OpenLiveWriter.Interop.Com
     {
         #region Private Fields
 
-        private Guid formatId;
-        private Int32 propertyId;
+        private readonly Guid formatId;
+        private readonly Int32 propertyId;
 
         #endregion
 
@@ -155,7 +155,7 @@ namespace OpenLiveWriter.Interop.Com
 
         #endregion
 
-        static System.Collections.Generic.Dictionary<PropertyKey, GCHandle> s_pinnedCache =
+        static readonly System.Collections.Generic.Dictionary<PropertyKey, GCHandle> s_pinnedCache =
             new System.Collections.Generic.Dictionary<PropertyKey, GCHandle>(16);
         public IntPtr ToPointer()
         {
@@ -175,8 +175,10 @@ namespace OpenLiveWriter.Interop.Com
 
         public static PropertyKeyRef From(PropertyKey value)
         {
-            PropertyKeyRef obj = new PropertyKeyRef();
-            obj.PropertyKey = value;
+            PropertyKeyRef obj = new PropertyKeyRef
+            {
+                PropertyKey = value
+            };
             return obj;
         }
     }

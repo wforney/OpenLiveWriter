@@ -236,7 +236,7 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return m_url; }
         }
-        private string m_url;
+        private readonly string m_url;
 
         /// <summary>
         /// IDispatch of browser document. To check whether this document implements
@@ -247,7 +247,7 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return m_document; }
         }
-        private object m_document;
+        private readonly object m_document;
     }
 
     public class BrowserNavigateErrorEventArgs : EventArgs
@@ -256,13 +256,13 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return _statusCode; }
         }
-        private object _statusCode;
+        private readonly object _statusCode;
 
         public object Url
         {
             get { return _url; }
         }
-        private object _url;
+        private readonly object _url;
 
         internal BrowserNavigateErrorEventArgs(DWebBrowserEvents2_NavigateErrorEvent e)
         {
@@ -358,18 +358,17 @@ namespace OpenLiveWriter.BrowserControl
             m_url = url;
         }
 
-        private object m_pDisp;
+        private readonly object m_pDisp;
         public object PDisp
         {
             get { return m_pDisp; }
         }
 
-        private string m_url;
+        private readonly string m_url;
         public string Url
         {
             get { return m_url; }
         }
-
     }
 
     public delegate void BrowserNavigateComplete2EventHandler(object sender, BrowserNavigateComplete2EventArgs e);
@@ -416,7 +415,7 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return m_percentComplete; }
         }
-        private long m_percentComplete;
+        private readonly long m_percentComplete;
 
         /// <summary>
         /// Total progress so far (normally in bytes). This value is valid
@@ -426,7 +425,7 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return m_progress; }
         }
-        private long m_progress;
+        private readonly long m_progress;
 
         /// <summary>
         /// Maximum progress value (normally in bytes). This value is valid
@@ -436,7 +435,7 @@ namespace OpenLiveWriter.BrowserControl
         {
             get { return m_progressMax; }
         }
-        private long m_progressMax;
+        private readonly long m_progressMax;
     }
 
     /// <summary>

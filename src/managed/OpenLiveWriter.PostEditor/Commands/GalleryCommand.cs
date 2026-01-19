@@ -21,8 +21,8 @@ namespace OpenLiveWriter.PostEditor.Commands
         protected const int INVALID_INDEX = -1;
         protected const uint UI_COLLECTION_INVALIDINDEX = 0xffffffff;
 
-        private bool _allowPreview = true;
-        private T _defaultItem = default(T);
+        private readonly bool _allowPreview = true;
+        private readonly T _defaultItem = default(T);
 
         public GalleryCommand(CommandId commandId)
             : base(commandId)
@@ -296,10 +296,10 @@ namespace OpenLiveWriter.PostEditor.Commands
 
                 foreach (GalleryItem item in items)
                 {
-                    SimplePropertySet sps;
-                    LoadSimplePropertySet(item, out sps);
+                    LoadSimplePropertySet(item, out SimplePropertySet sps);
                     collection.Add(sps);
                 }
+
                 newValue.SetIUnknown(collection);
                 return HRESULT.S_OK;
             }
@@ -307,10 +307,10 @@ namespace OpenLiveWriter.PostEditor.Commands
             List<IUISimplePropertySet> list = new List<IUISimplePropertySet>();
             foreach (GalleryItem item in items)
             {
-                SimplePropertySet sps;
-                LoadSimplePropertySet(item, out sps);
+                LoadSimplePropertySet(item, out SimplePropertySet sps);
                 list.Add(sps);
             }
+
             newValue.SetIUnknown(new BasicCollection(list));
             return HRESULT.S_OK;
         }
@@ -335,8 +335,8 @@ namespace OpenLiveWriter.PostEditor.Commands
 
         public class GalleryItem
         {
-            private uint categoryIndex;
-            private T cookie;
+            private readonly uint categoryIndex;
+            private readonly T cookie;
             private string label;
             private Bitmap bitmap;
             private IUIImage iuiImage;
@@ -405,6 +405,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                         bitmap.Dispose();
                         iuiImage = null;
                     }
+
                     bitmap = value;
                 }
             }
@@ -425,7 +426,7 @@ namespace OpenLiveWriter.PostEditor.Commands
 
         public class TooltippedGalleryItem : GalleryItem
         {
-            private string labelDescription;
+            private readonly string labelDescription;
             public string LabelDescription { get { return labelDescription; } }
 
             public TooltippedGalleryItem(string label, string labelDescription, Bitmap bitmap, T cookie)
@@ -533,6 +534,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                     undoUnit.Dispose();
                     undoUnit = null;
                 }
+
                 _inPreview = false;
             }
         }

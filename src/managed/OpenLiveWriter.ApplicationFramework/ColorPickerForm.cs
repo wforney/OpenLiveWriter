@@ -27,10 +27,10 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private int currentSubControl;
-        private IColorPickerSubControl[] subctrls;
+        private readonly IColorPickerSubControl[] subctrls;
         private Color m_color;
         public event ColorSelectedEventHandler ColorSelected;
 
@@ -74,6 +74,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 colorDialogLauncherControl.Width = colorDefaultColorControl.Width =
                     Math.Max(origWidth, Math.Max(colorDialogLauncherControl.Width, colorDefaultColorControl.Width));
             }
+
             colorPresets.Left = (ClientSize.Width - colorPresets.Width) / 2;
 
             Focus();
@@ -108,6 +109,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -374,6 +376,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -396,6 +399,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 ColorSelected(new ColorSelectedEventArgs(Color));
                 return true;
             }
+
             return base.ProcessMnemonic(charCode);
         }
 
@@ -449,6 +453,7 @@ namespace OpenLiveWriter.ApplicationFramework
                         BackColor = Parent.BackColor;
                         ForeColor = SystemColors.ControlText;
                     }
+
                     Invalidate();
                 }
             }

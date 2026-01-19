@@ -36,6 +36,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
                         _installedAccountWizards = installedAccountWizards.ToArray(typeof(IBlogProviderAccountWizardDescription)) as IBlogProviderAccountWizardDescription[];
                     }
+
                     return _installedAccountWizards;
                 }
             }
@@ -167,7 +168,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return _caption;
             }
         }
-        private string _caption;
+        private readonly string _caption;
 
         public string Text
         {
@@ -176,7 +177,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return _text;
             }
         }
-        private string _text;
+        private readonly string _text;
     }
 
     internal abstract class BlogProviderAccountCreationLink : IBlogProviderAccountCreationLink
@@ -199,7 +200,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return _text;
             }
         }
-        private string _text;
+        private readonly string _text;
 
         public string Url
         {
@@ -208,7 +209,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return _url;
             }
         }
-        private string _url;
+        private readonly string _url;
     }
 
     internal class BlogProviderAccountCreationLinkFromResource : BlogProviderAccountCreationLink
@@ -235,7 +236,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
         }
 
-        private string _imagePath;
+        private readonly string _imagePath;
 
     }
 
@@ -263,7 +264,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             }
         }
 
-        private string _imagePath;
+        private readonly string _imagePath;
     }
 
     internal class BlogProviderAccountWizardDescriptionFromXml : BlogProviderAccountWizardDescription
@@ -299,6 +300,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 if (!Path.IsPathRooted(imagePath))
                     imagePath = Path.Combine(Path.GetDirectoryName(wizardDocumentPath), imagePath);
             }
+
             string caption = NodeText(customAccountWizardNode.SelectSingleNode("accountCreationLink/caption"));
             string link = NodeText(customAccountWizardNode.SelectSingleNode("accountCreationLink/link"));
             if (imagePath != String.Empty && caption != String.Empty && link != String.Empty)
@@ -316,5 +318,4 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 return String.Empty;
         }
     }
-
 }

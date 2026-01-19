@@ -113,7 +113,6 @@ namespace OpenLiveWriter.Api
             get;
             set;
         }
-
     }
 
     /// <summary>
@@ -193,6 +192,5 @@ namespace OpenLiveWriter.Api
         /// </summary>
         string[] Filenames { get; }
     }
-
 }
 

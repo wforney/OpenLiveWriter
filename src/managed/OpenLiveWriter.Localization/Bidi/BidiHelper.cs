@@ -171,7 +171,6 @@ namespace OpenLiveWriter.Localization.Bidi
             mirrored.RotateFlip(RotateFlipType.RotateNoneFlipX);
             return mirrored;
         }
-
     }
 }
 

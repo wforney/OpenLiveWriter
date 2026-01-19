@@ -88,7 +88,6 @@ namespace OpenLiveWriter.PostEditor.ContentSources.Common
                 _auth.LoginStatusChanged -= _videoAuth_LoginStatusChanged;
                 _auth = null;
             }
-
         }
 
         public event EventHandler LoginStatusChanged;

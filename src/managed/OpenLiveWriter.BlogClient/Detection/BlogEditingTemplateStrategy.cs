@@ -152,6 +152,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     className = currElement.tagName + currElement.sourceIndex;
                     AddFrameStyles(currElement, "." + className, styleBuilder);
                 }
+
                 templateHtml = WriteStartTag(currElement, className) + templateHtml + WriteEndTag(currElement);
                 currElement = currElement.parentElement;
             }
@@ -379,12 +380,14 @@ namespace OpenLiveWriter.BlogClient.Detection
                     sb.Append(" ");
                 sb.Append(style);
             }
+
             if (color != null)
             {
                 if (sb.Length > 0)
                     sb.Append(" ");
                 sb.Append(color);
             }
+
             return sb.ToString();
         }
 
@@ -438,6 +441,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 //class as it needs to be tested against many blog templates.
                 fontSize = null;
             }
+
             AddStyles(newElement, selectorPrefix + elementName.ToLower(CultureInfo.InvariantCulture), styleBuilder, false, true, includeBorders, fontSize);
             return newElement;
         }
@@ -461,6 +465,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         styleBuilder.Append("background-color", bgColor);
                         return;
                     }
+
                     e2 = (IHTMLElement2)((IHTMLElement)e2).parentElement;
                 }
             }
@@ -486,6 +491,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 Rectangle rect = snapshotHandler.rect;
                 g.DrawRectangle(new Pen(Color.Blue, 1), rect);
             }
+
             using (FileStream fs = new FileStream(@"c:\temp\docImage.png", FileMode.Create))
             {
                 docImage.Save(fs, ImageFormat.Png);
@@ -497,7 +503,7 @@ namespace OpenLiveWriter.BlogClient.Detection
 
         private class DocumentSnapshotHandler
         {
-            string _elementId;
+            readonly string _elementId;
             public Rectangle rect;
             public DocumentSnapshotHandler(string elementId)
             {
@@ -559,7 +565,7 @@ namespace OpenLiveWriter.BlogClient.Detection
         protected class StyleBuilder : IDisposable
         {
             private string _currentSelector;
-            private StringBuilder sb = new StringBuilder();
+            private readonly StringBuilder sb = new StringBuilder();
 
             public string Selector
             {
@@ -672,6 +678,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 sb.Append(NBSP);
             }
+
             node.nodeValue = sb.ToString();
         }
     }
@@ -763,6 +770,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 preservedParents = parent;
                 parent = parent.parentElement;
             }
+
             if (parent != null && bodyElement.sourceIndex == parent.sourceIndex)
             {
                 //the title element is a child of the body element, so extract the title's parent tree
@@ -883,6 +891,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         templateHtml = head + templateHtml;
                     }
                 }
+
                 templateHtml = WriteStartTag(currElement, null) + templateHtml + WriteEndTag(currElement);
                 currElement = currElement.parentElement;
             }
@@ -950,6 +959,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     }
                 }
             }
+
             sb.Append(">");
             string startTag = sb.ToString();
             return startTag;
@@ -1044,7 +1054,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             _docBuilder.Append(text);
         }
 
-        private StringBuilder _docBuilder = new StringBuilder();
+        private readonly StringBuilder _docBuilder = new StringBuilder();
     }
 
     /// <summary>
@@ -1062,7 +1072,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             Parse();
             return _cssBuilder.ToString();
         }
-        private StringBuilder _cssBuilder = new StringBuilder();
+        private readonly StringBuilder _cssBuilder = new StringBuilder();
 
         protected override void OnStyleComment(StyleComment styleComment)
         {
@@ -1114,6 +1124,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     }
                 }
             }
+
             sb.Append(text.Substring(startIndex));
             string newText = sb.ToString();
             return newText;
@@ -1176,8 +1187,8 @@ namespace OpenLiveWriter.BlogClient.Detection
             return true;
         }
 
-        private static Regex position = new Regex(@"(\s|{|;)position\s*\:\s*(?<position>[a-z]*)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-        private static Regex superScriptCssSelector = new Regex(@"(\s*(sub,?|sup,?)\s*)+", RegexOptions.Compiled);
+        private static readonly Regex position = new Regex(@"(\s|{|;)position\s*\:\s*(?<position>[a-z]*)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex superScriptCssSelector = new Regex(@"(\s*(sub,?|sup,?)\s*)+", RegexOptions.Compiled);
 
         protected override void OnStyleImport(StyleImport styleImport)
         {

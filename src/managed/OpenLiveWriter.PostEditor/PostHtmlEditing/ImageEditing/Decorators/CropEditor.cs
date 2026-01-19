@@ -68,8 +68,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                         imageCropControl.Select();
                         return true;
                     }
+
                     break;
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -202,6 +204,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                         }
                     }
                 }
+
                 if (cbAspectRatio.SelectedIndex == -1)
                     cbAspectRatio.SelectedIndex = 1;
                 imageCropControl.CropRectangle = RectangleHelper.RotateFlip(origSize, cropRectangle.Value, EditorContext.ImageRotation);
@@ -281,6 +284,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     if (aspectRatio < 1.0 ^ currentEffectiveAspectRatio < 1.0)
                         aspectRatio = 1.0 / aspectRatio;
                 }
+
                 imageCropControl.AspectRatio = aspectRatio;
             }
             else
@@ -309,6 +313,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     imageCropControl.CropRectangleChanged += imageCropControl_CropRectangleChanged;
                 }
+
                 imageCropControl.AspectRatio = null;
                 UpdatePreview(false);
             }

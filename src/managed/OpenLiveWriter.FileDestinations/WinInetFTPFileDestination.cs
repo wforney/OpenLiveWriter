@@ -171,7 +171,6 @@ namespace OpenLiveWriter.FileDestinations
                 //remember what the default working directory assigned by the server was.
                 m_path = HomeDir;
             }
-
         }
 
         /// <summary>
@@ -279,6 +278,7 @@ namespace OpenLiveWriter.FileDestinations
             {
                 popDirectory();
             }
+
             return dirExists;
         }
 
@@ -299,6 +299,7 @@ namespace OpenLiveWriter.FileDestinations
                 fname = path.Substring(index + 1);
                 dir = path.Substring(0, index);
             }
+
             if (pushDirectory(dir))
             {
                 try
@@ -314,6 +315,7 @@ namespace OpenLiveWriter.FileDestinations
                     popDirectory();
                 }
             }
+
             return false;
         }
 
@@ -336,6 +338,7 @@ namespace OpenLiveWriter.FileDestinations
                 path = "/" + path;
                 index = 0;
             }
+
             string baseDir = path.Substring(0, index);
             string dirName = path.Substring(index + 1);
             bool pushedBaseDir = false;
@@ -398,6 +401,7 @@ namespace OpenLiveWriter.FileDestinations
                     popDirectory();
                 }
             }
+
             return (string[])ArrayHelper.CollectionToArray(dirList, typeof(string));
         }
 
@@ -432,6 +436,7 @@ namespace OpenLiveWriter.FileDestinations
                     popDirectory();
                 }
             }
+
             return (string[])ArrayHelper.CollectionToArray(dirList, typeof(string));
         }
 
@@ -463,6 +468,7 @@ namespace OpenLiveWriter.FileDestinations
                 {
                     flags = flags | INTERNET_FLAG.PASSIVE;
                 }
+
                 return (int)flags;
             }
         }
@@ -489,6 +495,7 @@ namespace OpenLiveWriter.FileDestinations
                 {
                     Debug.Fail("failed to read FTP Settings key: " + @"Software\Microsoft\Ftp\Use PASV", e.Message);
                 }
+
                 if (pasv.ToUpperInvariant().Equals("YES"))
                     return true;
                 else
@@ -567,6 +574,7 @@ namespace OpenLiveWriter.FileDestinations
                     // type of WinInet error code
                     ThrowDestinationException(error);
             }
+
             return didTransfer;
         }
 
@@ -651,6 +659,7 @@ namespace OpenLiveWriter.FileDestinations
                     GetType().Name,
                     error);
             }
+
             exception.DestinationErrorCode = error;
             exception.DestinationType = GetType().Name;
             exception.DestinationExtendedMessage = extendedMessage;
@@ -718,34 +727,36 @@ namespace OpenLiveWriter.FileDestinations
             {
                 ftpAddress = "ftp://" + ftpAddress;
             }
+
             Uri ftpUri = new Uri(ftpAddress);
             if (ftpUri.Scheme.ToUpperInvariant() != "FTP")
             {
                 throw new ArgumentException("unsupported FTP address: " + ftpAddress);
             }
+
             return ftpUri;
         }
 
         /// <summary>
         /// The ftp username
         /// </summary>
-        private string m_userName;
+        private readonly string m_userName;
 
         /// <summary>
         /// The ftp password
         /// </summary>
-        private string m_passWord;
+        private readonly string m_passWord;
 
         /// <summary>
         /// The ftp server address
         /// </summary>
-        private string m_ftpAddress;
+        private readonly string m_ftpAddress;
 
         /// <summary>
         /// The ftp port number.  If not provided in the constructor, defaulted
         /// to the WinInet default port number.
         /// </summary>
-        private int m_ftpPort;
+        private readonly int m_ftpPort;
 
         /// <summary>
         /// The base handle to an internet connection
@@ -760,7 +771,7 @@ namespace OpenLiveWriter.FileDestinations
         /// <summary>
         /// Saves the directories that commands are changing to/from
         /// </summary>
-        private Stack pathStack = new Stack();
+        private readonly Stack pathStack = new Stack();
 
         public string HomeDir;
     }

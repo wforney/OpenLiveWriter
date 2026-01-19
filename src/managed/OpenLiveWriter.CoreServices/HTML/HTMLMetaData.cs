@@ -146,7 +146,6 @@ namespace OpenLiveWriter.CoreServices
                                     m_charset = subParts[1];
                                     break;
                                 }
-
                             }
                         }
                     }
@@ -163,6 +162,7 @@ namespace OpenLiveWriter.CoreServices
                         }
                     }
                 }
+
                 return m_charset;
             }
             set
@@ -187,6 +187,7 @@ namespace OpenLiveWriter.CoreServices
                                 partToWrite = "charset=" + value;
                             }
                         }
+
                         finalBuilder.Append(partToWrite + "; ");
                     }
 
@@ -218,6 +219,7 @@ namespace OpenLiveWriter.CoreServices
                     IHTMLDOMNode node = (IHTMLDOMNode)DocumentHead;
                     node.appendChild(metaNode);
                 }
+
                 m_charset = value;
             }
         }
@@ -233,7 +235,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_HTMLDocument;
             }
         }
-        private IHTMLDocument2 m_HTMLDocument = null;
+        private readonly IHTMLDocument2 m_HTMLDocument = null;
 
         /// <summary>
         /// The Document head
@@ -248,6 +250,7 @@ namespace OpenLiveWriter.CoreServices
                     Debug.Assert(headCollection.length == 1, "More than one head in the collection!");
                     m_documentHead = (IHTMLElement)headCollection.item(0, 0);
                 }
+
                 return m_documentHead;
             }
         }
@@ -286,8 +289,8 @@ namespace OpenLiveWriter.CoreServices
                             }
                         }
                     }
-
                 }
+
                 m_metaTableGenerated = true;
             }
 
@@ -296,7 +299,7 @@ namespace OpenLiveWriter.CoreServices
             else
                 return null;
         }
-        private Hashtable m_metaTags = new Hashtable();
+        private readonly Hashtable m_metaTags = new Hashtable();
         private bool m_metaTableGenerated = false;
 
         private IHTMLMetaElement GetElement(string metaDataName)
@@ -326,12 +329,14 @@ namespace OpenLiveWriter.CoreServices
                         }
                     }
                 }
+
                 m_metaTableGenerated = true;
             }
+
             return (IHTMLMetaElement)m_metaElements[metaDataName];
         }
-        private bool m_metaElementsGenerated = false;
-        private Hashtable m_metaElements = new Hashtable();
+        private readonly bool m_metaElementsGenerated = false;
+        private readonly Hashtable m_metaElements = new Hashtable();
 
         private IHTMLElementCollection MetaDataElements
         {
@@ -342,12 +347,13 @@ namespace OpenLiveWriter.CoreServices
                     IHTMLDocument3 html3 = (IHTMLDocument3)m_HTMLDocument;
                     m_metaDataElements = html3.getElementsByTagName("META");
                 }
+
                 return m_metaDataElements;
             }
         }
         private IHTMLElementCollection m_metaDataElements;
 
-        private static string[] NAME_ATTRIBUTES = { "NAME", "HTTPEQUIV" };
+        private static readonly string[] NAME_ATTRIBUTES = { "NAME", "HTTPEQUIV" };
 
         private void SetMetaData(string metaDataName, string metaDataAttribute, string metaDataValue)
         {
@@ -367,8 +373,8 @@ namespace OpenLiveWriter.CoreServices
                         thisTag.setAttribute(metaDataAttribute, metaDataValue, 0);
                     }
                 }
-
             }
+
             m_metaTableGenerated = true;
         }
 

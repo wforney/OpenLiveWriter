@@ -244,7 +244,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get { return _selection; }
         }
-        private IHtmlEditorSelection _selection;
+        private readonly IHtmlEditorSelection _selection;
 
         public bool Handled
         {

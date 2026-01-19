@@ -55,8 +55,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     s = s.TrimEnd('%');
                 }
 
-                int value;
-                if (int.TryParse(s, NumberStyles.Integer, provider, out value))
+                if (int.TryParse(s, NumberStyles.Integer, provider, out int value))
                 {
                     Value = value;
                     Units = units;
@@ -83,8 +82,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                 s = s.TrimEnd('%');
             }
 
-            int value;
-            return int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
+            return int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value);
         }
 
         public int Value { get; private set; }
@@ -133,7 +131,6 @@ namespace OpenLiveWriter.PostEditor.Tables
                 default:
                     return String.Empty;
             }
-
         }
     }
 }

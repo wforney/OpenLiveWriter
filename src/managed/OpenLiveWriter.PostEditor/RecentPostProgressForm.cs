@@ -25,7 +25,7 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public RecentPostProgressForm(string entityName)
         {
@@ -73,8 +73,10 @@ namespace OpenLiveWriter.PostEditor
                         string resourceName = String.Format(CultureInfo.InvariantCulture, "OpenPost.Images.GetRecentPostsAnimation.GetRecentPostsAnimation{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
+
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));
                 }
+
                 return _animationBitmaps;
             }
         }
@@ -92,6 +94,7 @@ namespace OpenLiveWriter.PostEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

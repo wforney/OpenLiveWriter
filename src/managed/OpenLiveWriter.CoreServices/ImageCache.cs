@@ -14,7 +14,7 @@ namespace OpenLiveWriter.CoreServices
 {
     public class ImageCache : IDisposable
     {
-        private Dictionary<string, Bitmap> imageCache;
+        private readonly Dictionary<string, Bitmap> imageCache;
 
         public ImageCache()
         {
@@ -46,6 +46,7 @@ namespace OpenLiveWriter.CoreServices
                     imageCache.Add(path, ResizeImage((Bitmap)img, size.Width, size.Height));
                 }
             }
+
             return imageCache[path];
         }
 
@@ -63,6 +64,7 @@ namespace OpenLiveWriter.CoreServices
                 if (pair.Value != null)
                     pair.Value.Dispose();
             }
+
             imageCache.Clear();
         }
     }

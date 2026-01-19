@@ -92,5 +92,4 @@ namespace OpenLiveWriter.CoreServices
         public static string StreamNotClosed = "StreamNotClosed";
 
     }
-
 }

@@ -16,7 +16,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     public class HtmlLinebreakStripper : LightWeightHTMLDocumentIterator
     {
-        StringBuilder htmlData;
+        readonly StringBuilder htmlData;
         HtmlLinebreakStripper(string html) : base(html)
         {
             htmlData = new StringBuilder();
@@ -62,9 +62,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (cleanText.Length != text.Length)
                     text = new Text(cleanText, 0, cleanText.Length);
             }
+
             base.OnText(text);
         }
-        static Regex newLine = new Regex(@"\r?\n", RegexOptions.Compiled);
+        static readonly Regex newLine = new Regex(@"\r?\n", RegexOptions.Compiled);
 
         public static bool IsPreserveWhitespaceTag(string tagName)
         {

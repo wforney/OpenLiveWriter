@@ -75,9 +75,8 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         public override void Initialize(Control dragTargetControl)
         {
             // disable the MSHTML drop target
-            IntPtr hMshtmlWnd;
             IOleWindow oleWindow = (IOleWindow)htmlMarshallingTarget.HtmlDocument;
-            oleWindow.GetWindow(out hMshtmlWnd);
+            oleWindow.GetWindow(out IntPtr hMshtmlWnd);
             int hresult = Ole32.RevokeDragDrop(hMshtmlWnd);
             // If we reuse an mshtml editor, the window will have been revoked once already
             // thus it will not be registered if we try to revoke it a 2nd time.
@@ -139,6 +138,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 // document will be auto-scrolled if required
                 CallMshtmlDragOver(e, false, false);
             }
+
             base.DragOver(sender, e);
         }
 
@@ -156,6 +156,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 // auto-scrolling on our behalf)
                 CallMshtmlDragLeave(false);
             }
+
             base.DragLeave(sender, e);
         }
 
@@ -183,6 +184,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 // on our behalf)
                 CallMshtmlDragLeave(false);
             }
+
             base.DragDrop(sender, e);
         }
 
@@ -205,8 +207,11 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 IOleDataObject oleDataObject = SafeExtractOleDataObject(e.Data);
 
                 // convert data types
-                POINT pt = new POINT(); pt.x = e.X; pt.y = e.Y;
-                DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
+                POINT pt = new POINT
+                {
+                    x = e.X,
+                    y = e.Y
+                }; DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
                 MK keyState = ConvertKeyState(e.KeyState);
 
                 // suppress effects if requested
@@ -238,8 +243,11 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             try
             {
                 // convert data types
-                POINT pt = new POINT(); pt.x = e.X; pt.y = e.Y;
-                DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
+                POINT pt = new POINT
+                {
+                    x = e.X,
+                    y = e.Y
+                }; DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
                 MK keyState = ConvertKeyState(e.KeyState);
 
                 // suppress effects if requested
@@ -295,8 +303,11 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 IOleDataObject oleDataObject = SafeExtractOleDataObject(e.Data);
 
                 // convert data types
-                POINT pt = new POINT(); pt.x = e.X; pt.y = e.Y;
-                DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
+                POINT pt = new POINT
+                {
+                    x = e.X,
+                    y = e.Y
+                }; DROPEFFECT dropEffect = ConvertDropEffect(e.AllowedEffect);
                 MK keyState = ConvertKeyState(e.KeyState);
 
                 // call mshtml
@@ -494,7 +505,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <summary>
         /// Interface to context/services of presentation editor we are hosted on
         /// </summary>
-        private IHtmlMarshallingTarget htmlMarshallingTarget = null;
+        private readonly IHtmlMarshallingTarget htmlMarshallingTarget = null;
 
         // <summary>
         /// Default mshtml drop target implementation
@@ -506,7 +517,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// to provide automatic document scrolling when the drag cursor
         /// reaches the edge of the document
         /// </summary>
-        OleDataObjectImpl emptyDataObject = new OleDataObjectImpl();
+        readonly OleDataObjectImpl emptyDataObject = new OleDataObjectImpl();
 
         #endregion
     }

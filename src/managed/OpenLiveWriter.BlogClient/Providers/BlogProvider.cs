@@ -465,65 +465,66 @@ namespace OpenLiveWriter.BlogClient.Providers
 
         public static IBlogClientOptions ApplyOptionOverrides(OptionReader optionReader, IBlogClientOptions existingOptions, bool includeIrregularities)
         {
-            BlogClientOptions clientOptions = new BlogClientOptions();
+            BlogClientOptions clientOptions = new BlogClientOptions
+            {
+                // Protocol capabilities
+                SupportsPostAsDraft = ReadBool(optionReader("supportsPostAsDraft"), existingOptions.SupportsPostAsDraft),
+                SupportsFileUpload = ReadBool(optionReader("supportsFileUpload"), existingOptions.SupportsFileUpload),
+                SupportsExtendedEntries = ReadBool(optionReader("supportsExtendedEntries"), existingOptions.SupportsExtendedEntries),
+                SupportsCustomDate = ReadBool(optionReader("supportsCustomDate"), existingOptions.SupportsCustomDate),
+                SupportsCustomDateUpdate = ReadBool(optionReader("supportsCustomDateUpdate"), existingOptions.SupportsCustomDateUpdate),
+                SupportsHttps = ReadBool(optionReader("supportsHttps"), existingOptions.SupportsHttps),
+                SupportsCategories = ReadBool(optionReader(SUPPORTS_CATEGORIES), existingOptions.SupportsCategories),
+                SupportsCategoriesInline = ReadBool(optionReader("supportsCategoriesInline"), existingOptions.SupportsCategoriesInline),
+                SupportsMultipleCategories = ReadBool(optionReader("supportsMultipleCategories"), existingOptions.SupportsMultipleCategories),
+                SupportsHierarchicalCategories = ReadBool(optionReader("supportsHierarchicalCategories"), existingOptions.SupportsHierarchicalCategories),
+                SupportsNewCategories = ReadBool(optionReader(SUPPORTS_NEW_CATEGORIES), existingOptions.SupportsNewCategories),
+                SupportsNewCategoriesInline = ReadBool(optionReader("supportsNewCategoriesInline"), existingOptions.SupportsNewCategoriesInline),
+                SupportsSuggestCategories = ReadBool(optionReader("supportsSuggestCategories"), existingOptions.SupportsSuggestCategories),
+                CategoryScheme = ReadText(optionReader(CATEGORY_SCHEME), existingOptions.CategoryScheme),
+                SupportsKeywords = ReadBool(optionReader("supportsKeywords"), existingOptions.SupportsKeywords),
+                SupportsGetKeywords = ReadBool(optionReader("supportsGetTags"), existingOptions.SupportsGetKeywords),
+                SupportsCommentPolicy = ReadBool(optionReader("supportsCommentPolicy"), existingOptions.SupportsCommentPolicy),
+                SupportsPingPolicy = ReadBool(optionReader("supportsPingPolicy"), existingOptions.SupportsPingPolicy),
+                SupportsAuthor = ReadBool(optionReader("supportsAuthor"), existingOptions.SupportsAuthor),
+                SupportsSlug = ReadBool(optionReader("supportsSlug"), existingOptions.SupportsSlug),
+                SupportsPassword = ReadBool(optionReader("supportsPassword"), existingOptions.SupportsPassword),
+                SupportsExcerpt = ReadBool(optionReader("supportsExcerpt"), existingOptions.SupportsExcerpt),
+                SupportsTrackbacks = ReadBool(optionReader("supportsTrackbacks"), existingOptions.SupportsTrackbacks),
+                SupportsPages = ReadBool(optionReader("supportsPages"), existingOptions.SupportsPages),
+                SupportsPageParent = ReadBool(optionReader("supportsPageParent"), existingOptions.SupportsPageParent),
+                SupportsPageOrder = ReadBool(optionReader("supportsPageOrder"), existingOptions.SupportsPageOrder),
+                SupportsPageTrackbacks = ReadBool(optionReader("supportsPageTrackbacks"), existingOptions.SupportsPageTrackbacks),
 
-            // Protocol capabilities
-            clientOptions.SupportsPostAsDraft = ReadBool(optionReader("supportsPostAsDraft"), existingOptions.SupportsPostAsDraft);
-            clientOptions.SupportsFileUpload = ReadBool(optionReader("supportsFileUpload"), existingOptions.SupportsFileUpload);
-            clientOptions.SupportsExtendedEntries = ReadBool(optionReader("supportsExtendedEntries"), existingOptions.SupportsExtendedEntries);
-            clientOptions.SupportsCustomDate = ReadBool(optionReader("supportsCustomDate"), existingOptions.SupportsCustomDate);
-            clientOptions.SupportsCustomDateUpdate = ReadBool(optionReader("supportsCustomDateUpdate"), existingOptions.SupportsCustomDateUpdate);
-            clientOptions.SupportsHttps = ReadBool(optionReader("supportsHttps"), existingOptions.SupportsHttps);
-            clientOptions.SupportsCategories = ReadBool(optionReader(SUPPORTS_CATEGORIES), existingOptions.SupportsCategories);
-            clientOptions.SupportsCategoriesInline = ReadBool(optionReader("supportsCategoriesInline"), existingOptions.SupportsCategoriesInline);
-            clientOptions.SupportsMultipleCategories = ReadBool(optionReader("supportsMultipleCategories"), existingOptions.SupportsMultipleCategories);
-            clientOptions.SupportsHierarchicalCategories = ReadBool(optionReader("supportsHierarchicalCategories"), existingOptions.SupportsHierarchicalCategories);
-            clientOptions.SupportsNewCategories = ReadBool(optionReader(SUPPORTS_NEW_CATEGORIES), existingOptions.SupportsNewCategories);
-            clientOptions.SupportsNewCategoriesInline = ReadBool(optionReader("supportsNewCategoriesInline"), existingOptions.SupportsNewCategoriesInline);
-            clientOptions.SupportsSuggestCategories = ReadBool(optionReader("supportsSuggestCategories"), existingOptions.SupportsSuggestCategories);
-            clientOptions.CategoryScheme = ReadText(optionReader(CATEGORY_SCHEME), existingOptions.CategoryScheme);
-            clientOptions.SupportsKeywords = ReadBool(optionReader("supportsKeywords"), existingOptions.SupportsKeywords);
-            clientOptions.SupportsGetKeywords = ReadBool(optionReader("supportsGetTags"), existingOptions.SupportsGetKeywords);
-            clientOptions.SupportsCommentPolicy = ReadBool(optionReader("supportsCommentPolicy"), existingOptions.SupportsCommentPolicy);
-            clientOptions.SupportsPingPolicy = ReadBool(optionReader("supportsPingPolicy"), existingOptions.SupportsPingPolicy);
-            clientOptions.SupportsAuthor = ReadBool(optionReader("supportsAuthor"), existingOptions.SupportsAuthor);
-            clientOptions.SupportsSlug = ReadBool(optionReader("supportsSlug"), existingOptions.SupportsSlug);
-            clientOptions.SupportsPassword = ReadBool(optionReader("supportsPassword"), existingOptions.SupportsPassword);
-            clientOptions.SupportsExcerpt = ReadBool(optionReader("supportsExcerpt"), existingOptions.SupportsExcerpt);
-            clientOptions.SupportsTrackbacks = ReadBool(optionReader("supportsTrackbacks"), existingOptions.SupportsTrackbacks);
-            clientOptions.SupportsPages = ReadBool(optionReader("supportsPages"), existingOptions.SupportsPages);
-            clientOptions.SupportsPageParent = ReadBool(optionReader("supportsPageParent"), existingOptions.SupportsPageParent);
-            clientOptions.SupportsPageOrder = ReadBool(optionReader("supportsPageOrder"), existingOptions.SupportsPageOrder);
-            clientOptions.SupportsPageTrackbacks = ReadBool(optionReader("supportsPageTrackbacks"), existingOptions.SupportsPageTrackbacks);
+                // Writer capabilities
+                LinkToSkyDriveSelfPage = ReadBool(optionReader("linkToSkyDriveSelfPage"), existingOptions.LinkToSkyDriveSelfPage),
+                RequiresHtmlTitles = ReadBool(optionReader("requiresHtmlTitles"), existingOptions.RequiresHtmlTitles),
+                ReturnsHtmlTitlesOnGet = ReadSupportsFeature(optionReader("returnsHtmlTitlesOnGet"), existingOptions.ReturnsHtmlTitlesOnGet),
+                SupportsEmptyTitles = ReadBool(optionReader("supportsEmptyTitles"), existingOptions.SupportsEmptyTitles),
+                SupportsScripts = ReadSupportsFeature(optionReader(SUPPORTS_SCRIPTS), existingOptions.SupportsScripts),
+                SupportsEmbeds = ReadSupportsFeature(optionReader(SUPPORTS_EMBEDS), existingOptions.SupportsEmbeds),
+                SupportsImageUpload = ReadSupportsFeature(optionReader("supportsImageUpload"), existingOptions.SupportsImageUpload),
+                DefaultView = ReadText(optionReader("defaultView"), existingOptions.DefaultView),
+                CharacterSet = ReadText(optionReader(CHARACTER_SET), existingOptions.CharacterSet),
+                RequiresXHTML = ReadBool(optionReader(REQUIRES_XHTML), existingOptions.RequiresXHTML),
+                DhtmlImageViewer = ReadText(optionReader(DHTML_IMAGE_VIEWER), existingOptions.DhtmlImageViewer),
+                PostBodyBackgroundColor = ReadInt(optionReader(POST_BODY_BACKGROUND_COLOR), existingOptions.PostBodyBackgroundColor),
+                MaxCategoryNameLength = ReadInt(optionReader("maxCategoryNameLength"), existingOptions.MaxCategoryNameLength),
+                SupportsAutoUpdate = ReadBool(optionReader("supportsAutoUpdate"), existingOptions.SupportsAutoUpdate),
+                InvalidPostIdFaultCodePattern = ReadText(optionReader("invalidPostIdFaultCodePattern"), existingOptions.InvalidPostIdFaultCodePattern),
+                InvalidPostIdFaultStringPattern = ReadText(optionReader("invalidPostIdFaultStringPattern"), existingOptions.InvalidPostIdFaultStringPattern),
+                IsRTLTemplate = ReadBool(optionReader("templateIsRTL"), existingOptions.IsRTLTemplate),
+                MaxPostTitleLength = ReadInt(optionReader("maxPostTitleLength"), existingOptions.MaxPostTitleLength),
 
-            // Writer capabilities
-            clientOptions.LinkToSkyDriveSelfPage = ReadBool(optionReader("linkToSkyDriveSelfPage"), existingOptions.LinkToSkyDriveSelfPage);
-            clientOptions.RequiresHtmlTitles = ReadBool(optionReader("requiresHtmlTitles"), existingOptions.RequiresHtmlTitles);
-            clientOptions.ReturnsHtmlTitlesOnGet = ReadSupportsFeature(optionReader("returnsHtmlTitlesOnGet"), existingOptions.ReturnsHtmlTitlesOnGet);
-            clientOptions.SupportsEmptyTitles = ReadBool(optionReader("supportsEmptyTitles"), existingOptions.SupportsEmptyTitles);
-            clientOptions.SupportsScripts = ReadSupportsFeature(optionReader(SUPPORTS_SCRIPTS), existingOptions.SupportsScripts);
-            clientOptions.SupportsEmbeds = ReadSupportsFeature(optionReader(SUPPORTS_EMBEDS), existingOptions.SupportsEmbeds);
-            clientOptions.SupportsImageUpload = ReadSupportsFeature(optionReader("supportsImageUpload"), existingOptions.SupportsImageUpload);
-            clientOptions.DefaultView = ReadText(optionReader("defaultView"), existingOptions.DefaultView);
-            clientOptions.CharacterSet = ReadText(optionReader(CHARACTER_SET), existingOptions.CharacterSet);
-            clientOptions.RequiresXHTML = ReadBool(optionReader(REQUIRES_XHTML), existingOptions.RequiresXHTML);
-            clientOptions.DhtmlImageViewer = ReadText(optionReader(DHTML_IMAGE_VIEWER), existingOptions.DhtmlImageViewer);
-            clientOptions.PostBodyBackgroundColor = ReadInt(optionReader(POST_BODY_BACKGROUND_COLOR), existingOptions.PostBodyBackgroundColor);
-            clientOptions.MaxCategoryNameLength = ReadInt(optionReader("maxCategoryNameLength"), existingOptions.MaxCategoryNameLength);
-            clientOptions.SupportsAutoUpdate = ReadBool(optionReader("supportsAutoUpdate"), existingOptions.SupportsAutoUpdate);
-            clientOptions.InvalidPostIdFaultCodePattern = ReadText(optionReader("invalidPostIdFaultCodePattern"), existingOptions.InvalidPostIdFaultCodePattern);
-            clientOptions.InvalidPostIdFaultStringPattern = ReadText(optionReader("invalidPostIdFaultStringPattern"), existingOptions.InvalidPostIdFaultStringPattern);
-            clientOptions.IsRTLTemplate = ReadBool(optionReader("templateIsRTL"), existingOptions.IsRTLTemplate);
-            clientOptions.MaxPostTitleLength = ReadInt(optionReader("maxPostTitleLength"), existingOptions.MaxPostTitleLength);
-
-            // Weblog
-            clientOptions.HomepageLinkText = ReadText(optionReader("homepageLinkText"), existingOptions.HomepageLinkText);
-            clientOptions.AdminLinkText = ReadText(optionReader("adminLinkText"), existingOptions.AdminLinkText);
-            clientOptions.AdminUrl = ReadText(optionReader("adminUrl"), existingOptions.AdminUrl);
-            clientOptions.PostEditingUrl = ReadText(optionReader("postEditingUrl"), existingOptions.PostEditingUrl);
-            clientOptions.PostEditingUrlPostIdPattern = ReadText(optionReader("postEditingUrlPostIdPattern"), existingOptions.PostEditingUrlPostIdPattern);
-            clientOptions.ImagePostingUrl = ReadText(optionReader(IMAGE_ENDPOINT), existingOptions.ImagePostingUrl);
-            clientOptions.ServiceName = ReadText(optionReader("serviceName"), existingOptions.ServiceName);
+                // Weblog
+                HomepageLinkText = ReadText(optionReader("homepageLinkText"), existingOptions.HomepageLinkText),
+                AdminLinkText = ReadText(optionReader("adminLinkText"), existingOptions.AdminLinkText),
+                AdminUrl = ReadText(optionReader("adminUrl"), existingOptions.AdminUrl),
+                PostEditingUrl = ReadText(optionReader("postEditingUrl"), existingOptions.PostEditingUrl),
+                PostEditingUrlPostIdPattern = ReadText(optionReader("postEditingUrlPostIdPattern"), existingOptions.PostEditingUrlPostIdPattern),
+                ImagePostingUrl = ReadText(optionReader(IMAGE_ENDPOINT), existingOptions.ImagePostingUrl),
+                ServiceName = ReadText(optionReader("serviceName"), existingOptions.ServiceName)
+            };
 
             // Irregularities
             if (includeIrregularities)
@@ -573,6 +574,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                 OptionStreamWriter writer = new OptionStreamWriter(stream);
                 writer.Write(options);
             }
+
             Process.Start(clientOptionsFile);
         }
 
@@ -588,7 +590,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                 _output.WriteLine("{0,-30}     {1}", name, value);
             }
 
-            private StreamWriter _output;
+            private readonly StreamWriter _output;
         }
 
         private static string ReadText(string textValue, string defaultValue)
@@ -621,6 +623,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                         return TrackbackDelimiter.Comma;
                 }
             }
+
             return defaultValue;
         }
 
@@ -637,6 +640,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                     Trace.Fail("Error parsing int string \"" + intValue + ": " + e.ToString());
                 }
             }
+
             return defaultValue;
         }
 
@@ -788,6 +792,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                     defaultView = clientOptions.DefaultView;
                     break;
             }
+
             WriteOption(Res.Get(StringId.CapabilityDefaultView), defaultView);
 
             WriteOption(Res.Get(StringId.CapabilityCharacterSet), clientOptions.CharacterSet != String.Empty ? clientOptions.CharacterSet : "UTF-8");
@@ -944,6 +949,7 @@ namespace OpenLiveWriter.BlogClient.Providers
                 if (providerFault.IsMatch(faultCode, faultString))
                     return providerFault.MessageId;
             }
+
             return MessageId.None;
         }
 
@@ -1190,9 +1196,9 @@ namespace OpenLiveWriter.BlogClient.Providers
                 }
             }
 
-            private string _faultCodePattern;
-            private string _faultStringPattern;
-            private string _messageId;
+            private readonly string _faultCodePattern;
+            private readonly string _faultStringPattern;
+            private readonly string _messageId;
         }
     }
 }

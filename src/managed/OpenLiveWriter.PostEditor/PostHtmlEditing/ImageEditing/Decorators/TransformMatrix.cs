@@ -13,10 +13,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         private const int RED_OFFSET = 2;
         private const int GREEN_OFFSET = 1;
         private const int BLUE_OFFSET = 0;
-        private int TopLeft, TopMid, TopRight;
-        private int MidLeft, Pixel, MidRight;
-        private int BottomLeft, BottomMid, BottomRight;
-        private int Factor, Offset;
+        private readonly int TopLeft, TopMid, TopRight;
+        private readonly int MidLeft, Pixel, MidRight;
+        private readonly int BottomLeft, BottomMid, BottomRight;
+        private readonly int Factor, Offset;
 
         //standard identity matrix values
         public TransformMatrix()
@@ -80,6 +80,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     source.SetPixel(x, 0, source.GetPixel(x, 1));
                     source.SetPixel(x, source.Height - 1, source.GetPixel(x, source.Height - 2));
                 }
+
                 for (int y = 1; y < source.Height - 1; y++)
                 {
                     source.SetPixel(0, y, source.GetPixel(1, y));
@@ -184,6 +185,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     transformed.UnlockBits(bmTransformed);
                 }
+
                 return transformed;
             }
         }

@@ -103,9 +103,11 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     {
                         return null;
                     }
+
                     result = t.Substring(tag.Length);
                 }
             }
+
             return result;
         }
 
@@ -120,6 +122,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
 
                 stringBuilder.Insert(0, chars[i]);
             }
+
             return stringBuilder.ToString().TrimStart();
         }
 
@@ -127,6 +130,5 @@ namespace OpenLiveWriter.PostEditor.Tagging
         {
             return (char.IsPunctuation(c));
         }
-
     }
 }

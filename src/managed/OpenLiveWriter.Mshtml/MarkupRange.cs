@@ -251,6 +251,7 @@ namespace OpenLiveWriter.Mshtml
                             {
                                 newRange.Start.MoveToPointer(Start);
                             }
+
                             if (newRange.End.IsRightOf(End))
                             {
                                 newRange.End.MoveToPointer(End);
@@ -262,8 +263,10 @@ namespace OpenLiveWriter.Mshtml
                         usedElements[context.Element] = context.Element;
                     }
                 }
+
                 p.Right(true, context);
             }
+
             return HTMLElementHelper.ToElementArray(list);
         }
 
@@ -307,9 +310,11 @@ namespace OpenLiveWriter.Mshtml
                             usedElements[context.Element] = context.Element;
                         }
                     }
+
                     p.Right(true, context);
                 }
             }
+
             return HTMLElementHelper.ToElementArray(list);
         }
 
@@ -344,9 +349,11 @@ namespace OpenLiveWriter.Mshtml
                         //cache the fact that we've already tested this element.
                         usedElements[context.Element] = context.Element;
                     }
+
                     p.Right(true, context);
                 }
             }
+
             return false;
         }
 
@@ -489,6 +496,7 @@ namespace OpenLiveWriter.Mshtml
             {
                 parent = parent.parentElement;
             }
+
             return parent;
         }
 
@@ -910,6 +918,7 @@ namespace OpenLiveWriter.Mshtml
                         parentEnd.MoveAdjacentToElement(sharedParent, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterEnd);
                     }
                 }
+
                 return sharedParent;
             }
         }
@@ -962,12 +971,14 @@ namespace OpenLiveWriter.Mshtml
                 innerParent = parent;
                 parent = parent.parentElement;
             }
+
             Debug.Assert(innerParent != null, "Parent not found");
 
             if (innerParent == outerParent) //occurs when the from pointer is position directly in the parent.
             {
                 return null;
             }
+
             return innerParent;
         }
 
@@ -997,6 +1008,7 @@ namespace OpenLiveWriter.Mshtml
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -1104,6 +1116,7 @@ namespace OpenLiveWriter.Mshtml
                         ));
                     }
                 }
+
                 currentElement = currentElement.parentElement;
             }
 

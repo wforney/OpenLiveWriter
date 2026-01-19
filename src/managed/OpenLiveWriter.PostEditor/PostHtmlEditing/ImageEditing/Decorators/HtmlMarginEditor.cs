@@ -18,7 +18,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
     public class HtmlMarginEditor : ImageDecoratorEditor
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
         private Panel panelCustomMargin;
         private NumericUpDown numericMarginTop;
         private NumericUpDown numericMarginRight;
@@ -30,7 +30,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         private MarginsComboBox comboBoxMargins;
         private Label label6;
 
-        private MarginCommand marginCommand;
+        private readonly MarginCommand marginCommand;
 
         public HtmlMarginEditor(CommandManager commandManager)
         {
@@ -79,6 +79,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
                 marginCommand.MarginChanged -= new EventHandler(marginCommand_MarginChanged);
             }
+
             base.Dispose(disposing);
         }
 

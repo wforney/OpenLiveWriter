@@ -13,7 +13,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
 {
     public class SelectPostLinkForm : OpenPostForm
     {
-        private System.ComponentModel.IContainer components = null;
+        private readonly System.ComponentModel.IContainer components = null;
 
         public SelectPostLinkForm()
             : base(OpenMode.RecentPosts)
@@ -63,14 +63,16 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     // saving the company a few dollars by not putting this one
                     // in DisplayMessages.xml, since it's already been translated
                     // in Strings.resx.
-                    DisplayMessage message = new DisplayMessage(MessageId.None);
-                    message.Title = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.MissingPostLinkCaption),
-                                                  postInfo.IsPage ? Res.Get(StringId.Page) : Res.Get(StringId.Post));
-                    message.Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.MissingPostLinkExplanation),
-                                                 postInfo.IsPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower),
-                                                 ApplicationEnvironment.ProductNameQualified);
-                    message.Type = MessageBoxIcon.Exclamation;
-                    message.Buttons = MessageBoxButtons.OK;
+                    DisplayMessage message = new DisplayMessage(MessageId.None)
+                    {
+                        Title = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.MissingPostLinkCaption),
+                                                      postInfo.IsPage ? Res.Get(StringId.Page) : Res.Get(StringId.Post)),
+                        Text = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.MissingPostLinkExplanation),
+                                                     postInfo.IsPage ? Res.Get(StringId.PageLower) : Res.Get(StringId.PostLower),
+                                                     ApplicationEnvironment.ProductNameQualified),
+                        Type = MessageBoxIcon.Exclamation,
+                        Buttons = MessageBoxButtons.OK
+                    };
                     message.Show(ea.OpenPostDialog);
 
                     // fail validation
@@ -96,6 +98,7 @@ namespace OpenLiveWriter.PostEditor.OpenPost
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

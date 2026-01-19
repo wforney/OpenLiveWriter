@@ -34,7 +34,6 @@ namespace OpenLiveWriter.SpellChecker
             {
                 Trace.Fail(ex.ToString());
             }
-
         }
 
         public bool Contains(MarkupRange testRange)
@@ -58,6 +57,7 @@ namespace OpenLiveWriter.SpellChecker
                         Debug.WriteLine(e.ToString());
                     }
                 }
+
                 return true;
             }
 
@@ -89,6 +89,7 @@ namespace OpenLiveWriter.SpellChecker
                     }
 #endif
                 }
+
                 return true;
             }
 
@@ -203,6 +204,7 @@ namespace OpenLiveWriter.SpellChecker
                 if (wordRange.End.IsLeftOf(p))
                     break;
             }
+
             return false;
         }
 

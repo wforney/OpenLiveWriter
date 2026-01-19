@@ -207,13 +207,14 @@ namespace OpenLiveWriter.CoreServices
             {
                 //may occur if the URL is malformed
             }
+
             return false;
         }
 
         /// <summary>
         /// The list of well known schemes
         /// </summary>
-        private static string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
+        private static readonly string[] DownloadableSchemes = new string[] { Uri.UriSchemeFile, Uri.UriSchemeHttp, Uri.UriSchemeHttps };
 
         /// <summary>
         /// Downloads the Document for a particular URL
@@ -246,6 +247,7 @@ namespace OpenLiveWriter.CoreServices
                 _url = _downloader.HTMLDocument.url;
                 this._htmlDocument = _downloader.HTMLDocument;
             }
+
             MarkDownloadComplete();
         }
 
@@ -289,7 +291,7 @@ namespace OpenLiveWriter.CoreServices
         #endregion
 
         private WebPageDownloader _downloader;
-        private Control _parentControl = null;
+        private readonly Control _parentControl = null;
         private string _url;
 
         public string CookieString

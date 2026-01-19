@@ -33,9 +33,9 @@ namespace OpenLiveWriter.PostEditor
             this.blockBoundary = blockBoundary;
         }
 
-        private char c;
-        private string htmlText;
-        private MarkupPointer blockBoundary;
+        private readonly char c;
+        private readonly string htmlText;
+        private readonly MarkupPointer blockBoundary;
 
         public static readonly List<string> SpecialCharacters = new List<string> { "...", "(c)", "(r)", "(tm)", };
 
@@ -123,7 +123,6 @@ namespace OpenLiveWriter.PostEditor
                     ReplaceValue(c, originalHtml, replaceValue);
                     return true;
                 }
-
             }
 
             return ReplaceEmoticon(c, htmlText);
@@ -243,6 +242,7 @@ namespace OpenLiveWriter.PostEditor
                                 break;
                             }
                         }
+
                         findRange.Start.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
                         findRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_PREVCHAR, emRange.Start);
                     }

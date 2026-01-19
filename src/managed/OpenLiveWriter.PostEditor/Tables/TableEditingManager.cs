@@ -82,8 +82,10 @@ namespace OpenLiveWriter.PostEditor.Tables
         {
             _editorContext.CommandManager.BeginUpdate();
 
-            commandTableMenu = new Command(CommandId.TableMenu);
-            commandTableMenu.CommandBarButtonContextMenuDefinition = new TableContextMenuDefinition();
+            commandTableMenu = new Command(CommandId.TableMenu)
+            {
+                CommandBarButtonContextMenuDefinition = new TableContextMenuDefinition()
+            };
             _editorContext.CommandManager.Add(commandTableMenu);
 
             commandTableProperties = new Command(CommandId.TableProperties);
@@ -355,7 +357,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         private Command commandCellProperties;
         private Command commandClearCell;
 
-        private IHtmlEditorComponentContext _editorContext;
+        private readonly IHtmlEditorComponentContext _editorContext;
         public void Dispose()
         {
             if (_selectionChangedHooked)
@@ -365,6 +367,4 @@ namespace OpenLiveWriter.PostEditor.Tables
             }
         }
     }
-
-
 }

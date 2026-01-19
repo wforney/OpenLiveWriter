@@ -31,10 +31,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     internal class BlogPostHtmlEditor : OpenLiveWriter.PostEditor.ContentEditor, INewCategoryContext, IBlogPostEditor
     {
-        private string instanceId = Guid.NewGuid().ToString();
+        private readonly string instanceId = Guid.NewGuid().ToString();
 
         // The panel that holds blog this band, formatting bar, editor, tabs, and general post properties
-        private Panel _editorContainer;
+        private readonly Panel _editorContainer;
 
         // Post properties tray, BlogPostHtmlEditor is in charge of pushing IBlogPostEditor calls through to it
         private PostPropertiesBandControl _postPropertyEditor;
@@ -87,6 +87,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             {
                 cmd.On = GlobalEditorOptions.SupportsFeature(ContentEditorFeature.SpellCheckIgnoreOnce);
             }
+
             base.OnEditorAccountChanged(newEditorAccount);
 
             // If any of these are null(or more likely all of them all null) then the editor has not been
@@ -259,10 +260,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     shortcuts[i] = KeyboardHelper.FormatShortcutString(_views[i].Shortcut);
             }
 
-            _postEditorFooter = new PostEditorFooter();
-            _postEditorFooter.TabNames = tabNames;
-            _postEditorFooter.Shortcuts = shortcuts;
-            _postEditorFooter.Dock = DockStyle.Bottom;
+            _postEditorFooter = new PostEditorFooter
+            {
+                TabNames = tabNames,
+                Shortcuts = shortcuts,
+                Dock = DockStyle.Bottom
+            };
 
             _postEditorFooter.SelectedTabChanged += tabsControl_SelectedTabChanged;
             _postEditorFooter.SetStatusMessage(Res.Get(StringId.StatusDraftUnsaved));
@@ -340,8 +343,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         public static BlogPostHtmlEditor Create(IMainFrameWindow mainFrameWindow, Control editorContainer, IBlogPostEditingSite postEditingSite)
         {
-            Panel panelBase = new Panel();
-            panelBase.Dock = DockStyle.Fill;
+            Panel panelBase = new Panel
+            {
+                Dock = DockStyle.Fill
+            };
             editorContainer.Controls.Add(panelBase);
             return new BlogPostHtmlEditor(mainFrameWindow, panelBase, postEditingSite);
 
@@ -349,11 +354,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private void InitializePropertyEditors()
         {
-            _postPropertyEditor = new PostPropertiesBandControl(CommandManager);
-            _postPropertyEditor.TabStop = true;
-            _postPropertyEditor.TabIndex = 2;
-            _postPropertyEditor.Dock = DockStyle.Top;
-            _postPropertyEditor.AccessibleName = Res.Get(StringId.PropertiesPanel);
+            _postPropertyEditor = new PostPropertiesBandControl(CommandManager)
+            {
+                TabStop = true,
+                TabIndex = 2,
+                Dock = DockStyle.Top,
+                AccessibleName = Res.Get(StringId.PropertiesPanel)
+            };
             _editorContainer.Controls.Add(_postPropertyEditor);
             Trace.WriteLine(_postPropertyEditor.Width + " " + _postPropertyEditor.Parent.Width);
         }
@@ -413,8 +420,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             // The problem is related to Windows 7 #712524 & #758433 and this is a work around for this particular case.
             // The dropdown commands for this (InsertVideoFromFile etc) are already disabled based on the feature support. We explicitly set the state of
             // group command here so that it has the right state to begin with (otherwise a switch tab/app is required to refresh).
-            GroupCommand commandInsertVideoSplit = new GroupCommand(CommandId.InsertVideoSplit, CommandManager.Get(CommandId.InsertVideoFromFile));
-            commandInsertVideoSplit.Enabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.VideoProviders);
+            GroupCommand commandInsertVideoSplit = new GroupCommand(CommandId.InsertVideoSplit, CommandManager.Get(CommandId.InsertVideoFromFile))
+            {
+                Enabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.VideoProviders)
+            };
             CommandManager.Add(commandInsertVideoSplit);
 
             foreach (CommandId commandId in new CommandId[] {

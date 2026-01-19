@@ -363,8 +363,8 @@ namespace OpenLiveWriter.PostEditor
                 {
                     components.Dispose();
                 }
-
             }
+
             base.Dispose(disposing);
 
             if (ApplicationDiagnostics.TestMode)
@@ -403,7 +403,7 @@ Ignore - Do nothing",
             }
         }
 
-        private IContainer components = new Container();
+        private readonly IContainer components = new Container();
 
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
         {
@@ -454,8 +454,10 @@ Ignore - Do nothing",
             commandHelp.Enabled = MarketizationOptions.IsFeatureEnabled(MarketizationOptions.Feature.Help);
             commandHelp.MenuFormatArgs = new object[] { ApplicationEnvironment.ProductName };
 
-            commandAbout = new AboutCommand();
-            commandAbout.MenuFormatArgs = new object[] { ApplicationEnvironment.ProductName };
+            commandAbout = new AboutCommand
+            {
+                MenuFormatArgs = new object[] { ApplicationEnvironment.ProductName }
+            };
             commandAbout.Execute += new EventHandler(commandAbout_Execute);
             _postEditorMainControl.CommandManager.Add(commandAbout);
 
@@ -517,11 +519,11 @@ Ignore - Do nothing",
             _postEditorMainControl.OnKeyboardLanguageChanged();
         }
 
-        FocusControlManager _paneFocusManager = new FocusControlManager();
+        readonly FocusControlManager _paneFocusManager = new FocusControlManager();
         private BlogClientUIContextScope _blogClientUIContextScope;
         private IBlogPostEditingContext _initialEditingContext;
-        private IDisposable _splashScreen;
-        private bool _synchronizePost = false;
+        private readonly IDisposable _splashScreen;
+        private readonly bool _synchronizePost = false;
         private bool _formLoaded = false;
         //private Control _statusBarControl;
 
@@ -541,7 +543,7 @@ Ignore - Do nothing",
             {
                 _url = url;
             }
-            private string _url;
+            private readonly string _url;
 
             private void Execute(object sender, EventArgs e)
             {
@@ -558,5 +560,4 @@ Ignore - Do nothing",
 
         #endregion
     }
-
 }

@@ -25,8 +25,8 @@ namespace OpenLiveWriter.Controls
         private AutoCompleteSource tagSource;
         private BitmapButton button;
 
-        private Font normalFont;
-        private Font cueFont;
+        private readonly Font normalFont;
+        private readonly Font cueFont;
 
         public AutoCompleteTextbox()
         {
@@ -69,6 +69,7 @@ namespace OpenLiveWriter.Controls
                 _isDirty = false;
                 SetDefaultText();
             }
+
             tagSuggestForm.Dismissed = false;
         }
 
@@ -98,14 +99,16 @@ namespace OpenLiveWriter.Controls
         private const int BUTTON_RIGHT_OFFSET = 8;
         private void CreateButton()
         {
-            button = new BitmapButton();
-            button.BitmapEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.refresh.png");
-            button.BitmapPushed = ResourceHelper.LoadAssemblyResourceBitmap("Images.refreshPushed.png");
-            button.BitmapSelected = ResourceHelper.LoadAssemblyResourceBitmap("Images.refreshSelected.png");
-            button.Anchor = AnchorStyles.Right;
-            button.Height = 16;
-            button.Width = BUTTON_WIDTH;
-            button.Cursor = Cursors.Hand;
+            button = new BitmapButton
+            {
+                BitmapEnabled = ResourceHelper.LoadAssemblyResourceBitmap("Images.refresh.png"),
+                BitmapPushed = ResourceHelper.LoadAssemblyResourceBitmap("Images.refreshPushed.png"),
+                BitmapSelected = ResourceHelper.LoadAssemblyResourceBitmap("Images.refreshSelected.png"),
+                Anchor = AnchorStyles.Right,
+                Height = 16,
+                Width = BUTTON_WIDTH,
+                Cursor = Cursors.Hand
+            };
             button.Left = Width - button.Width - BUTTON_RIGHT_OFFSET;
             button.AccessibleName = Res.Get(StringId.CategoryRefreshList);
             button.ToolTip = Res.Get(StringId.CategoryRefreshList);
@@ -208,9 +211,7 @@ namespace OpenLiveWriter.Controls
 
         private void TagSelected(object sender, EventArgs e)
         {
-            int pos;
-            int len;
-            string prefix = tagSource.GetPrefix(this, out pos, out len);
+            string prefix = tagSource.GetPrefix(this, out int pos, out int len);
             Trace.Assert(!string.IsNullOrEmpty(prefix));
 
             Select(pos, len);
@@ -253,8 +254,6 @@ namespace OpenLiveWriter.Controls
 
         private void ShowSuggestionForm()
         {
-            int pos;
-            int segmentLength;
 
             if (tagSource == null)
             {
@@ -262,7 +261,7 @@ namespace OpenLiveWriter.Controls
                 return;
             }
 
-            string prefix = tagSource.GetPrefix(this, out pos, out segmentLength);
+            string prefix = tagSource.GetPrefix(this, out int pos, out int segmentLength);
 
             if (string.IsNullOrEmpty(prefix))
             {
@@ -311,6 +310,7 @@ namespace OpenLiveWriter.Controls
                         tagSuggestForm.AcceptSelection();
                         return true;
                     }
+
                     break;
                 case Keys.Control | Keys.Space:
                     tagSuggestForm.Dismissed = false;
@@ -320,6 +320,7 @@ namespace OpenLiveWriter.Controls
                     SelectAll();
                     return true;
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -361,6 +362,7 @@ namespace OpenLiveWriter.Controls
                     m = m.NextMatch();
                 }
             }
+
             pos = -1;
             segmentLength = -1;
             return null;
@@ -385,9 +387,7 @@ namespace OpenLiveWriter.Controls
                 if (str.ToLower(CultureInfo.CurrentUICulture).StartsWith(prefix, StringComparison.CurrentCulture))
                     tagList.Add(str);
             }
-
         }
-
     }
 
     public class AutoCompleteForm : Form
@@ -450,6 +450,7 @@ namespace OpenLiveWriter.Controls
                 {
                     lstSuggest.Items.Add(sugg);
                 }
+
                 if (lstSuggest.Items.Count == 0)
                 {
                     Visible = false;
@@ -485,6 +486,7 @@ namespace OpenLiveWriter.Controls
                 foreach (string s in lstSuggest.Items)
                     width = Math.Max(width, TextRenderer.MeasureText(g, s, Font, Size.Empty, TextFormatFlags.NoPrefix).Width);
             }
+
             width += 3;
             int preferredHeight = lstSuggest.PreferredHeight;
             int height = Math.Min(preferredHeight, lstSuggest.ItemHeight * 11);
@@ -573,7 +575,6 @@ namespace OpenLiveWriter.Controls
                 if (Owner != null)
                     Owner.LocationChanged += ParentForm_LocationChanged;
             }
-
         }
 
         protected override void OnLocationChanged(EventArgs e)
@@ -593,7 +594,7 @@ namespace OpenLiveWriter.Controls
             Location = p;
         }
 
-        private System.ComponentModel.IContainer components = null;
+        private readonly System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -605,6 +606,7 @@ namespace OpenLiveWriter.Controls
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

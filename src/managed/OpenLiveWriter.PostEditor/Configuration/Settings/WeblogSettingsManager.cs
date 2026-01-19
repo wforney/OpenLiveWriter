@@ -81,6 +81,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Settings
                 }
             }
         }
-
     }
 }

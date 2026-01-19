@@ -34,8 +34,8 @@ namespace OpenLiveWriter.BlogClient.Providers
                     }
                 }
             }
+
             return parameters.ToString();
         }
-
     }
 }

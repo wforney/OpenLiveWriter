@@ -18,7 +18,7 @@ namespace OpenLiveWriter.PostEditor.Tables
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public TableIndentControl()
         {
@@ -41,6 +41,7 @@ namespace OpenLiveWriter.PostEditor.Tables
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

@@ -33,8 +33,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 sidebarContext, _editorContext, _dataContext, _createFileCallback);
         }
 
-        private IHtmlEditorComponentContext _editorContext;
-        private IBlogPostImageEditingContext _dataContext;
-        private CreateFileCallback _createFileCallback;
+        private readonly IHtmlEditorComponentContext _editorContext;
+        private readonly IBlogPostImageEditingContext _dataContext;
+        private readonly CreateFileCallback _createFileCallback;
     }
 }

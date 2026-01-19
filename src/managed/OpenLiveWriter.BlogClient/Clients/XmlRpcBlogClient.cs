@@ -323,7 +323,6 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 return DateTime.MinValue;
             }
-
         }
 
         /// <summary>

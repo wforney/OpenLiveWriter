@@ -35,6 +35,7 @@ namespace OpenLiveWriter.CoreServices
                     if (!Monitor.Wait(this, (int)waitTimeOutMs))
                         return false;
                 }
+
                 return true;
             }
         }

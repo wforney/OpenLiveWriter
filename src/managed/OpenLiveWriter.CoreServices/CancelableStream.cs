@@ -13,7 +13,7 @@ namespace OpenLiveWriter.CoreServices
     public class CancelableStream : Stream
     {
         private volatile bool _isCancelled;
-        private Stream _innerStream;
+        private readonly Stream _innerStream;
         public CancelableStream(Stream innerStream)
         {
             _isCancelled = false;
@@ -34,6 +34,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 throw new OperationCanceledException("Stream has been cancelled.");
             }
+
             return _innerStream.Read(array, offset, count);
         }
 
@@ -43,6 +44,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 throw new OperationCanceledException("Stream has been cancelled.");
             }
+
             return base.ReadByte();
         }
 

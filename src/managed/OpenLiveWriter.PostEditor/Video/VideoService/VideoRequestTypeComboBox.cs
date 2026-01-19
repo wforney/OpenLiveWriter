@@ -64,6 +64,7 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
                         SelectedIndex = i;
                         break;
                     }
+
                     i++;
                 }
             }
@@ -76,7 +77,5 @@ namespace OpenLiveWriter.PostEditor.Video.VideoService
             if (SelectedRequestTypeChanged != null)
                 SelectedRequestTypeChanged(this, EventArgs.Empty);
         }
-
     }
-
 }

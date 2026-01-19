@@ -83,6 +83,7 @@ namespace OpenLiveWriter.CoreServices
                     if (fileFilter(file.ToLower(CultureInfo.InvariantCulture)))
                         filteredFiles.Add(file);
                 }
+
                 return filteredFiles;
             }
             else // no filter, just return list
@@ -157,6 +158,7 @@ namespace OpenLiveWriter.CoreServices
                         Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Base url: {0} / {1}", thisUrl, filePath));
                         output = LightWeightHTMLUrlToAbsolute.ConvertToAbsolute(reader.ReadToEnd(), thisUrl);
                     }
+
                     using (StreamWriter writer = new StreamWriter(OpenFileStreamForWrite(filePath), Encoding.UTF8))
                     {
                         writer.Write(output);
@@ -229,13 +231,13 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // storage for root file name
-        private string m_rootFile = String.Empty;
+        private readonly string m_rootFile = String.Empty;
 
         // path where the site's files are stored
-        private string m_basePath;
+        private readonly string m_basePath;
 
         // optional file-filter used to determine which files are included and excluded
-        private SiteStorageFileFilter fileFilter = null;
+        private readonly SiteStorageFileFilter fileFilter = null;
     }
 
     /// <summary>

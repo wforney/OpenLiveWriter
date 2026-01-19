@@ -22,7 +22,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ImageTargetEditorControl()
         {
@@ -43,6 +43,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -107,7 +108,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 imageSizeControl1.Height = imageSizeControl1.GetPreferredSize(new Size(imageSizeControl1.Width, Int32.MaxValue)).Height;
                 linkOptionsControl1.Top = imageSizeControl1.Bottom;
             }
-
         }
 
         private void linkOptionsControl1_LinkOptionsChanged(object sender, EventArgs e)

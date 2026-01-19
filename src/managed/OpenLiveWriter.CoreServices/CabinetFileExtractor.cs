@@ -40,6 +40,7 @@ namespace OpenLiveWriter.CoreServices
                     rtnValue = FILEOP_DOIT;
                     break;
             }
+
             return rtnValue;
         }
 

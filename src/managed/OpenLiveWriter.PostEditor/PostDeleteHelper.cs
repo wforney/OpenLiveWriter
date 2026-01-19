@@ -78,6 +78,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     post.Delete();
                 }
+
                 return true;
             }
             catch (Exception ex)
@@ -87,7 +88,6 @@ namespace OpenLiveWriter.PostEditor
                 DisplayableExceptionDisplayForm.Show(Win32WindowImpl.ForegroundWin32Window, displayableException);
                 return false;
             }
-
         }
     }
 }

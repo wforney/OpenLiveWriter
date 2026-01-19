@@ -32,6 +32,7 @@ namespace OpenLiveWriter.CoreServices
                     }
                 }
             }
+
             return headerValue;
         }
     }

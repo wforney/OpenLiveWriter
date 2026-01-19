@@ -70,6 +70,7 @@ namespace OpenLiveWriter.CoreServices
 
                     m_fileName = fileName;
                 }
+
                 return m_fileName;
             }
             set
@@ -114,7 +115,7 @@ namespace OpenLiveWriter.CoreServices
         }
         private string _urlToReplace = null;
 
-        private string _anchor = null;
+        private readonly string _anchor = null;
 
         /// <summary>
         /// The relative url, including file name, that should be used to refer to the
@@ -129,6 +130,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                     baseUrl = baseUrl + "#" + _anchor;
                 }
+
                 return baseUrl;
             }
         }
@@ -186,7 +188,7 @@ namespace OpenLiveWriter.CoreServices
                     return ParentInfo.DirectoryToken;
             }
         }
-        private string _directoryToken = Guid.NewGuid().ToString();
+        private readonly string _directoryToken = Guid.NewGuid().ToString();
 
         public bool IsRootPage
         {
@@ -232,6 +234,7 @@ namespace OpenLiveWriter.CoreServices
                     else
                         m_referencedFileRelativeUrl = "references";
                 }
+
                 return m_referencedFileRelativeUrl;
             }
         }
@@ -265,7 +268,7 @@ namespace OpenLiveWriter.CoreServices
                 return _lightweightHTMLDocument;
             }
         }
-        private LightWeightHTMLDocument _lightweightHTMLDocument = null;
+        private readonly LightWeightHTMLDocument _lightweightHTMLDocument = null;
 
         /// <summary>
         ///
@@ -289,7 +292,7 @@ namespace OpenLiveWriter.CoreServices
                 _referencesToDownload = newReferenceList;
             }
         }
-        private ArrayList _explicitReferences = new ArrayList();
+        private readonly ArrayList _explicitReferences = new ArrayList();
 
         /// <summary>
         /// The list of references that should be downloaded and escaped for this page.
@@ -334,6 +337,7 @@ namespace OpenLiveWriter.CoreServices
                     _referencesToDownload = (ReferenceToDownload[])resourceList.ToArray(typeof(ReferenceToDownload));
 
                 }
+
                 return _referencesToDownload;
             }
         }

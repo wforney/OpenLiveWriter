@@ -40,6 +40,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 Trace.Fail("Unexpected exception attempting to disconnect from BlogFileUploader: " + ex.ToString());
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -118,6 +119,7 @@ namespace OpenLiveWriter.PostEditor
                         {
                             val = String.Format(CultureInfo.InvariantCulture, "{0" + tokenFormatGroup.Value + "}", val);
                         }
+
                         sb.Append(val);
                     }
 
@@ -137,7 +139,7 @@ namespace OpenLiveWriter.PostEditor
         /// </summary>
         private class StringFormatter : IFormattable
         {
-            private string _value;
+            private readonly string _value;
             public StringFormatter(string val)
             {
                 _value = val;
@@ -311,6 +313,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     HttpRequestHelper.LogException((WebException)ex);
                 }
+
                 throw new BlogClientException(Res.Get(StringId.FileUploadFailedException), ex.Message);
             }
         }
@@ -336,6 +339,7 @@ namespace OpenLiveWriter.PostEditor
                 Trace.Fail(ex.ToString());
                 throw new BlogClientException(Res.Get(StringId.FileUploadFailedException), ex.Message);
             }
+
             return;
         }
 
@@ -346,6 +350,7 @@ namespace OpenLiveWriter.PostEditor
             {
                 format = "{OpenLiveWriter}/{PostTitle}_{PostRandomizer}/{FileNameWithoutExtension}{FileNameConflictToken:_?}{FileExtension}";
             }
+
             return base.FormatFileName(format, filename, conflictToken);
         }
 
@@ -364,14 +369,14 @@ namespace OpenLiveWriter.PostEditor
             return base.DoesFileNeedUpload(file, uploadContext);
         }
 
-        private BlogSettings _blogSettings;
-        private string _blogHomepageUrl;
-        private IBlogClient _blogClient;
+        private readonly BlogSettings _blogSettings;
+        private readonly string _blogHomepageUrl;
+        private readonly IBlogClient _blogClient;
     }
 
     public class FTPBlogFileUploader : BlogFileUploader
     {
-        private static Hashtable _credentials = new Hashtable();
+        private static readonly Hashtable _credentials = new Hashtable();
         public FTPBlogFileUploader(string destinationContext, string postContext, FtpUploaderSettings settings, string blogId)
             : base(destinationContext, postContext, blogId)
         {
@@ -421,6 +426,7 @@ namespace OpenLiveWriter.PostEditor
                                 }
                             }
                         }
+
                         try
                         {
                             // create and connect to the destination
@@ -467,6 +473,7 @@ namespace OpenLiveWriter.PostEditor
                     ResourceHelper.SaveAssemblyResourceToStream("Images.FtpIcon.png", memStream);
                     ftpIconBytes = memStream.ToArray();
                 }
+
                 return ftpIconBytes;
             }
         }
@@ -581,7 +588,7 @@ namespace OpenLiveWriter.PostEditor
             return base.FormatFileName(format, filename, conflictToken);
         }
 
-        private FtpUploaderSettings _settings;
+        private readonly FtpUploaderSettings _settings;
         private FileDestination _fileDestination;
     }
 
@@ -591,14 +598,15 @@ namespace OpenLiveWriter.PostEditor
         {
             // create typesafe wrappers for source and destination
             FtpUploaderSettings sourceSettings = new FtpUploaderSettings(source);
-            FtpUploaderSettings destinationSettings = new FtpUploaderSettings(destination);
-
-            // copy the values
-            destinationSettings.FtpServer = sourceSettings.FtpServer;
-            destinationSettings.PublishPath = sourceSettings.PublishPath;
-            destinationSettings.UrlMapping = sourceSettings.UrlMapping;
-            destinationSettings.Username = sourceSettings.Username;
-            destinationSettings.Password = sourceSettings.Password;
+            FtpUploaderSettings destinationSettings = new FtpUploaderSettings(destination)
+            {
+                // copy the values
+                FtpServer = sourceSettings.FtpServer,
+                PublishPath = sourceSettings.PublishPath,
+                UrlMapping = sourceSettings.UrlMapping,
+                Username = sourceSettings.Username,
+                Password = sourceSettings.Password
+            };
         }
 
         public FtpUploaderSettings(IBlogFileUploadSettings settings)
@@ -652,6 +660,7 @@ namespace OpenLiveWriter.PostEditor
                             base64EncodedPass = _settings.GetValue(PASSWORD);
                             Trace.WriteLine("FTP password was auto-encrypted");
                         }
+
                         byte[] encrypted = Convert.FromBase64String(base64EncodedPass);
                         string password = CryptHelper.Decrypt(encrypted);
                         return password;
@@ -661,6 +670,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     Trace.Fail("Failed to decrypt password: " + e);
                 }
+
                 return String.Empty;
             }
             set
@@ -693,12 +703,13 @@ namespace OpenLiveWriter.PostEditor
                 {
                     format = "{PostTitle}_{PostRandomizer}/{FileName}";
                 }
+
                 return format;
             }
             set { _settings.SetValue(FILE_UPLOAD_FORMAT, value); }
         }
         private const string FILE_UPLOAD_FORMAT = "FileUploadFormat";
 
-        private IBlogFileUploadSettings _settings;
+        private readonly IBlogFileUploadSettings _settings;
     }
 }

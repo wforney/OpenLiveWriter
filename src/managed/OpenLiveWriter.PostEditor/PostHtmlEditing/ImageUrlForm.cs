@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public ImageUrlForm()
         {
@@ -49,6 +49,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -142,6 +143,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 this.BeginInvoke(new EventHandler(GlobalContext_ServerDeath), new object[] { sender, e });
                 return;
             }
+
             Close();
         }
 
@@ -190,6 +192,5 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 return UrlHelper.FixUpUrl(txtUrl.Text);
             }
         }
-
     }
 }

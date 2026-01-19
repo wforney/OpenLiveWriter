@@ -17,8 +17,10 @@ namespace OpenLiveWriter.Tests.PostEditor.Tables
         {
             // Arrange
             var editor = new TestHtmlEditor();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.Width = new PixelPercent(400, PixelPercentUnits.Pixels);
+            TableProperties tableProperties = new TableProperties
+            {
+                Width = new PixelPercent(400, PixelPercentUnits.Pixels)
+            };
             int rows = 3;
             int columns = 4;
             TableCreationParameters tableCreationParamters = new TableCreationParameters(rows, columns, tableProperties);
@@ -35,8 +37,10 @@ namespace OpenLiveWriter.Tests.PostEditor.Tables
         {
             // Arrange
             var editor = new TestHtmlEditor();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.Width = new PixelPercent(100, PixelPercentUnits.Percentage);
+            TableProperties tableProperties = new TableProperties
+            {
+                Width = new PixelPercent(100, PixelPercentUnits.Percentage)
+            };
             int rows = 3;
             int columns = 4;
             TableCreationParameters tableCreationParamters = new TableCreationParameters(rows, columns, tableProperties);
@@ -53,8 +57,10 @@ namespace OpenLiveWriter.Tests.PostEditor.Tables
         {
             // Arrange
             var editor = new TestHtmlEditor();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.Width = new PixelPercent(0, PixelPercentUnits.Undefined);
+            TableProperties tableProperties = new TableProperties
+            {
+                Width = new PixelPercent(0, PixelPercentUnits.Undefined)
+            };
             int rows = 3;
             int columns = 4;
             TableCreationParameters tableCreationParamters = new TableCreationParameters(rows, columns, tableProperties);
@@ -71,10 +77,12 @@ namespace OpenLiveWriter.Tests.PostEditor.Tables
         {
             // Arrange
             var editor = new TestHtmlEditor();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.Width = new PixelPercent(0, PixelPercentUnits.Undefined);
-            tableProperties.CellSpacing = "2";
-            tableProperties.CellPadding = "0";
+            TableProperties tableProperties = new TableProperties
+            {
+                Width = new PixelPercent(0, PixelPercentUnits.Undefined),
+                CellSpacing = "2",
+                CellPadding = "0"
+            };
             int rows = 3;
             int columns = 4;
             TableCreationParameters tableCreationParamters = new TableCreationParameters(rows, columns, tableProperties);

@@ -36,7 +36,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public WatermarkEditor()
         {
@@ -57,8 +57,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             textBoxText.LostFocus += new EventHandler(textBoxText_LostFocus);
             textBoxText.KeyDown += new KeyEventHandler(textBoxText_KeyDown);
 
-            keyTimer = new Timer();
-            keyTimer.Interval = 100;
+            keyTimer = new Timer
+            {
+                Interval = 100
+            };
             keyTimer.Tick += new EventHandler(keyTimer_Tick);
             keyTimer.Start();
 
@@ -145,6 +147,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 case (WatermarkDecorator.WatermarkPosition.TopRight):
                     return Res.Get(StringId.WatermarkAlignTopRight);
             }
+
             return Res.Get(StringId.WatermarkAlignUnknown);
         }
 
@@ -222,6 +225,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -391,7 +395,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             SaveSettingsAndApplyDecorator();
         }
 
-        private Timer keyTimer;
+        private readonly Timer keyTimer;
 
         private void keyTimer_Tick(object sender, EventArgs e)
         {

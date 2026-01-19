@@ -17,7 +17,7 @@ namespace OpenLiveWriter.CoreServices.Progress
     /// </summary>
     public class JointProgressHosts
     {
-        private IProgressHost pHost;
+        private readonly IProgressHost pHost;
         private readonly LinkedProgressTick[] ticks;
         private readonly int tickAllocation;
         private readonly int tickTotal;
@@ -74,7 +74,7 @@ namespace OpenLiveWriter.CoreServices.Progress
 
         private class LinkedProgressTick : IProgressHost
         {
-            private JointProgressHosts parent;
+            private readonly JointProgressHosts parent;
             internal int complete = 0;
             internal int total = 1;
 
@@ -112,7 +112,6 @@ namespace OpenLiveWriter.CoreServices.Progress
             {
                 get { return (double)complete / (double)total; }
             }
-
         }
     }
 }

@@ -27,6 +27,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 if (provider.MatchesUrl(urlInput))
                     return provider;
             }
+
             return null;
         }
 
@@ -38,6 +39,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 if (provider.MatchesEmbed(embedInput))
                     return provider;
             }
+
             return null;
         }
 
@@ -49,6 +51,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 if (String.Compare(provider.ServiceId, id, true, CultureInfo.InvariantCulture) == 0)
                     return provider;
             }
+
             return null;
         }
 
@@ -76,6 +79,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 catch
                 {
                 }
+
                 int start = group.Index;
                 int len = group.Length;
                 newEmbed = newEmbed.Remove(start, len);
@@ -95,12 +99,14 @@ namespace OpenLiveWriter.PostEditor.Video
                 catch
                 {
                 }
+
                 int start = group.Index;
                 int len = group.Length;
                 newEmbed = newEmbed.Remove(start, len);
                 newEmbed = newEmbed.Insert(start, HEIGHT);
                 match = Regex.Match(newEmbed, heightPattern);
             }
+
             return size;
         }
 
@@ -125,8 +131,7 @@ namespace OpenLiveWriter.PostEditor.Video
             //special case--show the embed, but we can't do much else (linking wise)
             if (ContainsEmbed(input))
             {
-                string embed;
-                Size videoSize = ParseEmbed(input, 425, 350, out embed);
+                Size videoSize = ParseEmbed(input, 425, 350, out string embed);
                 return new Video(Guid.NewGuid().ToString(),
                                  String.Empty,
                                  embed,
@@ -136,6 +141,7 @@ namespace OpenLiveWriter.PostEditor.Video
                                  videoSize.Height,
                                  VideoAspectRatioType.Unknown);
             }
+
             return null;
         }
 
@@ -147,6 +153,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 if (provider.IsSoapbox)
                     return provider.VideoFromId(id);
             }
+
             return null;
         }
 
@@ -160,6 +167,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     if (provider.IsSoapbox)
                         return provider.AppId;
                 }
+
                 return String.Empty;
             }
         }
@@ -185,16 +193,16 @@ namespace OpenLiveWriter.PostEditor.Video
                     }
                 }
             }
+
             output = String.Empty;
             return false;
         }
-
     }
 
     public class WhiteList
     {
-        private string _blogProviderId;
-        private Hashtable _mappings;
+        private readonly string _blogProviderId;
+        private readonly Hashtable _mappings;
 
         public WhiteList(string providerName, Hashtable mappings)
         {

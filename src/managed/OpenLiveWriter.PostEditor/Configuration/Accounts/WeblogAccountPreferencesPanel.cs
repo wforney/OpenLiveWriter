@@ -20,12 +20,12 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         private System.Windows.Forms.GroupBox groupBoxOptions;
         private System.Windows.Forms.CheckBox checkBoxAllowAutoUpdate;
         private System.Windows.Forms.CheckBox checkBoxAllowProviderButtons;
 
-        private WeblogAccountPreferences _weblogAccountPreferences;
+        private readonly WeblogAccountPreferences _weblogAccountPreferences;
 
         public WeblogAccountPreferencesPanel()
         {
@@ -102,6 +102,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Accounts
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

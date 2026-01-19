@@ -24,7 +24,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
         private Label labelStatus;
         private Bitmap _logoBitmap;
         private PictureBox pictureBoxLogo;
@@ -53,8 +53,10 @@ namespace OpenLiveWriter.CoreServices
             FixLayout();
 
             // Create the timer
-            timerAnimation = new System.Windows.Forms.Timer();
-            timerAnimation.Interval = 17; // 60 FPS rounded up
+            timerAnimation = new System.Windows.Forms.Timer
+            {
+                Interval = 17 // 60 FPS rounded up
+            };
             timerAnimation.Tick += new EventHandler(AnimationTick);
             timerAnimation.Enabled = true;
             timerAnimation.Start();
@@ -91,9 +93,11 @@ namespace OpenLiveWriter.CoreServices
             Thread thread = new Thread(() =>
             {
                 ShowDialog();
-            });
-            thread.Name = "Splash Screen Animation Thread";
-            thread.IsBackground = true;
+            })
+            {
+                Name = "Splash Screen Animation Thread",
+                IsBackground = true
+            };
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
@@ -110,6 +114,7 @@ namespace OpenLiveWriter.CoreServices
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -217,8 +222,10 @@ namespace OpenLiveWriter.CoreServices
 
             Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
             Graphics graphics = Graphics.FromImage(bmp);
-            ColorMatrix colormatrix = new ColorMatrix();
-            colormatrix.Matrix33 = opacityvalue;
+            ColorMatrix colormatrix = new ColorMatrix
+            {
+                Matrix33 = opacityvalue
+            };
             ImageAttributes imgAttribute = new ImageAttributes();
             imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);

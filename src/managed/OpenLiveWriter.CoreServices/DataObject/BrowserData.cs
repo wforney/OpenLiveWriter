@@ -51,7 +51,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_isFormPost;
             }
         }
-        private bool m_isFormPost;
+        private readonly bool m_isFormPost;
 
         /// <summary>
         /// The browser's current url
@@ -124,7 +124,7 @@ namespace OpenLiveWriter.CoreServices
                 return m_htmlDocument;
             }
         }
-        private IHTMLDocument2 m_htmlDocument;
+        private readonly IHTMLDocument2 m_htmlDocument;
 
         public static string FORMAT_NAME = "IWebBrowser2";
 
@@ -161,6 +161,6 @@ namespace OpenLiveWriter.CoreServices
             m_isFormPost = browserClip.IsFormPost;
             m_htmlDocument = browserClip.htmlDocument;
         }
-        private IDataObject m_dataObject;
+        private readonly IDataObject m_dataObject;
     }
 }

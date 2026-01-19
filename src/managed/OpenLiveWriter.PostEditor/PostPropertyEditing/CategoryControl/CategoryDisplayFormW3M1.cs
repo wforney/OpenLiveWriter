@@ -37,7 +37,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
     internal partial class CategoryDisplayFormW3M1 : MiniForm
     {
         private readonly CategoryContext ctx;
-        private ICategorySelector selector;
+        private readonly ICategorySelector selector;
         private bool selfDispose = false;
         private Point? anchor;
 
@@ -286,6 +286,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                     txtNewCategory.Text = txtFilter.Text;
                 }
             }
+
             lastFilterValue = txtFilter.Text;
         }
 
@@ -387,7 +388,6 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             {
                 return null;
             }
-
         }
 
         private class ParentCategoryComboBox : ComboBox
@@ -468,7 +468,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
             {
                 get { return _category; }
             }
-            private BlogPostCategory _category;
+            private readonly BlogPostCategory _category;
 
             public virtual Color TextColor { get { return _parentCombo.ForeColor; } }
 
@@ -499,8 +499,8 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 return stringRepresentation;
             }
 
-            private int _indentLevel;
-            private ComboBox _parentCombo;
+            private readonly int _indentLevel;
+            private readonly ComboBox _parentCombo;
 
         }
 
@@ -518,6 +518,5 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing.CategoryControl
                 return Res.Get(StringId.CategoryNoParent);
             }
         }
-
     }
 }

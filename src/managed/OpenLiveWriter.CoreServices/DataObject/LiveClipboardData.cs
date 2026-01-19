@@ -36,19 +36,19 @@ namespace OpenLiveWriter.CoreServices
         {
             get { return _id; }
         }
-        private string _id;
+        private readonly string _id;
 
         public string ContentType
         {
             get { return _contentType; }
         }
-        private string _contentType;
+        private readonly string _contentType;
 
         public string Type
         {
             get { return _type; }
         }
-        private string _type = String.Empty;
+        private readonly string _type = String.Empty;
 
         public override bool Equals(object obj)
         {
@@ -96,9 +96,9 @@ namespace OpenLiveWriter.CoreServices
                     _attemptedFormats = true;
                     _formats = ExtractFormats();
                 }
+
                 return _formats;
             }
-
         }
         private bool _attemptedFormats = false;
         private LiveClipboardFormat[] _formats;
@@ -112,6 +112,7 @@ namespace OpenLiveWriter.CoreServices
                     _attemptedCreateHtmlPresentation = true;
                     _htmlPresentation = ExtractHtmlPresentation();
                 }
+
                 return _htmlPresentation;
             }
         }
@@ -202,7 +203,7 @@ namespace OpenLiveWriter.CoreServices
         private const string TEXT_HTML = "text/html";
         private const string TEXT_PLAIN = "text/plain";
         private const string APPLICATION_XHTML = "application/xhtml+xml";
-        private string[] _textFormats = new string[] { TEXT_HTML, APPLICATION_XHTML, TEXT_PLAIN };
+        private readonly string[] _textFormats = new string[] { TEXT_HTML, APPLICATION_XHTML, TEXT_PLAIN };
 
         private static XmlDocument ExtractLiveClipboardData(string clipboardText)
         {
@@ -240,8 +241,8 @@ namespace OpenLiveWriter.CoreServices
             _namespaceManager.AddNamespace(LC_NS_PREFIX, LC_NS_URI);
         }
 
-        private XmlDocument _xmlDocument;
-        private XmlNamespaceManager _namespaceManager;
+        private readonly XmlDocument _xmlDocument;
+        private readonly XmlNamespaceManager _namespaceManager;
 
         private const string LC_DOCUMENT_ELEMENT = "liveclipboard";
         private const string LC_NS_PREFIX = "lc";

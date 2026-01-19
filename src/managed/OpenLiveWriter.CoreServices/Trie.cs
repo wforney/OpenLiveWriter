@@ -112,11 +112,11 @@ namespace OpenLiveWriter.CoreServices
                 childNode = new Trie<T>();
                 _children[letter] = childNode;
             }
+
             return childNode;
         }
         private HybridDictionary _children;
 
         private T _value;
     }
-
 }

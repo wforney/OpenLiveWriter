@@ -110,11 +110,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     val = trackBarTilt.Maximum;
                     textBoxTilt.Text = val.ToString(CultureInfo.CurrentCulture);
                 }
+
                 if (val < trackBarTilt.Minimum)
                 {
                     val = trackBarTilt.Minimum;
                     textBoxTilt.Text = val.ToString(CultureInfo.CurrentCulture);
                 }
+
                 if (trackBarTilt.Value != val)
                     trackBarTilt.Value = val;
             }

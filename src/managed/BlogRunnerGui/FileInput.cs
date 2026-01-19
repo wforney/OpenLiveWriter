@@ -48,21 +48,16 @@ namespace BlogRunnerGui
             textBox1.Focus();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
-            FileDialog fd;
-            if (DialogStyle == DialogStyle.Open)
-                fd = openFileDialog1;
-            else
-                fd = saveFileDialog1;
-
+            FileDialog fd = DialogStyle == DialogStyle.Open ? openFileDialog1 : (FileDialog)saveFileDialog1;
             if (fd.ShowDialog(this) == DialogResult.OK)
             {
                 textBox1.Text = fd.FileName;
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
             string path = textBox1.Text.Trim('"');
             if (path != textBox1.Text)
@@ -72,8 +67,7 @@ namespace BlogRunnerGui
                 return;
             }
 
-            if (PathChanged != null)
-                PathChanged(this, EventArgs.Empty);
+            PathChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
         /*
         private Size offsetFromOwner;
         */
@@ -53,6 +53,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 (this.Owner as MainFrameSatelliteWindow).CloseFixed -=new EventHandler(Owner_Closed);
                 */
             }
+
             base.Dispose(disposing);
         }
 

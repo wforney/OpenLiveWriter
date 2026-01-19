@@ -39,6 +39,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     flip = context.ImageRotation;
                 }
+
                 if (ImageUtils.IsRotated90(flip))
                     aspectRatio = 1 / aspectRatio;
 
@@ -58,6 +59,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 {
                     // orientation data was not present
                 }
+
                 context.Image = cropped;
             }
         }

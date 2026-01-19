@@ -97,6 +97,5 @@ namespace OpenLiveWriter.ApplicationFramework
                 return DefaultVirtualSize;
             }
         }
-
     }
 }

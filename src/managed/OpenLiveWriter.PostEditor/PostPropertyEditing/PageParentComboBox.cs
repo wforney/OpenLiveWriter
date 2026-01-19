@@ -43,7 +43,6 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 e.DrawFocusRectangle();
             }
         }
-
     }
 
     internal class ParentPageComboItem : PostIdAndNameField, IComparable
@@ -65,10 +64,10 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         {
             get { return _indentLevel; }
         }
-        private int _indentLevel;
+        private readonly int _indentLevel;
 
         public ArrayList Children { get { return _children; } }
-        private ArrayList _children;
+        private readonly ArrayList _children;
 
         public int CompareTo(object obj)
         {
@@ -80,7 +79,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             return new ParentPageComboItem(_pageInfo, IndentLevel, Children.Clone() as ArrayList);
         }
 
-        private PageInfo _pageInfo;
+        private readonly PageInfo _pageInfo;
     }
 
     internal class BlogPageFetcher : BlogDelayedFetchHandler
@@ -175,5 +174,4 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             return flattenedList;
         }
     }
-
 }

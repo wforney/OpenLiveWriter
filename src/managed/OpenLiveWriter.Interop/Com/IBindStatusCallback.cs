@@ -46,6 +46,5 @@ namespace OpenLiveWriter.Interop.Com
             [In] ref Guid riid,
             [In] IntPtr punk);
     }
-
 }
 

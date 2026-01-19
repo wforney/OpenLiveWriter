@@ -398,6 +398,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                         GlossaryManager.Instance.AddEntry(LinkText, Hyperlink, textBoxTitle.Text, comboBoxRel.Text, ckboxNewWindow.Checked);
 
                 }
+
                 LinkSettings.OpenInNewWindow = NewWindow;
                 LinkSettings.ShowAdvancedOptions = ShowAdvancedOptions;
 
@@ -423,6 +424,7 @@ namespace OpenLiveWriter.HtmlEditor.Linking
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

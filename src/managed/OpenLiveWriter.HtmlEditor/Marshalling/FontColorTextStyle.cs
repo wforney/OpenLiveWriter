@@ -48,5 +48,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return FontColor.GetHashCode();
         }
     }
-
 }

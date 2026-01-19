@@ -53,5 +53,4 @@ namespace OpenLiveWriter.Controls.MarginUtil
             return _type.GetHashCode();
         }
     }
-
 }

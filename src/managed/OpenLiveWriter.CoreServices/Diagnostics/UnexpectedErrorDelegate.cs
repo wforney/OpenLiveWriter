@@ -56,7 +56,6 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                 UnexpectedErrorMessage.Show(new ForeGroundWindow(), exception);
                 return;
             }
-
         }
 
         // Delegate for GUI (Application) uncaught exceptions.
@@ -84,6 +83,7 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                     {
                         _handle = User32.GetForegroundWindow();
                     }
+
                     return _handle;
                 }
             }
@@ -92,6 +92,5 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             #endregion
 
         }
-
     }
 }

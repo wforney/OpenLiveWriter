@@ -60,8 +60,7 @@ namespace OpenLiveWriter.Api
         /// </summary>
         protected virtual void OnSelectedContentChanged()
         {
-            if (SelectedContentChanged != null)
-                SelectedContentChanged(this, EventArgs.Empty);
+            SelectedContentChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -76,8 +75,7 @@ namespace OpenLiveWriter.Api
         /// </summary>
         protected virtual void OnContentEdited()
         {
-            if (ContentEdited != null)
-                ContentEdited(this, EventArgs.Empty);
+            ContentEdited?.Invoke(this, EventArgs.Empty);
         }
 
         private void InitializeComponent()
@@ -103,8 +101,6 @@ namespace OpenLiveWriter.Api
                 _layedOut = true;
                 BidiHelper.RtlLayoutFixup(this);
             }
-
         }
     }
-
 }

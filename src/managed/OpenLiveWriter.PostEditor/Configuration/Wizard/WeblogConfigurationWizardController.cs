@@ -33,8 +33,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         public static string Add(IWin32Window owner, bool permitSwitchingWeblogs)
         {
-            bool switchToWeblog;
-            return Add(owner, permitSwitchingWeblogs, out switchToWeblog);
+            return Add(owner, permitSwitchingWeblogs, out bool switchToWeblog);
         }
 
         public static string Add(IWin32Window owner, bool permitSwitchingWeblogs, out bool switchToWeblog)
@@ -57,11 +56,8 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             temporarySettings.IsNewWeblog = true;
             temporarySettings.SwitchToWeblog = true;
 
-            string username;
-            string password;
-            Uri homepageUrl;
 
-            ParseAddBlogUri(blogToAdd, out username, out password, out homepageUrl);
+            ParseAddBlogUri(blogToAdd, out string username, out string password, out Uri homepageUrl);
             temporarySettings.HomepageUrl = homepageUrl.ToString();
             temporarySettings.Credentials.Username = username;
             temporarySettings.Credentials.Password = password;
@@ -69,8 +65,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
             using (WeblogConfigurationWizardController controller = new WeblogConfigurationWizardController(temporarySettings))
             {
-                bool dummy;
-                return controller.AddWeblogSkipType(owner, ApplicationEnvironment.ProductNameQualified, false, out dummy);
+                return controller.AddWeblogSkipType(owner, ApplicationEnvironment.ProductNameQualified, false, out bool dummy);
             }
         }
 
@@ -119,8 +114,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 null,
                 null));
 
-            bool switchToWeblog;
-            return ShowBlogWizard(ApplicationEnvironment.ProductNameQualified, owner, out switchToWeblog);
+            return ShowBlogWizard(ApplicationEnvironment.ProductNameQualified, owner, out bool switchToWeblog);
         }
 
         private string AddWeblogSkipType(IWin32Window owner, string caption, bool permitSwitchingWeblogs, out bool switchToWeblog)
@@ -284,6 +278,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                         _owner = null;
                     }
                 }
+
                 _wizardForm = null;
                 if (_detectionOperation != null && !_detectionOperation.IsDone)
                     _detectionOperation.Cancel();
@@ -908,8 +903,10 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         void PerformSelectImageEndpointSubStep()
         {
-            WeblogConfigurationWizardPanelSelectBlog panel = new WeblogConfigurationWizardPanelSelectBlog();
-            panel.LabelText = Res.Get(StringId.CWSelectImageEndpointText);
+            WeblogConfigurationWizardPanelSelectBlog panel = new WeblogConfigurationWizardPanelSelectBlog
+            {
+                LabelText = Res.Get(StringId.CWSelectImageEndpointText)
+            };
             addWizardSubStep(new WizardSubStep(
                                 panel,
                                 StringId.ConfigWizardSelectImageEndpoint,
@@ -1014,9 +1011,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
 
         private IWin32Window _owner = null;
         private WeblogConfigurationWizard _wizardForm;
-        private TemporaryBlogSettings _temporarySettings;
+        private readonly TemporaryBlogSettings _temporarySettings;
         private bool _preventSwitchingToWeblog = false;
-        private WizardStep _editWithStyleStep = null;
+        private readonly WizardStep _editWithStyleStep = null;
         private IBlogProviderAccountWizardDescription _providerAccountWizard;
         private bool _authenticationRequired = false;
         private bool _authenticationStepAdded;

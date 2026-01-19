@@ -20,8 +20,8 @@ namespace OpenLiveWriter.BlogClient.Detection
     {
         LightWeightHTMLDocument _htmlDocument;
         bool _homepageDownloadAttempted = false;
-        string _homepageUrl;
-        HttpRequestHandler _requestHandler;
+        readonly string _homepageUrl;
+        readonly HttpRequestHandler _requestHandler;
         byte[] _rawBytes;
 
         public LazyHomepageDownloader(string homepageUrl, HttpRequestHandler requestHandler)
@@ -47,6 +47,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         Trace.Fail(e.ToString());
                     }
                 }
+
                 return _htmlDocument;
             }
         }
@@ -85,6 +86,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         _homepageDownloadAttempted = true;
                     }
                 }
+
                 return _rawBytes;
             }
         }
@@ -105,6 +107,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 catch (NotSupportedException)
                 {
                 }
+
                 if (encoding == null)
                     encoding = new UTF8Encoding(false, false);
 

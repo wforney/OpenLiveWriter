@@ -41,7 +41,6 @@ namespace OpenLiveWriter.CoreServices
             base(message, innerException)
         {
         }
-
     }
 }
 

@@ -169,6 +169,7 @@ namespace OpenLiveWriter.HtmlEditor
                         {
                             _fontSizeBeforeEnter = null;
                         }
+
                         break;
                     case (int)Keys.Back:
                         // Bug 101165: MSHTML maintains internal state about font tag. After forcibly clearing the
@@ -187,8 +188,10 @@ namespace OpenLiveWriter.HtmlEditor
                                 SelectedMarkupRange.RemoveElementsByTagId(_ELEMENT_TAG_ID.TAGID_FONT, true);
                                 undoUnit.Commit();
                             }
+
                             _backColorWasReset = false;
                         }
+
                         break;
                 }
             }
@@ -239,7 +242,7 @@ namespace OpenLiveWriter.HtmlEditor
             remove { _mshtmlEditor.KeyboardLanguageChanged -= value; }
         }
 
-        private RtlAcceleratorTranslator rtlAcceleratorTranslator = new RtlAcceleratorTranslator();
+        private readonly RtlAcceleratorTranslator rtlAcceleratorTranslator = new RtlAcceleratorTranslator();
 
         int _mshtmlEditor_TranslateAccelerator(int inEvtDispId, IHTMLEventObj pIEventObj)
         {
@@ -331,7 +334,6 @@ namespace OpenLiveWriter.HtmlEditor
                     _mshtmlEditor = null;
                 }
             }
-
         }
 
         private static bool ShouldCacheEditor()
@@ -449,6 +451,7 @@ namespace OpenLiveWriter.HtmlEditor
                 {
                     htmlGenerationService = new BasicHtmlGenerationService(this.DefaultBlockElement);
                 }
+
                 return htmlGenerationService;
             }
             set
@@ -524,6 +527,7 @@ namespace OpenLiveWriter.HtmlEditor
                     {
                         ApplicationPerformance.StartEvent("Backspace");
                     }
+
                     break;
                 // WinLive 252760 - It is possible to create a selection on the screen that persists even when you
                 // create a new selection, navigate around, etc.  This phantom selection is not properly reflected
@@ -538,6 +542,7 @@ namespace OpenLiveWriter.HtmlEditor
                     {
                         _mshtmlEditor.MshtmlControl.Invalidate(true);
                     }
+
                     break;
                 default:
                     break;
@@ -937,6 +942,7 @@ namespace OpenLiveWriter.HtmlEditor
                             return HRESULT.S_OK;
                         }
                     }
+
                     break;
                 case DISPID_HTMLELEMENTEVENTS2.ONKEYDOWN:
                     // WinLive 245925: Because we inline some CSS into the font tag (specifically, the font-size
@@ -984,6 +990,7 @@ namespace OpenLiveWriter.HtmlEditor
                             _fontSizeBeforeEnter = GetFontSizeAt(SelectedMarkupRange.Start);
                         }
                     }
+
                     break;
             }
 
@@ -992,7 +999,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private float? _fontSizeBeforeEnter;
 
-        private IHTMLElementFilter _fontTagWithFontSizeFilter = ElementFilters.CreateCompoundElementFilter(
+        private readonly IHTMLElementFilter _fontTagWithFontSizeFilter = ElementFilters.CreateCompoundElementFilter(
             ElementFilters.CreateTagIdFilter("font"),
             e => !String.IsNullOrEmpty(((IHTMLElement2)e).currentStyle.fontSize as string)
         );
@@ -1053,9 +1060,11 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         protected RECT GetBodyBoundingBox(IHTMLElement element)
         {
-            RECT elementRect = new RECT();
-            elementRect.top = Int32.MaxValue;
-            elementRect.left = Int32.MaxValue;
+            RECT elementRect = new RECT
+            {
+                top = Int32.MaxValue,
+                left = Int32.MaxValue
+            };
 
             bool foundChild = false;
 
@@ -1382,7 +1391,6 @@ namespace OpenLiveWriter.HtmlEditor
                         ApplicationPerformance.EndEvent("Backspace");
                 }
             }
-
         }
 
         protected bool _logInvalidEditRegions = true;
@@ -1589,7 +1597,7 @@ namespace OpenLiveWriter.HtmlEditor
                 return _spellingChecker;
             }
         }
-        private ISpellingChecker _spellingChecker;
+        private readonly ISpellingChecker _spellingChecker;
 
         #endregion
 
@@ -1699,6 +1707,7 @@ namespace OpenLiveWriter.HtmlEditor
                 mRange = MarkupServices.CreateMarkupRange(anchor);
                 MarkupServices.RemoveElement(anchor);
             }
+
             return mRange;
         }
 
@@ -1722,6 +1731,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                 }
             }
+
             return false;
         }
 
@@ -1764,6 +1774,7 @@ namespace OpenLiveWriter.HtmlEditor
                         {
                             parent = parent.parentElement;
                         }
+
                         anchor = parent;
 
                         //verify the anchor is within the editable boundary
@@ -1776,6 +1787,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                 }
             }
+
             return anchor;
         }
 
@@ -1802,10 +1814,10 @@ namespace OpenLiveWriter.HtmlEditor
 
         private class SelectionUndoUnit : IUndoUnit
         {
-            HtmlEditorControl _editor;
-            MarkupRange _selection;
-            MshtmlMarkupServices _markupServices;
-            private IOleUndoUnit undoUnit;
+            readonly HtmlEditorControl _editor;
+            readonly MarkupRange _selection;
+            readonly MshtmlMarkupServices _markupServices;
+            private readonly IOleUndoUnit undoUnit;
             private IOleUndoUnit redoUnit;
             private bool committed = false;
             public SelectionUndoUnit(HtmlEditorControl editor, MarkupRange selection)
@@ -1940,7 +1952,7 @@ namespace OpenLiveWriter.HtmlEditor
             /// <summary>
             /// Editor we are managing an undo unit for
             /// </summary>
-            private HtmlEditorControl _editor;
+            private readonly HtmlEditorControl _editor;
 
             /// <summary>
             /// Was the edit completed
@@ -1966,8 +1978,7 @@ namespace OpenLiveWriter.HtmlEditor
         private IOleUndoUnit GetTargetUndoUnit()
         {
             // get a list of all of the undo units and copy them into an array
-            IEnumOleUndoUnits undoUnits = null;
-            UndoManager.EnumUndoable(out undoUnits);
+            UndoManager.EnumUndoable(out IEnumOleUndoUnits undoUnits);
             ArrayList activeUndoUnits = CopyUndoUnitsToArray(undoUnits);
 
             // reverse the list so the most recent shows up first
@@ -1992,8 +2003,7 @@ namespace OpenLiveWriter.HtmlEditor
         private IOleUndoUnit GetTargetRedoUnit()
         {
             // get a list of all of the undo units and copy them into an array
-            IEnumOleUndoUnits redoUnits = null;
-            UndoManager.EnumRedoable(out redoUnits);
+            UndoManager.EnumRedoable(out IEnumOleUndoUnits redoUnits);
             ArrayList activeRedoUnits = CopyUndoUnitsToArray(redoUnits);
 
             // reverse the list for scanning
@@ -2039,9 +2049,8 @@ namespace OpenLiveWriter.HtmlEditor
         {
             // get a list of all of the undo units
             ArrayList undoUnitArray = new ArrayList();
-            IOleUndoUnit current;
             int result;
-            while ((result = undoUnits.Next(1, out current, IntPtr.Zero)) == HRESULT.S_OK)
+            while ((result = undoUnits.Next(1, out IOleUndoUnit current, IntPtr.Zero)) == HRESULT.S_OK)
                 undoUnitArray.Add(current);
 
             // return the list in an array
@@ -2051,8 +2060,7 @@ namespace OpenLiveWriter.HtmlEditor
         private string GetUndoUnitDescription(IOleUndoUnit undoUnit)
         {
             // get the description
-            String description;
-            undoUnit.GetDescription(out description);
+            undoUnit.GetDescription(out string description);
             return description;
         }
 
@@ -2092,9 +2100,9 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         class BlockCommandExecutionContext : IDisposable
         {
-            private IHTMLElement _rootElement;
-            private IHTMLElement _tempBlockElement;
-            private IHTMLDOMNode _tempTextNode;
+            private readonly IHTMLElement _rootElement;
+            private readonly IHTMLElement _tempBlockElement;
+            private readonly IHTMLDOMNode _tempTextNode;
             public BlockCommandExecutionContext(IHTMLElement rootElement)
             {
                 //note: we need to insert a block element with a text node into the DOM and guarantee
@@ -2114,6 +2122,7 @@ namespace OpenLiveWriter.HtmlEditor
                 {
                     e = e.parentElement;
                 }
+
                 return e;
             }
             public void Dispose()
@@ -2146,9 +2155,9 @@ namespace OpenLiveWriter.HtmlEditor
 
         private MshtmlEditorDragAndDropTarget mshtmlEditorDragAndDropTarget;
         private MshtmlEditor _mshtmlEditor;
-        private MshtmlOptions _mshtmlOptions;
-        private IMainFrameWindow _mainFrameWindow;
-        private IStatusBar _statusBar;
+        private readonly MshtmlOptions _mshtmlOptions;
+        private readonly IMainFrameWindow _mainFrameWindow;
+        private readonly IStatusBar _statusBar;
         private String _originalText;
 
         [ThreadStatic]
@@ -2271,9 +2280,11 @@ namespace OpenLiveWriter.HtmlEditor
             else
             {
                 //the Y position is good, so the line is a valid location, now adjust the x position on the line
-                Point lineMidPoint = new Point();
-                lineMidPoint.Y = fromClientPoint.Y;
-                lineMidPoint.X = (int)((elementRect.left + elementRect.right) / 2f);
+                Point lineMidPoint = new Point
+                {
+                    Y = fromClientPoint.Y,
+                    X = (int)((elementRect.left + elementRect.right) / 2f)
+                };
                 MoveDisplayPointerToClientPoint(displayPointer, lineMidPoint);
                 if (fromClientPoint.X >= elementRect.right)
                 {
@@ -2337,6 +2348,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                 }
             }
+
             return nearestElement;
         }
 
@@ -2438,19 +2450,20 @@ namespace OpenLiveWriter.HtmlEditor
         /// <param name="clientPoint"></param>
         protected void MoveDisplayPointerToClientPoint(IDisplayPointerRaw displayPointer, Point clientPoint)
         {
-            POINT point = new POINT();
-            point.x = clientPoint.X;
-            point.y = clientPoint.Y;
+            POINT point = new POINT
+            {
+                x = clientPoint.X,
+                y = clientPoint.Y
+            };
 
             // move the caret position display pointer to the point
-            uint htRes;
             displayPointer.MoveToPoint(
                 point,		// point to move to
                 _COORD_SYSTEM.COORD_SYSTEM_GLOBAL,
                 // global (client area) coordinates
                 null,		// element coordinates are relative to (not used for GLOBAL)
                 0,			// HT_OPTIONS (don't hit test beyond EOL)
-                out htRes);	// HT_RESULTS (1 indicates hit test is over a glyph)
+                out uint htRes);	// HT_RESULTS (1 indicates hit test is over a glyph)
         }
         #endregion
 
@@ -2576,6 +2589,7 @@ namespace OpenLiveWriter.HtmlEditor
                                 // otherwise split the destination block or move outside of the block
                                 MarkupHelpers.SplitBlockForInsertionOrBreakout(MarkupServices, PrimaryEditableBounds, start);
                             }
+
                             end.MoveToPointer(start);
                         }
                     }
@@ -2651,9 +2665,7 @@ namespace OpenLiveWriter.HtmlEditor
                             {
                                 Trace.WriteLine("Failed to insert new line at end of document: " + ex);
                             }
-
                         }
-
                     }
                 }
                 // note that we have completed our edit
@@ -2663,7 +2675,6 @@ namespace OpenLiveWriter.HtmlEditor
                 end.PopCling();
 
             }
-
         }
 
         protected void InflateEmptyParagraphs(MarkupRange range)
@@ -2850,6 +2861,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                 }
             }
+
             return blockOverwritten;
         }
 
@@ -3089,6 +3101,7 @@ namespace OpenLiveWriter.HtmlEditor
                     _mshtmlEditor.RightToLeft = RightToLeft.No;
                     _mshtmlInit = true;
                 }
+
                 return _mshtmlEditor;
                 //if ( _editorControl == null )
                 //{
@@ -3179,7 +3192,6 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 _mshtmlEditor.IsDirtyEvent -= value;
             }
-
         }
 
         public bool SuspendAutoSave
@@ -3334,6 +3346,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 range = SelectedMarkupRange;
             }
+
             IHTMLTxtRange txtRange = range.ToTextRange();
             if (txtRange.text != null)
             {
@@ -3345,6 +3358,7 @@ namespace OpenLiveWriter.HtmlEditor
                     int startLength = txtRange.text.TrimStart(null).Length;
                     txtRange.moveStart("CHARACTER", length - startLength);
                 }
+
                 range.MoveToTextRange(txtRange);
             }
 
@@ -3363,7 +3377,6 @@ namespace OpenLiveWriter.HtmlEditor
                 range.Start.PopGravity();
                 range.End.PopGravity();
             }
-
         }
 
         public void SelectImage(IHTMLElement imageElement)
@@ -3379,7 +3392,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         public class InitialInsertionNotify : IDisposable
         {
-            private HtmlEditorControl _editor;
+            private readonly HtmlEditorControl _editor;
             public InitialInsertionNotify(HtmlEditorControl editor)
             {
                 Debug.Assert(editor != null, "Editor is unexpectedly null!");
@@ -3739,8 +3752,7 @@ namespace OpenLiveWriter.HtmlEditor
         private float GetFontSizeAt(MarkupPointer location)
         {
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)HTMLDocument;
-            IHTMLComputedStyle computedStyle;
-            displayServices.GetComputedStyle(location.PointerRaw, out computedStyle);
+            displayServices.GetComputedStyle(location.PointerRaw, out IHTMLComputedStyle computedStyle);
             float pixels = DisplayHelper.TwipsToPixelsY(computedStyle.fontSize);
             float points = HTMLElementHelper.PixelsToPointSize(pixels, true);
             return points;
@@ -3819,6 +3831,7 @@ namespace OpenLiveWriter.HtmlEditor
                 {
                     Trace.Fail("Failed to convert fore color. Exception: " + e);
                 }
+
                 return value;
             }
         }
@@ -3984,6 +3997,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 return SelectedMarkupRange.IsTagId(tagId, true);
             }
+
             return false;
         }
 
@@ -4082,6 +4096,7 @@ namespace OpenLiveWriter.HtmlEditor
                         //Debug.Fail("Error getting stylename", e.ToString());
                     }
                 }
+
                 return null;
             }
         }
@@ -4100,6 +4115,7 @@ namespace OpenLiveWriter.HtmlEditor
                     if (maxEditableRange.InRange(selectedMarkupRange.Start) || maxEditableRange.InRange(selectedMarkupRange.End))
                         maxEditableElement = editableElements[i];
                 }
+
                 if (maxEditableElement != null)
                 {
                     using (IUndoUnit undo = CreateUndoUnit())
@@ -4296,6 +4312,7 @@ namespace OpenLiveWriter.HtmlEditor
                         }
                     }
                 }
+
                 undo.Commit();
             }
         }
@@ -4373,6 +4390,7 @@ namespace OpenLiveWriter.HtmlEditor
                         newRange.Start.MoveAdjacentToElement(previousBlock, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterEnd);
                 }
             }
+
             if (endElement != null)
             {
                 if (endElement != postBodyElement)
@@ -4386,6 +4404,7 @@ namespace OpenLiveWriter.HtmlEditor
                         newRange.End.MoveAdjacentToElement(nextBlock, _ELEMENT_ADJACENCY.ELEM_ADJ_BeforeBegin);
                 }
             }
+
             return newRange;
         }
 
@@ -4478,6 +4497,7 @@ namespace OpenLiveWriter.HtmlEditor
                     //is displayed, we need to figure out why the selection object is invalid.
                     Debug.Fail("Selection object is in an invalid state. Figure out why!", e.ToString());
                 }
+
                 return false;
             }
         }
@@ -4517,6 +4537,7 @@ namespace OpenLiveWriter.HtmlEditor
                             element.innerHTML = "";
                     }
                 }
+
                 undo.Commit();
             }
         }
@@ -4587,6 +4608,7 @@ namespace OpenLiveWriter.HtmlEditor
 
                     text = anchorRange.Text;
                 }
+
                 title = anchor.getAttribute("title", 0) as string;
                 rel = anchor.getAttribute("rel", 0) as string;
                 if ((string)anchor.getAttribute("target", 0) == "_blank")
@@ -4598,6 +4620,7 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 text = SelectedMarkupRange.Text;
             }
+
             return new LinkInfo(text, hyperlink, title, rel, newWindow);
         }
 
@@ -4704,7 +4727,6 @@ namespace OpenLiveWriter.HtmlEditor
                                 {
                                     InsertLink(hyperlinkForm.Hyperlink, hyperlinkForm.LinkText, hyperlinkForm.LinkTitle, hyperlinkForm.Rel, hyperlinkForm.NewWindow, mRange);
                                 }
-
                             }
                             // commit the change
                             undoUnit.Commit();
@@ -4900,7 +4922,7 @@ namespace OpenLiveWriter.HtmlEditor
                 return _cookies;
             }
         }
-        private Hashtable _cookies = new Hashtable();
+        private readonly Hashtable _cookies = new Hashtable();
 
         void IHtmlEditorComponentContext.FireSelectionChanged()
         {
@@ -5043,7 +5065,6 @@ namespace OpenLiveWriter.HtmlEditor
 
                     DelayedFireDefaultSelectionChanged();
                 }
-
             }
             catch (Exception e)
             {
@@ -5322,8 +5343,10 @@ namespace OpenLiveWriter.HtmlEditor
                                             html = HtmlCleaner.CleanupHtml(html, baseUrl, true, false);
                                             break;
                                         }
+
                                         Paste();
                                     }
+
                                     return;
                                 //just strip any scripts
                                 case PasteSpecialForm.PasteType.KeepFormatting:
@@ -5338,6 +5361,7 @@ namespace OpenLiveWriter.HtmlEditor
                                         html = HtmlCleaner.CleanupHtml(html, baseUrl, true, true, false);
                                     break;
                             }
+
                             html = UnsafeHtmlFragmentHelper.SterilizeHtml(html, UnsafeHtmlFragmentHelper.Flag.RemoveDocumentTags);
                             using (IUndoUnit undo = CreateUndoUnit())
                             {
@@ -5346,7 +5370,6 @@ namespace OpenLiveWriter.HtmlEditor
                             }
                         }
                     }
-
                 }
                 else if (dataObject.TextData != null)
                 {
@@ -5368,6 +5391,7 @@ namespace OpenLiveWriter.HtmlEditor
                                         InsertHtml(htmlFromText, true);
                                         undo.Commit();
                                     }
+
                                     break;
                                 //insert as is
                                 case PasteSpecialFormText.PasteType.KeepFormatting:
@@ -5380,11 +5404,11 @@ namespace OpenLiveWriter.HtmlEditor
                                             undo.Commit();
                                         }
                                     }
+
                                     break;
                             }
                         }
                     }
-
                 }
                 else
                 {
@@ -5591,8 +5615,7 @@ namespace OpenLiveWriter.HtmlEditor
             // causes Writer to crash when an embedded Google Map is pasted into the
             // editor. If there is no behavior, DON'T TOUCH ppBehavior!
 
-            IElementBehaviorRaw behavior;
-            OnFindBehavior(bstrBehavior, bstrBehaviorUrl, pSite, out behavior);
+            OnFindBehavior(bstrBehavior, bstrBehaviorUrl, pSite, out IElementBehaviorRaw behavior);
             if (behavior != null)
                 ppBehavior = behavior;
             else
@@ -5659,7 +5682,7 @@ namespace OpenLiveWriter.HtmlEditor
         #endregion
 
         #region IServiceProvider Hooks
-        private InternetSecurityManagerShim _internetSecurityManager;
+        private readonly InternetSecurityManagerShim _internetSecurityManager;
         protected virtual IInternetSecurityManager GetInternetSecurityManager()
         {
             return _internetSecurityManager;
@@ -5774,6 +5797,7 @@ namespace OpenLiveWriter.HtmlEditor
                     return HRESULT.S_OK;
                 }
             }
+
             return SecurityManager.ProcessUrlAction(pwszUrl, dwAction, out pPolicy, cbPolicy, pContext, cbContext, dwFlags, dwReserved);
         }
 
@@ -5792,5 +5816,4 @@ namespace OpenLiveWriter.HtmlEditor
             return SecurityManager.GetZoneMappings(dwZone, out ppenumString, dwFlags);
         }
     }
-
 }

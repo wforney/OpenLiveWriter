@@ -177,7 +177,6 @@ namespace OpenLiveWriter.SpellChecker
                     currentWordRange.Start.MoveToPointer(currentWordRange.End);
                     currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
                 }
-
             } while( MarkupHelpers.GetRangeTextFast(currentWordRange) == null &&
                      currentWordRange.End.IsLeftOf(selectionRange.End));
 
@@ -209,8 +208,7 @@ namespace OpenLiveWriter.SpellChecker
             // would occur (bug 411528)
             range = range.Clone();
             IMarkupPointer2Raw p2StartRaw = (IMarkupPointer2Raw)range.Start.PointerRaw;
-            bool insideUrl;
-            p2StartRaw.IsInsideURL(range.End.PointerRaw, out insideUrl);
+            p2StartRaw.IsInsideURL(range.End.PointerRaw, out bool insideUrl);
             return insideUrl;
         }
 

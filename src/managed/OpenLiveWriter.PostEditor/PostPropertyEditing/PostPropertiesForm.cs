@@ -26,10 +26,10 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
 
     internal partial class PostPropertiesForm : ApplicationDialog, IBlogPostEditor, INewCategoryContext
     {
-        private SharedPropertiesController controller;
+        private readonly SharedPropertiesController controller;
 
         private string _blogId;
-        private List<PropertyField> fields = new List<PropertyField>();
+        private readonly List<PropertyField> fields = new List<PropertyField>();
 
         private readonly CommandManager commandManager;
 
@@ -116,6 +116,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             {
                 maxLabelWidth = Math.Max(maxLabelWidth, control.PreferredSize.Width);
             }
+
             this.Width += maxLabelWidth - panel1.Width;
 
             // WinLive 52981: Avoid clipping the author combobox for languages with tall comboboxes.

@@ -42,5 +42,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             return SubScript.GetHashCode();
         }
     }
-
 }

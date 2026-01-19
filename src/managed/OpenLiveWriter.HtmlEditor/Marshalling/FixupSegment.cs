@@ -42,5 +42,4 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             SourceTextStyle.Apply(markupServices, RangeToFixup, commands);
         }
     }
-
 }

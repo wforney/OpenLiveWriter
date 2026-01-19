@@ -97,12 +97,12 @@ namespace ImageManipulation
         /// <summary>
         /// Stores the tree
         /// </summary>
-        private Octree _octree;
+        private readonly Octree _octree;
 
         /// <summary>
         /// Maximum allowed color depth
         /// </summary>
-        private int _maxColors;
+        private readonly int _maxColors;
 
         /// <summary>
         /// Class which does the actual quantization
@@ -230,12 +230,12 @@ namespace ImageManipulation
             /// <summary>
             /// Mask used when getting the appropriate pixels for a given node
             /// </summary>
-            private static int[] mask = new int[8] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+            private static readonly int[] mask = new int[8] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
             /// <summary>
             /// The root of the octree
             /// </summary>
-            private OctreeNode _root;
+            private readonly OctreeNode _root;
 
             /// <summary>
             /// Number of leaves in the tree
@@ -245,12 +245,12 @@ namespace ImageManipulation
             /// <summary>
             /// Array of reducible nodes
             /// </summary>
-            private OctreeNode[] _reducibleNodes;
+            private readonly OctreeNode[] _reducibleNodes;
 
             /// <summary>
             /// Maximum number of significant bits in the image
             /// </summary>
-            private int _maxColorBits;
+            private readonly int _maxColorBits;
 
             /// <summary>
             /// Store the last node quantized
@@ -333,7 +333,6 @@ namespace ImageManipulation
                         // Add the color to the child node
                         child.AddColor(pixel, colorBits, level + 1, octree);
                     }
-
                 }
 
                 /// <summary>
@@ -471,7 +470,7 @@ namespace ImageManipulation
                 /// <summary>
                 /// Pointers to any child nodes
                 /// </summary>
-                private OctreeNode[] _children;
+                private readonly OctreeNode[] _children;
 
                 /// <summary>
                 /// Pointer to next reducible node
@@ -485,6 +484,5 @@ namespace ImageManipulation
 
             }
         }
-
     }
 }

@@ -20,7 +20,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public WeblogConfigurationWizardPanelAutoDetection()
         {
@@ -57,8 +57,10 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                         string resourceName = String.Format(CultureInfo.InvariantCulture, "Images.PublishAnimation.post{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
+
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));
                 }
+
                 return _animationBitmaps;
             }
         }
@@ -76,6 +78,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

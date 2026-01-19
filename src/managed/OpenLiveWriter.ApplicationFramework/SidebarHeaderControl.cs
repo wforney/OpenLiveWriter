@@ -75,6 +75,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 labelHeading.Left = -1;
                 linkLabel.Left = linkLabelOptional.Left = 0;
             }
+
             ResumeLayout();
             _doingLayout = false;
         }
@@ -211,6 +212,5 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             LaunchUrl(_secondUrl);
         }
-
     }
 }

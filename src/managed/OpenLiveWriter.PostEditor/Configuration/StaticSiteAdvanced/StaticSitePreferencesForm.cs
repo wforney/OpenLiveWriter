@@ -10,7 +10,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.StaticSiteAdvanced
 {
     public class StaticSitePreferencesForm : PreferencesForm
     {
-        private StaticSitePreferencesController _controller;
+        private readonly StaticSitePreferencesController _controller;
 
         public StaticSitePreferencesForm(StaticSitePreferencesController controller)
         {

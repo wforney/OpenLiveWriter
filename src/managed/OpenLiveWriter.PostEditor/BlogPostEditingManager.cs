@@ -326,9 +326,9 @@ namespace OpenLiveWriter.PostEditor
                         {
                             Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "IBlogPostEditor Dirty {0}", postEditor));
                         }
+
                         return true;
                     }
-
                 }
 
                 // none dirty, return false
@@ -421,6 +421,7 @@ namespace OpenLiveWriter.PostEditor
                         // get the editing context
                         OpenPost(openPostForm.BlogPostEditingContext);
                     }
+
                     openPostForm.UserDeletedPost -= new UserDeletedPostEventHandler(openPostForm_UserDeletedPost);
                 }
             }
@@ -535,7 +536,6 @@ namespace OpenLiveWriter.PostEditor
                 if (UserSavedPost != null)
                     UserSavedPost(this, EventArgs.Empty);
             }
-
         }
 
         public bool ShouldAutoSave
@@ -559,6 +559,7 @@ namespace OpenLiveWriter.PostEditor
                 AutoSave();
                 return true;
             }
+
             return false;
         }
 
@@ -600,7 +601,6 @@ namespace OpenLiveWriter.PostEditor
                         ClearPost();
                 }
             }
-
         }
 
         public void DeleteCurrentDraft()
@@ -810,6 +810,7 @@ namespace OpenLiveWriter.PostEditor
                     editor.OnPostClosed();
                 }
             }
+
             EditPost(blogPostEditingContext);
         }
 
@@ -830,8 +831,10 @@ namespace OpenLiveWriter.PostEditor
             using (new QuickTimer("AutoSave"))
             {
                 // save all pending edits to the post
-                BlogPostSaveOptions options = new BlogPostSaveOptions();
-                options.AutoSave = true;
+                BlogPostSaveOptions options = new BlogPostSaveOptions
+                {
+                    AutoSave = true
+                };
                 SaveEditsToPost(true, options);
 
                 try
@@ -1018,8 +1021,7 @@ namespace OpenLiveWriter.PostEditor
         {
             UpdateWeblogProgressForm form = (UpdateWeblogProgressForm)sender;
 
-            bool noPluginsEnabled;
-            if (!HeaderAndFooterPrerequisitesMet(form, out noPluginsEnabled))
+            if (!HeaderAndFooterPrerequisitesMet(form, out bool noPluginsEnabled))
             {
                 Debug.Assert(!noPluginsEnabled, "No plugins enabled yet header/footer prerequisites met!?");
                 args.RepublishOnSuccess = true;
@@ -1041,6 +1043,7 @@ namespace OpenLiveWriter.PostEditor
                     Trace.WriteLine("Skipping plugin " + csi.Name + " because the post has no permalink");
                     continue;
                 }
+
                 IExtensionData extData =
                     ((IBlogPostEditingContext)this).ExtensionDataList.GetOrCreateExtensionData(csi.Id);
                 SmartContent smartContent = new SmartContent(extData);
@@ -1078,6 +1081,7 @@ namespace OpenLiveWriter.PostEditor
                 else
                     Debug.Fail("Unknown HeaderFooter position: " + position);
             }
+
             form.SetProgressMessage(null);
 
             BlogPost.Contents = HtmlLinebreakStripper.RemoveLinebreaks(BlogPost.Contents);
@@ -1098,6 +1102,7 @@ namespace OpenLiveWriter.PostEditor
                 if (plugin.RequiresPermalink)
                     return false;
             }
+
             return true;
         }
 
@@ -1108,8 +1113,8 @@ namespace OpenLiveWriter.PostEditor
 
         private class PublishOperationManager
         {
-            private UpdateWeblogProgressForm _form;
-            private Blog _blog;
+            private readonly UpdateWeblogProgressForm _form;
+            private readonly Blog _blog;
             public PublishOperationManager(UpdateWeblogProgressForm form, Blog blog)
             {
                 _form = form;
@@ -1140,7 +1145,6 @@ namespace OpenLiveWriter.PostEditor
                         _exception = ex;
                         throw;
                     }
-
                 }
             }
 
@@ -1152,7 +1156,6 @@ namespace OpenLiveWriter.PostEditor
                     return _exception;
                 }
             }
-
         }
 
         private void PrePublishHooks(object sender, UpdateWeblogProgressForm.PublishEventArgs args)
@@ -1174,6 +1177,7 @@ namespace OpenLiveWriter.PostEditor
                     UnhandledExceptionErrorMessage message = new UnhandledExceptionErrorMessage();
                     message.ShowMessage(_mainFrameWindow, publishOperationManager.Exception);
                 }
+
                 args.Cancel = true;
                 args.CancelReason = null;
                 return;
@@ -1204,6 +1208,7 @@ namespace OpenLiveWriter.PostEditor
                     continue;
                 }
             }
+
             form.SetProgressMessage(null);
         }
 
@@ -1239,6 +1244,7 @@ namespace OpenLiveWriter.PostEditor
                     continue;
                 }
             }
+
             form.SetProgressMessage(null);
         }
 
@@ -1398,6 +1404,7 @@ namespace OpenLiveWriter.PostEditor
                 if (PathHelper.IsPathImage(supportingFile) && IsNotExtraImage(supportingFile))
                     images.Add(Path.GetFileName(supportingFile));
             }
+
             return (string[])images.ToArray(typeof(string));
         }
 
@@ -1538,6 +1545,7 @@ namespace OpenLiveWriter.PostEditor
                     // append seconds since midnight as an additional randomizer to make conflicts less likely
                     _serverSupportingFileDirectory = String.Format(CultureInfo.InvariantCulture, "{0}_{1}", baseDirName, (DateTime.Now.TimeOfDay.Ticks / TimeSpan.TicksPerSecond).ToString("X", CultureInfo.InvariantCulture));
                 }
+
                 return _serverSupportingFileDirectory;
             }
             set
@@ -1576,6 +1584,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     _autoSaveLocalFile = PostEditorFile.CreateNew(new DirectoryInfo(PostEditorSettings.AutoSaveDirectory));
                 }
+
                 return _autoSaveLocalFile;
             }
         }
@@ -1622,13 +1631,13 @@ namespace OpenLiveWriter.PostEditor
 
         private bool _initialized = false;
 
-        private IMainFrameWindow _mainFrameWindow;
-        private IPublishingContext _publishingContext; // used for headers and footers
+        private readonly IMainFrameWindow _mainFrameWindow;
+        private readonly IPublishingContext _publishingContext; // used for headers and footers
 
         private IBlogPostEditingSite _editingSite;
 
-        private ArrayList _postEditors = new ArrayList();
-        private ForceDirtyPostEditor _forceDirtyPostEditor = new ForceDirtyPostEditor();
+        private readonly ArrayList _postEditors = new ArrayList();
+        private readonly ForceDirtyPostEditor _forceDirtyPostEditor = new ForceDirtyPostEditor();
 
         private Blog _blog;
         private BlogPost _blogPost;

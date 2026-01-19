@@ -114,6 +114,5 @@ namespace OpenLiveWriter.CoreServices
         {
             Debug.Assert(m_dataObject != null, "Set the dataObject before using the data object base");
         }
-
     }
 }

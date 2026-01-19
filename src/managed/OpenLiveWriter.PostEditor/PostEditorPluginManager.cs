@@ -23,7 +23,7 @@ namespace OpenLiveWriter.PostEditor
         /// <summary>
         /// The list of supported plugin types that should be collected from plugin assemblies.
         /// </summary>
-        private Type[] SupportedPluginTypes = new Type[]
+        private readonly Type[] SupportedPluginTypes = new Type[]
         {
             //  Note to developers: add a type here for each plugin interface type supported.
             typeof(WriterPlugin)
@@ -62,6 +62,7 @@ namespace OpenLiveWriter.PostEditor
                 {
                     Debug.Fail("Unsupported plugin type (did you update the SupportedPluginTypes list?): " + pluginType.FullName);
                 }
+
                 return (Type[])typeList.ToArray(typeof(Type));
             }
         }
@@ -154,7 +155,6 @@ namespace OpenLiveWriter.PostEditor
             {
                 Debug.WriteLine("Error occurred attempting to register for HKLM PluginAssembly change notifications: " + ex.ToString());
             }
-
         }
 
         private void OnPluginRegistryKeyChanged(object sender, RegistryKeyEventArgs e)
@@ -188,7 +188,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private Hashtable _pluginTypesTable = new Hashtable();
+        private readonly Hashtable _pluginTypesTable = new Hashtable();
         private void LoadPluginTypes(bool showErrors)
         {
             lock (_pluginTypesTable)
@@ -271,7 +271,7 @@ namespace OpenLiveWriter.PostEditor
             }
         }
 
-        private string _pluginsKey = String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", ApplicationEnvironment.SettingsRootKeyName, PLUGIN_ASSEMBLIES);
+        private readonly string _pluginsKey = String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", ApplicationEnvironment.SettingsRootKeyName, PLUGIN_ASSEMBLIES);
         private const string PLUGIN_ASSEMBLIES = "PluginAssemblies";
         private readonly string PLUGIN_LEGACY_KEY = ApplicationEnvironment.SettingsRootKeyName + @"\PluginAssemblies";
 

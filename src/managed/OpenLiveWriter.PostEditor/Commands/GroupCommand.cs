@@ -11,7 +11,7 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     class GroupCommand : Command
     {
-        private Command _representativeCommand;
+        private readonly Command _representativeCommand;
         public GroupCommand(CommandId commandId, Command representativeCommand) : base(commandId)
         {
             Debug.Assert(representativeCommand != null, "Unexpected null command");

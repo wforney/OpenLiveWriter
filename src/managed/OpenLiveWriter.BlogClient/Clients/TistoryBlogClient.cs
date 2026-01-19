@@ -24,18 +24,18 @@ namespace OpenLiveWriter.BlogClient.Clients
     {
         private TistoryCredential _tistoryCredential = null;
         private BlogPostCategory[] _tistoryCategory_list = null;
-        private string postInput;
+        private readonly string postInput;
         private string _user_key;
         private string _redirect_url;
-        private string blog_info_url = "https://www.tistory.com/apis/blog/info?access_token=";// b36360eb9775ea226eccf16b63faf5fb_5be9d7aa3d594f495e56849075cad5fb&url=manggsoft"
-        private string auth_url = "https://www.tistory.com/oauth/authorize";//?client_id=abcdefghijklmnopqrstuvwxyz&redirect_uri=http://client.redirect.url&response_type=token";
-        private string category_url = "https://www.tistory.com/apis/category/list?access_token=";
-        private string recent_post_url = "https://www.tistory.com/apis/post/list?access_token=";
-        private string write_post_url = "https://www.tistory.com/apis/post/write";
-        private string delete_post_url = "https://www.tistory.com/apis/post/delete";
-        private string edit_post_url = "https://www.tistory.com/apis/post/modify";
-        private string get_post_url = "https://www.tistory.com/apis/post/read";
-        private string upload_url = "https://www.tistory.com/apis/post/attach";
+        private readonly string blog_info_url = "https://www.tistory.com/apis/blog/info?access_token=";// b36360eb9775ea226eccf16b63faf5fb_5be9d7aa3d594f495e56849075cad5fb&url=manggsoft"
+        private readonly string auth_url = "https://www.tistory.com/oauth/authorize";//?client_id=abcdefghijklmnopqrstuvwxyz&redirect_uri=http://client.redirect.url&response_type=token";
+        private readonly string category_url = "https://www.tistory.com/apis/category/list?access_token=";
+        private readonly string recent_post_url = "https://www.tistory.com/apis/post/list?access_token=";
+        private readonly string write_post_url = "https://www.tistory.com/apis/post/write";
+        private readonly string delete_post_url = "https://www.tistory.com/apis/post/delete";
+        private readonly string edit_post_url = "https://www.tistory.com/apis/post/modify";
+        private readonly string get_post_url = "https://www.tistory.com/apis/post/read";
+        private readonly string upload_url = "https://www.tistory.com/apis/post/attach";
 
         public TistoryBlogClient(Uri postApiUrl, IBlogCredentialsAccessor credentials)
             : base(postApiUrl, credentials)
@@ -292,6 +292,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 Console.WriteLine(ex.Message);
             }
+
             return false;
         }
 
@@ -351,12 +352,14 @@ namespace OpenLiveWriter.BlogClient.Clients
                 else
                     throw new BlogClientMethodUnsupportedException("Login exception");
             }
+
             tc.Username = username;
             tc.Password = password;
             if (tc.Token == null)
             {
                 tc.Token = new TokenResponse();
             }
+
             TokenResponse tistory_token = (TokenResponse)tc.Token;
             tistory_token.AccessToken = access_key;
             tc.Token = tistory_token;
@@ -404,7 +407,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                 Trace.Fail("Exception occurred while parsing GetUsersBlogs response: " + response + "\r\n" + ex.ToString());
                 throw new BlogClientInvalidServerResponseException("GetUsersBlogs", ex.Message, response);
             }
-            
         }
 
         public override BlogPostCategory[] GetCategories(string blogId)
@@ -975,6 +977,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                     Trace.Fail("Unexpected non-integer category parent ID: " + parent);
                 }
             }
+
             return val;
         }
 
@@ -1030,7 +1033,6 @@ namespace OpenLiveWriter.BlogClient.Clients
                     if (!now.HasValue || Options.FuturePublishDateWarning || blogPost.DatePublished.CompareTo(now.Value) < 0)
                         posts.Add(blogPost);
                 }
-
             }
             catch (Exception ex)
             {
@@ -1046,10 +1048,11 @@ namespace OpenLiveWriter.BlogClient.Clients
         private BlogPost ParseRecentBlogPost(XmlNode postNode, bool includeCategories)
         {
             // create blog post
-            BlogPost blogPost = new BlogPost();
-
-            // get node values
-            blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// member[name='id']/value"));
+            BlogPost blogPost = new BlogPost
+            {
+                // get node values
+                Id = NodeText(postNode.SelectSingleNode("id"))// member[name='id']/value"));
+            };
             if (blogPost.Id == String.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// "member[name='id']/value"));
 
@@ -1209,10 +1212,11 @@ namespace OpenLiveWriter.BlogClient.Clients
         private BlogPost ParseBlogPost(XmlNode postNode, bool includeCategories)
         {
             // create blog post
-            BlogPost blogPost = new BlogPost();
-
-            // get node values
-            blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// member[name='id']/value"));
+            BlogPost blogPost = new BlogPost
+            {
+                // get node values
+                Id = NodeText(postNode.SelectSingleNode("id"))// member[name='id']/value"));
+            };
             if (blogPost.Id == String.Empty)
                 blogPost.Id = NodeText(postNode.SelectSingleNode("id"));// "member[name='id']/value"));
 
@@ -1484,6 +1488,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                             delimiter = ',';
                             break;
                     }
+
                     StringBuilder trackbackBuilder = new StringBuilder();
                     foreach (string pingUrl in post.PingUrlsPending)
                         trackbackBuilder.AppendFormat("{0}{1}", pingUrl, delimiter);
@@ -1508,6 +1513,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 StreamHelper.Transfer(s, ms);
             }
+
             ms.Seek(0, SeekOrigin.Begin);
             string text = new StreamReader(ms, Encoding.UTF8).ReadToEnd();
 
@@ -1547,8 +1553,8 @@ namespace OpenLiveWriter.BlogClient.Clients
         }
         public class TistoryCredential: TransientCredentials
         {
-            private TokenResponse _token = null;
-            private string _user_key = "";
+            private readonly TokenResponse _token = null;
+            private readonly string _user_key = "";
 
             public TistoryCredential(string username, string password, string user_key, object token)
                 :base(username, password, token)
@@ -1590,6 +1596,4 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
         }
     }
-
-
 }

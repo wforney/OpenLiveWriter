@@ -106,6 +106,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 Array.Reverse(charArray);
                 DATETIME_PICKER_PROMPT = new string(charArray);
             }
+
             datePublishDate.CustomFormat = DATETIME_PICKER_PROMPT;
 
             categoryDropDown.Initialize(parentFrame, categoryContext);
@@ -348,6 +349,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
                 foreach (PropertyField field in fields)
                     field.SaveChanges(post);
             }
+
             isDirty = false;
         }
 
@@ -417,7 +419,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             }
         }
 
-        private Font defaultFont = Res.DefaultFont;
+        private readonly Font defaultFont = Res.DefaultFont;
 
         public void OnPublishSucceeded(BlogPost blogPost, PostResult postResult)
         {
@@ -435,6 +437,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
 
                 keywords.Add(new BlogPostKeyword(name));
             }
+
             _targetBlog.Keywords = keywords.ToArray();
 
             LoadTagValues();
@@ -483,11 +486,11 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         public delegate void PopulateFull(IBlogPostEditingContext ctx, IBlogClientOptions opts);
         public delegate void Save(BlogPost bp);
 
-        private PropertyType propertyType;
-        private Control[] controls;
-        private ShouldShow shouldShow;
-        private PopulateFull populate;
-        private Save save;
+        private readonly PropertyType propertyType;
+        private readonly Control[] controls;
+        private readonly ShouldShow shouldShow;
+        private readonly PopulateFull populate;
+        private readonly Save save;
 
         public PropertyField(PropertyType type, Control[] controls, ShouldShow shouldShow, Populate populate, Save save)
             : this(type, controls, shouldShow, (ctx, opts) => populate(ctx.BlogPost), save)
@@ -561,6 +564,7 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
             {
                 authors.Add(new PostIdAndNameField(author.Id, author.Name));
             }
+
             return authors.ToArray();
         }
     }
@@ -612,5 +616,4 @@ namespace OpenLiveWriter.PostEditor.PostPropertyEditing
         private readonly int _timeoutMs;
         private readonly string _fetchingText;
     }
-
 }

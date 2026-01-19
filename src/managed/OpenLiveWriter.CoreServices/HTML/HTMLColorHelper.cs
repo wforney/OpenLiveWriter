@@ -40,6 +40,7 @@ namespace OpenLiveWriter.CoreServices
                 }
             }
             catch (Exception) { }
+
             return defaultColor;
         }
 
@@ -165,6 +166,7 @@ namespace OpenLiveWriter.CoreServices
                     return HttpRequestHelper.SafeDownloadFile(url);
                 }
             }
+
             return null;
         }
 
@@ -189,8 +191,7 @@ namespace OpenLiveWriter.CoreServices
                     // This is only really valid for tiling background images that are not fixed and
                     // start at the top-left. Oh well.
                     Color pixel = backgroundImage.GetPixel(x % backgroundImage.Width, y % backgroundImage.Height);
-                    int count;
-                    if (!colorCount.TryGetValue(pixel, out count))
+                    if (!colorCount.TryGetValue(pixel, out int count))
                         count = 0;
                     colorCount[pixel] = ++count;
                     ++pixelsCounted;
@@ -219,6 +220,7 @@ namespace OpenLiveWriter.CoreServices
                 green += pair.Key.G * pair.Value;
                 blue += pair.Key.B * pair.Value;
             }
+
             alpha /= pixelsCounted;
             red /= pixelsCounted;
             blue /= pixelsCounted;
@@ -240,6 +242,7 @@ namespace OpenLiveWriter.CoreServices
                 Color color = GetColorFromHexColor(textColorHex, defaultColor);
                 return color;
             }
+
             return defaultColor;
         }
 
@@ -289,6 +292,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 return LookupColor(getter, (IHTMLElement2)((IHTMLElement)element).parentElement);
             }
+
             return color;
         }
         private delegate string GetColorDelegate(IHTMLElement2 element);
@@ -305,6 +309,7 @@ namespace OpenLiveWriter.CoreServices
                 //in the 3 digit hex representation, repeat each digit to expand it to the 6-digit representation
                 htmlColor = "#" + htmlColor[1] + htmlColor[1] + htmlColor[2] + htmlColor[2] + htmlColor[3] + htmlColor[3];
             }
+
             return htmlColor;
         }
 

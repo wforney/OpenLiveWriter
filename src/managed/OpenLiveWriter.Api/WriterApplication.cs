@@ -21,7 +21,7 @@ namespace OpenLiveWriter.Api
         {
             get
             {
-                string writerApplicationClsidKey = String.Format(CultureInfo.InvariantCulture, "CLSID\\{0}", typeof(OpenLiveWriterApplicationClass).GUID.ToString("B"));
+                string writerApplicationClsidKey = string.Format(CultureInfo.InvariantCulture, "CLSID\\{0}", typeof(OpenLiveWriterApplicationClass).GUID.ToString("B"));
                 using (RegistryKey key = Registry.ClassesRoot.OpenSubKey(writerApplicationClsidKey))
                     return key != null;
             }
@@ -35,7 +35,7 @@ namespace OpenLiveWriter.Api
             OpenLiveWriterApplicationClass applicationObject = new OpenLiveWriterApplicationClass();
             _application = (IOpenLiveWriterApplication)applicationObject;
         }
-        private IOpenLiveWriterApplication _application;
+        private readonly IOpenLiveWriterApplication _application;
 
         /// <summary>
         /// Launch Open Live Writer for editing a new post.

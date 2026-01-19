@@ -39,17 +39,17 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
         /// This number is bigger in Debug configuration because we log a lot more messages.
         /// </summary>
 #if DEBUG
-        private int LOG_FILE_SIZE_THRESHOLD = 5000000;
+        private readonly int LOG_FILE_SIZE_THRESHOLD = 5000000;
 #else
         private const int LOG_FILE_SIZE_THRESHOLD = 1000000;
 #endif
 
-        private FileLogger logger;
+        private readonly FileLogger logger;
 
         /// <summary>
         /// The facility.
         /// </summary>
-        private string facility;
+        private readonly string facility;
 
         /// <summary>
         /// The ID of the current process.
@@ -66,9 +66,8 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
             using (Process p = Process.GetCurrentProcess())
                 pid = p.Id;
 
-            uint sid;
             // ProcessIdToSessionId returns false if session id couldn't be determined
-            if (!Kernel32.ProcessIdToSessionId((uint)pid, out sid))
+            if (!Kernel32.ProcessIdToSessionId((uint)pid, out uint sid))
                 processId = "??." + pid;
             else if (sid == 0)
                 processId = pid.ToString(CultureInfo.InvariantCulture);
@@ -287,6 +286,5 @@ namespace OpenLiveWriter.CoreServices.Diagnostics
                                   StackTrace);
             }
         }
-
     }
 }

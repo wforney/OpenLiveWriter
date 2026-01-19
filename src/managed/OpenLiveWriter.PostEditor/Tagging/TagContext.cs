@@ -17,9 +17,9 @@ namespace OpenLiveWriter.PostEditor.Tagging
             _pluginSettings = pluginSettings;
             _currentBlogId = currentBlogId;
         }
-        private ISmartContent _smartContent;
-        private IProperties _pluginSettings;
-        private string _currentBlogId;
+        private readonly ISmartContent _smartContent;
+        private readonly IProperties _pluginSettings;
+        private readonly string _currentBlogId;
 
         private TagProvider[] Providers
         {
@@ -41,6 +41,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                     if (providerId == provider.Id)
                         return provider;
                 }
+
                 return Providers[0];
             }
             set
@@ -84,6 +85,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
             {
                 tagList = (string[])Union(new string[][] { PreviouslyUsedTags, tagList });
             }
+
             _pluginSettings.SetString("previousTags", Encode(tagList));
 
         }
@@ -103,6 +105,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
             {
                 Trace.Fail("Underlying type is null");
             }
+
             if (arrays.Length == 0)
                 return Array.CreateInstance(underlyingType, 0);
 
@@ -126,6 +129,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
             {
                 union.SetValue(o, pos++);
             }
+
             return Narrow(union, underlyingType);
         }
 
@@ -156,6 +160,7 @@ namespace OpenLiveWriter.PostEditor.Tagging
                 builder.Append(sep + item);
                 sep = SEP.ToString();
             }
+
             return builder.ToString();
         }
         private const char SEP = ',';

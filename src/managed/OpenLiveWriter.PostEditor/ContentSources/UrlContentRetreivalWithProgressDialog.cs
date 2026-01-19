@@ -25,7 +25,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public UrlContentRetreivalWithProgressDialog(ContentSourceInfo contentSourceInfo)
         {
@@ -119,6 +119,7 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -134,8 +135,10 @@ namespace OpenLiveWriter.PostEditor.ContentSources
                         string resourceName = String.Format(CultureInfo.InvariantCulture, "ContentSources.Images.NetworkProgress.Progress{0:00}.png", i);
                         list.Add(ResourceHelper.LoadAssemblyResourceBitmap(resourceName));
                     }
+
                     _animationBitmaps = (Bitmap[])list.ToArray(typeof(Bitmap));
                 }
+
                 return _animationBitmaps;
             }
         }

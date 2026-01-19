@@ -15,7 +15,7 @@ namespace OpenLiveWriter.PostEditor
     /// </summary>
     public class SharedCanvasImageReferenceFixer : IImageReferenceFixer
     {
-        private ReferenceFixer _internalReferenceFixer;
+        private readonly ReferenceFixer _internalReferenceFixer;
 
         /// <summary>
         /// Initializes a new instance of the SharedCanvasImageReferenceFixer class.

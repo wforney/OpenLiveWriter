@@ -13,7 +13,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 {
     public class RotationEditor : ImageDecoratorEditor
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         public RotationEditor()
         {
@@ -36,6 +36,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

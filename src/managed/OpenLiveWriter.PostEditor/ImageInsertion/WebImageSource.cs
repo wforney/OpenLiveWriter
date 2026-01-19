@@ -70,65 +70,81 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
             {
                 if (_control == null)
                 {
-                    _control = new UserControl();
-                    _control.Location = new Point(0, 0);
-                    _control.Size = new Size(_width, _height);
+                    _control = new UserControl
+                    {
+                        Location = new Point(0, 0),
+                        Size = new Size(_width, _height)
+                    };
                     _control.Load += new EventHandler(_control_Load);
                     _control.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
                     _control.Font = Res.DefaultFont;
 
-                    _labelOne = new Label();
-                    _labelOne.FlatStyle = FlatStyle.System;
-                    _labelOne.Text = Res.Get(StringId.InsertImageImageUrl);
-                    _labelOne.Location = new Point(10, 13);
-                    _labelOne.Size = new Size(87, 15);
-                    _labelOne.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                    _labelOne = new Label
+                    {
+                        FlatStyle = FlatStyle.System,
+                        Text = Res.Get(StringId.InsertImageImageUrl),
+                        Location = new Point(10, 13),
+                        Size = new Size(87, 15),
+                        Anchor = AnchorStyles.Left | AnchorStyles.Top
+                    };
 
-                    _webImageUrl = new TextBoxWithPaste();
-                    _webImageUrl.Location = new Point(10, 31);
-                    _webImageUrl.Size = new Size(377, 20);
-                    _webImageUrl.Name = "imageUrl";
-                    _webImageUrl.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                    _webImageUrl = new TextBoxWithPaste
+                    {
+                        Location = new Point(10, 31),
+                        Size = new Size(377, 20),
+                        Name = "imageUrl",
+                        Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right
+                    };
                     _webImageUrl.OnPaste += new TextBoxWithPaste.OnPasteEventHandler(this._imageUrl_Paste);
                     _webImageUrl.RightToLeft = RightToLeft.No;
                     if (BidiHelper.IsRightToLeft)
                         _webImageUrl.TextAlign = HorizontalAlignment.Right;
 
-                    _previewButton = new Button();
-                    _previewButton.Location = new Point(395, 31);
-                    _previewButton.Size = new Size(75, 23);
-                    _previewButton.FlatStyle = FlatStyle.System;
-                    _previewButton.Text = Res.Get(StringId.InsertImagePreviewButton);
-                    _previewButton.Name = "previewButton";
+                    _previewButton = new Button
+                    {
+                        Location = new Point(395, 31),
+                        Size = new Size(75, 23),
+                        FlatStyle = FlatStyle.System,
+                        Text = Res.Get(StringId.InsertImagePreviewButton),
+                        Name = "previewButton"
+                    };
                     _previewButton.Click += new EventHandler(_previewButton_Click);
                     _previewButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
 
-                    _previewBox = new PictureBox();
-                    _previewBox.BackColor = Color.White;
-                    _previewBox.BorderStyle = BorderStyle.None;
-                    _previewBox.SizeMode = PictureBoxSizeMode.CenterImage;
-                    _previewBox.Name = "previewBox";
+                    _previewBox = new PictureBox
+                    {
+                        BackColor = Color.White,
+                        BorderStyle = BorderStyle.None,
+                        SizeMode = PictureBoxSizeMode.CenterImage,
+                        Name = "previewBox"
+                    };
 
-                    _pictureBorder = new BorderControl();
-                    _pictureBorder.Location = new Point(10, 59);
-                    _pictureBorder.Size = new Size(460, 283);
-                    _pictureBorder.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top |
-                                            AnchorStyles.Bottom;
-                    _pictureBorder.Control = _previewBox;
+                    _pictureBorder = new BorderControl
+                    {
+                        Location = new Point(10, 59),
+                        Size = new Size(460, 283),
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top |
+                                                AnchorStyles.Bottom,
+                        Control = _previewBox
+                    };
 
-                    _labelSize = new Label();
-                    _labelSize.FlatStyle = FlatStyle.System;
-                    _labelSize.Text = Res.Get(StringId.InsertImageSize);
-                    _labelSize.Size = new Size(35, 15);
-                    _labelSize.Location = new Point(10, 347);
-                    _labelSize.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+                    _labelSize = new Label
+                    {
+                        FlatStyle = FlatStyle.System,
+                        Text = Res.Get(StringId.InsertImageSize),
+                        Size = new Size(35, 15),
+                        Location = new Point(10, 347),
+                        Anchor = AnchorStyles.Left | AnchorStyles.Bottom
+                    };
 
-                    _fileSize = new Label();
-                    _fileSize.FlatStyle = FlatStyle.System;
-                    _fileSize.Text = "";
-                    _fileSize.Size = new Size(438, 15);
-                    _fileSize.Location = new Point(51, 347);
-                    _fileSize.Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
+                    _fileSize = new Label
+                    {
+                        FlatStyle = FlatStyle.System,
+                        Text = "",
+                        Size = new Size(438, 15),
+                        Location = new Point(51, 347),
+                        Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right
+                    };
 
                     _control.Controls.Add(_labelOne);
                     _control.Controls.Add(_webImageUrl);
@@ -139,6 +155,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     _control.Name = "WebImageSource";
                     _control.RightToLeft = BidiHelper.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
                 }
+
                 return _control;
             }
         }
@@ -183,6 +200,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     _webImageUrl.Text = dataObject.HTMLData.OnlyImagePath;
                 }
             }
+
             PopulatePreviewBox();
             _webImageUrl.SelectAll();
         }
@@ -221,6 +239,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 _webImageUrl.Focus();
                 return false;
             }
+
             return true;
         }
 
@@ -232,6 +251,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 _previewButton.PerformClick();
                 return true;
             }
+
             return false;
         }
 
@@ -325,9 +345,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 scaled = false;
             }
 
-            ImageFormat format;
-            string fileExt;
-            ImageHelper2.GetImageFormat(filename, out fileExt, out format);
+            ImageHelper2.GetImageFormat(filename, out string fileExt, out ImageFormat format);
             int newWidth = (int)(currentWidth * ratio);
             int newHeight = (int)(currentHeight * ratio);
 
@@ -355,6 +373,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                     //draw our image back in the middle
                     g.DrawImage(newImage, new Rectangle(1, 1, newWidth, newHeight), 0, 0, newWidth, newHeight, GraphicsUnit.Pixel);
                 }
+
                 _previewBox.Image = borderPic;
             }
             else
@@ -370,6 +389,7 @@ namespace OpenLiveWriter.PostEditor.ImageInsertion
                 picsize = string.Format(CultureInfo.CurrentCulture, Res.Get(StringId.InsertImageDimensionsFormatScaled),
                                   MakeDimensions(currentWidth, currentHeight));
             }
+
             _fileSize.Text = picsize;
         }
 

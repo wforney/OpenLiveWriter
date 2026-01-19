@@ -50,8 +50,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         protected int RemoveOverride(ref PropertyKey key, IComparableDelegate currentValueDelegate)
         {
-            PropVariant overrideValue;
-            if (_overrides.TryGetValue(key, out overrideValue))
+            if (_overrides.TryGetValue(key, out PropVariant overrideValue))
             {
                 _overrides.Remove(key);
                 UpdateInvalidationStateAndNotifyIfDifferent(ref key, (IComparable)overrideValue.Value, currentValueDelegate);
@@ -67,6 +66,7 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 return RemoveOverride(ref key, () => Enabled);
             }
+
             if (key == PropertyKeys.ContextAvailable)
             {
                 return RemoveOverride(ref key, () => (uint)ContextAvailability);
@@ -77,8 +77,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         protected object GetOverride(ref PropertyKey key, object defaultValue)
         {
-            PropVariant propVariant;
-            if (_overrides.TryGetValue(key, out propVariant))
+            if (_overrides.TryGetValue(key, out PropVariant propVariant))
                 return propVariant.Value;
 
             return defaultValue;

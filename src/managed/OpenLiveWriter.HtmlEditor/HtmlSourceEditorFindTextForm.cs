@@ -31,9 +31,9 @@ namespace OpenLiveWriter.HtmlEditor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private TextBox _targetTextBox;
+        private readonly TextBox _targetTextBox;
 
         public HtmlSourceEditorFindTextForm(TextBox targetTextBox)
         {
@@ -92,6 +92,7 @@ namespace OpenLiveWriter.HtmlEditor
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

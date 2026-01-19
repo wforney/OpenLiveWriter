@@ -82,6 +82,7 @@ namespace OpenLiveWriter.CoreServices
                     Trace.WriteLine("Error while finding FILE content type using " + WebRequest.Method + ": " + we.Message);
                 }
             }
+
             return response;
         }
 
@@ -108,8 +109,7 @@ namespace OpenLiveWriter.CoreServices
             // Check the cache
             if (cacheSettings != CacheSettings.NOCACHE)
             {
-                Internet_Cache_Entry_Info cacheInfo;
-                if (WinInet.GetUrlCacheEntryInfo(m_url, out cacheInfo))
+                if (WinInet.GetUrlCacheEntryInfo(m_url, out Internet_Cache_Entry_Info cacheInfo))
                 {
                     if (File.Exists(cacheInfo.lpszLocalFileName))
                     {
@@ -138,6 +138,7 @@ namespace OpenLiveWriter.CoreServices
                 {
                 }
             }
+
             return stream;
         }
 
@@ -162,6 +163,7 @@ namespace OpenLiveWriter.CoreServices
                         }
                     }
                 }
+
                 return m_webRequest;
             }
         }
@@ -174,12 +176,12 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// The url
         /// </summary>
-        private string m_url;
+        private readonly string m_url;
 
         /// <summary>
         /// default timeout for request
         /// </summary>
-        private static int DEFAULT_TIMEOUT_MS = 20000;
+        private static readonly int DEFAULT_TIMEOUT_MS = 20000;
 
         /// <summary>
         /// Cache settings control how the cache is checked.

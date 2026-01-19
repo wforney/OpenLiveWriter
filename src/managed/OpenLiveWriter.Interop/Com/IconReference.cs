@@ -15,7 +15,7 @@ namespace OpenLiveWriter.Interop.Com
         private string moduleName;
         private int resourceId;
         private string referencePath;
-        static private char[] commaSeparator = new char[] { ',' };
+        private static readonly char[] commaSeparator = new char[] { ',' };
 
         #endregion
 
@@ -114,6 +114,5 @@ namespace OpenLiveWriter.Interop.Com
                 referencePath = value;
             }
         }
-
     }
 }

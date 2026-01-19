@@ -75,10 +75,9 @@ namespace OpenLiveWriter.CoreServices
         }
 
         // implementation data
-        private IWin32Window _window;
-        private WndProcDelegate m_wndProcDelegate;
+        private readonly IWin32Window _window;
+        private readonly WndProcDelegate m_wndProcDelegate;
         private IntPtr m_baseWndProc;
     }
-
 }
 

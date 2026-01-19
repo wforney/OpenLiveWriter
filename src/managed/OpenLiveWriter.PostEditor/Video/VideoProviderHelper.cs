@@ -31,6 +31,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 {
                     _videoProviders = GetXmlVideoProviders();
                 }
+
                 return _videoProviders;
             }
         }
@@ -49,7 +50,6 @@ namespace OpenLiveWriter.PostEditor.Video
                 Trace.Fail("Failed to load video providers: " + ex);
                 return null;
             }
-
         }
 
         private static object ReadXmlVideoProviders(XmlDocument providersDocument)
@@ -162,6 +162,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     urls[j] = NodeText(urlNode).Replace("{i}", (j + start).ToString(CultureInfo.InvariantCulture));
                 }
             }
+
             return new VideoProvider(serviceName, id, embedFormat, editorFormat, urlFormat, embedPatternList, urlPattern, urlConvertingError, width, height, backgroundColor, appId, urls, urlAtomPattern, urlAtomFormat);
         }
 
@@ -181,6 +182,7 @@ namespace OpenLiveWriter.PostEditor.Video
                 {
                     _whiteLists = GetXmlWhiteLists();
                 }
+
                 return _whiteLists;
             }
         }
@@ -229,7 +231,6 @@ namespace OpenLiveWriter.PostEditor.Video
 
             return new WhiteList(blogProviderId, mappings);
         }
-
     }
 
     public class RectTest

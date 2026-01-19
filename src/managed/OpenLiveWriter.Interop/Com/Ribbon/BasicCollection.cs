@@ -9,7 +9,7 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
 {
     public class BasicCollection : IEnumUnknown
     {
-        private ArrayList _collection;
+        private readonly ArrayList _collection;
         private int _enumIndex;
 
         //

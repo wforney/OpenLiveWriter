@@ -146,11 +146,13 @@ namespace OpenLiveWriter.CoreServices
         /// <returns>converted rect</returns>
         public static RECT Convert(Rectangle rect)
         {
-            RECT newRect = new RECT();
-            newRect.left = rect.Left;
-            newRect.top = rect.Top;
-            newRect.right = rect.Right;
-            newRect.bottom = rect.Bottom;
+            RECT newRect = new RECT
+            {
+                left = rect.Left,
+                top = rect.Top,
+                right = rect.Right,
+                bottom = rect.Bottom
+            };
             return newRect;
         }
 
@@ -166,6 +168,7 @@ namespace OpenLiveWriter.CoreServices
                 dW = 0;
                 width = anchor.Width;
             }
+
             if (shrinkIfNecessary && dH < 0)
             {
                 dH = 0;
@@ -253,6 +256,7 @@ namespace OpenLiveWriter.CoreServices
                     rotateFlip = RotateFlipType.Rotate270FlipY;
                     break;
             }
+
             return RotateFlip(container, rect, rotateFlip);
         }
 

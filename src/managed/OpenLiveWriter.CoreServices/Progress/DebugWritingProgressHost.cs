@@ -20,7 +20,7 @@ namespace OpenLiveWriter.CoreServices.Progress
         {
             this.progressDisplayPrefix = progressDisplayPrefix;
         }
-        private string progressDisplayPrefix = string.Empty;
+        private readonly string progressDisplayPrefix = string.Empty;
         private double committedProgessPercentage;
 
         #region IProgressHost Members

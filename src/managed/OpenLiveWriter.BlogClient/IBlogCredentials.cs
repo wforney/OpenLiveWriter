@@ -119,10 +119,10 @@ namespace OpenLiveWriter.BlogClient
             get { return _credentials.Domain; }
         }
 
-        private string _accountId;
-        private IBlogCredentials _credentials;
+        private readonly string _accountId;
+        private readonly IBlogCredentials _credentials;
 
-        private static Hashtable _transientCredentials = new Hashtable();
+        private static readonly Hashtable _transientCredentials = new Hashtable();
     }
 
     public class TransientCredentials
@@ -190,7 +190,6 @@ namespace OpenLiveWriter.BlogClient
             // if we got this far then they are equal
             return true;
         }
-
     }
 }
 

@@ -37,7 +37,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
         /// <summary>
         /// The editor command source.
         /// </summary>
-        IHtmlEditorCommandSource _commandSource;
+        readonly IHtmlEditorCommandSource _commandSource;
 
         public HtmlStylePicker(IHtmlEditorCommandSource commandSource)
         {
@@ -63,7 +63,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
             Height = styleComboBox.Bottom;
         }
 
-        private static IHtmlFormattingStyle[] defaultStyles = new IHtmlFormattingStyle[] {
+        private static readonly IHtmlFormattingStyle[] defaultStyles = new IHtmlFormattingStyle[] {
                                                                                              new HtmlElementFormattingStyle(Res.Get(StringId.Heading1), "h1", _ELEMENT_TAG_ID.TAGID_H1),
                                                                                              new HtmlElementFormattingStyle(Res.Get(StringId.Heading2), "h2", _ELEMENT_TAG_ID.TAGID_H2),
                                                                                              new HtmlElementFormattingStyle(Res.Get(StringId.Heading3), "h3", _ELEMENT_TAG_ID.TAGID_H3),
@@ -85,6 +85,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -148,7 +149,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
                 styleTable[style.ElementName] = styleItem;
             }
         }
-        Hashtable styleTable = new Hashtable();
+        readonly Hashtable styleTable = new Hashtable();
 
         public void SelectStyleByElementName(string name)
         {
@@ -189,9 +190,9 @@ namespace OpenLiveWriter.HtmlEditor.Controls
 
         public class HtmlElementFormattingStyle : IHtmlFormattingStyle
         {
-            private string _name;
-            private string _element;
-            private _ELEMENT_TAG_ID _elementTagId;
+            private readonly string _name;
+            private readonly string _element;
+            private readonly _ELEMENT_TAG_ID _elementTagId;
             public HtmlElementFormattingStyle(string name, string element, _ELEMENT_TAG_ID elementTagId)
             {
                 _name = name;

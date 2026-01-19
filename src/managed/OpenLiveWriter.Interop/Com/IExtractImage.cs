@@ -40,7 +40,6 @@ namespace OpenLiveWriter.Interop.Com
         public const uint QUALITY = 0x0200;      // passed to the Extract method to indicate that a slower, higher quality image is desired, re-compute the thumbnail
         public const uint REFRESH = 0x0400;      // returned from the extractor if it would like to have Refresh Thumbnail available
     }
-
 }
 
 

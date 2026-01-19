@@ -24,7 +24,7 @@ namespace OpenLiveWriter.PostEditor
         private readonly IntPtr _parentWindowHandle;
         private readonly Control _editorHostPanel;
         private IContentEditorSite _contentEditorSite;
-        private string _accountId;
+        private readonly string _accountId;
         public MainFrameWindowAdapter(IntPtr parentWindowHandle, Control editorHostPanel, IContentEditorSite contentEditorSite, string accountId)
         {
             _parentWindowHandle = parentWindowHandle;
@@ -140,7 +140,6 @@ namespace OpenLiveWriter.PostEditor
             {
                 Layout(this, arg);
             }
-
         }
 
         public void Activate()
@@ -158,7 +157,7 @@ namespace OpenLiveWriter.PostEditor
             _contentEditorSite.SetStatusBarMessage(message.BlogPostStatus, message.WordCountValue);
         }
 
-        private Stack<StatusMessage> _statusMessageStack = new Stack<StatusMessage>();
+        private readonly Stack<StatusMessage> _statusMessageStack = new Stack<StatusMessage>();
         public void PushStatusBarMessage(StatusMessage message)
         {
             _statusMessageStack.Push(message);
@@ -179,7 +178,6 @@ namespace OpenLiveWriter.PostEditor
             {
                 _contentEditorSite.SetStatusBarMessage(null, null);
             }
-
         }
 
         public void PerformLayout()

@@ -295,5 +295,4 @@ namespace OpenLiveWriter.HtmlEditor.Debugging
 
 #endif
     }
-
 }

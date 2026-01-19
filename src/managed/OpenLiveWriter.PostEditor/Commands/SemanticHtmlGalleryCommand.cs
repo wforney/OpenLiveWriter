@@ -39,7 +39,7 @@ namespace OpenLiveWriter.PostEditor.Commands
         private readonly IBlogPostEditingSite _editingSite;
 
         internal string BlogId { get { return _blogId; } }
-        private object _previewLock;
+        private readonly object _previewLock;
 
         internal UpdateSemanticHtmlPreviewAsyncOperation(IBlogPostEditingSite editingSite, string blogId, string[] elementIds, string templateHtml, string postBodyHtml, bool isRtl, ISynchronizeInvoke target, object previewLock, int previewImageWidth, int previewImageHeight)
             : base(target)
@@ -63,8 +63,10 @@ namespace OpenLiveWriter.PostEditor.Commands
             Trace.WriteLine("UpdateSemanticHtmlPreviewAsyncOperation started for blog(" + BlogId + ")");
 
             Size newSize = new Size(1500, 1000);
-            _screenCapture = new HtmlScreenCaptureCore(_html, newSize.Width);
-            _screenCapture.Ids = _elementIds;
+            _screenCapture = new HtmlScreenCaptureCore(_html, newSize.Width)
+            {
+                Ids = _elementIds
+            };
             _screenCapture.HtmlScreenCaptureAvailable += new HtmlScreenCaptureAvailableHandlerCore(screenCapture_HtmlScreenCaptureAvailable);
             _screenCapture.MaximumHeight = newSize.Height;
             _screenCapture.CaptureHtml(45000);
@@ -121,6 +123,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                             {
                                 Trace.WriteLine("Failed to delete preview image after failing to get it:" + ex2);
                             }
+
                             return;
                         }
                     }
@@ -222,6 +225,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                 {
                     return bitmap.Clone() as Bitmap;
                 }
+
                 return null;
             }
 
@@ -279,8 +283,8 @@ namespace OpenLiveWriter.PostEditor.Commands
                  <p  {style} id=" + PreviewId_P + @">" + previewText + @"</p>";
         }
 
-        private Dictionary<string, UpdateSemanticHtmlPreviewAsyncOperation> _asyncOps = new Dictionary<string, UpdateSemanticHtmlPreviewAsyncOperation>();
-        private Dictionary<string, BlogPreviewInfo> _blogPreviewInfo = new Dictionary<string, BlogPreviewInfo>();
+        private readonly Dictionary<string, UpdateSemanticHtmlPreviewAsyncOperation> _asyncOps = new Dictionary<string, UpdateSemanticHtmlPreviewAsyncOperation>();
+        private readonly Dictionary<string, BlogPreviewInfo> _blogPreviewInfo = new Dictionary<string, BlogPreviewInfo>();
 
         internal Bitmap GetPreviewBitmap(string blogId, string elementId)
         {
@@ -308,6 +312,7 @@ namespace OpenLiveWriter.PostEditor.Commands
                             StreamHelper.Transfer(fs, ms);
                             ms.Seek(0, SeekOrigin.Begin);
                         }
+
                         info.SetBitmap(elementId, new Bitmap(ms));
                         return info.GetBitmap(elementId);
                     }
@@ -366,7 +371,7 @@ namespace OpenLiveWriter.PostEditor.Commands
         public const string PreviewId_H6 = "H6" + PreviewGuid;
         public const string PreviewId_P = "P" + PreviewGuid;
 
-        private string _postBodyHtml;
+        private readonly string _postBodyHtml;
 
         private readonly TemplateHtmlDelegate _templateHtmlDelegate;
 
@@ -404,11 +409,11 @@ namespace OpenLiveWriter.PostEditor.Commands
 
     public class SemanticHtmlGalleryCommand : GalleryCommand<string>
     {
-        private string[] _ids;
-        private IBlogPostEditingSite _editingSite;
-        private List<SemanticHtmlElementInfo> _elements;
-        private SemanticHtmlPreviewManager _previewManager;
-        private IHtmlEditorComponentContext _componentContext;
+        private readonly string[] _ids;
+        private readonly IBlogPostEditingSite _editingSite;
+        private readonly List<SemanticHtmlElementInfo> _elements;
+        private readonly SemanticHtmlPreviewManager _previewManager;
+        private readonly IHtmlEditorComponentContext _componentContext;
 
         public SemanticHtmlGalleryCommand(CommandId commandId, IBlogPostEditingSite editingSite, TemplateHtmlDelegate templateHtmlDelegate, CommandManager commandManager, IHtmlEditorComponentContext componentContext)
             : base(commandId)
@@ -538,11 +543,11 @@ namespace OpenLiveWriter.PostEditor.Commands
             public _ELEMENT_TAG_ID TagId { get { return _tagId; } }
             public string HtmlId { get { return _htmlId; } }
 
-            private CommandId _commandId;
-            private string _htmlId;
-            private string _htmlName;
-            private _ELEMENT_TAG_ID _tagId;
-            private string _displayName;
+            private readonly CommandId _commandId;
+            private readonly string _htmlId;
+            private readonly string _htmlName;
+            private readonly _ELEMENT_TAG_ID _tagId;
+            private readonly string _displayName;
 
         }
 
@@ -562,13 +567,13 @@ namespace OpenLiveWriter.PostEditor.Commands
                 get { return Label; }
             }
 
-            private string elementName;
+            private readonly string elementName;
             public string ElementName
             {
                 get { return elementName; }
             }
 
-            private _ELEMENT_TAG_ID elementTagId;
+            private readonly _ELEMENT_TAG_ID elementTagId;
             public _ELEMENT_TAG_ID ElementTagId
             {
                 get { return elementTagId; }

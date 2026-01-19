@@ -16,7 +16,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     internal class HtmlGenerator : BasicHtmlGenerationService
     {
-        private IHtmlEditorHost _editorHost;
+        private readonly IHtmlEditorHost _editorHost;
         internal HtmlGenerator(IHtmlEditorHost editorHost)
             : base(editorHost.DefaultBlockElement)
         {

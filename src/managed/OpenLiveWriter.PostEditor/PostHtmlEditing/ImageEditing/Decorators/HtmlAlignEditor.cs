@@ -16,7 +16,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 {
     public class HtmlAlignEditor : ImageDecoratorEditor
     {
-        private IContainer components = null;
+        private readonly IContainer components = null;
 
         private ImagePickerControl imagePickerAlign;
 
@@ -45,6 +45,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -57,13 +58,15 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
         {
             this.SuspendLayout();
 
-            this.imagePickerAlign = new ImagePickerControl();
-            this.imagePickerAlign.Name = "imagePickerAlign";
-            this.imagePickerAlign.Dock = DockStyle.Fill;
-            this.imagePickerAlign.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.imagePickerAlign.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.imagePickerAlign.IntegralHeight = false;
-            this.imagePickerAlign.ItemHeight = 29;
+            this.imagePickerAlign = new ImagePickerControl
+            {
+                Name = "imagePickerAlign",
+                Dock = DockStyle.Fill,
+                DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed,
+                DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList,
+                IntegralHeight = false,
+                ItemHeight = 29
+            };
             this.imagePickerAlign.SelectedIndexChanged += new EventHandler(imagePickerAlign_SelectedIndexChanged);
 
             //
@@ -129,6 +132,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                         imagePickerAlign.SelectedIndex = 3;
                         break;
                 }
+
                 SaveSettingsAndApplyDecorator();
             }
         }
@@ -158,7 +162,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                     return image;
                 }
             }
-            private Image image;
+            private readonly Image image;
             #endregion
         }
     }
@@ -180,6 +184,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                 OptionItem size = (OptionItem)obj;
                 return size.ItemValue.Equals(ItemValue);
             }
+
             return false;
         }
 

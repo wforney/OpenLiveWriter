@@ -14,9 +14,9 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
     /// </summary>
     internal class SupportingFileFactory
     {
-        private SupportingFileService _fileService;
-        private Hashtable _uploadInfos = new Hashtable();
-        private Hashtable _versionTable = new Hashtable();
+        private readonly SupportingFileService _fileService;
+        private readonly Hashtable _uploadInfos = new Hashtable();
+        private readonly Hashtable _versionTable = new Hashtable();
 
         internal SupportingFileFactory(SupportingFileService supportingFileService, string fileId, string fileName, int nextVersion)
         {
@@ -31,13 +31,13 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
         {
             get { return _fileId; }
         }
-        private string _fileId;
+        private readonly string _fileId;
 
         public string FileName
         {
             get { return _fileName; }
         }
-        private string _fileName;
+        private readonly string _fileName;
 
         public int NextVersion
         {
@@ -59,6 +59,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
                 uploadInfo = new SupportingFileUploadInfo(-1, null, new BlogPostSettingsBag());
                 _uploadInfos[uploadContext] = uploadInfo;
             }
+
             return uploadInfo;
         }
 
@@ -85,6 +86,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 list.Add(uploadContext);
             }
+
             return (string[])list.ToArray(typeof(string));
         }
 
@@ -95,6 +97,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 list.Add(file);
             }
+
             return (ISupportingFile[])list.ToArray(typeof(ISupportingFile));
         }
 
@@ -151,7 +154,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
 
         internal class VersionedSupportingFile : ISupportingFile
         {
-            private SupportingFileFactory _fileFactory;
+            private readonly SupportingFileFactory _fileFactory;
             internal VersionedSupportingFile(SupportingFileFactory fileFactory, int version, Uri fileUri, string fileName, string fileNameUniqueToken, bool embedded, BlogPostSettingsBag fileProperties)
             {
                 _fileFactory = fileFactory;
@@ -184,13 +187,13 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 get { return _fileName; }
             }
-            private string _fileName;
+            private readonly string _fileName;
 
             public string FileNameUniqueToken
             {
                 get { return _fileNameUniqueToken.ToString(); }
             }
-            private string _fileNameUniqueToken;
+            private readonly string _fileNameUniqueToken;
 
             public string StoragePath
             {
@@ -218,7 +221,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 get { return _fileVersion; }
             }
-            private int _fileVersion;
+            private readonly int _fileVersion;
 
             public int NextFileVersion
             {
@@ -252,7 +255,7 @@ namespace OpenLiveWriter.PostEditor.SupportingFiles
             {
                 get { return _properties; }
             }
-            private BlogPostSettingsBag _properties;
+            private readonly BlogPostSettingsBag _properties;
 
             public void Delete()
             {

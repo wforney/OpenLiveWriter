@@ -24,7 +24,7 @@ namespace OpenLiveWriter.Controls
         /// </summary>
         private MessageBoxIcon type = MessageBoxIcon.Exclamation;
 
-        private static ResourcedPropertyLoader propLoader = new ResourcedPropertyLoader(
+        private static readonly ResourcedPropertyLoader propLoader = new ResourcedPropertyLoader(
             typeof(DisplayMessage),
             new ResourceManager("OpenLiveWriter.Localization.Properties", typeof(MessageId).Assembly),
             new ResourceManager("OpenLiveWriter.Localization.PropertiesNonLoc", typeof(MessageId).Assembly)
@@ -158,7 +158,7 @@ namespace OpenLiveWriter.Controls
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
         public DisplayMessage(MessageId messageId)
         {
@@ -190,6 +190,7 @@ namespace OpenLiveWriter.Controls
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

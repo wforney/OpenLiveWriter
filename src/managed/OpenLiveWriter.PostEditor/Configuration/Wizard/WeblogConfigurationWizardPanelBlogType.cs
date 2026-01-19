@@ -37,7 +37,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         public WeblogConfigurationWizardPanelBlogType()
         {
@@ -308,9 +308,9 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                 }
             }
 
-            private string _name;
-            private RadioButton _radioButton;
-            private IBlogProviderAccountWizardDescription _providerAccountWizard;
+            private readonly string _name;
+            private readonly RadioButton _radioButton;
+            private readonly IBlogProviderAccountWizardDescription _providerAccountWizard;
         }
 
         /// <summary>
@@ -325,6 +325,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

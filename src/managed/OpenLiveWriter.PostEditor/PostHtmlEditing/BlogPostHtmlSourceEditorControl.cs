@@ -26,9 +26,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     {
         private Panel panelSourceEditor;
         private TextBox textBoxTitle;
-        private HtmlSourceEditorControl sourceControl;
+        private readonly HtmlSourceEditorControl sourceControl;
         private readonly IBlogPostSpellCheckingContext spellingContext;
-        private IBlogPostImageEditingContext editingContext;
+        private readonly IBlogPostImageEditingContext editingContext;
 
         public BlogPostHtmlSourceEditorControl(IBlogPostSpellCheckingContext spellingContext, CommandManager commandManager, IBlogPostImageEditingContext editingContext)
         {
@@ -39,10 +39,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             sourceControl = new HtmlSourceEditorControl(spellingContext.SpellingChecker, commandManager, editingContext);
             sourceControl.EditorControl.TextChanged += new EventHandler(EditorControl_TextChanged);
             sourceControl.EditorControl.GotFocus += new EventHandler(EditorControl_GotFocus);
-            BorderControl borderControl = new BorderControl();
-            borderControl.SuppressBottomBorder = true;
-            borderControl.Control = sourceControl.EditorControl;
-            borderControl.Dock = DockStyle.Fill;
+            BorderControl borderControl = new BorderControl
+            {
+                SuppressBottomBorder = true,
+                Control = sourceControl.EditorControl,
+                Dock = DockStyle.Fill
+            };
             panelSourceEditor.Controls.Add(borderControl);
 
             ColorizedResources.Instance.RegisterControlForBackColorUpdates(this);
@@ -71,6 +73,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (sourceControl != null)
                     sourceControl.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -368,6 +371,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 if (postBodyHtml.IndexOf(moreExtendedEntryBreakWS) == -1)
                     postBodyHtml = postBodyHtml.Replace(BlogPost.ExtendedEntryBreak, moreExtendedEntryBreakWS);
             }
+
             return postBodyHtml;
         }
         #endregion
@@ -376,7 +380,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             return sourceControl.SelectAndDelete(startMaker, endMarker);
         }
-
     }
 
     /// <summary>
@@ -384,8 +387,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     public class HtmlSourceEditorControl : HtmlEditor.HtmlSourceEditorControl
     {
-        private ReplaceAbsoluteFilePathsOperation _replaceOperation = new ReplaceAbsoluteFilePathsOperation();
-        private IBlogPostImageEditingContext editingContext;
+        private readonly ReplaceAbsoluteFilePathsOperation _replaceOperation = new ReplaceAbsoluteFilePathsOperation();
+        private readonly IBlogPostImageEditingContext editingContext;
 
         public HtmlSourceEditorControl(ISpellingChecker spellingChecker, CommandManager commandManager, IBlogPostImageEditingContext editingContext)
             : base(spellingChecker, commandManager)
@@ -447,11 +450,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             string html = SourceEditor.Text;
 
-            int startIndex, startLen;
-            FindMarker(html, startMarker, out startIndex, out startLen);
+            FindMarker(html, startMarker, out int startIndex, out int startLen);
 
-            int endIndex, endLen;
-            FindMarker(html, endMarker, out endIndex, out endLen);
+            FindMarker(html, endMarker, out int endIndex, out int endLen);
 
             if (startIndex > endIndex)
             {
@@ -484,6 +485,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 SourceEditor.ScrollToCaret();
                 return true;
             }
+
             return false;
         }
 
@@ -560,6 +562,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             return base.Replace(el);
         }
 
@@ -580,6 +583,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     {
                         varName = createUniqueVarNameForFileUrl(url);
                     }
+
                     return varName;
                 }
             }
@@ -593,6 +597,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         return newUrl;
                 }
             }
+
             return url;
         }
 

@@ -25,7 +25,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     public static class ImageInsertionManager
     {
-        private static Uri LoadingImagePath = new Uri(Path.Combine(ApplicationEnvironment.InstallationDirectory, @"html\loading.png"));
+        private static readonly Uri LoadingImagePath = new Uri(Path.Combine(ApplicationEnvironment.InstallationDirectory, @"html\loading.png"));
         private static bool selectionChanged;
 
         /// <summary>
@@ -226,8 +226,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                                 {
                                     // When switching blogs, try to adapt image viewer settings according to the blog settings.
 
-                                    ImagePropertiesInfo imageInfo = new ImagePropertiesInfo(imageSrcUri, ImageUtils.GetImageSize(imageSrcUri.LocalPath), new ImageDecoratorsList(editor.DecoratorsManager, imageData.ImageDecoratorSettings));
-                                    imageInfo.ImgElement = imgElement;
+                                    ImagePropertiesInfo imageInfo = new ImagePropertiesInfo(imageSrcUri, ImageUtils.GetImageSize(imageSrcUri.LocalPath), new ImageDecoratorsList(editor.DecoratorsManager, imageData.ImageDecoratorSettings))
+                                    {
+                                        ImgElement = imgElement
+                                    };
                                     // Make sure the new crop and tilt decorators get loaded
                                     imageInfo.ImageDecorators.MergeDecorators(DefaultImageSettings.GetImplicitLocalImageDecorators());
                                     string viewer = imageInfo.DhtmlImageViewer;

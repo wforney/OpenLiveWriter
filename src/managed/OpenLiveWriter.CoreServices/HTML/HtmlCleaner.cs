@@ -97,6 +97,7 @@ namespace OpenLiveWriter.CoreServices.HTML
                     continue;
                 output.Append(el.RawText);
             }
+
             html = output.ToString();
             return html;
         }
@@ -125,12 +126,14 @@ namespace OpenLiveWriter.CoreServices.HTML
                             ((BeginTag)el).RemoveAttribute(attr.Name);
                     }
                 }
+
                 output.Append(el.ToString());
             }
+
             html = output.ToString();
             return html;
         }
-        private static Regex ILLEGAL_ATTR_REGEX = new Regex("^(([^x][^m][^l].*|.?.?):.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase); //Matches all strings with a colon that do not start with "xml"
+        private static readonly Regex ILLEGAL_ATTR_REGEX = new Regex("^(([^x][^m][^l].*|.?.?):.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase); //Matches all strings with a colon that do not start with "xml"
 
     }
 }

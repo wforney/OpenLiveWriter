@@ -24,7 +24,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     {
         public static string UA_COMPATIBLE_STRING = "IE=EmulateIE9";
 
-        private string _blogId;
+        private readonly string _blogId;
         public PostHtmlEditingSettings(string blogId)
         {
             _blogId = blogId;
@@ -75,6 +75,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         (BlogEditingTemplateType)BlogEditingTemplateType.Parse(typeof(BlogEditingTemplateType), templateTypeStr);
                     templateFiles[i] = new BlogEditingTemplateFile(templateType, templateFile);
                 }
+
                 return templateFiles;
             }
             set
@@ -207,7 +208,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -263,5 +263,4 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
         private SettingsPersisterHelper _editorTemplateSettings;
     }
-
 }

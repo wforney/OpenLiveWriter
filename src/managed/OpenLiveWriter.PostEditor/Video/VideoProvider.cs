@@ -21,21 +21,21 @@ namespace OpenLiveWriter.PostEditor.Video
     {
         public const string VIDEOID = "{videoId}";
 
-        private string _serviceName;
-        private string _serviceId;
-        private string _embedFormat;
-        private string _urlFormat;
-        private string _urlPattern;
-        private EmbedPattern[] _embedPatterns;
-        private int _width;
-        private int _height;
-        private string _useBackgroundColor;
-        private string _appId;
-        private String[] _publishPingUrls;
-        private string _editorFormat;
-        private bool _urlConvertError;
-        private string _urlAtomPattern;
-        private string _urlAtomFormat;
+        private readonly string _serviceName;
+        private readonly string _serviceId;
+        private readonly string _embedFormat;
+        private readonly string _urlFormat;
+        private readonly string _urlPattern;
+        private readonly EmbedPattern[] _embedPatterns;
+        private readonly int _width;
+        private readonly int _height;
+        private readonly string _useBackgroundColor;
+        private readonly string _appId;
+        private readonly String[] _publishPingUrls;
+        private readonly string _editorFormat;
+        private readonly bool _urlConvertError;
+        private readonly string _urlAtomPattern;
+        private readonly string _urlAtomFormat;
 
         public VideoProvider(string serviceName, string serviceId, string embedFormat, string editorFormat, string urlFormat, EmbedPattern[] embedPatterns,
             string urlPattern, bool urlConvertError, int width, int height, string useBackgroundColor, string appId, String[] publishPingUrls, string urlAtomPattern, string urlAtomFormat)
@@ -122,6 +122,7 @@ namespace OpenLiveWriter.PostEditor.Video
             {
                 return m.Groups["id"].Value;
             }
+
             return String.Empty;
         }
 
@@ -146,6 +147,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     return false; //didn't find embed tag with the attr
                 }
             }
+
             return true; //found all predicates
         }
 
@@ -173,6 +175,7 @@ namespace OpenLiveWriter.PostEditor.Video
                     }
                 }
             }
+
             return String.Empty;
         }
 
@@ -267,8 +270,8 @@ namespace OpenLiveWriter.PostEditor.Video
 
     public class EmbedPattern
     {
-        private string _attr;
-        private string _pattern;
+        private readonly string _attr;
+        private readonly string _pattern;
 
         public EmbedPattern(string attr, string pattern)
         {

@@ -41,7 +41,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The string format used to format text.
         /// </summary>
-        private static StringFormat stringFormat;
+        private static readonly StringFormat stringFormat;
 
         /// <summary>
         ///	The maximum text with of text on a button.
@@ -81,12 +81,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The context menu arrow bitmap.
         /// </summary>
-        private Bitmap contextMenuArrowBitmap;
+        private readonly Bitmap contextMenuArrowBitmap;
 
         /// <summary>
         /// The disabled context menu arrow bitmap.
         /// </summary>
-        private Bitmap contextMenuArrowBitmapDisabled;
+        private readonly Bitmap contextMenuArrowBitmapDisabled;
 
         #endregion Static & Constant Declaration
 
@@ -150,9 +150,11 @@ namespace OpenLiveWriter.ApplicationFramework
         static CommandBarButtonLightweightControl()
         {
             //	Initialize the string format.
-            stringFormat = new StringFormat();
-            stringFormat.LineAlignment = StringAlignment.Center;
-            stringFormat.Trimming = StringTrimming.EllipsisCharacter;
+            stringFormat = new StringFormat
+            {
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
         }
 
         public CommandBarButtonLightweightControl(CommandBarLightweightControl commandBarLightweightControl, string commandIdentifier, bool rightAligned)
@@ -190,6 +192,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (commandBarLightweightControl != null)
                     commandBarLightweightControl.CommandManagerChanged -= new EventHandler(commandBarLightweightControl_CommandManagerChanged);
             }
+
             base.Dispose(disposing);
         }
 
@@ -338,6 +341,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     VirtualSize = Size.Empty;
                     return;
                 }
+
                 ButtonMargins margin = margins.Value;
                 marginRight = margin.RightMargin;
 
@@ -372,6 +376,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     {
                         buttonWidth = ProviderButtonFaceEnabled.Width;
                     }
+
                     buttonWidth += (2 * PROVIDER_HORIZONTAL_PAD);
                 }
             }
@@ -659,9 +664,11 @@ namespace OpenLiveWriter.ApplicationFramework
                             //apply a high contrast image matrix
                             ImageAttributes ia = new ImageAttributes();
                             ia.SetColorMatrix(HighContrastColorMatrix);
-                            ColorMap cm = new ColorMap();
-                            cm.OldColor = Color.White;
-                            cm.NewColor = SystemColors.Control;
+                            ColorMap cm = new ColorMap
+                            {
+                                OldColor = Color.White,
+                                NewColor = SystemColors.Control
+                            };
                             ia.SetRemapTable(new ColorMap[] { cm });
                             g.DrawImage(false, buttonBitmap, rImage, 0, 0, buttonBitmap.Width, buttonBitmap.Height, GraphicsUnit.Pixel, ia);
                         }
@@ -1102,7 +1109,6 @@ namespace OpenLiveWriter.ApplicationFramework
                     Command.CommandBarButtonContextMenuHandler(Parent, menuLocation, alternativeLocation, new EndShowContextMenuDisposable(this));
                 }
             }
-
         }
 
         public static Point PositionMenu(Point menuLocation, int alternativeLocation, Size menuSize)
@@ -1273,6 +1279,7 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 Command.PerformExecute();
             }
+
             return true;
         }
 

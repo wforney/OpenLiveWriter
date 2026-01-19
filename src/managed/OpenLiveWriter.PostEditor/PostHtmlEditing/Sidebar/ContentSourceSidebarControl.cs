@@ -21,13 +21,13 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
-        private ISidebarContext _sidebarContext;
-        private Hashtable _contentSourceControls;
+        private readonly ISidebarContext _sidebarContext;
+        private readonly Hashtable _contentSourceControls;
         private IHTMLElement _selectedElement;
         private SmartContentEditor _currentEditor;
-        private IContentSourceSidebarContext _contentSourceContext;
+        private readonly IContentSourceSidebarContext _contentSourceContext;
         private SmartContentSource _contentSource;
         private EditableSmartContent _editableSmartContent;
         private String _selectedSmartContentId;
@@ -124,6 +124,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                         {
                             editor.Scale(new SizeF(scale.Width, scale.Height));
                         }
+
                         _contentSourceControls[_contentSourceId] = editor;
                     }
 
@@ -151,9 +152,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                             // set the title caption
                             // Text = String.Format( CultureInfo.CurrentCulture, Res.Get(StringId.PluginSidebarTitle), contentSource.InsertableContentSourceSidebarText ) ;
                         }
-
                     }
                 }
+
                 _currentEditor = editor;
             }
             else
@@ -275,6 +276,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -319,6 +321,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
             {
                 Trace.Fail("Incorrectly calling GetSmartContentEditor for a source that is not a SmartContentSource.");
             }
+
             return smartContentEditor;
         }
 
@@ -335,7 +338,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
 
     internal class ContentSourceSidebar : ISidebar, ISmartContentEditorCache
     {
-        IContentSourceSidebarContext _context;
+        readonly IContentSourceSidebarContext _context;
         internal ContentSourceSidebar(IContentSourceSidebarContext context)
         {
             _context = context;
@@ -370,7 +373,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
 
     internal class BrokenContentSourceSidebar : ISidebar
     {
-        IContentSourceSidebarContext _context;
+        readonly IContentSourceSidebarContext _context;
         internal BrokenContentSourceSidebar(IContentSourceSidebarContext context)
         {
             _context = context;
@@ -394,7 +397,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Sidebar
 
     internal class DisabledContentSourceSidebar : ISidebar
     {
-        IContentSourceSidebarContext _context;
+        readonly IContentSourceSidebarContext _context;
         internal DisabledContentSourceSidebar(IContentSourceSidebarContext context)
         {
             _context = context;

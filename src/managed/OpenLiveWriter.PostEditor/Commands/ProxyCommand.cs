@@ -10,7 +10,7 @@ namespace OpenLiveWriter.PostEditor.Commands
 {
     class ProxyCommand : Command
     {
-        private Command _command;
+        private readonly Command _command;
         public ProxyCommand(CommandId commandId, Command command) : base(commandId)
         {
             _command = command;

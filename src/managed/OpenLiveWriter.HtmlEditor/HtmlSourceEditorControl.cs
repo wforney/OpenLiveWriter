@@ -25,9 +25,9 @@ namespace OpenLiveWriter.HtmlEditor
 {
     public class HtmlSourceEditorControl : IHtmlEditor, IHtmlEditorCommandSource
     {
-        CommandContextMenuDefinition contextMenu = new CommandContextMenuDefinition();
+        readonly CommandContextMenuDefinition contextMenu = new CommandContextMenuDefinition();
 
-        private CommandManager _commandManager;
+        private readonly CommandManager _commandManager;
         public CommandManager CommandManager
         {
             get
@@ -49,16 +49,18 @@ namespace OpenLiveWriter.HtmlEditor
             contextMenu.Entries.Add(CommandId.InsertLink, true, true);
 
             // create and initialize the editor
-            _textBox = new TextBoxEditorControl();
-            _textBox.BorderStyle = BorderStyle.None;
-            _textBox.Multiline = true;
-            _textBox.HideSelection = false;
-            _textBox.ScrollBars = ScrollBars.Vertical;
-            _textBox.Font = new Font("Courier New", 10);
-            _textBox.Dock = DockStyle.Fill;
-            _textBox.MaxLength = 0;
-            _textBox.AcceptsTab = true;
-            _textBox.ContextMenu = new ContextMenu();
+            _textBox = new TextBoxEditorControl
+            {
+                BorderStyle = BorderStyle.None,
+                Multiline = true,
+                HideSelection = false,
+                ScrollBars = ScrollBars.Vertical,
+                Font = new Font("Courier New", 10),
+                Dock = DockStyle.Fill,
+                MaxLength = 0,
+                AcceptsTab = true,
+                ContextMenu = new ContextMenu()
+            };
             _textBox.TextChanged += new EventHandler(_textBox_TextChanged);
             _textBox.ModifiedChanged += new EventHandler(_textBox_ModifiedChanged);
             _textBox.ContextMenuTriggered += new TextBoxEditorControl.ContextMenuTriggeredEventHandler(_textBox_ContextMenuTriggered);
@@ -206,14 +208,17 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 link.Append(" target=\"_blank\"");
             }
+
             if (String.Empty != linkTitle && null != linkTitle)
             {
                 link.Append(" title=\"{2}\"");
             }
+
             if (String.Empty != rel && null != rel)
             {
                 link.Append(" rel=\"{3}\"");
             }
+
             link.Append(">{1}</a>");
             InsertHtml(String.Format(CultureInfo.InvariantCulture, link.ToString(),
                                       HtmlUtils.EscapeEntities(url),
@@ -307,7 +312,7 @@ namespace OpenLiveWriter.HtmlEditor
                 return _spellingChecker;
             }
         }
-        private ISpellingChecker _spellingChecker;
+        private readonly ISpellingChecker _spellingChecker;
 
         #endregion
 
@@ -547,7 +552,6 @@ namespace OpenLiveWriter.HtmlEditor
                     break;
 
             }
-
         }
 
         bool IHtmlEditorCommandSource.SelectionBulleted
@@ -630,6 +634,7 @@ namespace OpenLiveWriter.HtmlEditor
                     DisplayMessage.Show(MessageId.TitleNotLinkable);
                     return;
                 }
+
                 using (HyperlinkForm hyperlinkForm = new HyperlinkForm(CommandManager, ShowAllLinkOptions))
                 {
                     hyperlinkForm.LinkText = _textBox.SelectedText;
@@ -927,9 +932,9 @@ namespace OpenLiveWriter.HtmlEditor
 
         #region Private Data
 
-        private IContainer components = new Container();
+        private readonly IContainer components = new Container();
 
-        private TextBoxEditorControl _textBox;
+        private readonly TextBoxEditorControl _textBox;
 
         private const string NEWLINE = "\r\n";
 

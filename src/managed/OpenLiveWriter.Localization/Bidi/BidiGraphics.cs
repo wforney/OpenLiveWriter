@@ -72,6 +72,7 @@ namespace OpenLiveWriter.Localization.Bidi
                 rect.X += rect.Width;
                 rect.Width *= -1;
             }
+
             return rect;
         }
 
@@ -249,6 +250,7 @@ namespace OpenLiveWriter.Localization.Bidi
                 color = color1;
                 color1 = temp;
             }
+
             return new LinearGradientBrush(bounds, color, color1, mode);
         }
 
@@ -300,6 +302,7 @@ namespace OpenLiveWriter.Localization.Bidi
                 if ((textFormatFlags & TextFormatFlags.HorizontalCenter) == 0)
                     textFormatFlags ^= TextFormatFlags.Right;
             }
+
             return textFormatFlags;
         }
 
@@ -324,6 +327,7 @@ namespace OpenLiveWriter.Localization.Bidi
             {
                 textFormatFlags |= TextFormatFlags.Right | TextFormatFlags.RightToLeft;
             }
+
             TextRenderer.DrawText(
                 g,
                 text,

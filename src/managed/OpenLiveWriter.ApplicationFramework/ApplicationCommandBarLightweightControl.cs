@@ -14,8 +14,8 @@ namespace OpenLiveWriter.ApplicationFramework
     /// </summary>
     public class ApplicationCommandBarLightweightControl : CommandBarLightweightControl
     {
-        private Bitmap _contextMenuArrowBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.WhiteDropArrow.png");
-        private Bitmap _contextMenuArrowBitmapDisabled = ImageHelper.MakeDisabled(ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.WhiteDropArrow.png"));
+        private readonly Bitmap _contextMenuArrowBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.WhiteDropArrow.png");
+        private readonly Bitmap _contextMenuArrowBitmapDisabled = ImageHelper.MakeDisabled(ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.WhiteDropArrow.png"));
 
         public ApplicationCommandBarLightweightControl(IContainer container) : base(container)
         {

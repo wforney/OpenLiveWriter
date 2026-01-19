@@ -74,13 +74,13 @@ namespace OpenLiveWriter.BlogClient.Detection
     {
         BlogPost temporaryPost;
         Stream blogPageContents;
-        BlogPostRegionLocatorBooleanCallback containsBlogPosts;
+        readonly BlogPostRegionLocatorBooleanCallback containsBlogPosts;
 
         public override bool CanRefetchPage => true;
 
         private const string TEMPORARY_POST_STABLE_GUID = "3bfe001a-32de-4114-a6b4-4005b770f6d7";
-        private string TEMPORARY_POST_BODY_GUID = Guid.NewGuid().ToString();
-        private string TEMPORARY_POST_TITLE_GUID = Guid.NewGuid().ToString();
+        private readonly string TEMPORARY_POST_BODY_GUID = Guid.NewGuid().ToString();
+        private readonly string TEMPORARY_POST_TITLE_GUID = Guid.NewGuid().ToString();
         private string TEMPORARY_POST_BODY
         {
             get { return String.Format(CultureInfo.CurrentCulture, Res.Get(StringId.TemporaryPostBody), TEMPORARY_POST_BODY_GUID, TEMPORARY_POST_STABLE_GUID); }
@@ -141,6 +141,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             {
                 StreamHelper.Transfer(postHtmlContents, blogPageContents);
             }
+
             progress.UpdateProgress(100, 100);
         }
 
@@ -181,9 +182,11 @@ namespace OpenLiveWriter.BlogClient.Detection
         {
             progress.UpdateProgress(50, 100);
             // make a test post that we can use to do analysis
-            BlogPost testPost = new BlogPost();
-            testPost.IsTemporary = true;
-            testPost.Title = TEMPORARY_POST_TITLE;
+            BlogPost testPost = new BlogPost
+            {
+                IsTemporary = true,
+                Title = TEMPORARY_POST_TITLE
+            };
 
             //plant a <p> around the contents so that the blog provider doesn't try to add their own
             //and so we'll know it can be safely removed later
@@ -192,9 +195,7 @@ namespace OpenLiveWriter.BlogClient.Detection
             string postContents = String.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", TEMPORARY_POST_BODY);
             testPost.Contents = postContents;
 
-            string etag;
-            XmlDocument remotePost;
-            testPost.Id = _blogClient.NewPost(_blogAccount.BlogId, testPost, new IgnoreNewCategoryContext(), true, out etag, out remotePost);
+            testPost.Id = _blogClient.NewPost(_blogAccount.BlogId, testPost, new IgnoreNewCategoryContext(), true, out string etag, out XmlDocument remotePost);
             testPost.ETag = etag;
             testPost.AtomRemotePost = remotePost;
             progress.UpdateProgress(100, 100);
@@ -247,10 +248,12 @@ namespace OpenLiveWriter.BlogClient.Detection
                 if (HTMLDocumentHelper.FindElementContainingText(doc2, TEMPORARY_POST_TITLE_GUID) == null)
                     doc2 = null;
             }
+
             if (doc2 == null)
             {
                 throw new OperationTimedOutException();
             }
+
             tick.UpdateProgress(100, 100);
 
             //return the stream
@@ -298,10 +301,12 @@ namespace OpenLiveWriter.BlogClient.Detection
             //that is anchored closest to the left or the body element.
             if (titleElements.Length > 0)
             {
-                BlogPostRegions regions = new BlogPostRegions();
-                regions.Document = (IHTMLDocument)doc;
-                regions.TitleRegions = titleElements;
-                regions.BodyRegion = bodyElement;
+                BlogPostRegions regions = new BlogPostRegions
+                {
+                    Document = (IHTMLDocument)doc,
+                    TitleRegions = titleElements,
+                    BodyRegion = bodyElement
+                };
 
                 progress.UpdateProgress(100, 100);
                 return regions;
@@ -392,12 +397,14 @@ namespace OpenLiveWriter.BlogClient.Detection
             if (IsSmartContent(bodies[0]))
                 throw new Exception("Most recent post is smart content");
 
-            BlogPostRegions regions = new BlogPostRegions();
-            regions.TitleRegions = titles;
+            BlogPostRegions regions = new BlogPostRegions
+            {
+                TitleRegions = titles,
 
-            //scrub the post body element to avoid improperly including extraneous parent elements
-            regions.BodyRegion = ScrubPostBodyRegionParentElements(bodies[0]);
-            regions.Document = doc2;
+                //scrub the post body element to avoid improperly including extraneous parent elements
+                BodyRegion = ScrubPostBodyRegionParentElements(bodies[0]),
+                Document = doc2
+            };
 
             progress.UpdateProgress(100, 100);
 
@@ -451,6 +458,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     return element;
                 }
             }
+
             return null;
         }
 
@@ -463,6 +471,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     return (string)element.getAttribute("content");
                 }
             }
+
             return null;
         }
 
@@ -498,6 +507,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                         {
                             markedForDelete.Add(postBodyElement);
                         }
+
                         postContentsElement = postContentsElement.parentElement;
                         postBodyElement = postBodyElement.parentElement;
                     }
@@ -524,6 +534,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 //This is an error we should look at, but it should not abort template detection.
                 Debug.Fail("Cleanup logic failed with an error", e.ToString());
             }
+
             return postBodyElement;
         }
 
@@ -605,6 +616,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     }
                 }
             }
+
             if (elementCount == 0)
             {
                 if (ContainsNormalizedText(normalizedText, fromElement))
@@ -648,6 +660,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                     whitespaceMode = false;
                 }
             }
+
             string normalizedText = sb.ToString().Trim();
             return normalizedText;
         }

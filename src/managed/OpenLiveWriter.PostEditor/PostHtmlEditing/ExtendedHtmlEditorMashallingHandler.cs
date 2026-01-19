@@ -33,9 +33,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// </summary>
     internal class ExtendedHtmlEditorMashallingHandler : HtmlEditorMarshallingHandler
     {
-        IHtmlEditorHost _blogEditor;
-        IContentSourceSite _insertionSite;
-        private OpenLiveWriter.Interop.Com.IDropTarget _unhandledDropTarget;
+        readonly IHtmlEditorHost _blogEditor;
+        readonly IContentSourceSite _insertionSite;
+        private readonly OpenLiveWriter.Interop.Com.IDropTarget _unhandledDropTarget;
 
         private bool _isPlaintextOnly = false;
         public bool IsPlainTextOnly
@@ -173,7 +173,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         {
             return EditorContext.MarshalImagesSupported && ImageClipboardFormatHandler.CanCreateFrom(dataObject);
         }
-
     }
 
     public class EmlMessageHandler : UnhandledDropTarget
@@ -203,12 +202,12 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     public class UnhandledDropTarget : DataFormatHandler
     {
-        private OpenLiveWriter.Interop.Com.IDropTarget _unhandledDropTarget;
+        private readonly OpenLiveWriter.Interop.Com.IDropTarget _unhandledDropTarget;
         private bool _hasCalledBeginDrag = false;
         private MK _mkKeyState;
         private DROPEFFECT _effect;
         private POINT _point;
-        private IOleDataObject _oleDataObject;
+        private readonly IOleDataObject _oleDataObject;
 
         public UnhandledDropTarget(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, OpenLiveWriter.Interop.Com.IDropTarget unhandledDropTarget)
             : base(dataObject, handlerContext)
@@ -234,9 +233,11 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
             _mkKeyState = MshtmlEditorDragAndDropTarget.ConvertKeyState(keyState);
             _effect = MshtmlEditorDragAndDropTarget.ConvertDropEffect(supportedEffects);
-            _point = new POINT();
-            _point.x = screenPoint.X;
-            _point.y = screenPoint.Y;
+            _point = new POINT
+            {
+                x = screenPoint.X,
+                y = screenPoint.Y
+            };
 
             // We have to call begin drag here because we need the location and key state which we dont have in BeginDrag()
             if (!_hasCalledBeginDrag)
@@ -295,7 +296,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     internal class LiveClipboardContentSourceFormatHandler : LiveClipboardDataFormatHandler
     {
-        IContentSourceSite _contentSourceSite;
+        readonly IContentSourceSite _contentSourceSite;
 
         public LiveClipboardContentSourceFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
@@ -359,7 +360,6 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     return false;
                 }
             }
-
         }
 
         private bool InsertSimpleContentFromLiveClipboard(ContentSourceInfo contentSource, XmlDocument lcDocument)
@@ -419,7 +419,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     internal class LiveClipboardHtmlFormatHandler : LiveClipboardDataFormatHandler
     {
-        IContentSourceSite _contentSourceSite;
+        readonly IContentSourceSite _contentSourceSite;
 
         public LiveClipboardHtmlFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
@@ -459,7 +459,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     internal class InternalSmartContentFormatHandler : FreeTextHandler
     {
-        IContentSourceSite _contentSourceSite;
+        readonly IContentSourceSite _contentSourceSite;
 
         public InternalSmartContentFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
@@ -534,6 +534,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             EditorContext.MarkupServices.Remove(begin, end);
                             EditorContext.MarkupServices.Move(elementRange.Start, elementRange.End, insertionPoint);
                         }
+
                         return true;
                     }
                     finally
@@ -543,6 +544,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     }
                 }
             }
+
             return false;
         }
 
@@ -575,7 +577,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 
     internal class UrlContentSourcelFormatHandler : UrlHandler
     {
-        IContentSourceSite _contentSourceSite;
+        readonly IContentSourceSite _contentSourceSite;
 
         public UrlContentSourcelFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
@@ -673,6 +675,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 {
                     _contentSourceSite.InsertContent(contentSource.Id, content, extensionData);
                 }
+
                 return true;
             }
             else
@@ -896,6 +899,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                 _blogEditor.InsertImages(new string[] { imagePath }, ImageInsertEntryPoint.DragDrop);
                 return true;
             }
+
             return false;
         }
 
@@ -981,7 +985,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
         ///        (2) We can implement a custom sidebar and other custom behavior like snapshotting
         ///        (3) We don't have to chase down bizarro editor edge cases caused by complex or misbehaving embeds
         ///
-        IContentSourceSite _contentSourceSite;
+        readonly IContentSourceSite _contentSourceSite;
 
         public EmbedFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext, IHtmlMarshallingTarget editorContext, IContentSourceSite sourceSite)
             : base(dataObject, handlerContext, editorContext)
@@ -1060,6 +1064,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                     return false;
                 }
             }
+
             Trace.Fail("Cannot find the video plugin");
             return false;
         }
@@ -1099,5 +1104,4 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
         }
     }
-
 }

@@ -55,6 +55,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
                                 GraphicsUnit.Pixel, ia);
                 }
             }
+
             context.Image = bitmap;
             context.BorderMargin = ImageBorderMargin.Empty;
             HideHtmlBorder(context);

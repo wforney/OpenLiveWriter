@@ -37,7 +37,7 @@ namespace OpenLiveWriter.CoreServices
         private const string TEMP_DIR_DEFAULT_PATTERN = "p31{0}";
 
         #region singleton
-        private static TempFileManager singleton;
+        private static readonly TempFileManager singleton;
         static TempFileManager()
         {
             string prefix = ProcessHelper.GetCurrentProcessName();
@@ -46,6 +46,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 prefix = prefix.Substring(0, lastDot);
             }
+
             string currentDir = Environment.CurrentDirectory;
             string suffix;
             if (currentDir == null)
@@ -193,6 +194,7 @@ namespace OpenLiveWriter.CoreServices
                 // not the end of the world
                 Debug.WriteLine("Unable to set file creation/modification time: " + e.ToString());
             }
+
             return newPath;
         }
 

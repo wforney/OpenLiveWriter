@@ -74,12 +74,14 @@ namespace MarketXmlGenerator
                         Console.WriteLine("Invalid marketizationXml.xml file detected");
                         Environment.Exit(1);
                     }
+
                     string marketName = marketNode.Attributes["name"].InnerText;
                     if (marketName.ToLower() != marketName)
                     {
                         Console.WriteLine("market name must be lower case");
                         Environment.Exit(1);
                     }
+
                     entryNode.AppendChild(marketsXml.ImportNode(marketNode, true));
                 }
             }
@@ -113,6 +115,5 @@ namespace MarketXmlGenerator
             Console.WriteLine("Line " + args.Exception.LineNumber + " Pos " + args.Exception.LinePosition);
             succeed = false;
         }
-
     }
 }

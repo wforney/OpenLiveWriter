@@ -13,9 +13,9 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.Behaviors
     {
         private const int WIDGET_HORIZONTAL_OVERLAY = 10;
         private const int WIDGET_VERTICAL_OFFSET = 5;
-        private ElementControlBehavior _parent;
-        private PropertiesDongleControl _dongle;
-        private IBlogPostSidebarContext _sidebarContext;
+        private readonly ElementControlBehavior _parent;
+        private readonly PropertiesDongleControl _dongle;
+        private readonly IBlogPostSidebarContext _sidebarContext;
         private SidebarDongleController(ElementControlBehavior parent, IBlogPostSidebarContext sidebarContext)
         {
             _parent = parent;

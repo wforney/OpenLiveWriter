@@ -86,7 +86,7 @@ namespace OpenLiveWriter.CoreServices
         /// <summary>
         /// FileItem we are enclosing/delegating to
         /// </summary>
-        private FileItem fileItem = null;
+        private readonly FileItem fileItem = null;
     }
 }
 

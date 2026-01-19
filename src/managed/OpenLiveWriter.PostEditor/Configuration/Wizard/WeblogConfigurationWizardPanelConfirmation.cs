@@ -33,7 +33,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        private readonly System.ComponentModel.Container components = null;
 
         private TemporaryBlogSettings _temporaryBlogSettings;
 
@@ -63,7 +63,6 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
             {
                 RefreshLabels();
             }
-
         }
 
         private bool shown = false;
@@ -104,6 +103,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     if (defaultProvider != null)
                         appid = defaultProvider.AppId;
                 }
+
                 return appid;
             }
         }
@@ -191,6 +191,7 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
                     components.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 
@@ -287,6 +288,5 @@ namespace OpenLiveWriter.PostEditor.Configuration.Wizard
         {
             ShellHelper.LaunchUrl(GLink.Instance.CEIP);
         }
-
     }
 }

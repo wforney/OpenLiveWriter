@@ -1,16 +1,14 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenLiveWriter.Extensibility.BlogClient;
+using System.Collections.Generic;
 
 namespace BlogRunner.Core.Tests
 {
     public class CompositePostTest : PostTest
     {
-        private List<PostTest> tests = new List<PostTest>();
+        private readonly List<PostTest> tests = new List<PostTest>();
 
         public CompositePostTest(params PostTest[] tests)
         {

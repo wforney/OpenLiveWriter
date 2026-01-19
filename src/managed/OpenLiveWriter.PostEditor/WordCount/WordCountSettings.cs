@@ -21,6 +21,7 @@ namespace OpenLiveWriter.PostEditor.WordCount
                     _enableRealTimeWordCount = Settings.GetBoolean(SHOWWORDCOUNT, false);
                     _enableRealTimeWordCountInit = true;
                 }
+
                 return _enableRealTimeWordCount;
             }
             set

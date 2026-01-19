@@ -28,8 +28,10 @@ namespace OpenLiveWriter.CoreServices
         /// <returns>newly created OleDataObject</returns>
         public static OleDataObject CreateFrom(IOleDataObject odo)
         {
-            OleDataObject oleDataObject = new OleDataObject();
-            oleDataObject.m_dataObject = odo;
+            OleDataObject oleDataObject = new OleDataObject
+            {
+                m_dataObject = odo
+            };
             return oleDataObject;
         }
 

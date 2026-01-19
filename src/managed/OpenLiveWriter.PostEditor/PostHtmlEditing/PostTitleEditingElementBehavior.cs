@@ -145,6 +145,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         RegionBorderVisible = true;
                         defaultedText = false;
                     }
+
                     OnEditableRegionFocusChanged(null, new EditableRegionFocusChangedEventArgs(false));
                 }
                 else
@@ -155,8 +156,10 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                         defaultedText = true;
                         RegionBorderVisible = true;
                     }
+
                     RegionBorderVisible = defaultedText;
                 }
+
                 undo.Commit();
             }
         }
@@ -217,5 +220,4 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             this.OnTitleChanged(EventArgs.Empty);
         }
     }
-
 }

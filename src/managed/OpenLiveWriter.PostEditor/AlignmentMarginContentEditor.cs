@@ -113,5 +113,4 @@ namespace OpenLiveWriter.PostEditor
             ContentEnabled = false;
         }
     }
-
 }

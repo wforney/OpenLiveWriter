@@ -158,25 +158,27 @@ namespace OpenLiveWriter.BlogClient.Clients
         private static readonly Namespace photoNS = new Namespace(GPHOTO_NS_URI, "gphoto");
 
         private IBlogClientOptions _clientOptions;
-        private XmlNamespaceManager _nsMgr;
+        private readonly XmlNamespaceManager _nsMgr;
 
         public GoogleBloggerv3Client(Uri postApiUrl, IBlogCredentialsAccessor credentials)
             : base(credentials)
         {
             // configure client options
-            BlogClientOptions clientOptions = new BlogClientOptions();
-            clientOptions.SupportsCategories = true;
-            clientOptions.SupportsMultipleCategories = true;
-            clientOptions.SupportsNewCategories = true;
-            clientOptions.SupportsCustomDate = true;
-            clientOptions.SupportsExcerpt = false;
-            clientOptions.SupportsSlug = false;
-            clientOptions.SupportsFileUpload = true;
-            clientOptions.SupportsKeywords = false;
-            clientOptions.SupportsGetKeywords = false;
-            clientOptions.SupportsPages = true;
-            clientOptions.SupportsExtendedEntries = true;
-            clientOptions.UseLocalTime = true;
+            BlogClientOptions clientOptions = new BlogClientOptions
+            {
+                SupportsCategories = true,
+                SupportsMultipleCategories = true,
+                SupportsNewCategories = true,
+                SupportsCustomDate = true,
+                SupportsExcerpt = false,
+                SupportsSlug = false,
+                SupportsFileUpload = true,
+                SupportsKeywords = false,
+                SupportsGetKeywords = false,
+                SupportsPages = true,
+                SupportsExtendedEntries = true,
+                UseLocalTime = true
+            };
             _clientOptions = clientOptions;
 
             _nsMgr = new XmlNamespaceManager(new NameTable());
@@ -383,6 +385,7 @@ namespace OpenLiveWriter.BlogClient.Clients
             {
                 recentPostsRequest.EndDate = now.Value;
             }
+
             recentPostsRequest.FetchImages = false;
             recentPostsRequest.MaxResults = maxPosts;
             recentPostsRequest.OrderBy = PostsResource.ListRequest.OrderByEnum.Published;
@@ -508,6 +511,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 // Google has a per-request results limit on their API.
                 getPagesRequest.MaxResults = Math.Min(maxPages.Value, MaxResultsPerRequest);
             }
+
             getPagesRequest.Status = status;
             return getPagesRequest.Execute();
         }

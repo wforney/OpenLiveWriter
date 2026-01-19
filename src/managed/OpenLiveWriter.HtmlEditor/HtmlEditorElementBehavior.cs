@@ -68,8 +68,7 @@ namespace OpenLiveWriter.HtmlEditor
         protected bool IsCaretWithin(Rectangle clientRect)
         {
             IHTMLCaretRaw caret = GetCaret();
-            POINT p;
-            caret.GetLocation(out p, true);
+            caret.GetLocation(out POINT p, true);
 
             Point pt = new Point(p.x, p.y);
             return pt.X >= clientRect.X && pt.X <= clientRect.Right && pt.Y >= clientRect.Y && pt.Y <= clientRect.Bottom;
@@ -77,9 +76,8 @@ namespace OpenLiveWriter.HtmlEditor
 
         protected IHTMLCaretRaw GetCaret()
         {
-            IHTMLCaretRaw caret;
             IDisplayServicesRaw displayServices = (IDisplayServicesRaw)HTMLElement.document;
-            displayServices.GetCaret(out caret);
+            displayServices.GetCaret(out IHTMLCaretRaw caret);
             return caret;
         }
 
@@ -91,8 +89,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// <returns></returns>
         protected Rectangle GetLineRect(IHTMLElement element, IDisplayPointerRaw displayPointer)
         {
-            ILineInfo lineInfo;
-            displayPointer.GetLineInfo(out lineInfo);
+            displayPointer.GetLineInfo(out ILineInfo lineInfo);
 
             Rectangle elementRect = HTMLElementHelper.GetClientRectangle(element);
 
@@ -166,7 +163,7 @@ namespace OpenLiveWriter.HtmlEditor
                 return _editorContext;
             }
         }
-        private IHtmlEditorComponentContext _editorContext;
+        private readonly IHtmlEditorComponentContext _editorContext;
 
         private void _editorContext_SelectionChanged(object sender, EventArgs e)
         {
@@ -206,5 +203,4 @@ namespace OpenLiveWriter.HtmlEditor
         }
         private bool _disposed;
     }
-
 }

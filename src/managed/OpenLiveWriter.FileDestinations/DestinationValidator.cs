@@ -13,7 +13,7 @@ namespace OpenLiveWriter.FileDestinations
     /// </summary>
     public class DestinationValidator : IDisposable
     {
-        private FileDestination _destination;
+        private readonly FileDestination _destination;
 
         public DestinationValidator(FileDestination destination)
         {
@@ -102,7 +102,6 @@ namespace OpenLiveWriter.FileDestinations
                 get { return _siteException; }
                 set { _siteException = value; }
             }
-
         }
 
         public class DestinationUrlMappingFailedException : DestinationValidationException
@@ -114,5 +113,4 @@ namespace OpenLiveWriter.FileDestinations
 
         }
     }
-
 }
