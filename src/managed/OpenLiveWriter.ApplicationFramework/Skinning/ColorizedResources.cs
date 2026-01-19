@@ -32,8 +32,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
 
         private static void OnChange()
         {
-            if (GlobalColorizationChanged != null)
-                GlobalColorizationChanged(null, EventArgs.Empty);
+            GlobalColorizationChanged?.Invoke(null, EventArgs.Empty);
         }
 
         public static void FireColorChanged()
@@ -55,20 +54,12 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                         return Color.Empty;
 
                     string strColor = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Appearance").GetString("AppColor", null);
-                    if (strColor == null || strColor == string.Empty)
-                        return Color.Empty;
-                    else
-                        return ColorHelper.StringToColor(strColor);
+                    return strColor == null || strColor == string.Empty ? Color.Empty : ColorHelper.StringToColor(strColor);
                 }
             }
             set
             {
-                string strColor;
-                if (value == Color.Empty)
-                    strColor = null;
-                else
-                    strColor = ColorHelper.ColorToString(value);
-
+                string strColor = value == Color.Empty ? null : ColorHelper.ColorToString(value);
                 ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Appearance").SetString("AppColor", strColor);
                 OnChange();
             }
@@ -78,10 +69,9 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
         {
             get
             {
-                if (ApplicationEnvironment.PreferencesSettingsRoot == null)
-                    return 128;
-
-                return ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Appearance").GetInt32("AppColorScale", 128);
+                return ApplicationEnvironment.PreferencesSettingsRoot == null
+                    ? 128
+                    : ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("Appearance").GetInt32("AppColorScale", 128);
             }
             set
             {
@@ -97,21 +87,6 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
         private BorderPaint _borderToolbar;
         private BorderPaint _viewSwitchingTabSelected;
         private BorderPaint _viewSwitchingTabUnselected;
-        private Bitmap _imgFooterBackground;
-        private Bitmap _imgDropShadow;
-        private Color _frameGradientLightColor;
-        private Color _sidebarGradientTopColor;
-        private Color _sidebarGradientBottomColor;
-        private Color _sidebarTextColor;
-        private Color _borderDark;
-        private Color _borderLight;
-        private Color _sidebarHeaderBackgroundColor;
-        private Color _sidebarHeaderTextColor;
-        private Color _workspaceBackgroundColor;
-        private Color _menuGradientTopColor;
-        private Color _menuGradientBottomColor;
-        private Color _secondaryToolbarColor;
-        private Color _sidebarLinkColor;
 
         private ColorizedResources()
         {
@@ -123,8 +98,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
 
         internal void FireColorizationChanged()
         {
-            if (ColorizationChanged != null)
-                ColorizationChanged(this, EventArgs.Empty);
+            ColorizationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public static bool UseSystemColors
@@ -164,8 +138,8 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
 
         private void RefreshImages()
         {
-            _imgDropShadow = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.DropShadow.png");
-            _imgFooterBackground = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.FooterBackgroundBW.png");
+            DropShadowBitmap = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.DropShadow.png");
+            FooterBackground = ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.FooterBackgroundBW.png");
 
             Bitmap imgBorderAppFrameOutline = ColorizeBitmap(ResourceHelper.LoadAssemblyResourceBitmap("Images.HIG.AppFrameOutline.png"));
             Bitmap imgBorderToolbar =
@@ -183,7 +157,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
 
             if (UseSystemColors)
             {
-                ReplaceWithEmptyBitmap(_imgFooterBackground, SystemColors.Control);
+                ReplaceWithEmptyBitmap(FooterBackground, SystemColors.Control);
 
                 ReplaceWithEmptyBitmap(imgBorderAppFrameOutline, SystemColors.Control);
                 ReplaceWithEmptyBitmap(imgBorderToolbar, SystemColors.Control);
@@ -199,8 +173,8 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                     BorderPaintMode.GDI, 6, 9, 221, 222));
 
                 SwapAndDispose(ref _borderFooterBackground,
-                               new BorderPaint(_imgFooterBackground, false, BorderPaintMode.GDI,
-                                               0, _imgFooterBackground.Width, _imgFooterBackground.Height, _imgFooterBackground.Height));
+                               new BorderPaint(FooterBackground, false, BorderPaintMode.GDI,
+                                               0, FooterBackground.Width, FooterBackground.Height, FooterBackground.Height));
 
                 if (DisplayHelper.IsCompositionEnabled(false))
                 {
@@ -220,7 +194,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                 SwapAndDispose(ref _viewSwitchingTabSelected, new BorderPaint(imgSelectedTab, true, BorderPaintMode.StretchToFill | BorderPaintMode.Cached | BorderPaintMode.PaintMiddleCenter, 1, 8, 2, 8));
                 SwapAndDispose(ref _viewSwitchingTabUnselected, new BorderPaint(imgUnselectedTab, true, BorderPaintMode.StretchToFill | BorderPaintMode.Cached | BorderPaintMode.PaintMiddleCenter, 1, 9, 1, 9));
 
-                _sidebarLinkColor = SystemInformation.HighContrast ? SystemColors.HotTrack : Color.FromArgb(0, 134, 198);
+                SidebarLinkColor = SystemInformation.HighContrast ? SystemColors.HotTrack : Color.FromArgb(0, 134, 198);
 
                 /*
                 SwapAndDispose(ref _imgAppVapor,
@@ -250,24 +224,24 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
 
             RefreshImages();
 
-            _borderDark = useThemeColors ? Color.FromArgb(188, 188, 188) : SystemColors.ControlDark;
-            _borderLight = useThemeColors ? Color.FromArgb(218, 229, 242) : SystemColors.ControlLight;
+            BorderDarkColor = useThemeColors ? Color.FromArgb(188, 188, 188) : SystemColors.ControlDark;
+            BorderLightColor = useThemeColors ? Color.FromArgb(218, 229, 242) : SystemColors.ControlLight;
             //_borderLight = Colorize(Color.FromArgb(62, 152, 180));
             //_sidebarGradientTopColor = useThemeColors ? Colorize(Color.FromArgb(134, 209, 240)) : SystemColors.Control;
-            _sidebarGradientTopColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
-            _sidebarGradientBottomColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
-            _sidebarTextColor = SystemColors.HotTrack;
-            _sidebarHeaderBackgroundColor = !useThemeColors ? SystemColors.Control : Colorize(Color.FromArgb(255, 255, 255));
-            _sidebarHeaderTextColor = Color.FromArgb(53, 90, 136);
-            _frameGradientLightColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
-            _workspaceBackgroundColor = useThemeColors ? Colorize(coolGray) : SystemColors.Control;
-            _menuGradientTopColor = !useThemeColors ? SystemColors.Control :
+            SidebarGradientTopColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
+            SidebarGradientBottomColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
+            SidebarTextColor = SystemColors.HotTrack;
+            SidebarHeaderBackgroundColor = !useThemeColors ? SystemColors.Control : Colorize(Color.FromArgb(255, 255, 255));
+            SidebarHeaderTextColor = Color.FromArgb(53, 90, 136);
+            FrameGradientLight = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
+            WorkspaceBackgroundColor = useThemeColors ? Colorize(coolGray) : SystemColors.Control;
+            MainMenuGradientTopColor = !useThemeColors ? SystemColors.Control :
                 DisplayHelper.IsCompositionEnabled(false) ? Colorize(Color.FromArgb(229, 238, 248)) :
                 Colorize(Color.FromArgb(229, 238, 248));
-            _menuGradientBottomColor = !useThemeColors ? SystemColors.Control :
+            MainMenuGradientBottomColor = !useThemeColors ? SystemColors.Control :
                 DisplayHelper.IsCompositionEnabled(false) ? Colorize(Color.FromArgb(229, 238, 248)) :
-                _menuGradientTopColor;
-            _secondaryToolbarColor = useThemeColors ? Colorize(coolGray) : SystemColors.Control;
+                MainMenuGradientTopColor;
+            SecondaryToolbarColor = useThemeColors ? Colorize(coolGray) : SystemColors.Control;
 
         }
 
@@ -275,16 +249,14 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
         {
             Bitmap oldImage = image;
             image = newImage;
-            if (oldImage != null)
-                oldImage.Dispose();
+            oldImage?.Dispose();
         }
 
         private void SwapAndDispose(ref BorderPaint bd, BorderPaint newBd)
         {
             BorderPaint oldBd = bd;
             bd = newBd;
-            if (oldBd != null)
-                oldBd.Dispose();
+            oldBd?.Dispose();
         }
 
         private Bitmap ColorizeBitmap(Bitmap bitmap)
@@ -297,18 +269,9 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
             return Colorizer.ColorizeBitmap(bmp, _colorizeColor, _colorizeScale, colorizeRectangle);
         }
 
-        public Bitmap FooterBackground
-        {
-            get { return _imgFooterBackground; }
-        }
+        public Bitmap FooterBackground { get; private set; }
 
-        public Bitmap DropShadowBitmap
-        {
-            get
-            {
-                return _imgDropShadow;
-            }
-        }
+        public Bitmap DropShadowBitmap { get; private set; }
 
         public BorderPaint AppOutlineBorder
         {
@@ -341,72 +304,33 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
             }
         }
 
-        public Color SidebarLinkColor
-        {
-            get
-            {
-                return _sidebarLinkColor;
-            }
-        }
+        public Color SidebarLinkColor { get; private set; }
 
-        public Color FrameGradientLight
-        {
-            get { return _frameGradientLightColor; }
-        }
+        public Color FrameGradientLight { get; private set; }
 
-        public Color SidebarGradientTopColor
-        {
-            get { return _sidebarGradientTopColor; }
-        }
+        public Color SidebarGradientTopColor { get; private set; }
 
-        public Color SidebarGradientBottomColor
-        {
-            get { return _sidebarGradientBottomColor; }
-        }
+        public Color SidebarGradientBottomColor { get; private set; }
 
         [Obsolete("This looks funny when juxtapositioned with GDI-drawn LinkLabel controls, which appear a little darker than they should.")]
-        public Color SidebarTextColor
-        {
-            get { return _sidebarTextColor; }
-        }
+        public Color SidebarTextColor { get; private set; }
 
         public Color SidebarDisabledTextColor
         {
             get { return SystemColors.GrayText; }
         }
 
-        public Color BorderDarkColor
-        {
-            get { return _borderDark; }
-        }
+        public Color BorderDarkColor { get; private set; }
 
-        public Color SecondaryToolbarColor
-        {
-            get
-            {
-                return _secondaryToolbarColor;
-            }
-        }
+        public Color SecondaryToolbarColor { get; private set; }
 
-        public Color BorderLightColor
-        {
-            get { return _borderLight; }
-        }
+        public Color BorderLightColor { get; private set; }
 
-        public Color SidebarHeaderBackgroundColor
-        {
-            get { return _sidebarHeaderBackgroundColor; }
-        }
+        public Color SidebarHeaderBackgroundColor { get; private set; }
 
-        public Color SidebarHeaderTextColor
-        {
-            get { return _sidebarHeaderTextColor; }
-        }
+        public Color SidebarHeaderTextColor { get; private set; }
 
-        public Color WorkspaceBackgroundColor
-        {
-            get { return _workspaceBackgroundColor; }
-        }
+        public Color WorkspaceBackgroundColor { get; private set; }
 
         public bool CustomMainMenuPainting
         {
@@ -416,30 +340,15 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
             }
         }
 
-        public Color MainMenuGradientTopColor
-        {
-            get
-            {
-                return _menuGradientTopColor;
-            }
-        }
+        public Color MainMenuGradientTopColor { get; private set; }
 
-        public Color MainMenuGradientBottomColor
-        {
-            get
-            {
-                return _menuGradientBottomColor;
-            }
-        }
+        public Color MainMenuGradientBottomColor { get; private set; }
 
         public Color MainMenuHighlightColor
         {
             get
             {
-                if (CustomMainMenuPainting)
-                    return Color.FromArgb(160, 160, 160);
-                else
-                    return SystemColors.Highlight;
+                return CustomMainMenuPainting ? Color.FromArgb(160, 160, 160) : SystemColors.Highlight;
             }
         }
 
@@ -447,12 +356,11 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
         {
             get
             {
-                if (CustomMainMenuPainting)
-                    return DisplayHelper.IsCompositionEnabled(false) && ColorHelper.GetLuminosity(_colorizeColor) > 128
-                               ? Color.FromArgb(99, 101, 99)
-                            : Color.FromArgb(99, 101, 99);
-                else
-                    return SystemColors.MenuText;
+                return CustomMainMenuPainting
+                    ? DisplayHelper.IsCompositionEnabled(false) && ColorHelper.GetLuminosity(_colorizeColor) > 128
+                        ? Color.FromArgb(99, 101, 99)
+                        : Color.FromArgb(99, 101, 99)
+                    : SystemColors.MenuText;
             }
         }
 
@@ -545,7 +453,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
                 byte bColorizeHi = (byte)(255 - crColorize.B);
                 int wScaleHi = 255 - wScale;
 
-                wLumOld = wLumOld - wScale;
+                wLumOld -= wScale;
                 byte rNew = (byte)(crColorize.R + (byte)(rColorizeHi * wLumOld / wScaleHi));
                 byte gNew = (byte)(crColorize.G + (byte)(gColorizeHi * wLumOld / wScaleHi));
                 byte bNew = (byte)(crColorize.B + (byte)(bColorizeHi * wLumOld / wScaleHi));
@@ -583,7 +491,7 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
             int wScaleAlpha = wScale * crOld.A / 255;
             if (wScaleAlpha < wLumAlpha)
             {
-                wLumAlpha = wLumAlpha - wScaleAlpha;
+                wLumAlpha -= wScaleAlpha;
 
                 // New needs to be scaled by alpha.
                 // NewHi does not as it is multiplied by the LumAlpha which includes the alpha scaling

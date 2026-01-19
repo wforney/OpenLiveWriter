@@ -30,12 +30,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The menu path.
         /// </summary>
-        private string menuPath;
-
-        /// <summary>
-        /// Collection of MenuDefinitionEntry objects that defines the CommandContextMenu.
-        /// </summary>
-        private MenuDefinitionEntryCollection menuDefinitionEntryCollection = new MenuDefinitionEntryCollection();
 
         #endregion Private Member Variables
 
@@ -99,17 +93,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the menu path.
         /// </summary>
-        public string MenuPath
-        {
-            get
-            {
-                return menuPath;
-            }
-            set
-            {
-                menuPath = value;
-            }
-        }
+        public string MenuPath { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -118,17 +102,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public MenuDefinitionEntryCollection Entries
-        {
-            get
-            {
-                return menuDefinitionEntryCollection;
-            }
-            set
-            {
-                menuDefinitionEntryCollection = value;
-            }
-        }
+        public MenuDefinitionEntryCollection Entries { get; set; } = new MenuDefinitionEntryCollection();
 
         #endregion
 
@@ -143,7 +117,7 @@ namespace OpenLiveWriter.ApplicationFramework
         protected override MenuItem GetMenuItem(CommandManager commandManager, MenuType menuType)
         {
             //	Instantiate the placeholder OwnerDrawMenuItem.
-            OwnerDrawMenuItem ownerDrawMenuItem = new OwnerDrawMenuItem(menuType, menuPath);
+            OwnerDrawMenuItem ownerDrawMenuItem = new OwnerDrawMenuItem(menuType, MenuPath);
 
             //	Build child MenuItems.
             MenuItem[] menuItems = MenuBuilder.CreateMenuItems(commandManager, menuType, Entries);

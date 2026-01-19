@@ -138,8 +138,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private Rectangle rText = Rectangle.Empty;
         private Rectangle rArrow = Rectangle.Empty;
 
-        private int marginLeft, marginRight;
-
         #endregion Private Member Variables & Declarations
 
         #region Class Initialization & Termination
@@ -258,15 +256,9 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public int MarginLeft
-        {
-            get { return marginLeft; }
-        }
+        public int MarginLeft { get; private set; }
 
-        public int MarginRight
-        {
-            get { return marginRight; }
-        }
+        public int MarginRight { get; private set; }
 
         /// <summary>
         /// Raises the Layout event.
@@ -290,8 +282,8 @@ namespace OpenLiveWriter.ApplicationFramework
 
             //	The button width and height.
             int buttonWidth = 0, buttonHeight = 0;
-            marginLeft = 0;
-            marginRight = 0;
+            MarginLeft = 0;
+            MarginRight = 0;
 
             //	If the command bar button style is "System", then do the layout.
             if (Command.CommandBarButtonStyle == CommandBarButtonStyle.System)
@@ -343,7 +335,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 }
 
                 ButtonMargins margin = margins.Value;
-                marginRight = margin.RightMargin;
+                MarginRight = margin.RightMargin;
 
                 rImage.Y = Utility.CenterMinZero(rImage.Height, buttonHeight);
                 rText.Y = Utility.CenterMinZero(rText.Height, buttonHeight);

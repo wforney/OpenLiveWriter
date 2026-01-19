@@ -86,7 +86,6 @@ namespace OpenLiveWriter.BlogClient
         private readonly bool _previousSilentMode;
     }
 
-
     /// <summary>
     /// Class which allows blog-client code at any level in the stack and on
     /// any thread to show a modal dialog on the main UI thread. In order to
@@ -100,15 +99,15 @@ namespace OpenLiveWriter.BlogClient
             if (SilentModeForCurrentThread)
                 return DialogResult.Cancel;
 
-            if (_uiContext == null)
+            if (ContextForCurrentThread == null)
                 throw new InvalidOperationException("Called BlogClientUIContext.ShowDialog on a thread with no context initialized!");
 
             // center the form relative to the owning window
-            CenterForm(_uiContext, dialogForm);
+            CenterForm(ContextForCurrentThread, dialogForm);
 
             // show the form using the Desktop window as the owner (we had trouble with the UI thread hanging
             // when we used the active dialog as the actual owner)
-            if (_uiContext.InvokeRequired)
+            if (ContextForCurrentThread.InvokeRequired)
             {
                 Debug.Fail("WARNING: You are using a fragile codepath--form created on one thread and shown on another!");
 
@@ -116,14 +115,14 @@ namespace OpenLiveWriter.BlogClient
                 dialogForm.TopMost = true;
 
                 // invoke with desktop form as parent
-                object dialogResult = _uiContext.Invoke(new ShowDialogHandler(dialogForm.ShowDialog), new object[] { Win32WindowImpl.DesktopWin32Window });
+                object dialogResult = ContextForCurrentThread.Invoke(new ShowDialogHandler(dialogForm.ShowDialog), new object[] { Win32WindowImpl.DesktopWin32Window });
 
                 // return the result
                 return (DialogResult)dialogResult;
             }
             else
             {
-                return dialogForm.ShowDialog(_uiContext);
+                return dialogForm.ShowDialog(ContextForCurrentThread);
             }
         }
         private delegate DialogResult ShowDialogHandler(IWin32Window owner);
@@ -150,7 +149,6 @@ namespace OpenLiveWriter.BlogClient
             private readonly IWin32Window _owner;
             private readonly MessageId _messageId;
             private readonly object[] _parameters;
-            private DialogResult _dialogResult;
 
             public DisplayMessageHelper(IWin32Window owner, MessageId messageId, object[] parameters)
             {
@@ -159,28 +157,19 @@ namespace OpenLiveWriter.BlogClient
                 _parameters = parameters;
             }
 
-            public DialogResult DialogResult
-            {
-                get { return _dialogResult; }
-            }
+            public DialogResult DialogResult { get; private set; }
 
             public void Handler()
             {
-                _dialogResult = DisplayMessage.Show(_messageId, _owner, _parameters);
+                DialogResult = DisplayMessage.Show(_messageId, _owner, _parameters);
             }
         }
 
-        internal static IBlogClientUIContext ContextForCurrentThread
-        {
-            get { return _uiContext; }
-            set { _uiContext = value; }
-        }
+        [field: ThreadStatic]
+        internal static IBlogClientUIContext ContextForCurrentThread { get; set; }
 
-        internal static bool SilentModeForCurrentThread
-        {
-            get { return _silentMode; }
-            set { _silentMode = value; }
-        }
+        [field: ThreadStatic]
+        internal static bool SilentModeForCurrentThread { get; set; }
 
         private static void CenterForm(IWin32Window hRelativeToWnd, Form form)
         {
@@ -199,11 +188,5 @@ namespace OpenLiveWriter.BlogClient
             // center the form on that point
             form.Location = new Point(centerPoint.X - (form.Width / 2), centerPoint.Y - (form.Height / 2));
         }
-
-        [ThreadStatic]
-        private static IBlogClientUIContext _uiContext;
-
-        [ThreadStatic]
-        private static bool _silentMode;
     }
 }

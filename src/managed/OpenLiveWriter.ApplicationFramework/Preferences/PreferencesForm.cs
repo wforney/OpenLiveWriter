@@ -201,8 +201,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
 
         public void OnPreferencesSaved(EventArgs evt)
         {
-            if (PreferencesSaved != null)
-                PreferencesSaved(this, evt);
+            PreferencesSaved?.Invoke(this, evt);
         }
         #endregion
 

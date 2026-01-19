@@ -26,12 +26,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// A value indicating whether shortcuts should be shown on the CommandContextMenu.
         /// </summary>
-        private bool commandBar = false;
-
-        /// <summary>
-        /// Collection of MenuDefinitionEntry objects that defines the CommandContextMenu.
-        /// </summary>
-        private MenuDefinitionEntryCollection menuDefinitionEntryCollection = new MenuDefinitionEntryCollection();
 
         #endregion Private Member Variables
 
@@ -112,17 +106,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(false),
                 Description("Specifies whether shortcuts should be shown on the CommandContextMenu.")
         ]
-        public bool CommandBar
-        {
-            get
-            {
-                return commandBar;
-            }
-            set
-            {
-                commandBar = value;
-            }
-        }
+        public bool CommandBar { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -131,17 +115,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public MenuDefinitionEntryCollection Entries
-        {
-            get
-            {
-                return menuDefinitionEntryCollection;
-            }
-            set
-            {
-                menuDefinitionEntryCollection = value;
-            }
-        }
+        public MenuDefinitionEntryCollection Entries { get; set; } = new MenuDefinitionEntryCollection();
 
         #endregion Public Properties
 
@@ -165,8 +139,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnBeforeShowMenu(EventArgs e)
         {
-            if (BeforeShowMenu != null)
-                BeforeShowMenu(this, e);
+            BeforeShowMenu?.Invoke(this, e);
         }
 
         #endregion

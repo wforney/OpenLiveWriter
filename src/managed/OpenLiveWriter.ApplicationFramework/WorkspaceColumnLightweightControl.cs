@@ -56,16 +56,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private SplitterLightweightControl splitterLightweightControlHorizontal;
 
         /// <summary>
-        /// The upper pane WorkspaceColumnPaneLightweightControl.
-        /// </summary>
-        private WorkspaceColumnPaneLightweightControl workspaceColumnPaneUpper;
-
-        /// <summary>
-        /// The lower pane WorkspaceColumnPaneLightweightControl.
-        /// </summary>
-        private WorkspaceColumnPaneLightweightControl workspaceColumnPaneLower;
-
-        /// <summary>
         /// The vertical splitter style.
         /// </summary>
         private VerticalSplitterStyle verticalSplitterStyle = VerticalSplitterStyle.None;
@@ -262,12 +252,12 @@ namespace OpenLiveWriter.ApplicationFramework
             this.components = new System.ComponentModel.Container();
             this.splitterLightweightControlVertical = new OpenLiveWriter.ApplicationFramework.SplitterLightweightControl(this.components);
             this.splitterLightweightControlHorizontal = new OpenLiveWriter.ApplicationFramework.SplitterLightweightControl(this.components);
-            this.workspaceColumnPaneUpper = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnPaneLightweightControl(this.components);
-            this.workspaceColumnPaneLower = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnPaneLightweightControl(this.components);
+            UpperPane = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnPaneLightweightControl(this.components);
+            LowerPane = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnPaneLightweightControl(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitterLightweightControlVertical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitterLightweightControlHorizontal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workspaceColumnPaneUpper)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workspaceColumnPaneLower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(UpperPane)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(LowerPane)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             //
             // splitterLightweightControlVertical
@@ -287,33 +277,33 @@ namespace OpenLiveWriter.ApplicationFramework
             //
             // workspaceColumnPaneUpper
             //
-            this.workspaceColumnPaneUpper.Border = false;
-            this.workspaceColumnPaneUpper.Control = null;
-            this.workspaceColumnPaneUpper.FixedHeight = 0;
-            this.workspaceColumnPaneUpper.FixedHeightLayout = false;
-            this.workspaceColumnPaneUpper.LightweightControl = null;
-            this.workspaceColumnPaneUpper.LightweightControlContainerControl = this;
-            this.workspaceColumnPaneUpper.Visible = false;
-            this.workspaceColumnPaneUpper.VisibleChanged += new System.EventHandler(this.workspaceColumnPaneUpper_VisibleChanged);
+            UpperPane.Border = false;
+            UpperPane.Control = null;
+            UpperPane.FixedHeight = 0;
+            UpperPane.FixedHeightLayout = false;
+            UpperPane.LightweightControl = null;
+            UpperPane.LightweightControlContainerControl = this;
+            UpperPane.Visible = false;
+            UpperPane.VisibleChanged += new System.EventHandler(this.workspaceColumnPaneUpper_VisibleChanged);
             //
             // workspaceColumnPaneLower
             //
-            this.workspaceColumnPaneLower.Border = false;
-            this.workspaceColumnPaneLower.Control = null;
-            this.workspaceColumnPaneLower.FixedHeight = 0;
-            this.workspaceColumnPaneLower.FixedHeightLayout = false;
-            this.workspaceColumnPaneLower.LightweightControl = null;
-            this.workspaceColumnPaneLower.LightweightControlContainerControl = this;
-            this.workspaceColumnPaneLower.Visible = false;
-            this.workspaceColumnPaneLower.VisibleChanged += new System.EventHandler(this.workspaceColumnPaneLower_VisibleChanged);
+            LowerPane.Border = false;
+            LowerPane.Control = null;
+            LowerPane.FixedHeight = 0;
+            LowerPane.FixedHeightLayout = false;
+            LowerPane.LightweightControl = null;
+            LowerPane.LightweightControlContainerControl = this;
+            LowerPane.Visible = false;
+            LowerPane.VisibleChanged += new System.EventHandler(this.workspaceColumnPaneLower_VisibleChanged);
             //
             // WorkspaceColumnLightweightControl
             //
             this.AllowDrop = true;
             ((System.ComponentModel.ISupportInitialize)(this.splitterLightweightControlVertical)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitterLightweightControlHorizontal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workspaceColumnPaneUpper)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workspaceColumnPaneLower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(UpperPane)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(LowerPane)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
         }
@@ -324,24 +314,12 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the upper pane WorkspaceColumnPaneLightweightControl.
         /// </summary>
-        public WorkspaceColumnPaneLightweightControl UpperPane
-        {
-            get
-            {
-                return workspaceColumnPaneUpper;
-            }
-        }
+        public WorkspaceColumnPaneLightweightControl UpperPane { get; private set; }
 
         /// <summary>
         /// Gets or sets the lower pane WorkspaceColumnPaneLightweightControl.
         /// </summary>
-        public WorkspaceColumnPaneLightweightControl LowerPane
-        {
-            get
-            {
-                return workspaceColumnPaneLower;
-            }
-        }
+        public WorkspaceColumnPaneLightweightControl LowerPane { get; private set; }
 
         /// <summary>
         /// Gets or sets the control that is attached to the splitter control.
@@ -599,8 +577,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnMaximumColumnWidthChanged(EventArgs e)
         {
-            if (MaximumColumnWidthChanged != null)
-                MaximumColumnWidthChanged(this, e);
+            MaximumColumnWidthChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -609,8 +586,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnMinimumColumnWidthChanged(EventArgs e)
         {
-            if (MinimumColumnWidthChanged != null)
-                MinimumColumnWidthChanged(this, e);
+            MinimumColumnWidthChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -619,8 +595,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnPreferredColumnWidthChanged(EventArgs e)
         {
-            if (PreferredColumnWidthChanged != null)
-                PreferredColumnWidthChanged(this, e);
+            PreferredColumnWidthChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -629,8 +604,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnHorizontalSplitterPositionChanged(EventArgs e)
         {
-            if (HorizontalSplitterPositionChanged != null)
-                HorizontalSplitterPositionChanged(this, e);
+            HorizontalSplitterPositionChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -639,8 +613,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnHorizontalSplitterBeginMove(EventArgs e)
         {
-            if (HorizontalSplitterBeginMove != null)
-                HorizontalSplitterBeginMove(this, e);
+            HorizontalSplitterBeginMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -649,8 +622,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnHorizontalSplitterEndMove(EventArgs e)
         {
-            if (HorizontalSplitterEndMove != null)
-                HorizontalSplitterEndMove(this, e);
+            HorizontalSplitterEndMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -659,8 +631,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnHorizontalSplitterMoving(EventArgs e)
         {
-            if (HorizontalSplitterMoving != null)
-                HorizontalSplitterMoving(this, e);
+            HorizontalSplitterMoving?.Invoke(this, e);
         }
 
         /// <summary>
@@ -669,8 +640,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnVerticalSplitterBeginMove(EventArgs e)
         {
-            if (VerticalSplitterBeginMove != null)
-                VerticalSplitterBeginMove(this, e);
+            VerticalSplitterBeginMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -679,8 +649,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnVerticalSplitterEndMove(EventArgs e)
         {
-            if (VerticalSplitterEndMove != null)
-                VerticalSplitterEndMove(this, e);
+            VerticalSplitterEndMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -689,8 +658,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnVerticalSplitterMoving(EventArgs e)
         {
-            if (VerticalSplitterMoving != null)
-                VerticalSplitterMoving(this, e);
+            VerticalSplitterMoving?.Invoke(this, e);
         }
 
         #endregion Protected Events
@@ -710,86 +678,86 @@ namespace OpenLiveWriter.ApplicationFramework
             Rectangle layoutRectangle = LayoutVerticalSplitter();
 
             //	Layout the upper and lower panes if they are both visible.
-            if (workspaceColumnPaneUpper.Visible && workspaceColumnPaneLower.Visible)
+            if (UpperPane.Visible && LowerPane.Visible)
             {
                 //	Calculate the pane layout height (the area available for layout of the upper
                 //	and lower panes).
                 int paneLayoutHeight = layoutRectangle.Height - horizontalSplitterHeight;
 
                 //	If the upper pane is fixed height, layout the column this way.
-                if (workspaceColumnPaneUpper.FixedHeightLayout)
+                if (UpperPane.FixedHeightLayout)
                 {
                     //	If the upper pane's fixed height is larger than the layout rectangle height,
                     //	layout just the upper pane.
-                    if (workspaceColumnPaneUpper.FixedHeight > layoutRectangle.Height)
+                    if (UpperPane.FixedHeight > layoutRectangle.Height)
                     {
-                        workspaceColumnPaneUpper.VirtualBounds = layoutRectangle;
+                        UpperPane.VirtualBounds = layoutRectangle;
                         splitterLightweightControlHorizontal.Visible = false;
-                        workspaceColumnPaneLower.VirtualBounds = Rectangle.Empty;
-                        workspaceColumnPaneUpper.PerformLayout();
+                        LowerPane.VirtualBounds = Rectangle.Empty;
+                        UpperPane.PerformLayout();
                     }
                     //	Layout both the upper and lower panes.
                     else
                     {
                         //	Layout the upper pane lightweight control.
-                        workspaceColumnPaneUpper.VirtualBounds = new Rectangle(layoutRectangle.X,
+                        UpperPane.VirtualBounds = new Rectangle(layoutRectangle.X,
                                                                                 layoutRectangle.Y,
                                                                                 layoutRectangle.Width,
-                                                                                workspaceColumnPaneUpper.FixedHeight);
-                        workspaceColumnPaneUpper.PerformLayout();
+                                                                                UpperPane.FixedHeight);
+                        UpperPane.PerformLayout();
 
                         //	Layout the horizontal splitter lightweight control and disable it.
                         splitterLightweightControlHorizontal.Visible = true;
                         splitterLightweightControlHorizontal.Enabled = false;
                         splitterLightweightControlHorizontal.VirtualBounds = new Rectangle(layoutRectangle.X,
-                                                                                            workspaceColumnPaneUpper.VirtualBounds.Bottom,
+                                                                                            UpperPane.VirtualBounds.Bottom,
                                                                                             layoutRectangle.Width,
                                                                                             horizontalSplitterHeight);
 
                         //	Layout the lower pane lightweight control.
-                        workspaceColumnPaneLower.VirtualBounds = new Rectangle(layoutRectangle.X,
+                        LowerPane.VirtualBounds = new Rectangle(layoutRectangle.X,
                                                                                 splitterLightweightControlHorizontal.VirtualBounds.Bottom,
                                                                                 layoutRectangle.Width,
-                                                                                layoutRectangle.Height - (workspaceColumnPaneUpper.VirtualHeight + horizontalSplitterHeight));
-                        workspaceColumnPaneLower.PerformLayout();
+                                                                                layoutRectangle.Height - (UpperPane.VirtualHeight + horizontalSplitterHeight));
+                        LowerPane.PerformLayout();
                     }
                 }
                 //	If the lower pane is fixed height, layout the column this way.
-                else if (workspaceColumnPaneLower.FixedHeightLayout)
+                else if (LowerPane.FixedHeightLayout)
                 {
                     //	If the upper pane's fixed height is larger than the layout rectangle height,
                     //	layout just the upper pane.
-                    if (workspaceColumnPaneLower.FixedHeight > layoutRectangle.Height)
+                    if (LowerPane.FixedHeight > layoutRectangle.Height)
                     {
-                        workspaceColumnPaneLower.VirtualBounds = layoutRectangle;
+                        LowerPane.VirtualBounds = layoutRectangle;
                         splitterLightweightControlHorizontal.Visible = false;
-                        workspaceColumnPaneLower.VirtualBounds = Rectangle.Empty;
-                        workspaceColumnPaneLower.PerformLayout();
+                        LowerPane.VirtualBounds = Rectangle.Empty;
+                        LowerPane.PerformLayout();
                     }
                     //	Layout both the upper and lower panes.
                     else
                     {
                         //	Layout the lower pane lightweight control.
-                        workspaceColumnPaneLower.VirtualBounds = new Rectangle(layoutRectangle.X,
-                                                                                layoutRectangle.Bottom - workspaceColumnPaneLower.FixedHeight,
+                        LowerPane.VirtualBounds = new Rectangle(layoutRectangle.X,
+                                                                                layoutRectangle.Bottom - LowerPane.FixedHeight,
                                                                                 layoutRectangle.Width,
-                                                                                workspaceColumnPaneLower.FixedHeight);
-                        workspaceColumnPaneLower.PerformLayout();
+                                                                                LowerPane.FixedHeight);
+                        LowerPane.PerformLayout();
 
                         //	Layout the horizontal splitter lightweight control and disable it.
                         splitterLightweightControlHorizontal.Visible = true;
                         splitterLightweightControlHorizontal.Enabled = false;
                         splitterLightweightControlHorizontal.VirtualBounds = new Rectangle(layoutRectangle.X,
-                                                                                            workspaceColumnPaneLower.VirtualBounds.Top - horizontalSplitterHeight,
+                                                                                            LowerPane.VirtualBounds.Top - horizontalSplitterHeight,
                                                                                             layoutRectangle.Width,
                                                                                             horizontalSplitterHeight);
 
                         //	Layout the upper pane lightweight control.
-                        workspaceColumnPaneUpper.VirtualBounds = new Rectangle(layoutRectangle.X,
+                        UpperPane.VirtualBounds = new Rectangle(layoutRectangle.X,
                                                                                 layoutRectangle.Y,
                                                                                 layoutRectangle.Width,
                                                                                 splitterLightweightControlHorizontal.VirtualBounds.Top);
-                        workspaceColumnPaneUpper.PerformLayout();
+                        UpperPane.PerformLayout();
                     }
                 }
                 //	If the pane layout height is too small (i.e. there isn't enough room to show
@@ -798,8 +766,8 @@ namespace OpenLiveWriter.ApplicationFramework
                 else if (paneLayoutHeight < 10 * horizontalSplitterHeight)
                 {
                     //	Only the upper pane lightweight control is visible.
-                    workspaceColumnPaneUpper.VirtualBounds = layoutRectangle;
-                    workspaceColumnPaneLower.VirtualBounds = Rectangle.Empty;
+                    UpperPane.VirtualBounds = layoutRectangle;
+                    LowerPane.VirtualBounds = Rectangle.Empty;
                     splitterLightweightControlHorizontal.Visible = false;
                     splitterLightweightControlHorizontal.VirtualBounds = Rectangle.Empty;
                 }
@@ -809,47 +777,47 @@ namespace OpenLiveWriter.ApplicationFramework
                     int horizontalSplitterLayoutPosition = HorizontalSplitterLayoutPosition;
 
                     //	Layout the upper pane lightweight control.
-                    workspaceColumnPaneUpper.VirtualBounds = new Rectangle(layoutRectangle.X,
+                    UpperPane.VirtualBounds = new Rectangle(layoutRectangle.X,
                                                                             layoutRectangle.Y,
                                                                             layoutRectangle.Width,
                                                                             horizontalSplitterLayoutPosition);
-                    workspaceColumnPaneUpper.PerformLayout();
+                    UpperPane.PerformLayout();
 
                     //	Layout the horizontal splitter lightweight control and enable it.
                     splitterLightweightControlHorizontal.Visible = true;
                     splitterLightweightControlHorizontal.Enabled = true;
                     splitterLightweightControlHorizontal.VirtualBounds = new Rectangle(layoutRectangle.X,
-                                                                                        workspaceColumnPaneUpper.VirtualBounds.Bottom,
+                                                                                        UpperPane.VirtualBounds.Bottom,
                                                                                         layoutRectangle.Width,
                                                                                         horizontalSplitterHeight);
 
                     //	Layout the lower pane lightweight control.
-                    workspaceColumnPaneLower.VirtualBounds = new Rectangle(layoutRectangle.X,
+                    LowerPane.VirtualBounds = new Rectangle(layoutRectangle.X,
                                                                                                 splitterLightweightControlHorizontal.VirtualBounds.Bottom,
                                                                                                 layoutRectangle.Width,
-                                                                                                layoutRectangle.Height - (workspaceColumnPaneUpper.VirtualHeight + horizontalSplitterHeight));
-                    workspaceColumnPaneLower.PerformLayout();
+                                                                                                layoutRectangle.Height - (UpperPane.VirtualHeight + horizontalSplitterHeight));
+                    LowerPane.PerformLayout();
                 }
             }
             //	Layout the upper pane, if it's visible.  Note that we ignore the FixedHeight
             //	property of the pane in this case because it doesn't make sense to layout a
             //	pane that doesn't fill the entire height of the column.
-            else if (workspaceColumnPaneUpper.Visible)
+            else if (UpperPane.Visible)
             {
                 //	Only the upper pane lightweight control is visible.
-                workspaceColumnPaneUpper.VirtualBounds = layoutRectangle;
+                UpperPane.VirtualBounds = layoutRectangle;
                 splitterLightweightControlHorizontal.Visible = false;
-                workspaceColumnPaneUpper.PerformLayout();
+                UpperPane.PerformLayout();
             }
             //	Layout the lower pane, if it's visible.  Note that we ignore the FixedHeight
             //	property of the pane in this case because it doesn't make sense to layout a
             //	pane that doesn't fill the entire height of the column.
-            else if (workspaceColumnPaneLower.Visible)
+            else if (LowerPane.Visible)
             {
                 //	Only the lower pane lightweight control is visible.
-                workspaceColumnPaneLower.VirtualBounds = layoutRectangle;
+                LowerPane.VirtualBounds = layoutRectangle;
                 splitterLightweightControlHorizontal.Visible = false;
-                workspaceColumnPaneLower.PerformLayout();
+                LowerPane.PerformLayout();
             }
         }
 

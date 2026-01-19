@@ -16,24 +16,9 @@ namespace OpenLiveWriter.ApplicationFramework
     public class CommandBarLabelEntry : CommandBarEntry
     {
         /// <summary>
-        ///	The text for this CommandBarLabelEntry.
-        /// </summary>
-        private string text;
-
-        /// <summary>
         ///	Gets or sets the text for this CommandBarLabelEntry.
         /// </summary>
-        public string Text
-        {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                text = value;
-            }
-        }
+        public string Text { get; set; }
 
         /// <summary>
         /// The CommandBarLabelLightweightControl for this entry.
@@ -62,7 +47,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public override LightweightControl GetLightweightControl(CommandBarLightweightControl commandBarLightweightControl, bool rightAligned)
         {
             if (commandBarLabelLightweightControl == null)
-                commandBarLabelLightweightControl = new CommandBarLabelLightweightControl(text);
+                commandBarLabelLightweightControl = new CommandBarLabelLightweightControl(Text);
             return commandBarLabelLightweightControl;
         }
     }

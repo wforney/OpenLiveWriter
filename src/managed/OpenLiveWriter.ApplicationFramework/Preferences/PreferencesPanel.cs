@@ -29,7 +29,6 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// The panel bitmap.
         /// </summary>
-        private Bitmap panelBitmap;
 
         #endregion Private Member Variables
 
@@ -141,17 +140,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
                 DefaultValue(null),
                 Description("Specifies the panel bitmap.")
         ]
-        public Bitmap PanelBitmap
-        {
-            get
-            {
-                return panelBitmap;
-            }
-            set
-            {
-                panelBitmap = value;
-            }
-        }
+        public Bitmap PanelBitmap { get; set; }
 
         #endregion Public Properties
 
@@ -190,8 +179,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnModified(EventArgs e)
         {
-            if (Modified != null)
-                Modified(this, e);
+            Modified?.Invoke(this, e);
         }
 
         #endregion Protected Events

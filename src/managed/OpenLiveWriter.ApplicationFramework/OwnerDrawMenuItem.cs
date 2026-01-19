@@ -22,11 +22,6 @@ namespace OpenLiveWriter.ApplicationFramework
     /// </summary>
     public class OwnerDrawMenuItem : MenuItem
     {
-        /// <summary>
-        /// The menu type.
-        /// </summary>
-        private readonly MenuType menuType;
-
         private readonly Font menuFont;
 
         /// <summary>
@@ -165,7 +160,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public OwnerDrawMenuItem(MenuType menuType, string text)
         {
             //	Set the menu type value.
-            this.menuType = menuType;
+            MenuType = menuType;
             this.text = text;
             Text = text;
 
@@ -179,13 +174,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets the menu type.
         /// </summary>
-        public MenuType MenuType
-        {
-            get
-            {
-                return menuType;
-            }
-        }
+        public MenuType MenuType { get; }
 
         /// <summary>
         /// Raises the BeforeShow event.
@@ -236,8 +225,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnBeforeShow(EventArgs e)
         {
-            if (BeforeShow != null)
-                BeforeShow(this, e);
+            BeforeShow?.Invoke(this, e);
         }
 
         /// <summary>

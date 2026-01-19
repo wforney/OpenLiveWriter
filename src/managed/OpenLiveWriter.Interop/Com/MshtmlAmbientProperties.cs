@@ -5,14 +5,14 @@ namespace OpenLiveWriter.Interop.Com
 {
     public struct MSHTML_DISPID
     {
-        public const int WINDOWOBJECT = (-5500);
-        public const int LOCATIONOBJECT = (-5506);
-        public const int HISTORYOBJECT = (-5507);
-        public const int NAVIGATOROBJECT = (-5508);
-        public const int SECURITYCTX = (-5511);
-        public const int AMBIENT_DLCONTROL = (-5512);
-        public const int AMBIENT_USERAGENT = (-5513);
-        public const int SECURITYDOMAIN = (-5514);
+        public const int WINDOWOBJECT = -5500;
+        public const int LOCATIONOBJECT = -5506;
+        public const int HISTORYOBJECT = -5507;
+        public const int NAVIGATOROBJECT = -5508;
+        public const int SECURITYCTX = -5511;
+        public const int AMBIENT_DLCONTROL = -5512;
+        public const int AMBIENT_USERAGENT = -5513;
+        public const int SECURITYDOMAIN = -5514;
     }
 
     public struct DLCTL

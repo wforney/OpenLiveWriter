@@ -17,11 +17,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private Container components = null;
 
         /// <summary>
-        /// The command bar identifier.
-        /// </summary>
-        private string identifier;
-
-        /// <summary>
         /// Gets or sets the command bar identifier.
         /// </summary>
         [
@@ -29,22 +24,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(false),
                 Description("The identifier of the command bar definition.")
         ]
-        public string Identifier
-        {
-            get
-            {
-                return identifier;
-            }
-            set
-            {
-                identifier = value;
-            }
-        }
-
-        /// <summary>
-        /// Collection of command bar entries that defines what will appear on the command bar.
-        /// </summary>
-        private CommandBarEntryCollection leftCommandBarEntries = new CommandBarEntryCollection();
+        public string Identifier { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -53,22 +33,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public CommandBarEntryCollection LeftCommandBarEntries
-        {
-            get
-            {
-                return leftCommandBarEntries;
-            }
-            set
-            {
-                leftCommandBarEntries = value;
-            }
-        }
-
-        /// <summary>
-        /// Collection of command bar entries that defines what will appear on the command bar.
-        /// </summary>
-        private CommandBarEntryCollection rightCommandBarEntries = new CommandBarEntryCollection();
+        public CommandBarEntryCollection LeftCommandBarEntries { get; set; } = new CommandBarEntryCollection();
 
         /// <summary>
         /// Gets or sets the collection of command bar entries that define the command bar.
@@ -77,17 +42,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Localizable(true),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Content)
         ]
-        public CommandBarEntryCollection RightCommandBarEntries
-        {
-            get
-            {
-                return rightCommandBarEntries;
-            }
-            set
-            {
-                rightCommandBarEntries = value;
-            }
-        }
+        public CommandBarEntryCollection RightCommandBarEntries { get; set; } = new CommandBarEntryCollection();
 
         /// <summary>
         /// Initializes a new instance of the CommandBarDefinition class.

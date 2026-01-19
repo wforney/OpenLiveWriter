@@ -61,17 +61,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             public MenuCommandObjectListBoxAdapter(IMenuCommandObject menuCommandObject)
             {
-                _menuCommandObject = menuCommandObject;
+                MenuCommandObject = menuCommandObject;
             }
 
             public override string ToString()
             {
-                return _menuCommandObject.CaptionNoMnemonic;
+                return MenuCommandObject.CaptionNoMnemonic;
             }
 
-            public IMenuCommandObject MenuCommandObject { get { return _menuCommandObject; } }
-            private readonly IMenuCommandObject _menuCommandObject;
-
+            public IMenuCommandObject MenuCommandObject { get; }
         }
 
         /// <summary>

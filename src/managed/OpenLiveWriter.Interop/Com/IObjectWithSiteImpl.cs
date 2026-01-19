@@ -15,11 +15,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <summary>
         ///  IUnknown pointer to the site that was set
         /// </summary>
-        public object Site
-        {
-            get { return m_IUnkSite; }
-        }
-        private object m_IUnkSite = null;
+        public object Site { get; private set; } = null;
 
         /// <summary>
         /// Provides the IUnknown site pointer (save for returning in GetSite)
@@ -28,14 +24,14 @@ namespace OpenLiveWriter.Interop.Com
         public virtual int SetSite([In, MarshalAs(UnmanagedType.IUnknown)] Object pUnkSite)
         {
             // we are being set with a new site, release reference to existing site
-            if (m_IUnkSite != null)
+            if (Site != null)
             {
-                Marshal.ReleaseComObject(m_IUnkSite);
-                m_IUnkSite = null;
+                Marshal.ReleaseComObject(Site);
+                Site = null;
             }
 
             // grab the new site
-            m_IUnkSite = pUnkSite;
+            Site = pUnkSite;
 
             return HRESULT.S_OK;
 
@@ -54,10 +50,10 @@ namespace OpenLiveWriter.Interop.Com
             ppvSite = null;
 
             // if we have an BandSite, delegate to its QueryInterface method
-            if (m_IUnkSite != null)
+            if (Site != null)
             {
                 // manually call Marshal.QueryInterface to delegate the request
-                IntPtr pUnk = Marshal.GetIUnknownForObject(m_IUnkSite);
+                IntPtr pUnk = Marshal.GetIUnknownForObject(Site);
                 Marshal.QueryInterface(pUnk, ref riid, out IntPtr pReturned);
                 Marshal.Release(pUnk);
 

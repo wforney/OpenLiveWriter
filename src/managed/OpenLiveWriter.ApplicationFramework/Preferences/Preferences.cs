@@ -25,7 +25,6 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// The settings persister helper.
         /// </summary>
-        private readonly SettingsPersisterHelper settingsPersisterHelper;
 
         /// <summary>
         ///  A value that indicates that the Preferences object has been modified since being
@@ -86,7 +85,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         public Preferences(string subKey, bool monitorChanges)
         {
             //	Instantiate the settings persister helper object.
-            settingsPersisterHelper = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings(subKey);
+            SettingsPersisterHelper = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings(subKey);
 
             //	Load preferences
             LoadPreferences();
@@ -163,13 +162,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <summary>
         /// Gets the SettingsPersisterHelper for this Preferences object.
         /// </summary>
-        protected SettingsPersisterHelper SettingsPersisterHelper
-        {
-            get
-            {
-                return settingsPersisterHelper;
-            }
-        }
+        protected SettingsPersisterHelper SettingsPersisterHelper { get; }
 
         #endregion Protected Properties
 
@@ -181,8 +174,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnPreferencesModified(EventArgs e)
         {
-            if (PreferencesModified != null)
-                PreferencesModified(this, e);
+            PreferencesModified?.Invoke(this, e);
         }
 
         /// <summary>
@@ -191,8 +183,7 @@ namespace OpenLiveWriter.ApplicationFramework.Preferences
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnPreferencesChanged(EventArgs e)
         {
-            if (PreferencesChanged != null)
-                PreferencesChanged(this, e);
+            PreferencesChanged?.Invoke(this, e);
         }
 
         #endregion Protected Events

@@ -66,11 +66,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private string identifier;
 
         /// <summary>
-        /// The description of the command used by accessibility client applications.
-        /// </summary>
-        private string accessibleDescription;
-
-        /// <summary>
         /// The name of the command used by accessibility client applications
         /// </summary>
         private string accessibleName;
@@ -81,11 +76,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private Shortcut shortcut = Shortcut.None;
 
         private Keys advancedShortcut = Keys.None;
-
-        /// <summary>
-        /// The AcceleratorMnemonic of the command.
-        /// </summary>
-        private AcceleratorMnemonic acceleratorMnemonic;
 
         /// <summary>
         /// A value indicating whether the command should be visible on a context menu.
@@ -103,38 +93,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private bool visibleOnCommandBar = true;
 
         /// <summary>
-        /// A value indicating whether the Shortcut of the command should be shown when the command
-        /// appears on a menu.
-        /// </summary>
-        private bool showShortcut = true;
-
-        /// <summary>
-        /// The menu text of the command.
-        /// </summary>
-        private string menuText = string.Empty;
-
-        /// <summary>
-        /// The menu format arguments.
-        /// </summary>
-        private object[] menuFormatArgs;
-
-        /// <summary>
-        /// The menu path of the command when it appears on a main menu.  The menu path has the form Name@n/Name@n where 'n'
-        /// is the merge level.
-        /// </summary>
-        private string mainMenuPath = string.Empty;
-
-        private bool suppressMenuBitmap;
-
-        /// <summary>
         /// Menu bitmap for the latched enabled state.
         /// </summary>
         private Bitmap menuBitmapLatchedEnabled;
-
-        /// <summary>
-        /// Command bar button style.
-        /// </summary>
-        private CommandBarButtonStyle commandBarButtonStyle = CommandBarButtonStyle.System;
 
         /// <summary>
         /// Command bar button text.
@@ -162,38 +123,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private Bitmap commandBarButtonBitmapPushed;
 
         /// <summary>
-        /// The AcceleratorMnemonic that will show the CommandBarButtonContextMenu.
-        /// </summary>
-        private AcceleratorMnemonic commandBarButtonContextMenuAcceleratorMnemonic;
-
-        /// <summary>
-        /// The command bar button context menu.
-        /// </summary>
-        private CommandContextMenu commandBarButtonContextMenu;
-
-        /// <summary>
         /// The command bar button command context menu definition.
         /// </summary>
         private CommandContextMenuDefinition commandBarButtonContextMenuDefinition;
-
-        private CommandBarButtonContextMenuHandler commandBarButtonContextMenuHandler;
-
-        /// <summary>
-        /// A value indicating whether the command bar button context menu is accessed through a
-        /// separate dropdown control.
-        /// </summary>
-        private bool commandBarButtonContextMenuDropDown;
-
-        /// <summary>
-        /// The command text.  This is the "user visible text" that is associate with the command
-        /// (such as "Save All").  It appears whenever the user can see text for the command.
-        /// </summary>
-        private string text;
-
-        /// <summary>
-        /// The command tag.
-        /// </summary>
-        private object tag;
 
         /// <summary>
         /// A value indicating whether the Command is on or not.
@@ -592,17 +524,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the description that will be reported to accessibility clients.")
         ]
-        public string AccessibleDescription
-        {
-            get
-            {
-                return accessibleDescription;
-            }
-            set
-            {
-                accessibleDescription = value;
-            }
-        }
+        public string AccessibleDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the command used by accessibility client applications.
@@ -678,17 +600,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(true),
                 Description("Specifies the AcceleratorMnemonic of the command.")
         ]
-        public AcceleratorMnemonic AcceleratorMnemonic
-        {
-            get
-            {
-                return acceleratorMnemonic;
-            }
-            set
-            {
-                acceleratorMnemonic = value;
-            }
-        }
+        public AcceleratorMnemonic AcceleratorMnemonic { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command should be visible on a context menu.
@@ -775,17 +687,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(true),
                 Description("Specifies whether the Shortcut of the command should be shown when the command appears on a main menu.")
         ]
-        public bool ShowShortcut
-        {
-            get
-            {
-                return showShortcut;
-            }
-            set
-            {
-                showShortcut = value;
-            }
-        }
+        public bool ShowShortcut { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the main menu path of the command.
@@ -796,17 +698,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the menu text of the command when it appears on a menu.")
         ]
-        public string MenuText
-        {
-            get
-            {
-                return menuText;
-            }
-            set
-            {
-                menuText = value;
-            }
-        }
+        public string MenuText { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the menu format arguments.
@@ -815,17 +707,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Browsable(false),
                 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
         ]
-        public object[] MenuFormatArgs
-        {
-            get
-            {
-                return menuFormatArgs;
-            }
-            set
-            {
-                menuFormatArgs = value;
-            }
-        }
+        public object[] MenuFormatArgs { get; set; }
 
         /// <summary>
         /// Gets or sets the main menu path of the command.
@@ -836,17 +718,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the menu path of the command when it appears on a main menu.  Include the menu merge order after each path entry.  Example: 'File@0/[-]New@1'.")
         ]
-        public string MainMenuPath
-        {
-            get
-            {
-                return mainMenuPath;
-            }
-            set
-            {
-                mainMenuPath = value;
-            }
-        }
+        public string MainMenuPath { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the menu bitmap for the disabled state.
@@ -861,7 +733,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapDisabled;
+                return SuppressMenuBitmap ? null : CommandBarButtonBitmapDisabled;
             }
         }
 
@@ -878,25 +750,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapEnabled;
+                return SuppressMenuBitmap ? null : CommandBarButtonBitmapEnabled;
             }
         }
 
         [Localizable(false)]
-        public bool SuppressMenuBitmap
-        {
-            get { return suppressMenuBitmap; }
-            set { suppressMenuBitmap = value; }
-        }
+        public bool SuppressMenuBitmap { get; set; }
 
         [Localizable(false)]
-        public bool SuppressCommandBarBitmap
-        {
-            get { return _suppressCommandBarBitmap; }
-            set { _suppressCommandBarBitmap = value; }
-        }
-
-        private bool _suppressCommandBarBitmap = false;
+        public bool SuppressCommandBarBitmap { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the menu bitmap for the latched enabled state.
@@ -957,7 +819,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return suppressMenuBitmap ? null : CommandBarButtonBitmapSelected;
+                return SuppressMenuBitmap ? null : CommandBarButtonBitmapSelected;
             }
         }
 
@@ -970,17 +832,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(CommandBarButtonStyle.System),
                 Description("Specifies the command bar button style.")
         ]
-        public CommandBarButtonStyle CommandBarButtonStyle
-        {
-            get
-            {
-                return commandBarButtonStyle;
-            }
-            set
-            {
-                commandBarButtonStyle = value;
-            }
-        }
+        public CommandBarButtonStyle CommandBarButtonStyle { get; set; } = CommandBarButtonStyle.System;
 
         /// <summary>
         /// Gets or sets the command bar button bar button text.
@@ -1129,17 +981,7 @@ namespace OpenLiveWriter.ApplicationFramework
             Category("Behavior"),
             Description("Not normally used!  Specifies the the AcceleratorMnemonic that will show the CommandBarButtonContextMenu of the Command.  This value is only useful under certain conditions.")
         ]
-        public AcceleratorMnemonic CommandBarButtonContextMenuAcceleratorMnemonic
-        {
-            get
-            {
-                return commandBarButtonContextMenuAcceleratorMnemonic;
-            }
-            set
-            {
-                commandBarButtonContextMenuAcceleratorMnemonic = value;
-            }
-        }
+        public AcceleratorMnemonic CommandBarButtonContextMenuAcceleratorMnemonic { get; set; }
 
         /// <summary>
         /// Gets or sets the command bar button context menu.
@@ -1150,17 +992,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the command bar button context menu.")
         ]
-        public CommandContextMenu CommandBarButtonContextMenu
-        {
-            get
-            {
-                return commandBarButtonContextMenu;
-            }
-            set
-            {
-                commandBarButtonContextMenu = value;
-            }
-        }
+        public CommandContextMenu CommandBarButtonContextMenu { get; set; }
 
         /// <summary>
         /// Gets or sets the command bar button context menu.
@@ -1187,24 +1019,9 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command bar button mini form factory
         /// </summary>
-        public ICommandContextMenuControlHandler CommandBarButtonContextMenuControlHandler
-        {
-            get
-            {
-                return commandBarButtonContextMenuControlHandler;
-            }
-            set
-            {
-                commandBarButtonContextMenuControlHandler = value;
-            }
-        }
-        private ICommandContextMenuControlHandler commandBarButtonContextMenuControlHandler = null;
+        public ICommandContextMenuControlHandler CommandBarButtonContextMenuControlHandler { get; set; } = null;
 
-        public CommandBarButtonContextMenuHandler CommandBarButtonContextMenuHandler
-        {
-            get { return commandBarButtonContextMenuHandler; }
-            set { commandBarButtonContextMenuHandler = value; }
-        }
+        public CommandBarButtonContextMenuHandler CommandBarButtonContextMenuHandler { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command bar context menu is accessed
@@ -1216,17 +1033,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies whether the the command bar button context menu is accessed through a separate dropdown control.")
         ]
-        public bool CommandBarButtonContextMenuDropDown
-        {
-            get
-            {
-                return commandBarButtonContextMenuDropDown;
-            }
-            set
-            {
-                commandBarButtonContextMenuDropDown = value;
-            }
-        }
+        public bool CommandBarButtonContextMenuDropDown { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the command bar context menu is accessed
@@ -1238,18 +1045,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(false),
                 Description("Specifies whether the parent should be invalidated after showing the context menu (used for IE ToolBand).")
         ]
-        public bool CommandBarButtonContextMenuInvalidateParent
-        {
-            get
-            {
-                return commandBarButtonContextMenuInvalidateParent;
-            }
-            set
-            {
-                commandBarButtonContextMenuInvalidateParent = value;
-            }
-        }
-        private bool commandBarButtonContextMenuInvalidateParent = false;
+        public bool CommandBarButtonContextMenuInvalidateParent { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the command text.
@@ -1260,17 +1056,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the text that is associated with the command.")
         ]
-        public string Text
-        {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                text = value;
-            }
-        }
+        public string Text { get; set; }
 
         private LazyLoader<Bitmap> largeImage;
         /// <summary>
@@ -1507,17 +1293,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the tag that is associated with the command.")
         ]
-        public object Tag
-        {
-            get
-            {
-                return tag;
-            }
-            set
-            {
-                tag = value;
-            }
-        }
+        public object Tag { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the Command is on or not.

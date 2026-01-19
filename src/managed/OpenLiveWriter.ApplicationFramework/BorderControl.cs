@@ -50,12 +50,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private bool themeBorder = false;
 
         /// <summary>
-        /// A value indicating whether the height of the BorderControl is automatically determined
-        /// based on the height of the control.
-        /// </summary>
-        private bool autoHeight = false;
-
-        /// <summary>
         /// The top inset.
         /// </summary>
         private int topInset;
@@ -198,17 +192,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// Gets or sets a value indicating whether the height of the BorderControl is
         /// automatically determined based on the height of the control.
         /// </summary>
-        public bool AutoHeight
-        {
-            get
-            {
-                return autoHeight;
-            }
-            set
-            {
-                autoHeight = value;
-            }
-        }
+        public bool AutoHeight { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the top inset.
@@ -334,7 +318,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	If this is an auto-height BorderControl, and we have a control, constrain the height
             //	of the BorderControl based on the height of the control.
-            if (autoHeight && control != null)
+            if (AutoHeight && control != null)
                 height = control.Size.Height + (topInset + bottomInset) + (BORDER_SIZE * 2);
 
             //	Call the base class's method.
@@ -381,7 +365,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 control.Bounds = new Rectangle(leftInset,
                                                 topInset,
                                                 focusWatchingUserControl.Width - rightInset,
-                                                autoHeight ? control.Height : focusWatchingUserControl.Height - (topInset + bottomInset));
+                                                AutoHeight ? control.Height : focusWatchingUserControl.Height - (topInset + bottomInset));
 
             //	Make sure the control gets repainted.
             Invalidate();

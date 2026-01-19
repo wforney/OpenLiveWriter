@@ -29,12 +29,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         ///	A value which indicates whether a separator will be placed before the entry.
         /// </summary>
-        private bool separatorBefore;
-
-        /// <summary>
-        ///	A value which indicates whether a separator will be placed after the entry.
-        /// </summary>
-        private bool separatorAfter;
 
         #endregion Private Member Variables
 
@@ -103,17 +97,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(false),
                 Description("Indicates whether a separator will be placed before the entry.")
         ]
-        public bool SeparatorBefore
-        {
-            get
-            {
-                return separatorBefore;
-            }
-            set
-            {
-                separatorBefore = value;
-            }
-        }
+        public bool SeparatorBefore { get; set; }
 
         /// <summary>
         ///	A value which indicates whether a separator will be placed before the entry.
@@ -123,30 +107,9 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(false),
                 Description("Indicates whether a separator will be placed after the entry.")
         ]
-        public bool SeparatorAfter
-        {
-            get
-            {
-                return separatorAfter;
-            }
-            set
-            {
-                separatorAfter = value;
-            }
-        }
+        public bool SeparatorAfter { get; set; }
 
-        public bool On
-        {
-            get
-            {
-                return _on;
-            }
-            set
-            {
-                _on = value;
-            }
-        }
-        private bool _on = true;
+        public bool On { get; set; } = true;
 
         #endregion Public Properties
 
@@ -170,18 +133,18 @@ namespace OpenLiveWriter.ApplicationFramework
 
             //	Sort out whether we'll be adding separator menu items.
             int count = 1;
-            if (separatorBefore)
+            if (SeparatorBefore)
                 count++;
-            if (separatorAfter)
+            if (SeparatorAfter)
                 count++;
 
             //	Return the array of menu items for this MenuDefinitionEntry.
             int index = 0;
             MenuItem[] menuItems = new MenuItem[count];
-            if (separatorBefore)
+            if (SeparatorBefore)
                 menuItems[index++] = MakeSeparatorMenuItem(MenuType.Context);
             menuItems[index++] = menuItem;
-            if (separatorAfter)
+            if (SeparatorAfter)
                 menuItems[index] = MakeSeparatorMenuItem(MenuType.Context);
             return menuItems;
         }

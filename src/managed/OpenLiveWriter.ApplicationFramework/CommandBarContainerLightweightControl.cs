@@ -130,19 +130,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public int OffsetSpacing
-        {
-            get
-            {
-                return _offSetSpacing;
-            }
-            set
-            {
-                _offSetSpacing = value;
-            }
-        }
-
-        private int _offSetSpacing = 0;
+        public int OffsetSpacing { get; set; } = 0;
 
         #endregion Public Properties
 

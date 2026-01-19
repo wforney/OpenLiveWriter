@@ -24,68 +24,24 @@ namespace OpenLiveWriter.ApplicationFramework
         private readonly CommandMenuBuilder commandMenuBuilder;
 
         /// <summary>
-        ///	Merge menu entry level.
-        /// </summary>
-        private readonly int level;
-
-        /// <summary>
         /// Gets the merge menu entry level.
         /// </summary>
-        public int Level
-        {
-            get
-            {
-                return level;
-            }
-        }
-
-        /// <summary>
-        ///	Merge menu entry position.
-        /// </summary>
-        private readonly int position;
+        public int Level { get; }
 
         /// <summary>
         /// Gets the merge menu entry position.
         /// </summary>
-        public int Position
-        {
-            get
-            {
-                return position;
-            }
-        }
-
-        /// <summary>
-        /// Merge menu entry text.
-        /// </summary>
-        private readonly string text;
+        public int Position { get; }
 
         /// <summary>
         /// Gets the merge menu entry text.
         /// </summary>
-        public string Text
-        {
-            get
-            {
-                return text;
-            }
-        }
-
-        /// <summary>
-        /// Merge menu entry command.
-        /// </summary>
-        private readonly Command command;
+        public string Text { get; }
 
         /// <summary>
         /// Gets the merge menu entry command.
         /// </summary>
-        public Command Command
-        {
-            get
-            {
-                return command;
-            }
-        }
+        public Command Command { get; }
 
         /// <summary>
         /// Child merge menu entries.
@@ -98,7 +54,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public CommandMenuBuilderEntry(CommandMenuBuilder commandMenuBuilder)
         {
             this.commandMenuBuilder = commandMenuBuilder;
-            this.level = -1;
+            Level = -1;
         }
 
         /// <summary>
@@ -122,12 +78,12 @@ namespace OpenLiveWriter.ApplicationFramework
         public CommandMenuBuilderEntry(CommandMenuBuilder commandMenuBuilder, int level, int position, string text, Command command)
         {
             this.commandMenuBuilder = commandMenuBuilder;
-            this.level = level;
-            this.position = position;
-            this.text = text;
+            Level = level;
+            Position = position;
+            Text = text;
             //			if (command != null)
             //				this.text = command.Identifier;
-            this.command = command;
+            Command = command;
         }
 
         /// <summary>
@@ -202,7 +158,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 //	Create the menu item for this child merge menu entry.
                 MenuItem menuItem;
                 bool separatorBefore, separatorAfter;
-                if (commandMenuBuilder.MenuType == MenuType.Main && mergeMenuEntry.level == 0)
+                if (commandMenuBuilder.MenuType == MenuType.Main && mergeMenuEntry.Level == 0)
                 {
                     //	Level zero of a main menu.
                     menuItem = new OwnerDrawMenuItem(commandMenuBuilder.MenuType, text);

@@ -21,24 +21,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private Container components = null;
 
         /// <summary>
-        /// The control for the command bar control lightweight control.
-        /// </summary>
-        private Control control;
-
-        /// <summary>
         /// Gets or sets the control for the command bar control lightweight control.
         /// </summary>
-        public Control Control
-        {
-            get
-            {
-                return control;
-            }
-            set
-            {
-                control = value;
-            }
-        }
+        public Control Control { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the CommandBarControlLightweightControl class.
@@ -75,7 +60,7 @@ namespace OpenLiveWriter.ApplicationFramework
             /// </summary>
             InitializeComponent();
             InitializeObject();
-            this.control = control;
+            Control = control;
             control.TabStop = false;
         }
 
@@ -107,15 +92,15 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	Call the base class's method so that registered delegates receive the event.
             base.OnLayout(e);
-            VirtualSize = new Size(control.Width + 4, control.Height);
+            VirtualSize = new Size(Control.Width + 4, Control.Height);
         }
 
         private void SyncControlLocation()
         {
             Rectangle bounds = new Rectangle(
                 VirtualClientPointToParent(new Point(2, 0)),
-                control.Size);
-            control.Location = bounds.Location;
+                Control.Size);
+            Control.Location = bounds.Location;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -145,8 +130,8 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnLightweightControlContainerControlChanged(e);
 
             //
-            if (control.Parent != Parent)
-                control.Parent = Parent;
+            if (Control.Parent != Parent)
+                Control.Parent = Parent;
 
             if (Parent != null)
             {
@@ -157,13 +142,13 @@ namespace OpenLiveWriter.ApplicationFramework
 
         public override bool Focus()
         {
-            control.Focus();
+            Control.Focus();
             return base.Focus();
         }
 
         protected override AccessibleObject CreateAccessibilityInstance()
         {
-            return control.AccessibilityObject;
+            return Control.AccessibilityObject;
         }
     }
 }

@@ -32,11 +32,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private LightweightControl lightweightControl;
 
         /// <summary>
-        /// A value indicating whether a border will be drawn.
-        /// </summary>
-        private bool border;
-
-        /// <summary>
         /// A value which indicates whether the pane should be layed out with a fixed height, when
         /// possible.
         /// </summary>
@@ -169,17 +164,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value indicating whether a border will be drawn.
         /// </summary>
-        public bool Border
-        {
-            get
-            {
-                return border;
-            }
-            set
-            {
-                border = value;
-            }
-        }
+        public bool Border { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether the pane should be layed out with a fixed
@@ -240,14 +225,14 @@ namespace OpenLiveWriter.ApplicationFramework
             if (control != null)
             {
                 Rectangle layoutRectangle = VirtualClientRectangle;
-                if (border)
+                if (Border)
                     layoutRectangle.Inflate(-1, -1);
                 control.Bounds = VirtualClientRectangleToParent(layoutRectangle);
             }
             else if (lightweightControl != null)
             {
                 Rectangle layoutRectangle = VirtualClientRectangle;
-                if (border)
+                if (Border)
                     layoutRectangle.Inflate(-1, -1);
                 lightweightControl.VirtualBounds = layoutRectangle;
             }
@@ -263,7 +248,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnPaint(e);
 
             //	If we're drawing a border, draw it.
-            if (border)
+            if (Border)
                 using (Pen pen = new Pen(ApplicationManager.ApplicationStyle.BorderColor))
                     e.Graphics.DrawRectangle(pen,
                                                 VirtualClientRectangle.X,

@@ -116,19 +116,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public bool DrawShadow
-        {
-            get
-            {
-                return _drawShadow;
-            }
-            set
-            {
-                _drawShadow = value;
-            }
-        }
-
-        private bool _drawShadow;
+        public bool DrawShadow { get; set; }
 
         public int ShadowWidth
         {

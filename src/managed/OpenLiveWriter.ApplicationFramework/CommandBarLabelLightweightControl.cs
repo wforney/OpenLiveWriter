@@ -43,11 +43,6 @@ namespace OpenLiveWriter.ApplicationFramework
         private const int RIGHT_MARGIN = 2;
 
         /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private Container components = null;
-
-        /// <summary>
         /// The label text.
         /// </summary>
         private readonly string text;
@@ -114,10 +109,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        public Container Components
-        {
-            get { return components; }
-        }
+        public Container Components { get; private set; } = null;
 
         #region Component Designer generated code
         /// <summary>
@@ -126,7 +118,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            Components = new System.ComponentModel.Container();
 
         }
         #endregion

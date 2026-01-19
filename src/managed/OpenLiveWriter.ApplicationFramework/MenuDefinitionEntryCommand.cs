@@ -29,7 +29,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The command identifier.
         /// </summary>
-        private string commandIdentifier;
 
         #endregion Private Member Variables
 
@@ -93,17 +92,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets the command identifier.
         /// </summary>
-        public string CommandIdentifier
-        {
-            get
-            {
-                return commandIdentifier;
-            }
-            set
-            {
-                commandIdentifier = value;
-            }
-        }
+        public string CommandIdentifier { get; set; }
 
         #endregion
 
@@ -117,7 +106,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <returns>The menu item for this MenuDefinitionEntry.</returns>
         protected override MenuItem GetMenuItem(CommandManager commandManager, MenuType menuType)
         {
-            Command command = commandManager.Get(commandIdentifier);
+            Command command = commandManager.Get(CommandIdentifier);
             if (command == null || !command.On)
                 return null;
             if ((menuType == MenuType.Context || menuType == MenuType.CommandBarContext) && !command.VisibleOnContextMenu)

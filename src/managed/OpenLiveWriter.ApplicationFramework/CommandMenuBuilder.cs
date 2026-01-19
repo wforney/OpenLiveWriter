@@ -42,27 +42,16 @@ namespace OpenLiveWriter.ApplicationFramework
         private readonly CommandMenuBuilderEntry rootCommandMenuBuilderEntry;
 
         /// <summary>
-        /// The type of menu merge to perform.
-        /// </summary>
-        private readonly MenuType menuType;
-
-        /// <summary>
         /// Gets or sets the type of menu merge to perform.
         /// </summary>
-        public MenuType MenuType
-        {
-            get
-            {
-                return menuType;
-            }
-        }
+        public MenuType MenuType { get; }
 
         /// <summary>
         /// Initializes a new instance of the CommandMenuBuilder class.
         /// </summary>
         public CommandMenuBuilder(MenuType menuType)
         {
-            this.menuType = menuType;
+            MenuType = menuType;
             rootCommandMenuBuilderEntry = new CommandMenuBuilderEntry(this);
         }
 
@@ -86,14 +75,14 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             //	Choose the menu path to use.
             string menuPath = null;
-            if (menuType == MenuType.Main)
+            if (MenuType == MenuType.Main)
                 menuPath = command.MainMenuPath;
-            else if (menuType == MenuType.Context)
+            else if (MenuType == MenuType.Context)
             {
                 Trace.Fail("Merge-based context menus are obsolete");
                 //menuPath = command.ContextMenuPath;
             }
-            else if (menuType == MenuType.CommandBarContext)
+            else if (MenuType == MenuType.CommandBarContext)
             {
                 Trace.Fail("Merge-based command bar context menus are obsolete");
                 //menuPath = command.ContextMenuPath;

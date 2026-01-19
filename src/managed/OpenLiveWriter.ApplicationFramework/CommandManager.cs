@@ -153,11 +153,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// </summary>
         private bool pendingChange = false;
 
-        /// <summary>
-        /// A value which indicates whether we are suppressing events.
-        /// </summary>
-        private bool suppressEvents;
-
         #endregion Private Member Variables
 
         #region Public Events
@@ -235,17 +230,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// Gets or sets a value which indicates whether we are suppressing events.
         /// </summary>
-        public bool SuppressEvents
-        {
-            get
-            {
-                return suppressEvents;
-            }
-            set
-            {
-                suppressEvents = value;
-            }
-        }
+        public bool SuppressEvents { get; set; }
 
         /// <summary>
         /// Gets the count of commands in the command manager.
@@ -290,8 +275,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
                         foreach (var entry in batchedCommands)
                         {
-                            if (CommandStateChanged != null)
-                                CommandStateChanged(entry.Key, entry.Value);
+                            CommandStateChanged?.Invoke(entry.Key, entry.Value);
                         }
 
                         batchedCommands.Clear();
@@ -336,8 +320,7 @@ namespace OpenLiveWriter.ApplicationFramework
             else
             {
                 // Send notification directly
-                if (CommandStateChanged != null)
-                    CommandStateChanged(sender, e);
+                CommandStateChanged?.Invoke(sender, e);
             }
         }
 
@@ -701,7 +684,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 RebuildCommandShortcutTable(false);
                 RebuildAcceleratorMnemonicTable();
                 RebuildCommandBarButtonContextMenuAcceleratorMnemonicTable();
-                if (!suppressEvents && Changed != null)
+                if (!SuppressEvents && Changed != null)
                     Changed(null, e);
             }
         }
@@ -898,19 +881,13 @@ namespace OpenLiveWriter.ApplicationFramework
         public event CommandManagerExecuteEventHandler BeforeExecute;
         protected void FireBeforeExecute(CommandId commandId)
         {
-            if (BeforeExecute != null)
-            {
-                BeforeExecute(this, new CommandManagerExecuteEventArgs(commandId));
-            }
+            BeforeExecute?.Invoke(this, new CommandManagerExecuteEventArgs(commandId));
         }
 
         public event CommandManagerExecuteEventHandler AfterExecute;
         protected void FireAfterExecute(CommandId commandId)
         {
-            if (AfterExecute != null)
-            {
-                AfterExecute(this, new CommandManagerExecuteEventArgs(commandId));
-            }
+            AfterExecute?.Invoke(this, new CommandManagerExecuteEventArgs(commandId));
         }
 
         public int UpdateProperty(uint commandId, ref PropertyKey key, PropVariantRef currentValue, out PropVariant newValue)

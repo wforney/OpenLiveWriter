@@ -41,5 +41,3 @@ namespace OpenLiveWriter.Interop.Com
         public const uint REFRESH = 0x0400;      // returned from the extractor if it would like to have Refresh Thumbnail available
     }
 }
-
-

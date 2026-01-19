@@ -45,8 +45,7 @@ namespace OpenLiveWriter.ApplicationFramework
             set
             {
                 m_color = value;
-                if (ColorSelected != null)
-                    ColorSelected(this, new ColorSelectedEventArgs(value));
+                ColorSelected?.Invoke(this, new ColorSelectedEventArgs(value));
                 Invalidate();
             }
         }

@@ -40,80 +40,24 @@ namespace OpenLiveWriter.ApplicationFramework
         private readonly IContainer components;
 
         /// <summary>
-        /// The tab entry.
-        /// </summary>
-        private readonly TabEntry tabEntry;
-
-        /// <summary>
         /// Gets the tab entry.
         /// </summary>
-        public TabEntry TabEntry
-        {
-            get
-            {
-                return tabEntry;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether tabs should be small.
-        /// </summary>
-        private bool smallTabs = false;
+        public TabEntry TabEntry { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether tabs should be small.
         /// </summary>
-        public bool SmallTabs
-        {
-            get
-            {
-                return smallTabs;
-            }
-            set
-            {
-                smallTabs = value;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether the tab text is shown.
-        /// </summary>
-        private bool showTabText = true;
+        public bool SmallTabs { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab text is shown.
         /// </summary>
-        public bool ShowTabText
-        {
-            get
-            {
-                return showTabText;
-            }
-            set
-            {
-                showTabText = value;
-            }
-        }
-
-        /// <summary>
-        /// A value indicating whether the tab bitmap is shown.
-        /// </summary>
-        private bool showTabBitmap = true;
+        public bool ShowTabText { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab bitmap is shown.
         /// </summary>
-        public bool ShowTabBitmap
-        {
-            get
-            {
-                return showTabBitmap;
-            }
-            set
-            {
-                showTabBitmap = value;
-            }
-        }
+        public bool ShowTabBitmap { get; set; } = true;
 
         /// <summary>
         /// The unselected virtual size.
@@ -197,7 +141,7 @@ namespace OpenLiveWriter.ApplicationFramework
             InitializeComponent();
 
             //	Set the tab entry.
-            this.tabEntry = tabEntry;
+            TabEntry = tabEntry;
 
             //	Initialize the object.
             InitializeObject();
@@ -310,7 +254,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 tabHeight = font.Height;
 
             //	Pad the tab height.
-            tabHeight += smallTabs ? PAD * 2 : PAD * 4;
+            tabHeight += SmallTabs ? PAD * 2 : PAD * 4;
 
             //	Set the initial tab width (padded).
             int tabWidth = PAD * 2;
@@ -319,7 +263,7 @@ namespace OpenLiveWriter.ApplicationFramework
             bitmapRectangle = textLayoutRectangle = Rectangle.Empty;
 
             //	Layout the tab bitmap.
-            if (showTabBitmap && tabBitmap != null)
+            if (ShowTabBitmap && tabBitmap != null)
             {
                 tabWidth += PAD;
                 //	Set the bitmap rectangle.
@@ -334,7 +278,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Layout the tab text.
-            if (showTabText && tabText != null && tabText.Length != 0)
+            if (ShowTabText && tabText != null && tabText.Length != 0)
             {
                 //	Initialize the text layout rectangle.
                 textLayoutRectangle = new Rectangle(tabWidth,
@@ -367,9 +311,9 @@ namespace OpenLiveWriter.ApplicationFramework
 
             //	If the tab entry is selected, make necessary adjustments to have it occlude
             //	surrounding tabs and miter itself into the tab page border.
-            if (tabEntry.IsSelected)
+            if (TabEntry.IsSelected)
             {
-                tabHeight += smallTabs ? 1 : PAD * 2;
+                tabHeight += SmallTabs ? 1 : PAD * 2;
 
                 // With localized tab text, we can't afford to waste any space
                 /*
@@ -397,10 +341,10 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseEnter(e);
 
             //	Set the ToolTip.
-            if (tabEntry.TabPageControl.TabToolTipText != null && tabEntry.TabPageControl.TabToolTipText.Length != 0)
-                LightweightControlContainerControl.SetToolTip(tabEntry.TabPageControl.TabToolTipText);
+            if (TabEntry.TabPageControl.TabToolTipText != null && TabEntry.TabPageControl.TabToolTipText.Length != 0)
+                LightweightControlContainerControl.SetToolTip(TabEntry.TabPageControl.TabToolTipText);
             else if (!ShowTabText)
-                LightweightControlContainerControl.SetToolTip(tabEntry.TabPageControl.TabText);
+                LightweightControlContainerControl.SetToolTip(TabEntry.TabPageControl.TabText);
         }
 
         /// <summary>
@@ -413,7 +357,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseLeave(e);
 
             //	Clear the ToolTip.
-            if ((tabEntry.TabPageControl.TabToolTipText != null && tabEntry.TabPageControl.TabToolTipText.Length != 0)
+            if ((TabEntry.TabPageControl.TabToolTipText != null && TabEntry.TabPageControl.TabToolTipText.Length != 0)
                 || !ShowTabText)
                 LightweightControlContainerControl.SetToolTip(null);
         }
@@ -445,7 +389,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     //	Select the text color to use.
                     Color textColor;
-                    if (tabEntry.IsSelected)
+                    if (TabEntry.IsSelected)
                         textColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabTextColor;
                     else
                         textColor = TabEntry.TabPageControl.ApplicationStyle.InactiveTabTextColor;
@@ -470,8 +414,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSelected(EventArgs e)
         {
-            if (Selected != null)
-                Selected(this, e);
+            Selected?.Invoke(this, e);
         }
 
         /// <summary>
@@ -487,11 +430,11 @@ namespace OpenLiveWriter.ApplicationFramework
             Rectangle faceRectangle = new Rectangle(virtualClientRectangle.X + 1,
                                                     virtualClientRectangle.Y + 1,
                                                     virtualClientRectangle.Width - 2,
-                                                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                                                    virtualClientRectangle.Height - (TabEntry.IsSelected ? 1 : 2));
 
             //	Fill face of the tab.
             Color topColor, bottomColor;
-            if (tabEntry.IsSelected)
+            if (TabEntry.IsSelected)
             {
                 topColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabTopColor;
                 bottomColor = TabEntry.TabPageControl.ApplicationStyle.ActiveTabBottomColor;
@@ -565,14 +508,14 @@ namespace OpenLiveWriter.ApplicationFramework
                     virtualClientRectangle.X,
                     virtualClientRectangle.Y + 2,
                     1,
-                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                    virtualClientRectangle.Height - (TabEntry.IsSelected ? 1 : 2));
 
                 //	Draw the right edge.
                 graphics.FillRectangle(solidBrush,
                     virtualClientRectangle.Right - 1,
                     virtualClientRectangle.Y + 2,
                     1,
-                    virtualClientRectangle.Height - (tabEntry.IsSelected ? 1 : 2));
+                    virtualClientRectangle.Height - (TabEntry.IsSelected ? 1 : 2));
 
                 //  Draw the corners.
                 graphics.FillRectangle(solidBrush,

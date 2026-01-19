@@ -575,8 +575,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnCommandManagerChanged(EventArgs e)
         {
-            if (CommandManagerChanged != null)
-                CommandManagerChanged(null, e);
+            CommandManagerChanged?.Invoke(null, e);
         }
 
         #endregion Protected Methods

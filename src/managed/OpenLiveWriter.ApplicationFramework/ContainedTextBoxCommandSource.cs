@@ -29,20 +29,14 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                    return textBox.CanUndo;
-                else
-                    return false;
+                return textBox != null && textBox.CanUndo;
             }
         }
 
         public void Undo()
         {
             TextBoxBase textBox = FindFocusedTextBox();
-            if (textBox != null)
-            {
-                textBox.Undo();
-            }
+            textBox?.Undo();
         }
 
         public bool CanRedo
@@ -64,20 +58,14 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                    return textBox.SelectionLength > 0;
-                else
-                    return false;
+                return textBox != null && textBox.SelectionLength > 0;
             }
         }
 
         public void Cut()
         {
             TextBoxBase textBox = FindFocusedTextBox();
-            if (textBox != null)
-            {
-                textBox.Cut();
-            }
+            textBox?.Cut();
         }
 
         public bool CanCopy
@@ -91,10 +79,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public void Copy()
         {
             TextBoxBase textBox = FindFocusedTextBox();
-            if (textBox != null)
-            {
-                textBox.Copy();
-            }
+            textBox?.Copy();
         }
 
         public bool CanPaste
@@ -108,10 +93,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public void Paste()
         {
             TextBoxBase textBox = FindFocusedTextBox();
-            if (textBox != null)
-            {
-                textBox.Paste();
-            }
+            textBox?.Paste();
         }
 
         public bool CanClear
@@ -139,10 +121,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public void SelectAll()
         {
             TextBoxBase textBox = FindFocusedTextBox();
-            if (textBox != null)
-            {
-                textBox.SelectAll();
-            }
+            textBox?.SelectAll();
         }
 
         public void InsertEuroSymbol()
@@ -167,12 +146,7 @@ namespace OpenLiveWriter.ApplicationFramework
             get
             {
                 TextBoxBase textBox = FindFocusedTextBox();
-                if (textBox != null)
-                {
-                    return textBox.ReadOnly;
-                }
-
-                return false;
+                return textBox != null && textBox.ReadOnly;
             }
         }
 
@@ -180,16 +154,14 @@ namespace OpenLiveWriter.ApplicationFramework
 
         protected void OnCommandStateChanged()
         {
-            if (CommandStateChanged != null)
-                CommandStateChanged(this, EventArgs.Empty);
+            CommandStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler AggressiveCommandStateChanged;
 
         protected void OnAggressiveCommandStateChanged()
         {
-            if (AggressiveCommandStateChanged != null)
-                AggressiveCommandStateChanged(this, EventArgs.Empty);
+            AggressiveCommandStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private TextBoxBase FindFocusedTextBox()

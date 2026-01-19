@@ -72,23 +72,13 @@ namespace OpenLiveWriter.HtmlParser.Parser
         public static void MatchSingleLineComment(string data, ref int pos, int end)
         {
             int eol = data.IndexOfAny(EOL, pos, end - pos);
-            if (eol == -1)
-                pos = end;
-            else
-            {
-                pos = eol;
-            }
+            pos = eol == -1 ? end : eol;
         }
 
         public static void MatchMultiLineComment(string data, ref int pos, int end)
         {
             int commentEnd = data.IndexOf("*/", pos, end - pos, System.StringComparison.Ordinal);
-            if (commentEnd == -1)
-                pos = end;
-            else
-            {
-                pos = commentEnd + 2;
-            }
+            pos = commentEnd == -1 ? end : commentEnd + 2;
         }
 
         public static void MatchUntilChar(char c, bool inclusive, string data, ref int pos, int end)
@@ -153,10 +143,7 @@ namespace OpenLiveWriter.HtmlParser.Parser
         private static char ToAsciiLower(char c)
         {
             const int OFFSET = 'a' - 'A';
-            if (c >= 'A' && c <= 'Z')
-                return (char)(c + OFFSET);
-            else
-                return c;
+            return c >= 'A' && c <= 'Z' ? (char)(c + OFFSET) : c;
         }
     }
 }

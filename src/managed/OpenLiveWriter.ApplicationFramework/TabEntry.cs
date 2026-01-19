@@ -11,52 +11,19 @@ namespace OpenLiveWriter.ApplicationFramework
     internal class TabEntry
     {
         /// <summary>
-        /// The tab lightweight control.
-        /// </summary>
-        private readonly TabLightweightControl tabLightweightControl;
-
-        /// <summary>
         /// Gets the tab lightweight control.
         /// </summary>
-        public TabLightweightControl TabLightweightControl
-        {
-            get
-            {
-                return tabLightweightControl;
-            }
-        }
-
-        /// <summary>
-        /// The tab page control.
-        /// </summary>
-        private readonly TabPageControl tabPageControl;
+        public TabLightweightControl TabLightweightControl { get; }
 
         /// <summary>
         /// Gets the tab page control.
         /// </summary>
-        public TabPageControl TabPageControl
-        {
-            get
-            {
-                return tabPageControl;
-            }
-        }
-
-        /// <summary>
-        /// The tab selector lightweight control.
-        /// </summary>
-        private readonly TabSelectorLightweightControl tabSelectorLightweightControl;
+        public TabPageControl TabPageControl { get; }
 
         /// <summary>
         /// Gets the tab control.
         /// </summary>
-        public TabSelectorLightweightControl TabSelectorLightweightControl
-        {
-            get
-            {
-                return tabSelectorLightweightControl;
-            }
-        }
+        public TabSelectorLightweightControl TabSelectorLightweightControl { get; }
 
         /// <summary>
         /// Gets a value indicating whether the tab entry is the first tab entry or not.
@@ -65,7 +32,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return tabLightweightControl.FirstTabEntry == this;
+                return TabLightweightControl.FirstTabEntry == this;
             }
         }
 
@@ -76,7 +43,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return tabLightweightControl.SelectedTabEntry == this;
+                return TabLightweightControl.SelectedTabEntry == this;
             }
         }
 
@@ -89,32 +56,32 @@ namespace OpenLiveWriter.ApplicationFramework
             set
             {
                 _hidden = value;
-                tabSelectorLightweightControl.Visible = value;
-                tabPageControl.Visible = value;
+                TabSelectorLightweightControl.Visible = value;
+                TabPageControl.Visible = value;
             }
         }
         private bool _hidden;
 
         public void Selected()
         {
-            if (tabPageControl != null)
+            if (TabPageControl != null)
             {
                 if (_hidden)
                     Hidden = false;
-                tabPageControl.Visible = true;
-                tabPageControl.TabStop = true;
-                tabPageControl.RaiseSelected();
-                tabPageControl.SelectNextControl(null, true, true, true, false);
+                TabPageControl.Visible = true;
+                TabPageControl.TabStop = true;
+                TabPageControl.RaiseSelected();
+                TabPageControl.SelectNextControl(null, true, true, true, false);
             }
         }
 
         public void Unselected()
         {
-            if (tabPageControl != null)
+            if (TabPageControl != null)
             {
-                tabPageControl.Visible = false;
-                tabPageControl.TabStop = false;
-                tabPageControl.RaiseUnselected();
+                TabPageControl.Visible = false;
+                TabPageControl.TabStop = false;
+                TabPageControl.RaiseUnselected();
             }
         }
 
@@ -125,12 +92,12 @@ namespace OpenLiveWriter.ApplicationFramework
         public TabEntry(TabLightweightControl tabLightweightControl, TabPageControl tabPageControl)
         {
             //	Set the the tab control and the tab lightweight control.
-            this.tabPageControl = tabPageControl;
-            this.tabPageControl.TabStop = false;
-            this.tabLightweightControl = tabLightweightControl;
+            TabPageControl = tabPageControl;
+            TabPageControl.TabStop = false;
+            TabLightweightControl = tabLightweightControl;
 
             //	Instantiate the tab selector lightweight control.
-            tabSelectorLightweightControl = new TabSelectorLightweightControl(this);
+            TabSelectorLightweightControl = new TabSelectorLightweightControl(this);
         }
     }
 }

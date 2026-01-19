@@ -58,12 +58,9 @@ namespace OpenLiveWriter.Interop.Com
         /// <returns>reference to requested interface, null on failure</returns>
         public static object QueryService(object source, Guid serviceID, Guid requestedIID)
         {
-            // cast the source object to a service-provider
-            IServiceProvider sp =
-                source as IServiceProvider;
-
+            // cast the source object to a service-provider,
             // if the source object isn't a service provider return null
-            if (sp == null)
+            if (!(source is IServiceProvider sp))
             {
                 return null;
             }

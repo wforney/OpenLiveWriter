@@ -52,25 +52,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private IContainer components = null;
 
         /// <summary>
-        /// The CommandManager for this WorkspaceControl.
-        /// </summary>
-        private readonly CommandManager commandManager;
-
-        /// <summary>
         /// Gets the CommandManager for this WorkspaceControl.
         /// </summary>
-        public CommandManager CommandManager
-        {
-            get
-            {
-                return commandManager;
-            }
-        }
-
-        /// <summary>
-        /// The top layout margin.
-        /// </summary>
-        private int topLayoutMargin;
+        public CommandManager CommandManager { get; }
 
         /// <summary>
         /// Gets or sets the top layout margin.
@@ -80,22 +64,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(0),
                 Description("Specifies the top layout margin.")
         ]
-        public int TopLayoutMargin
-        {
-            get
-            {
-                return topLayoutMargin;
-            }
-            set
-            {
-                topLayoutMargin = value;
-            }
-        }
-
-        /// <summary>
-        /// The left layout margin.
-        /// </summary>
-        private int leftLayoutMargin;
+        public int TopLayoutMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the left layout margin.
@@ -105,22 +74,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(0),
                 Description("Specifies the left layout margin.")
         ]
-        public int LeftLayoutMargin
-        {
-            get
-            {
-                return leftLayoutMargin;
-            }
-            set
-            {
-                leftLayoutMargin = value;
-            }
-        }
-
-        /// <summary>
-        /// The bottom layout margin.
-        /// </summary>
-        private int bottomLayoutMargin;
+        public int LeftLayoutMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the bottom layout margin.
@@ -130,22 +84,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(0),
                 Description("Specifies the bottom layout margin.")
         ]
-        public int BottomLayoutMargin
-        {
-            get
-            {
-                return bottomLayoutMargin;
-            }
-            set
-            {
-                bottomLayoutMargin = value;
-            }
-        }
-
-        /// <summary>
-        /// The right layout margin.
-        /// </summary>
-        private int rightLayoutMargin;
+        public int BottomLayoutMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the right layout margin.
@@ -155,17 +94,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(0),
                 Description("Specifies the right layout margin.")
         ]
-        public int RightLayoutMargin
-        {
-            get
-            {
-                return rightLayoutMargin;
-            }
-            set
-            {
-                rightLayoutMargin = value;
-            }
-        }
+        public int RightLayoutMargin { get; set; }
 
         /// <summary>
         ///	Gets the top color.
@@ -212,52 +141,19 @@ namespace OpenLiveWriter.ApplicationFramework
         }
 
         /// <summary>
-        /// The left WorkspaceColumnLightweightControl.
-        /// </summary>
-        private WorkspaceColumnLightweightControl leftColumn;
-
-        /// <summary>
         /// Gets the left WorkspaceColumnLightweightControl.
         /// </summary>
-        public WorkspaceColumnLightweightControl LeftColumn
-        {
-            get
-            {
-                return leftColumn;
-            }
-        }
-
-        /// <summary>
-        /// The center WorkspaceColumnLightweightControl.
-        /// </summary>
-        private WorkspaceColumnLightweightControl centerColumn;
+        public WorkspaceColumnLightweightControl LeftColumn { get; private set; }
 
         /// <summary>
         /// Gets the center WorkspaceColumnLightweightControl.
         /// </summary>
-        public WorkspaceColumnLightweightControl CenterColumn
-        {
-            get
-            {
-                return centerColumn;
-            }
-        }
-
-        /// <summary>
-        /// The right WorkspaceColumnLightweightControl.
-        /// </summary>
-        private WorkspaceColumnLightweightControl rightColumn;
+        public WorkspaceColumnLightweightControl CenterColumn { get; private set; }
 
         /// <summary>
         /// Gets the right WorkspaceColumnLightweightControl.
         /// </summary>
-        public WorkspaceColumnLightweightControl RightColumn
-        {
-            get
-            {
-                return rightColumn;
-            }
-        }
+        public WorkspaceColumnLightweightControl RightColumn { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the WorkspaceControl class.
@@ -268,7 +164,7 @@ namespace OpenLiveWriter.ApplicationFramework
             InitializeComponent();
 
             //	Set the CommandManager.
-            this.commandManager = commandManager;
+            CommandManager = commandManager;
 
             //	Turn on double buffered painting.
             SetStyle(ControlStyles.UserPaint, true);
@@ -300,52 +196,52 @@ namespace OpenLiveWriter.ApplicationFramework
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.leftColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
-            this.centerColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
-            this.rightColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.leftColumn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.centerColumn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rightColumn)).BeginInit();
+            LeftColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
+            CenterColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
+            RightColumn = new OpenLiveWriter.ApplicationFramework.WorkspaceColumnLightweightControl(this.components);
+            ((System.ComponentModel.ISupportInitialize)(LeftColumn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(CenterColumn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(RightColumn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             //
             // leftColumn
             //
-            this.leftColumn.HorizontalSplitterHeight = 4;
-            this.leftColumn.LightweightControlContainerControl = this;
-            this.leftColumn.MinimumColumnWidth = 30;
-            this.leftColumn.PreferredColumnWidth = 190;
-            this.leftColumn.VerticalSplitterWidth = 4;
-            this.leftColumn.MaximumColumnWidthChanged += new System.EventHandler(this.leftColumn_MaximumColumnWidthChanged);
-            this.leftColumn.PreferredColumnWidthChanged += new System.EventHandler(this.leftColumn_PreferredColumnWidthChanged);
-            this.leftColumn.MinimumColumnWidthChanged += new System.EventHandler(this.leftColumn_MinimumColumnWidthChanged);
+            LeftColumn.HorizontalSplitterHeight = 4;
+            LeftColumn.LightweightControlContainerControl = this;
+            LeftColumn.MinimumColumnWidth = 30;
+            LeftColumn.PreferredColumnWidth = 190;
+            LeftColumn.VerticalSplitterWidth = 4;
+            LeftColumn.MaximumColumnWidthChanged += new System.EventHandler(this.leftColumn_MaximumColumnWidthChanged);
+            LeftColumn.PreferredColumnWidthChanged += new System.EventHandler(this.leftColumn_PreferredColumnWidthChanged);
+            LeftColumn.MinimumColumnWidthChanged += new System.EventHandler(this.leftColumn_MinimumColumnWidthChanged);
             //
             // centerColumn
             //
-            this.centerColumn.HorizontalSplitterHeight = 4;
-            this.centerColumn.LightweightControlContainerControl = this;
-            this.centerColumn.MinimumColumnWidth = 30;
-            this.centerColumn.PreferredColumnWidth = 30;
-            this.centerColumn.VerticalSplitterWidth = 4;
+            CenterColumn.HorizontalSplitterHeight = 4;
+            CenterColumn.LightweightControlContainerControl = this;
+            CenterColumn.MinimumColumnWidth = 30;
+            CenterColumn.PreferredColumnWidth = 30;
+            CenterColumn.VerticalSplitterWidth = 4;
             //
             // rightColumn
             //
-            this.rightColumn.HorizontalSplitterHeight = 4;
-            this.rightColumn.LightweightControlContainerControl = this;
-            this.rightColumn.MinimumColumnWidth = 30;
-            this.rightColumn.PreferredColumnWidth = 150;
-            this.rightColumn.VerticalSplitterWidth = 4;
-            this.rightColumn.MaximumColumnWidthChanged += new System.EventHandler(this.rightColumn_MaximumColumnWidthChanged);
-            this.rightColumn.PreferredColumnWidthChanged += new System.EventHandler(this.rightColumn_PreferredColumnWidthChanged);
-            this.rightColumn.MinimumColumnWidthChanged += new System.EventHandler(this.rightColumn_MinimumColumnWidthChanged);
+            RightColumn.HorizontalSplitterHeight = 4;
+            RightColumn.LightweightControlContainerControl = this;
+            RightColumn.MinimumColumnWidth = 30;
+            RightColumn.PreferredColumnWidth = 150;
+            RightColumn.VerticalSplitterWidth = 4;
+            RightColumn.MaximumColumnWidthChanged += new System.EventHandler(this.rightColumn_MaximumColumnWidthChanged);
+            RightColumn.PreferredColumnWidthChanged += new System.EventHandler(this.rightColumn_PreferredColumnWidthChanged);
+            RightColumn.MinimumColumnWidthChanged += new System.EventHandler(this.rightColumn_MinimumColumnWidthChanged);
             //
             // WorkspaceControl
             //
             this.BackColor = System.Drawing.SystemColors.Control;
             this.Name = "WorkspaceControl";
             this.Size = new System.Drawing.Size(294, 286);
-            ((System.ComponentModel.ISupportInitialize)(this.leftColumn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.centerColumn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rightColumn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(LeftColumn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(CenterColumn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(RightColumn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
         }
@@ -429,11 +325,11 @@ namespace OpenLiveWriter.ApplicationFramework
             if (LeftColumnVisible)
             {
                 //	Set the virtual bounds of the left column.
-                leftColumn.VirtualBounds = new Rectangle(layoutX,
+                LeftColumn.VirtualBounds = new Rectangle(layoutX,
                                                             columnLayoutRectangle.Y,
                                                             leftColumnWidth,
                                                             columnLayoutRectangle.Height);
-                leftColumn.PerformLayout();
+                LeftColumn.PerformLayout();
 
                 //	Adjust the layout X to account for the left column.
                 layoutX += leftColumnWidth;
@@ -442,16 +338,16 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (CenterColumnVisible)
                 {
                     //	Turn on the left column vertical splitter on the right side.
-                    leftColumn.VerticalSplitterStyle = VerticalSplitterStyle.Right;
+                    LeftColumn.VerticalSplitterStyle = VerticalSplitterStyle.Right;
 
                     //	Set the left column's maximum width.
-                    leftColumn.MaximumColumnWidth = columnLayoutRectangle.Width -
+                    LeftColumn.MaximumColumnWidth = columnLayoutRectangle.Width -
                                                     (CenterColumnMinimumWidth + this.RightColumnPreferredWidth);
                 }
                 else
                 {
-                    leftColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
-                    leftColumn.MaximumColumnWidth = 0;
+                    LeftColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
+                    LeftColumn.MaximumColumnWidth = 0;
                 }
             }
 
@@ -459,44 +355,44 @@ namespace OpenLiveWriter.ApplicationFramework
             if (CenterColumnVisible)
             {
                 //	Set the virtual bounds of the center column.
-                centerColumn.VirtualBounds = new Rectangle(layoutX,
+                CenterColumn.VirtualBounds = new Rectangle(layoutX,
                                                             columnLayoutRectangle.Y,
                                                             centerColumnWidth,
                                                             columnLayoutRectangle.Height);
-                centerColumn.PerformLayout();
+                CenterColumn.PerformLayout();
 
                 //	Adjust the layout X to account for the center column.
                 layoutX += centerColumnWidth;
 
                 //	The center column never has a vertical splitter or a maximum column width.
-                centerColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
-                centerColumn.MaximumColumnWidth = 0;
+                CenterColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
+                CenterColumn.MaximumColumnWidth = 0;
             }
 
             //	Layout the right column.
             if (RightColumnVisible)
             {
                 //	Set the virtual bounds of the right column.
-                rightColumn.VirtualBounds = new Rectangle(layoutX,
+                RightColumn.VirtualBounds = new Rectangle(layoutX,
                                                             columnLayoutRectangle.Y,
                                                             rightColumnWidth,
                                                             columnLayoutRectangle.Height);
-                rightColumn.PerformLayout();
+                RightColumn.PerformLayout();
 
                 //	Update the right column vertical splitter and maximum column width.
                 if (CenterColumnVisible || LeftColumnVisible)
                 {
                     //	Turn on the right column's vertical splitter on the left side.
-                    rightColumn.VerticalSplitterStyle = VerticalSplitterStyle.Left;
+                    RightColumn.VerticalSplitterStyle = VerticalSplitterStyle.Left;
 
                     //	Set the right column's maximum width.
-                    rightColumn.MaximumColumnWidth = columnLayoutRectangle.Width -
+                    RightColumn.MaximumColumnWidth = columnLayoutRectangle.Width -
                                                         (LeftColumnPreferredWidth + CenterColumnMinimumWidth);
                 }
                 else
                 {
-                    rightColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
-                    rightColumn.MaximumColumnWidth = 0;
+                    RightColumn.VerticalSplitterStyle = VerticalSplitterStyle.None;
+                    RightColumn.MaximumColumnWidth = 0;
                 }
             }
         }
@@ -523,7 +419,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return leftColumn != null && leftColumn.Visible;
+                return LeftColumn != null && LeftColumn.Visible;
             }
         }
 
@@ -534,7 +430,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return centerColumn != null && centerColumn.Visible;
+                return CenterColumn != null && CenterColumn.Visible;
             }
         }
 
@@ -545,7 +441,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             get
             {
-                return rightColumn != null && rightColumn.Visible;
+                return RightColumn != null && RightColumn.Visible;
             }
         }
 
@@ -560,9 +456,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (leftColumn.PreferredColumnWidth == 0)
-                        leftColumn.PreferredColumnWidth = LEFT_COLUMN_DEFAULT_PREFERRED_WIDTH;
-                    return leftColumn.PreferredColumnWidth;
+                    if (LeftColumn.PreferredColumnWidth == 0)
+                        LeftColumn.PreferredColumnWidth = LEFT_COLUMN_DEFAULT_PREFERRED_WIDTH;
+                    return LeftColumn.PreferredColumnWidth;
                 }
             }
         }
@@ -578,9 +474,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (centerColumn.PreferredColumnWidth == 0)
-                        centerColumn.PreferredColumnWidth = CENTER_COLUMN_DEFAULT_PREFERRED_WIDTH;
-                    return centerColumn.PreferredColumnWidth;
+                    if (CenterColumn.PreferredColumnWidth == 0)
+                        CenterColumn.PreferredColumnWidth = CENTER_COLUMN_DEFAULT_PREFERRED_WIDTH;
+                    return CenterColumn.PreferredColumnWidth;
                 }
             }
         }
@@ -596,9 +492,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (rightColumn.PreferredColumnWidth == 0)
-                        rightColumn.PreferredColumnWidth = RIGHT_COLUMN_DEFAULT_PREFERRED_WIDTH;
-                    return rightColumn.PreferredColumnWidth;
+                    if (RightColumn.PreferredColumnWidth == 0)
+                        RightColumn.PreferredColumnWidth = RIGHT_COLUMN_DEFAULT_PREFERRED_WIDTH;
+                    return RightColumn.PreferredColumnWidth;
                 }
             }
         }
@@ -614,9 +510,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (leftColumn.MinimumColumnWidth == 0)
-                        leftColumn.MinimumColumnWidth = LEFT_COLUMN_DEFAULT_MINIMUM_WIDTH;
-                    return leftColumn.MinimumColumnWidth;
+                    if (LeftColumn.MinimumColumnWidth == 0)
+                        LeftColumn.MinimumColumnWidth = LEFT_COLUMN_DEFAULT_MINIMUM_WIDTH;
+                    return LeftColumn.MinimumColumnWidth;
                 }
             }
         }
@@ -632,9 +528,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (centerColumn.MinimumColumnWidth == 0)
-                        centerColumn.MinimumColumnWidth = CENTER_COLUMN_DEFAULT_MINIMUM_WIDTH;
-                    return centerColumn.MinimumColumnWidth;
+                    if (CenterColumn.MinimumColumnWidth == 0)
+                        CenterColumn.MinimumColumnWidth = CENTER_COLUMN_DEFAULT_MINIMUM_WIDTH;
+                    return CenterColumn.MinimumColumnWidth;
                 }
             }
         }
@@ -650,9 +546,9 @@ namespace OpenLiveWriter.ApplicationFramework
                     return 0;
                 else
                 {
-                    if (rightColumn.MinimumColumnWidth == 0)
-                        rightColumn.MinimumColumnWidth = RIGHT_COLUMN_DEFAULT_MINIMUM_WIDTH;
-                    return rightColumn.MinimumColumnWidth;
+                    if (RightColumn.MinimumColumnWidth == 0)
+                        RightColumn.MinimumColumnWidth = RIGHT_COLUMN_DEFAULT_MINIMUM_WIDTH;
+                    return RightColumn.MinimumColumnWidth;
                 }
             }
         }
@@ -717,10 +613,10 @@ namespace OpenLiveWriter.ApplicationFramework
             }
 
             //	Return the column layout rectangle.
-            return new Rectangle(leftLayoutMargin,
-                                    commandBarAreaHeight + topLayoutMargin,
-                                    Width - (leftLayoutMargin + rightLayoutMargin),
-                                    Height - commandBarAreaHeight - (topLayoutMargin + bottomLayoutMargin));
+            return new Rectangle(LeftLayoutMargin,
+                                    commandBarAreaHeight + TopLayoutMargin,
+                                    Width - (LeftLayoutMargin + RightLayoutMargin),
+                                    Height - commandBarAreaHeight - (TopLayoutMargin + BottomLayoutMargin));
         }
 
         /// <summary>

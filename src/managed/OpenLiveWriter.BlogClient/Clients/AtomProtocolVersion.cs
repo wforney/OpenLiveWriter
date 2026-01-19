@@ -13,54 +13,13 @@ namespace OpenLiveWriter.BlogClient.Clients
     // see http://rakaz.nl/item/moving_from_atom_03_to_10
     public abstract class AtomProtocolVersion
     {
-        private static AtomProtocolVersion v03 = new Atom03ProtocolVersion();
-        public static AtomProtocolVersion V03
-        {
-            get
-            {
-                return v03;
-            }
-            private set
-            {
-                v03 = value;
-            }
-        }
-        private static AtomProtocolVersion v10 = new Atom10ProtocolVersion();
-        public static AtomProtocolVersion V10
-        {
-            get
-            {
-                return v10;
-            }
-            private set
-            {
-                v10 = value;
-            }
-        }
-        private static AtomProtocolVersion v10Draft = new Atom10DraftProtocolVersion();
-        public static AtomProtocolVersion V10Draft
-        {
-            get
-            {
-                return v10Draft;
-            }
-            private set
-            {
-                v10Draft = value;
-            }
-        }
-        private static AtomProtocolVersion v10DraftBlogger = new Atom10DraftBloggerProtocolVersion();
-        public static AtomProtocolVersion V10DraftBlogger
-        {
-            get
-            {
-                return v10DraftBlogger;
-            }
-            private set
-            {
-                v10DraftBlogger = value;
-            }
-        }
+        public static AtomProtocolVersion V03 { get; private set; } = new Atom03ProtocolVersion();
+
+        public static AtomProtocolVersion V10 { get; private set; } = new Atom10ProtocolVersion();
+
+        public static AtomProtocolVersion V10Draft { get; private set; } = new Atom10DraftProtocolVersion();
+
+        public static AtomProtocolVersion V10DraftBlogger { get; private set; } = new Atom10DraftBloggerProtocolVersion();
 
         public abstract string NamespaceUri { get; }
         public abstract string AtomPubNamespaceUri { get; }
@@ -151,10 +110,9 @@ namespace OpenLiveWriter.BlogClient.Clients
                         if (mode == "xml")
                         {
                             XmlNode div = node.SelectSingleNode("xhtml:div", nsMgr);
-                            if (div != null)
-                                tv = new AtomContentValue(AtomContentValueType.XHTML, div.InnerXml);
-                            else
-                                tv = new AtomContentValue(AtomContentValueType.XHTML, string.Empty);
+                            tv = div != null
+                                ? new AtomContentValue(AtomContentValueType.XHTML, div.InnerXml)
+                                : new AtomContentValue(AtomContentValueType.XHTML, string.Empty);
                         }
                         else
                         {
@@ -284,10 +242,9 @@ namespace OpenLiveWriter.BlogClient.Clients
                             nsMgr.AddNamespace("xhtml", "http://www.w3.org/1999/xhtml");
 
                             XmlNode div = target.SelectSingleNode("xhtml:div", nsMgr);
-                            if (div != null)
-                                return new AtomContentValue(AtomContentValueType.XHTML, div.InnerXml);
-                            else
-                                return new AtomContentValue(AtomContentValueType.XHTML, string.Empty);
+                            return div != null
+                                ? new AtomContentValue(AtomContentValueType.XHTML, div.InnerXml)
+                                : new AtomContentValue(AtomContentValueType.XHTML, string.Empty);
                         }
                     default:
                     case "text":

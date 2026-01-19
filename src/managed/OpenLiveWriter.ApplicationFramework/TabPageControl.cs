@@ -22,29 +22,9 @@ namespace OpenLiveWriter.ApplicationFramework
         private IContainer components;
 
         /// <summary>
-        /// The tab bitmap.
-        /// </summary>
-        private Bitmap tabBitmap;
-
-        /// <summary>
-        /// A value which indicates whether the tab is drag-and-drop selectable.
-        /// </summary>
-        private bool dragDropSelectable = true;
-
-        /// <summary>
         /// The tab text.
         /// </summary>
         private string tabText;
-
-        /// <summary>
-        /// The tab ToolTip text.
-        /// </summary>
-        private string tabToolTipText;
-
-        /// <summary>
-        /// Keeps track of whether the tab is selected or not
-        /// </summary>
-        private bool _tabSelected = false;
         #endregion Private Member Variables
 
         #region Public Events
@@ -127,17 +107,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the tab bitmap.")
         ]
-        public Bitmap TabBitmap
-        {
-            get
-            {
-                return tabBitmap;
-            }
-            set
-            {
-                tabBitmap = value;
-            }
-        }
+        public Bitmap TabBitmap { get; set; }
 
         /// <summary>
         /// Gets or sets the tab text.
@@ -170,17 +140,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(null),
                 Description("Specifies the tab ToolTip text.")
         ]
-        public string TabToolTipText
-        {
-            get
-            {
-                return tabToolTipText;
-            }
-            set
-            {
-                tabToolTipText = value;
-            }
-        }
+        public string TabToolTipText { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether the tab is drag-and-drop selectable.
@@ -191,17 +151,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(true),
                 Description("Specifies whether the tab is drag-and-drop selectable.")
         ]
-        public bool DragDropSelectable
-        {
-            get
-            {
-                return dragDropSelectable;
-            }
-            set
-            {
-                dragDropSelectable = value;
-            }
-        }
+        public bool DragDropSelectable { get; set; } = true;
 
         public virtual ApplicationStyle ApplicationStyle
         {
@@ -211,13 +161,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public bool IsSelected
-        {
-            get
-            {
-                return _tabSelected;
-            }
-        }
+        public bool IsSelected { get; private set; } = false;
         #endregion Public Properties
 
         #region Protected Events
@@ -228,9 +172,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSelected(EventArgs e)
         {
-            _tabSelected = true;
-            if (Selected != null)
-                Selected(this, e);
+            IsSelected = true;
+            Selected?.Invoke(this, e);
         }
 
         /// <summary>
@@ -239,9 +182,8 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnUnselected(EventArgs e)
         {
-            _tabSelected = false;
-            if (Unselected != null)
-                Unselected(this, e);
+            IsSelected = false;
+            Unselected?.Invoke(this, e);
         }
 
         #endregion Protected Events

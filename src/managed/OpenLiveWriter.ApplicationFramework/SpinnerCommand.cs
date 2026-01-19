@@ -17,25 +17,19 @@ namespace OpenLiveWriter.ApplicationFramework
 
     public class SpinnerCommand : Command, IRepresentativeString
     {
-        private readonly decimal _minValue;
-        private readonly decimal _maxValue;
         private decimal _value;
-        private readonly decimal _increment;
-        private readonly uint _decimalPlaces;
-        private readonly string _representativeString;
-        private readonly string _formatString;
 
         public SpinnerCommand(CommandId commandId, decimal minValue, decimal maxValue, decimal initialValue, decimal increment, uint decimalPlaces, string representativeString, string formatString)
             : base(commandId)
         {
             Debug.Assert(initialValue >= minValue && initialValue <= maxValue, "Initial value is outside of allowed range.");
-            this._minValue = minValue;
-            this._maxValue = maxValue;
+            MinValue = minValue;
+            MaxValue = maxValue;
             this._value = initialValue;
-            this._increment = increment;
-            this._decimalPlaces = decimalPlaces;
-            this._representativeString = representativeString;
-            this._formatString = formatString;
+            Increment = increment;
+            DecimalPlaces = decimalPlaces;
+            RepresentativeString = representativeString;
+            FormatString = formatString;
 
             UpdateInvalidationState(PropertyKeys.MinValue, InvalidationState.Pending);
             UpdateInvalidationState(PropertyKeys.MaxValue, InvalidationState.Pending);
@@ -46,15 +40,9 @@ namespace OpenLiveWriter.ApplicationFramework
             UpdateInvalidationState(PropertyKeys.FormatString, InvalidationState.Pending);
         }
 
-        public decimal MinValue
-        {
-            get { return _minValue; }
-        }
+        public decimal MinValue { get; }
 
-        public decimal MaxValue
-        {
-            get { return _maxValue; }
-        }
+        public decimal MaxValue { get; }
 
         public decimal Value
         {
@@ -70,25 +58,13 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public decimal Increment
-        {
-            get { return _increment; }
-        }
+        public decimal Increment { get; }
 
-        public uint DecimalPlaces
-        {
-            get { return _decimalPlaces; }
-        }
+        public uint DecimalPlaces { get; }
 
-        public string RepresentativeString
-        {
-            get { return _representativeString; }
-        }
+        public string RepresentativeString { get; }
 
-        public string FormatString
-        {
-            get { return _formatString; }
-        }
+        public string FormatString { get; }
 
         public override void GetPropVariant(PropertyKey key, PropVariantRef currentValue, ref PropVariant value)
         {

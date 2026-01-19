@@ -17,7 +17,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public DynamicCommandMenu(IDynamicCommandMenuContext context)
         {
             // save reference to command list context
-            _context = context;
+            Context = context;
 
             // initialize commands
             InitializeCommands();
@@ -184,11 +184,7 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        private IDynamicCommandMenuContext Context
-        {
-            get { return _context; }
-        }
-        private readonly IDynamicCommandMenuContext _context;
+        private IDynamicCommandMenuContext Context { get; }
 
         private readonly ArrayList _commands = new ArrayList();
 

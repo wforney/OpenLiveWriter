@@ -92,8 +92,7 @@ namespace OpenLiveWriter.ApplicationFramework
                     sc.Color = value;
                 }
 
-                if (ColorSelected != null)
-                    ColorSelected(this, new ColorSelectedEventArgs(value));
+                ColorSelected?.Invoke(this, new ColorSelectedEventArgs(value));
             }
         }
 
@@ -263,17 +262,12 @@ namespace OpenLiveWriter.ApplicationFramework
     public delegate void ColorSelectedEventHandler(object sender, ColorSelectedEventArgs args);
     public class ColorSelectedEventArgs : EventArgs
     {
-        private readonly Color selectedColor;
-
         public ColorSelectedEventArgs(Color selectedColor)
         {
-            this.selectedColor = selectedColor;
+            SelectedColor = selectedColor;
         }
 
-        public Color SelectedColor
-        {
-            get { return selectedColor; }
-        }
+        public Color SelectedColor { get; }
     }
 
     public abstract class IColorPickerSubControl : System.Windows.Forms.UserControl

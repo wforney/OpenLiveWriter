@@ -98,44 +98,11 @@ namespace OpenLiveWriter.ApplicationFramework
                 WordCountValue = externalMessage.WordCountValue;
         }
 
-        private Image _icon;
-        public Image Icon
-        {
-            get
-            {
-                return _icon;
-            }
-            set
-            {
-                _icon = value;
-            }
-        }
+        public Image Icon { get; set; }
 
-        private string _blogPostStatus;
-        public string BlogPostStatus
-        {
-            get
-            {
-                return _blogPostStatus;
-            }
-            set
-            {
-                _blogPostStatus = value;
-            }
-        }
+        public string BlogPostStatus { get; set; }
 
-        private string _wordCountValue;
-        public string WordCountValue
-        {
-            get
-            {
-                return _wordCountValue;
-            }
-            set
-            {
-                _wordCountValue = value;
-            }
-        }
+        public string WordCountValue { get; set; }
     }
 
     public class DesignModeMainFrameWindow : SameThreadSimpleInvokeTarget, IMainFrameWindow
@@ -208,31 +175,27 @@ namespace OpenLiveWriter.ApplicationFramework
         protected void OnSizeChanged()
         {
             // prevent compiler warnings
-            if (SizeChanged != null)
-                SizeChanged(this, EventArgs.Empty);
+            SizeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler LocationChanged;
         protected void OnLocationChanged()
         {
             // prevent compiler warnings
-            if (LocationChanged != null)
-                LocationChanged(this, EventArgs.Empty);
+            LocationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler Deactivate;
         protected void OnDeactivate()
         {
             // prevent compiler warnings
-            if (Deactivate != null)
-                Deactivate(this, EventArgs.Empty);
+            Deactivate?.Invoke(this, EventArgs.Empty);
         }
 
         public event LayoutEventHandler Layout;
         protected void OnLayout(LayoutEventArgs ea)
         {
-            if (Layout != null)
-                Layout(this, ea);
+            Layout?.Invoke(this, ea);
         }
 
         public void OnKeyboardLanguageChanged()

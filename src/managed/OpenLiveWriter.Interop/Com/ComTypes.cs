@@ -136,7 +136,7 @@ namespace OpenLiveWriter.Interop.Com
     /// <summary>
     /// Commonly used interface IDs
     /// </summary>
-    public struct IID
+    public readonly struct IID
     {
         /// <summary>
         /// IID of IUnknown
@@ -154,7 +154,7 @@ namespace OpenLiveWriter.Interop.Com
     /// <summary>
     /// Commonly used category IDs
     /// </summary>
-    public struct CATID
+    public readonly struct CATID
     {
         /// <summary>
         /// CATID for DeskBand

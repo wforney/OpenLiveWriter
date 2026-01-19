@@ -44,7 +44,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <summary>
         /// The splitter orientation.
         /// </summary>
-        private SplitterOrientation orientation = SplitterOrientation.Horizontal;
 
         /// <summary>
         /// The starting position of a move.
@@ -55,11 +54,6 @@ namespace OpenLiveWriter.ApplicationFramework
         /// A value indicating whether the left mouse button is down.
         /// </summary>
         private bool leftMouseButtonDown = false;
-
-        /// <summary>
-        /// A value indicating whether the SplitterLightweightControl is enabled.
-        /// </summary>
-        private bool enabled = true;
 
         /// <summary>
         /// The layout rectangle for the attached control.
@@ -142,17 +136,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(SplitterOrientation.Horizontal),
                 Description("Specifies the the splitter orientation.")
         ]
-        public SplitterOrientation Orientation
-        {
-            get
-            {
-                return orientation;
-            }
-            set
-            {
-                orientation = value;
-            }
-        }
+        public SplitterOrientation Orientation { get; set; } = SplitterOrientation.Horizontal;
 
         /// <summary>
         /// Gets or sets the splitter orientation.
@@ -163,17 +147,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 DefaultValue(true),
                 Description("Specifies whether the splitter is initially enabled.")
         ]
-        public bool Enabled
-        {
-            get
-            {
-                return enabled;
-            }
-            set
-            {
-                enabled = value;
-            }
-        }
+        public bool Enabled { get; set; } = true;
 
         /// <summary>
         /// Gets or set the LightweightControl attached to the center of the splitter bar.
@@ -225,8 +199,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSplitterBeginMove(EventArgs e)
         {
-            if (SplitterBeginMove != null)
-                SplitterBeginMove(this, e);
+            SplitterBeginMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -235,8 +208,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">A LightweightSplitterEventArgs that contains the event data.</param>
         protected virtual void OnSplitterEndMove(LightweightSplitterEventArgs e)
         {
-            if (SplitterEndMove != null)
-                SplitterEndMove(this, e);
+            SplitterEndMove?.Invoke(this, e);
         }
 
         /// <summary>
@@ -245,8 +217,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">A LightweightSplitterEventArgs that contains the event data.</param>
         protected virtual void OnSplitterMoving(LightweightSplitterEventArgs e)
         {
-            if (SplitterMoving != null)
-                SplitterMoving(this, e);
+            SplitterMoving?.Invoke(this, e);
         }
 
         #endregion Protected Events
@@ -289,7 +260,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseDown(e);
 
             //	Ignore the event if the splitter is disabled.
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             //	If the mouse button is the left button, begin a splitter resize.
@@ -299,7 +270,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 leftMouseButtonDown = true;
 
                 //	Note the starting position.
-                startingPosition = (orientation == SplitterOrientation.Vertical) ? e.X : e.Y;
+                startingPosition = (Orientation == SplitterOrientation.Vertical) ? e.X : e.Y;
 
                 //	Raise the SplitterBeginMove event.
                 OnSplitterBeginMove(EventArgs.Empty);
@@ -316,14 +287,14 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseEnter(e);
 
             //	Ignore the event if the splitter is disabled.
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             //	Ensure that the left mouse button isn't down.
             Debug.Assert(!leftMouseButtonDown, "What?", "How can the left mouse button be down on mouse enter?");
 
             //	Turn on the splitter cursor.
-            Parent.Cursor = (orientation == SplitterOrientation.Vertical) ? Cursors.VSplit : Cursors.HSplit;
+            Parent.Cursor = (Orientation == SplitterOrientation.Vertical) ? Cursors.VSplit : Cursors.HSplit;
         }
 
         /// <summary>
@@ -336,7 +307,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseLeave(e);
 
             //	Ignore the event if the splitter is disabled.
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             //	If the left mouse button was down, end the resize operation.
@@ -363,7 +334,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseMove(e);
 
             //	Ignore the event if the splitter is disabled.
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             //	If the left mouse button is down, continue the resize operation.
@@ -374,7 +345,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (SplitterMoving != null)
                 {
                     //	Calculate the new position.
-                    int newPosition = ((orientation == SplitterOrientation.Vertical) ? e.X : e.Y) - startingPosition;
+                    int newPosition = ((Orientation == SplitterOrientation.Vertical) ? e.X : e.Y) - startingPosition;
 
                     //	Raise the SplitterMoving event.
                     OnSplitterMoving(new LightweightSplitterEventArgs(newPosition));
@@ -392,7 +363,7 @@ namespace OpenLiveWriter.ApplicationFramework
             base.OnMouseUp(e);
 
             //	Ignore the event if the splitter is disabled.
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             //	If the left mouse button is down, end the resize operation.
@@ -403,7 +374,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 if (leftMouseButtonDown)
                 {
                     //	Obtain the new position.
-                    int newPosition = ((orientation == SplitterOrientation.Vertical) ? e.X : e.Y) - startingPosition;
+                    int newPosition = ((Orientation == SplitterOrientation.Vertical) ? e.X : e.Y) - startingPosition;
 
                     //	Raise the event.
                     OnSplitterEndMove(new LightweightSplitterEventArgs(newPosition));

@@ -25,14 +25,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="stream">The COM Stream from which to create the .NET stream</param>
         public ComStream(IStream stream, bool commitOnDispose)
         {
-            if (stream != null)
-            {
-                m_comStream = stream;
-            }
-            else
-            {
-                throw new ArgumentNullException("stream");
-            }
+            m_comStream = stream ?? throw new ArgumentNullException("stream");
 
             CommitOnDispose = commitOnDispose;
         }
@@ -44,8 +37,6 @@ namespace OpenLiveWriter.Interop.Com
         }
 
         private bool CommitOnDispose { get; set; }
-
-        private bool supportNonZeroOffset = false;
 
         /// <summary>
         /// Finalizer
@@ -59,17 +50,13 @@ namespace OpenLiveWriter.Interop.Com
         /// Set to true if non-zero offset support is needed.  Using non-zero
         /// offsets will slow down reads and writes.
         /// </summary>
-        public bool SupportNonZeroOffset
-        {
-            get { return supportNonZeroOffset; }
-            set { supportNonZeroOffset = value; }
-        }
+        public bool SupportNonZeroOffset { get; set; } = false;
 
         /// <summary>
-        /// Reads a sequence of bytes from the current stream and advances the
-        /// current position within the stream by the number of bytes read
+        /// Reads a sequence of bytes from the current stream and advances the current position within the stream by the
+        /// number of bytes read
         /// </summary>
-        public unsafe override int Read(byte[] buffer, int offset, int count)
+        public override unsafe int Read(byte[] buffer, int offset, int count)
         {
             ValidateUnderlyingStream();
             ValidateOffset(offset);
@@ -111,7 +98,7 @@ namespace OpenLiveWriter.Interop.Com
         }
 
         // Sets the position within the current stream
-        public unsafe override long Seek(long offset, SeekOrigin origin)
+        public override unsafe long Seek(long offset, SeekOrigin origin)
         {
             ValidateUnderlyingStream();
 
@@ -232,7 +219,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="offset">The offset to validate.</param>
         private void ValidateOffset(int offset)
         {
-            if (!supportNonZeroOffset && offset != 0)
+            if (!SupportNonZeroOffset && offset != 0)
                 throw new NotSupportedException("Only a zero offset is supported.");
         }
 

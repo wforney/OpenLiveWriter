@@ -16,11 +16,6 @@ namespace OpenLiveWriter.ApplicationFramework
     public class CommandBarButtonEntry : CommandBarEntry
     {
         /// <summary>
-        /// The command identifier for this command bar button entry.
-        /// </summary>
-        private string commandIdentifier;
-
-        /// <summary>
         /// Gets or sets the command identifier for this command bar button entry.
         /// </summary>
         [
@@ -28,17 +23,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 Localizable(false),
                 Description("The command identifier of the command for this command bar button.")
         ]
-        public string CommandIdentifier
-        {
-            get
-            {
-                return commandIdentifier;
-            }
-            set
-            {
-                commandIdentifier = value;
-            }
-        }
+        public string CommandIdentifier { get; set; }
 
         /// <summary>
         /// The control for this entry.
@@ -67,7 +52,7 @@ namespace OpenLiveWriter.ApplicationFramework
         public override LightweightControl GetLightweightControl(CommandBarLightweightControl commandBarLightweightControl, bool rightAligned)
         {
             if (commandBarButtonLightweightControl == null)
-                commandBarButtonLightweightControl = new CommandBarButtonLightweightControl(commandBarLightweightControl, commandIdentifier, rightAligned);
+                commandBarButtonLightweightControl = new CommandBarButtonLightweightControl(commandBarLightweightControl, CommandIdentifier, rightAligned);
             return commandBarButtonLightweightControl;
         }
     }

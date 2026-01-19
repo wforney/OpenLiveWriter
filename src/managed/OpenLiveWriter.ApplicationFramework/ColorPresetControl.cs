@@ -21,17 +21,12 @@ namespace OpenLiveWriter.ApplicationFramework
             Right
         }
 
-        private readonly Direction direction;
-
         public GridNavigateEventArgs(Direction dir)
         {
-            this.direction = dir;
+            Navigate = dir;
         }
 
-        public Direction Navigate
-        {
-            get { return direction; }
-        }
+        public Direction Navigate { get; }
     }
 
     public delegate void GridNavigateEventHandler(object sender, GridNavigateEventArgs args);
@@ -41,18 +36,9 @@ namespace OpenLiveWriter.ApplicationFramework
         public event ColorSelectedEventHandler ColorSelected;
         public event GridNavigateEventHandler Navigate;
 
-        private readonly Color _color;
-        public Color Color
-        {
-            get { return _color; }
-        }
+        public Color Color { get; }
 
-        private bool m_selected;
-        public bool Selected
-        {
-            get { return m_selected; }
-            set { m_selected = value; }
-        }
+        public bool Selected { get; set; }
 
         private const int SQUARE_SIZE = 24;
         private const int BORDER_SIZE = 20;
@@ -78,7 +64,7 @@ namespace OpenLiveWriter.ApplicationFramework
             this.Height = SQUARE_SIZE;
             this.SetStyle(ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, true);
             this._highlighted = false;
-            this._color = color;
+            Color = color;
             this.KeyPress += new KeyPressEventHandler(ColorButton_KeyPress);
             this.Visible = true;
             this.TabStop = true;
@@ -128,7 +114,7 @@ namespace OpenLiveWriter.ApplicationFramework
         {
             if (e.KeyChar == '\r' || e.KeyChar == ' ')
             {
-                ColorSelected(this, new ColorSelectedEventArgs(this._color));
+                ColorSelected(this, new ColorSelectedEventArgs(Color));
                 return;
             }
         }
@@ -148,7 +134,7 @@ namespace OpenLiveWriter.ApplicationFramework
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.ColorSelected(this, new ColorSelectedEventArgs(this._color));
+            this.ColorSelected(this, new ColorSelectedEventArgs(Color));
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -167,7 +153,7 @@ namespace OpenLiveWriter.ApplicationFramework
             using (Brush b = new SolidBrush(SystemColors.Highlight))
                 e.Graphics.FillRectangle(b, outerRect);
 
-            using (Brush b = new SolidBrush(this._color))
+            using (Brush b = new SolidBrush(Color))
                 e.Graphics.FillRectangle(b, innerRect);
         }
     }

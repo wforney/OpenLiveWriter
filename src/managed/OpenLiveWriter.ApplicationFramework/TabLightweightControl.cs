@@ -223,19 +223,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
         #region Public Methods & Properties
 
-        public bool ColorizeBorder
-        {
-            get
-            {
-                return _colorizeBorder;
-            }
-            set
-            {
-                _colorizeBorder = value;
-            }
-        }
-
-        private bool _colorizeBorder = true;
+        public bool ColorizeBorder { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether tabs should be small.
@@ -862,8 +850,7 @@ namespace OpenLiveWriter.ApplicationFramework
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSelectedTabNumberChanged(EventArgs e)
         {
-            if (SelectedTabNumberChanged != null)
-                SelectedTabNumberChanged(this, e);
+            SelectedTabNumberChanged?.Invoke(this, e);
         }
 
         #endregion
@@ -986,7 +973,7 @@ namespace OpenLiveWriter.ApplicationFramework
         private void DrawTabPageBorders(Graphics graphics)
         {
             Color c = SystemColors.ControlDark;
-            if (_colorizeBorder)
+            if (ColorizeBorder)
                 c = ColorizedResources.Instance.BorderLightColor;
 
             //	Draw tab page borders.

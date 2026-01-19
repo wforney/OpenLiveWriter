@@ -15,8 +15,6 @@ namespace OpenLiveWriter.ApplicationFramework
     {
         private string text;
         private readonly MiniTabContext ctx;
-        private bool selected;
-        private string tooltip;
         private Color? borderColor = null;
 
         public MiniTab(MiniTabContext ctx)
@@ -31,9 +29,9 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 if (borderColor == null)
                 {
-                    if (this.LightweightControlContainerControl is MiniTabsControl)
+                    if (LightweightControlContainerControl is MiniTabsControl control)
                     {
-                        borderColor = ((MiniTabsControl)this.LightweightControlContainerControl).TopBorderColor;
+                        borderColor = control.TopBorderColor;
                     }
                 }
 
@@ -52,36 +50,28 @@ namespace OpenLiveWriter.ApplicationFramework
             }
         }
 
-        public string ToolTip
-        {
-            get { return tooltip; }
-            set { tooltip = value; }
-        }
+        public string ToolTip { get; set; }
 
         public event EventHandler SelectedChanged;
 
-        public bool Selected
-        {
-            get { return selected; }
-        }
+        public bool Selected { get; private set; }
 
         public void Select()
         {
-            selected = true;
+            Selected = true;
             OnSelectedChanged();
             Invalidate();
         }
 
         internal void Unselect()
         {
-            selected = false;
+            Selected = false;
             Invalidate();
         }
 
         protected virtual void OnSelectedChanged()
         {
-            if (SelectedChanged != null)
-                SelectedChanged(this, EventArgs.Empty);
+            SelectedChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public override Size DefaultVirtualSize
@@ -90,9 +80,9 @@ namespace OpenLiveWriter.ApplicationFramework
             {
                 if (Parent == null)
                     return Size.Empty;
-                Size size = TextRenderer.MeasureText(text, selected ? ctx.FontSelected : ctx.Font);
+                Size size = TextRenderer.MeasureText(text, Selected ? ctx.FontSelected : ctx.Font);
                 size.Height += (int)(Selected ? DisplayHelper.ScaleX(7) : DisplayHelper.ScaleY(5));
-                size.Width += (int)DisplayHelper.ScaleX(5) + size.Height / 2;
+                size.Width += (int)DisplayHelper.ScaleX(5) + (size.Height / 2);
                 return size;
             }
         }
@@ -105,7 +95,7 @@ namespace OpenLiveWriter.ApplicationFramework
 
             Rectangle tabRectangle = VirtualClientRectangle;
 
-            if (selected)
+            if (Selected)
                 ColorizedResources.Instance.ViewSwitchingTabSelected.DrawBorder(e.Graphics, tabRectangle);
             else
                 ColorizedResources.Instance.ViewSwitchingTabUnselected.DrawBorder(e.Graphics, tabRectangle);
@@ -116,7 +106,7 @@ namespace OpenLiveWriter.ApplicationFramework
                 {
                     using (Pen pen = new Pen(BorderColor.Value))
                     {
-                        if (!selected)
+                        if (!Selected)
                             g.DrawLine(pen, tabRectangle.Left, tabRectangle.Top, tabRectangle.Right,
                                        tabRectangle.Top);
                         g.DrawLine(pen, tabRectangle.Left, tabRectangle.Top, tabRectangle.Left,
@@ -145,23 +135,23 @@ namespace OpenLiveWriter.ApplicationFramework
              * */
 
             Rectangle textBounds = tabRectangle;
-            if (!selected)
+            if (!Selected)
                 textBounds.Y += (int)DisplayHelper.ScaleX(3);
             else
                 textBounds.Y += (int)DisplayHelper.ScaleX(3);
 
             Color textColor = ColorizedResources.Instance.MainMenuTextColor;
-            if (selected)
+            if (Selected)
                 textColor = Parent.ForeColor;
 
-            g.DrawText(Text, selected ? ctx.Font : ctx.Font, textBounds, SystemInformation.HighContrast ? SystemColors.ControlText : textColor,
+            g.DrawText(Text, Selected ? ctx.Font : ctx.Font, textBounds, SystemInformation.HighContrast ? SystemColors.ControlText : textColor,
                        TextFormatFlags.Top | TextFormatFlags.HorizontalCenter | TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.PreserveGraphicsClipping);
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            SetToolTip(tooltip);
+            SetToolTip(ToolTip);
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -174,24 +164,17 @@ namespace OpenLiveWriter.ApplicationFramework
     class MiniTabContext
     {
         private readonly Control parent;
-        private readonly Bitmap leftOn;
-        private readonly Bitmap centerOn;
-        private readonly Bitmap rightOn;
-        private readonly Bitmap leftOff;
-        private readonly Bitmap centerOff;
-        private readonly Bitmap rightOff;
-        private Font font, fontSelected;
 
         public MiniTabContext(Control parent)
         {
             this.parent = parent;
             string suffix = SystemInformation.HighContrast ? "-hi.png" : ".png";
-            leftOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabLeftSelected" + suffix);
-            centerOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabCenterSelected" + suffix);
-            rightOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabRightSelected" + suffix);
-            leftOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabLeft" + suffix);
-            centerOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabCenter" + suffix);
-            rightOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabRight" + suffix);
+            LeftOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabLeftSelected" + suffix);
+            CenterOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabCenterSelected" + suffix);
+            RightOn = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabRightSelected" + suffix);
+            LeftOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabLeft" + suffix);
+            CenterOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabCenter" + suffix);
+            RightOff = ResourceHelper.LoadAssemblyResourceBitmap("Images.TabRight" + suffix);
 
             parent.FontChanged += parent_FontChanged;
             RefreshFonts();
@@ -204,48 +187,24 @@ namespace OpenLiveWriter.ApplicationFramework
 
         private void RefreshFonts()
         {
-            font = parent.Font;
-            fontSelected = new Font(font, FontStyle.Bold);
+            Font = parent.Font;
+            FontSelected = new Font(Font, FontStyle.Bold);
         }
 
-        public Font Font
-        {
-            get { return font; }
-        }
+        public Font Font { get; private set; }
 
-        public Font FontSelected
-        {
-            get { return fontSelected; }
-        }
+        public Font FontSelected { get; private set; }
 
-        public Bitmap LeftOn
-        {
-            get { return leftOn; }
-        }
+        public Bitmap LeftOn { get; }
 
-        public Bitmap CenterOn
-        {
-            get { return centerOn; }
-        }
+        public Bitmap CenterOn { get; }
 
-        public Bitmap RightOn
-        {
-            get { return rightOn; }
-        }
+        public Bitmap RightOn { get; }
 
-        public Bitmap LeftOff
-        {
-            get { return leftOff; }
-        }
+        public Bitmap LeftOff { get; }
 
-        public Bitmap CenterOff
-        {
-            get { return centerOff; }
-        }
+        public Bitmap CenterOff { get; }
 
-        public Bitmap RightOff
-        {
-            get { return rightOff; }
-        }
+        public Bitmap RightOff { get; }
     }
 }
