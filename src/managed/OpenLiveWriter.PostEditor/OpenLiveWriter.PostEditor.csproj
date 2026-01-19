@@ -11,6 +11,8 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenLiveWriter.SpellChecker\OpenLiveWriter.SpellChecker.csproj">
