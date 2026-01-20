@@ -84,11 +84,11 @@ Warning suppression is configured in two locations:
 
 2. **LocEdit Project** (LocEdit.csproj):
    ```xml
-   <NoWarn>MSB3270</NoWarn>
+   <NoWarn>MSB3277;MSB3270</NoWarn>
    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
    ```
-   LocEdit.csproj does not import writer.build.settings, so it needs project-specific configuration for MSB3270.
-   MSB3277 and other warnings are already handled by the global configuration.
+   LocEdit.csproj does not import writer.build.settings, so it needs project-specific configuration.
+   Both MSB3277 and MSB3270 warnings occur in this project and must be suppressed locally.
 
 ## Code Quality
 
