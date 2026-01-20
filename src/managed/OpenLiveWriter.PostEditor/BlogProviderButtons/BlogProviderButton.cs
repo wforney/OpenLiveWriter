@@ -26,7 +26,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
     {
         public BlogProviderButton(string blogId, string hostBlogId, string homepageUrl, string postApiUrl, string buttonId)
         {
-            _blogId = blogId;
+            BlogId = blogId;
             _hostBlogId = hostBlogId;
             _homepageUrl = UrlHelper.InsureTrailingSlash(homepageUrl);
             _postApiUrl = postApiUrl;
@@ -37,17 +37,10 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
 
         public void Dispose()
         {
-            if (_settingsKey != null)
-                _settingsKey.Dispose();
+            _settingsKey?.Dispose();
         }
 
-        public string BlogId
-        {
-            get
-            {
-                return _blogId;
-            }
-        }
+        public string BlogId { get; }
 
         // id
         public string Id
@@ -96,7 +89,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0}?blog_id={1}&button_id={2}", ContentUrl, HttpUtility.UrlEncode(_hostBlogId), HttpUtility.UrlEncode(_buttonId));
+                return string.Format(CultureInfo.InvariantCulture, "{0}?blog_id={1}&button_id={2}", ContentUrl, HttpUtility.UrlEncode(_hostBlogId), HttpUtility.UrlEncode(_buttonId));
             }
         }
 
@@ -114,14 +107,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         {
             get
             {
-                if (SupportsNotification && ShowNotificationImage)
-                {
-                    return SafeGetNotificationImage();
-                }
-                else
-                {
-                    return Image;
-                }
+                return SupportsNotification && ShowNotificationImage ? SafeGetNotificationImage() : Image;
             }
         }
 
@@ -129,10 +115,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
         {
             get
             {
-                if (SupportsNotification && ShowNotificationText)
-                    return NotificationText;
-                else
-                    return Description;
+                return SupportsNotification && ShowNotificationText ? NotificationText : Description;
             }
         }
 
@@ -151,10 +134,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             get
             {
                 Size displaySize = _settingsKey.GetSize(CONTENT_DISPLAY_SIZE, Size.Empty);
-                if (displaySize != Size.Empty)
-                    return displaySize;
-                else
-                    return DefaultContentSize;
+                return displaySize != Size.Empty ? displaySize : DefaultContentSize;
             }
         }
         private const string CONTENT_DISPLAY_SIZE = "ContentDisplaySize";
@@ -242,7 +222,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             XmlDocument xmlDocument = new XmlDocument();
             try
             {
-                using (Blog blog = new Blog(_blogId))
+                using (Blog blog = new Blog(BlogId))
                     response = blog.SendAuthenticatedHttpRequest(notificationUrl, 10000);
 
                 // parse the results
@@ -254,8 +234,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             }
             finally
             {
-                if (response != null)
-                    response.Close();
+                response?.Close();
             }
 
             // create namespace manager
@@ -295,7 +274,7 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
                     WinInetCredentialsContext credentialsContext = null;
                     try
                     {
-                        credentialsContext = BlogClientHelper.GetCredentialsContext(_blogId, notificationImageUrl);
+                        credentialsContext = BlogClientHelper.GetCredentialsContext(BlogId, notificationImageUrl);
                     }
                     catch (BlogClientOperationCancelledException)
                     {
@@ -404,7 +383,6 @@ namespace OpenLiveWriter.PostEditor.BlogProviderButtons
             return BlogClientHelper.FormatUrl(url, _homepageUrl, _postApiUrl, _hostBlogId);
         }
 
-        private readonly string _blogId;
         private readonly string _hostBlogId;
         private readonly string _homepageUrl;
         private readonly string _postApiUrl;

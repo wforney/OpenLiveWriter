@@ -15,9 +15,9 @@
         {
           "Documents": [
             {
-              "FilePath": "C:\\Users\\WilliamForney\\source\\repos\\wforney\\OpenLiveWriter\\src\\managed\\OpenLiveWriter.HtmlParser\\Parser\\Element.cs",
-              "RelativePath": "..\\..\\OpenLiveWriter.HtmlParser\\Parser\\Element.cs",
-              "FullName": "Element.cs",
+              "FilePath": "C:\\Users\\WilliamForney\\source\\repos\\wforney\\OpenLiveWriter\\src\\managed\\OpenLiveWriter.PostEditor\\BlogProviderButtons\\BlogProviderButton.cs",
+              "RelativePath": "..\\..\\OpenLiveWriter.PostEditor\\BlogProviderButtons\\BlogProviderButton.cs",
+              "FullName": "BlogProviderButton.cs",
               "DockedHeight": {
                 "UnitType": "Stretch",
                 "Value": 200
@@ -26,8 +26,8 @@
                 "UnitType": "Stretch",
                 "Value": 259
               },
-              "Line": 600,
-              "Column": 48,
+              "Line": 41,
+              "Column": 10,
               "IsPinned": false,
               "IsActive": true,
               "IsSelected": true
