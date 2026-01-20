@@ -81,7 +81,7 @@
         <DefineConstants Condition="'$(SignAssembly)' == 'true'">$(DefineConstants);SIGN;</DefineConstants>
         <DelaySign Condition="'$(DelaySign)' == ''">false</DelaySign>
         <AssemblyOriginatorKeyFile Condition="'$(AssemblyOriginatorKeyFile)' == ''">$(RepoRoot)\key.snk</AssemblyOriginatorKeyFile>
-        <MSBuildWarningsAsMessages>MSB3277;MSB3247;MSB3276;MSB3836</MSBuildWarningsAsMessages>
+        <MSBuildWarningsAsMessages>MSB3277;MSB3247;MSB3276;MSB3245;MSB3270;MSB3836</MSBuildWarningsAsMessages>
         <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
     </PropertyGroup>
 
