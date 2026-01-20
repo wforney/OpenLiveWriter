@@ -63,20 +63,32 @@ The following MSBuild warnings are intentionally suppressed in the build configu
 
 **Affected Projects:** OpenLiveWriter.PostEditor.csproj
 
+### MSB3836 - Manifest Resource Name Conflict
+
+**Description:** Warning about potential conflicts in manifest resource names.
+
+**Reason for Suppression:**
+- This warning is informational and does not indicate an actual problem
+- The build system correctly handles resource embedding
+- No runtime issues related to resource loading have been observed
+
 ## Configuration
 
 Warning suppression is configured in two locations:
 
 1. **Global Configuration** (writer.build.settings):
    ```xml
-   <NoWarn>MSB3277;MSB3247;MSB3276;MSB3245;MSB3270</NoWarn>
+   <NoWarn>MSB3277;MSB3247;MSB3276;MSB3245;MSB3270;MSB3836</NoWarn>
    ```
+   This applies to all projects that import the writer.build.settings file.
 
 2. **LocEdit Project** (LocEdit.csproj):
    ```xml
-   <NoWarn>MSB3277;MSB3270</NoWarn>
+   <NoWarn>MSB3270</NoWarn>
    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
    ```
+   LocEdit.csproj does not import writer.build.settings, so it needs project-specific configuration for MSB3270.
+   MSB3277 and other warnings are already handled by the global configuration.
 
 ## Code Quality
 
