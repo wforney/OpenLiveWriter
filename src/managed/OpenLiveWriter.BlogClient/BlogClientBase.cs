@@ -18,7 +18,7 @@ namespace OpenLiveWriter.BlogClient
     {
         public BlogClientBase(IBlogCredentialsAccessor credentials)
         {
-            _credentials = credentials;
+            Credentials = credentials;
         }
 
         public string ProtocolName
@@ -37,11 +37,7 @@ namespace OpenLiveWriter.BlogClient
             }
         }
 
-        protected IBlogCredentialsAccessor Credentials
-        {
-            get { return _credentials; }
-        }
-        private readonly IBlogCredentialsAccessor _credentials;
+        protected IBlogCredentialsAccessor Credentials { get; }
 
         /// <summary>
         /// Forces a synchronous login.
@@ -66,8 +62,7 @@ namespace OpenLiveWriter.BlogClient
         /// <returns></returns>
         protected virtual TransientCredentials Login()
         {
-            TransientCredentials transientCredential = Credentials.TransientCredentials as TransientCredentials;
-            if (transientCredential == null)
+            if (!(Credentials.TransientCredentials is TransientCredentials transientCredential))
             {
                 transientCredential = CreateAuthenticatedCredential();
                 Debug.Assert(transientCredential != null, "Transient credential should never be null, throw an exception instead");

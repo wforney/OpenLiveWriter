@@ -69,8 +69,7 @@ namespace OpenLiveWriter.HtmlEditor.Controls
 
         protected void OnContextMenuTriggered(ContextMenuTriggeredEventArgs e)
         {
-            if (ContextMenuTriggered != null)
-                ContextMenuTriggered(this, e);
+            ContextMenuTriggered?.Invoke(this, e);
         }
 
         public delegate void ContextMenuTriggeredEventHandler(object sender, ContextMenuTriggeredEventArgs eventArgs);

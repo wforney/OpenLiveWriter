@@ -127,34 +127,18 @@ namespace OpenLiveWriter.BlogClient
 
     public class TransientCredentials
     {
-        private string _username;
-        private string _password;
-        private object _token;
-
         public TransientCredentials(string username, string password, object token)
         {
-            _username = username;
-            _password = password;
-            _token = token;
+            Username = username;
+            Password = password;
+            Token = token;
         }
 
-        public string Username
-        {
-            get { return _username; }
-            set { _username = value; }
-        }
+        public string Username { get; set; }
 
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; }
-        }
+        public string Password { get; set; }
 
-        public object Token
-        {
-            get { return _token; }
-            set { _token = value; }
-        }
+        public object Token { get; set; }
     }
 
     public sealed class BlogCredentialsHelper

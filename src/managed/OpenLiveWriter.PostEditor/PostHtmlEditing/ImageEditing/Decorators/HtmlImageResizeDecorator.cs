@@ -250,7 +250,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             return new HtmlImageResizeEditor(commandManager);
         }
 
-        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(ImageDecoratorEditorContext context, IProperties defaultSettings)
+        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(IImageDecoratorEditorContext context, IProperties defaultSettings)
         {
             //clear all defaulted settings for this decorator
             foreach (string key in defaultSettings.Names)

@@ -97,17 +97,13 @@ namespace OpenLiveWriter.CoreServices
         public OleStgMediumHandle(STGMEDIUM stg)
             : base(stg)
         {
-            m_handle = stg.contents;
+            Handle = stg.contents;
         }
 
         /// <summary>
         /// Underlying Win32 handle
         /// </summary>
-        public IntPtr Handle
-        {
-            get { return m_handle; }
-        }
-        private readonly IntPtr m_handle;
+        public IntPtr Handle { get; }
     }
 
     /// <summary>
@@ -190,17 +186,13 @@ namespace OpenLiveWriter.CoreServices
             ValidateType(TYMED.FILE);
 
             // marshall the file path into a .NET string
-            m_path = Marshal.PtrToStringAuto(stg.contents);
+            Path = Marshal.PtrToStringAuto(stg.contents);
         }
 
         /// <summary>
         /// Path to the file
         /// </summary>
-        public string Path
-        {
-            get { return m_path; }
-        }
-        private readonly string m_path;
+        public string Path { get; }
     }
 
     /// <summary>
@@ -242,7 +234,7 @@ namespace OpenLiveWriter.CoreServices
             ValidateType(TYMED.ISTREAM);
 
             // initialize the .NET stream
-            m_stream = new ComStream((IStream)m_comObject);
+            Stream = new ComStream((IStream)m_comObject);
         }
 
         /// <summary>
@@ -251,7 +243,7 @@ namespace OpenLiveWriter.CoreServices
         public override void Release()
         {
             // close the stream
-            m_stream.Close();
+            Stream.Close();
 
             // release underlying storage
             base.Release();
@@ -262,11 +254,7 @@ namespace OpenLiveWriter.CoreServices
         /// is tied to the lifetime of the OleStgMediumISTORAGE (it will be automatically
         /// disposed when the stg medium is disposed)
         /// </summary>
-        public Stream Stream
-        {
-            get { return m_stream; }
-        }
-        private readonly Stream m_stream = null;
+        public Stream Stream { get; } = null;
     }
 
     /// <summary>
@@ -285,7 +273,7 @@ namespace OpenLiveWriter.CoreServices
             ValidateType(TYMED.ISTORAGE);
 
             // initialize the storage
-            m_storage = new Storage((IStorage)m_comObject, false);
+            Storage = new Storage((IStorage)m_comObject, false);
         }
 
         /// <summary>
@@ -294,7 +282,7 @@ namespace OpenLiveWriter.CoreServices
         public override void Release()
         {
             // close the structured storage
-            m_storage.Close();
+            Storage.Close();
 
             // release underlying storage
             base.Release();
@@ -305,10 +293,6 @@ namespace OpenLiveWriter.CoreServices
         /// is tied to the lifetime of the OleStgMediumISTORAGE (it will be
         /// automatically disposed when the stg medium is disposed)
         /// </summary>
-        public Storage Storage
-        {
-            get { return m_storage; }
-        }
-        private readonly Storage m_storage = null;
+        public Storage Storage { get; } = null;
     }
 }

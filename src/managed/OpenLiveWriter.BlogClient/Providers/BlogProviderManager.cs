@@ -77,10 +77,10 @@ namespace OpenLiveWriter.BlogClient.Providers
         private static IBlogProvider[] GetXmlBlogProviders()
         {
             return
-                CabbedXmlResourceFileDownloader.Instance.ProcessLocalResource(Assembly.GetExecutingAssembly(),
-                                                                                        "Providers.BlogProvidersB5.xml",
-                                                                                        ReadXmlBlogProviders) as
-                IBlogProvider[];
+                CabbedXmlResourceFileDownloader.Instance.ProcessLocalResource(
+                    Assembly.GetExecutingAssembly(),
+                    "Providers.BlogProvidersB5.xml",
+                    ReadXmlBlogProviders) as IBlogProvider[];
         }
 
         /// <summary>
@@ -91,9 +91,8 @@ namespace OpenLiveWriter.BlogClient.Providers
         private static object ReadXmlBlogProviders(XmlDocument providersDocument)
         {
             //pre-verify the XML actually contains the list of providers (fixes bug 309968)
-            XmlNode providersNode = providersDocument.SelectSingleNode("//providers");
-            if (providersNode == null)
-                throw new Exception("Invalid blogProviders.xml file detected");
+            _ = providersDocument.SelectSingleNode("//providers")
+                ?? throw new Exception("Invalid blogProviders.xml file detected");
 
             // get the list of providers from the xml
             ArrayList providers = new ArrayList();

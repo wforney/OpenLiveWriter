@@ -554,32 +554,25 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
             switch (msg)
             {
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_BUTTON_CLICKED:
-                    if (ButtonClicked != null)
-                        ButtonClicked(this, new TaskDialogButtonEventArgs(driver, wParam.ToInt32()));
+                    ButtonClicked?.Invoke(this, new TaskDialogButtonEventArgs(driver, wParam.ToInt32()));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_CREATED:
-                    if (Created != null)
-                        Created(this, new TaskDialogEventArgs(driver));
+                    Created?.Invoke(this, new TaskDialogEventArgs(driver));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_DESTROYED:
-                    if (Destroyed != null)
-                        Destroyed(this, new TaskDialogEventArgs(driver));
+                    Destroyed?.Invoke(this, new TaskDialogEventArgs(driver));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_DIALOG_CONSTRUCTED:
-                    if (DialogConstructed != null)
-                        DialogConstructed(this, new TaskDialogEventArgs(driver));
+                    DialogConstructed?.Invoke(this, new TaskDialogEventArgs(driver));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_EXPANDO_BUTTON_CLICKED:
-                    if (ExpandoButtonClicked != null)
-                        ExpandoButtonClicked(this, new TaskDialogExpandoEventArgs(driver, wParam != IntPtr.Zero));
+                    ExpandoButtonClicked?.Invoke(this, new TaskDialogExpandoEventArgs(driver, wParam != IntPtr.Zero));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_HELP:
-                    if (Help != null)
-                        Help(this, new TaskDialogEventArgs(driver));
+                    Help?.Invoke(this, new TaskDialogEventArgs(driver));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED:
-                    if (HyperlinkClicked != null)
-                        HyperlinkClicked(this, new TaskDialogHyperlinkEventArgs(driver, Marshal.PtrToStringUni(lParam)));
+                    HyperlinkClicked?.Invoke(this, new TaskDialogHyperlinkEventArgs(driver, Marshal.PtrToStringUni(lParam)));
                     break;
                 /*
             case (uint)TASKDIALOG_NOTIFICATIONS.TDN_NAVIGATED:
@@ -588,8 +581,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
                 break;
                  */
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_RADIO_BUTTON_CLICKED:
-                    if (RadioButtonClicked != null)
-                        RadioButtonClicked(this, new TaskDialogButtonEventArgs(driver, wParam.ToInt32()));
+                    RadioButtonClicked?.Invoke(this, new TaskDialogButtonEventArgs(driver, wParam.ToInt32()));
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_TIMER:
                     if (TimerTicked != null)
@@ -602,8 +594,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
                     break;
                 case (uint)TASKDIALOG_NOTIFICATIONS.TDN_VERIFICATION_CLICKED:
-                    if (VerificationClicked != null)
-                        VerificationClicked(this, new TaskDialogVerificationEventArgs(driver, wParam.ToInt32() == 1));
+                    VerificationClicked?.Invoke(this, new TaskDialogVerificationEventArgs(driver, wParam.ToInt32() == 1));
                     break;
             }
 
@@ -635,17 +626,14 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
     public class TaskDialogButton
     {
-        private readonly int id;
-        private readonly string text;
-
         public TaskDialogButton(int id, string text)
         {
-            this.id = id;
-            this.text = text;
+            Id = id;
+            Text = text;
         }
 
-        public int Id { get { return id; } }
-        public string Text { get { return text; } }
+        public int Id { get; }
+        public string Text { get; }
     }
 
     public class TaskDialogIcon : IDisposable
@@ -691,7 +679,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
         public static TaskDialogIcon SecurityShieldGray { get { return new TaskDialogIcon(0xFFFF - 8); } }
     }
 
-    public struct TaskDialogDriver
+    public readonly struct TaskDialogDriver
     {
         private readonly IntPtr hwnd;
 

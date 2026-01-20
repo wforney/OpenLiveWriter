@@ -79,7 +79,6 @@ layout: post
             Assert.AreEqual(expected, fm.Serialize());
         }
 
-
         [Test]
         public void Serialize_WithTags()
         {

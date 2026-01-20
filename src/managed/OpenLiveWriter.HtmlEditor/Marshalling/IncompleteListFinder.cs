@@ -11,7 +11,6 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 {
     public class IncompleteListFinder : LightWeightHTMLDocumentIterator
     {
-        private bool hasIncompleteList = false;
         private int unorderedListLevel = 0;
         private int orderedListLevel = 0;
 
@@ -32,9 +31,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             }
             else if ((unorderedListLevel < 1) &&
                 (orderedListLevel < 1) &&
-                (tag.NameEquals(HTMLTokens.Li)))
+                tag.NameEquals(HTMLTokens.Li))
             {
-                hasIncompleteList = true;
+                HasIncompleteList = true;
             }
 
             base.OnBeginTag(tag);
@@ -54,12 +53,6 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             base.OnEndTag(tag);
         }
 
-        public bool HasIncompleteList
-        {
-            get
-            {
-                return hasIncompleteList;
-            }
-        }
+        public bool HasIncompleteList { get; private set; } = false;
     }
 }

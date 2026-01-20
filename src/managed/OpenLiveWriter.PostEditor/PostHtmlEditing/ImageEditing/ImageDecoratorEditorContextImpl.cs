@@ -12,7 +12,7 @@ using OpenLiveWriter.HtmlEditor;
 namespace OpenLiveWriter.PostEditor.PostHtmlEditing
 {
     internal delegate void ApplyDecoratorCallback();
-    internal class ImageDecoratorEditorContextImpl : ImageDecoratorEditorContext
+    internal class ImageDecoratorEditorContextImpl : IImageDecoratorEditorContext
     {
         readonly ApplyDecoratorCallback _applyDecoratorCallback;
         readonly IProperties _settings;

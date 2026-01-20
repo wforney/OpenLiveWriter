@@ -84,7 +84,6 @@ namespace OpenLiveWriter.Interop.Windows
             [In, Out] ref uint pcchUrl,
             [In] uint dwReserved);
 
-
         /// <summary>
         /// Searches for and retrieves a file association-related string from the registry.
         /// </summary>
@@ -214,7 +213,7 @@ namespace OpenLiveWriter.Interop.Windows
     {
         public const uint DEFAULT = 0x00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
         public const uint FILESYSTEM = 0x00000001;  // This includes the File System as well as the rest of the shell (Desktop\My Computer\Control Panel\)
-        public const uint URLALL = (SHACF.URLHISTORY | SHACF.URLMRU);
+        public const uint URLALL = SHACF.URLHISTORY | SHACF.URLMRU;
         public const uint URLHISTORY = 0x00000002;  // URLs in the User's History
         public const uint URLMRU = 0x00000004;  // URLs in the User's Recently Used list.
         public const uint USETAB = 0x00000008;  // Use the tab to move thru the autocomplete possibilities instead of to the next dialog/window control.

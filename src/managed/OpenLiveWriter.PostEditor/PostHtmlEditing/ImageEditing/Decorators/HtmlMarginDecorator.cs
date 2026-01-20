@@ -43,7 +43,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             return new HtmlMarginEditor(commandManager);
         }
 
-        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(ImageDecoratorEditorContext context, IProperties defaultSettings)
+        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(IImageDecoratorEditorContext context, IProperties defaultSettings)
         {
             HtmlMarginDecoratorSettings settings = new HtmlMarginDecoratorSettings(defaultSettings, context.ImgElement);
             settings.UseUserCustomMargin = settings.HasCustomMargin;

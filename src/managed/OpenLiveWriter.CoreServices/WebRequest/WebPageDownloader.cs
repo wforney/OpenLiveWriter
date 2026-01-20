@@ -55,7 +55,7 @@ namespace OpenLiveWriter.CoreServices
         }
 
         public string Url;
-        private string _title = null;
+
         public bool ExecuteScripts
         {
             set
@@ -73,17 +73,7 @@ namespace OpenLiveWriter.CoreServices
         }
         public byte[] PostData = null;
 
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-            set
-            {
-                _title = value;
-            }
-        }
+        public string Title { get; set; } = null;
 
         public object DownloadFromUrl(IProgressHost progressHost)
         {
@@ -119,14 +109,7 @@ namespace OpenLiveWriter.CoreServices
             get { return (IHTMLDocument2)browserControl.Document; }
         }
 
-        public WebPageDownloaderResult Result
-        {
-            get
-            {
-                return _result;
-            }
-        }
-        private WebPageDownloaderResult _result = null;
+        public WebPageDownloaderResult Result { get; private set; } = null;
 
         /// <summary>
         /// Disposes this object
@@ -162,10 +145,10 @@ namespace OpenLiveWriter.CoreServices
         private void HookEvents()
         {
             // subscribe to events
-            browserControl.ProgressChange += new BrowserProgressChangeEventHandler(browserControl_ProgressChange);
-            browserControl.DocumentComplete += new BrowserDocumentEventHandler(browserControl_DocumentComplete);
-            browserControl.NewWindow2 += new DWebBrowserEvents2_NewWindow2EventHandler(browserControl_NewWindow2);
-            browserControl.NavigateError += new BrowserNavigateErrorEventHandler(browserControl_NavigateError);
+            browserControl.ProgressChange += new BrowserProgressChangeEventHandler(BrowserControl_ProgressChange);
+            browserControl.DocumentComplete += new BrowserDocumentEventHandler(BrowserControl_DocumentComplete);
+            browserControl.NewWindow2 += new DWebBrowserEvents2_NewWindow2EventHandler(BrowserControl_NewWindow2);
+            browserControl.NavigateError += new BrowserNavigateErrorEventHandler(BrowserControl_NavigateError);
         }
 
         /// <summary>
@@ -174,11 +157,11 @@ namespace OpenLiveWriter.CoreServices
         private void UnHookEvents(bool disposing)
         {
             // unsubscribe to events
-            browserControl.ProgressChange -= new BrowserProgressChangeEventHandler(browserControl_ProgressChange);
-            browserControl.DocumentComplete -= new BrowserDocumentEventHandler(browserControl_DocumentComplete);
+            browserControl.ProgressChange -= new BrowserProgressChangeEventHandler(BrowserControl_ProgressChange);
+            browserControl.DocumentComplete -= new BrowserDocumentEventHandler(BrowserControl_DocumentComplete);
             if (disposing)
-                browserControl.NewWindow2 -= new DWebBrowserEvents2_NewWindow2EventHandler(browserControl_NewWindow2);
-            browserControl.NavigateError -= new BrowserNavigateErrorEventHandler(browserControl_NavigateError);
+                browserControl.NewWindow2 -= new DWebBrowserEvents2_NewWindow2EventHandler(BrowserControl_NewWindow2);
+            browserControl.NavigateError -= new BrowserNavigateErrorEventHandler(BrowserControl_NavigateError);
         }
 
         /// <summary>
@@ -192,8 +175,7 @@ namespace OpenLiveWriter.CoreServices
         /// <param name="args">Event args</param>
         protected void OnDownloadComplete(EventArgs args)
         {
-            if (DownloadComplete != null)
-                DownloadComplete(this, args);
+            DownloadComplete?.Invoke(this, args);
         }
 
         /// <summary>
@@ -201,7 +183,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">event args</param>
-        private void browserControl_DocumentComplete(object sender, BrowserDocumentEventArgs e)
+        private void BrowserControl_DocumentComplete(object sender, BrowserDocumentEventArgs e)
         {
             // verify ready-state complete
             Debug.Assert(browserControl.Browser.ReadyState == tagREADYSTATE.READYSTATE_COMPLETE);
@@ -212,9 +194,9 @@ namespace OpenLiveWriter.CoreServices
             DownloadIsComplete = true;
 
             if (UrlHelper.IsUrl(browserControl.LocationURL) && IsDangerousSSLBoundaryCrossing())
-                _result = new WebPageDownloaderResult(599, browserControl.LocationURL); //599 is hack placeholder, nothing official
-            else if (_result == null)
-                _result = WebPageDownloaderResult.Ok;
+                Result = new WebPageDownloaderResult(599, browserControl.LocationURL); //599 is hack placeholder, nothing official
+            else if (Result == null)
+                Result = WebPageDownloaderResult.Ok;
 
             OnDownloadComplete(e);
         }
@@ -224,15 +206,15 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">event args</param>
-        private void browserControl_NewWindow2(object sender, DWebBrowserEvents2_NewWindow2Event e)
+        private void BrowserControl_NewWindow2(object sender, DWebBrowserEvents2_NewWindow2Event e)
         {
             // prevent pop-ups!
             e.cancel = true;
         }
 
-        private void browserControl_NavigateError(object sender, BrowserNavigateErrorEventArgs e)
+        private void BrowserControl_NavigateError(object sender, BrowserNavigateErrorEventArgs e)
         {
-            _result = new WebPageDownloaderResult((int)e.StatusCode, Url);
+            Result = new WebPageDownloaderResult((int)e.StatusCode, Url);
         }
 
         private bool IsDangerousSSLBoundaryCrossing()
@@ -246,10 +228,7 @@ namespace OpenLiveWriter.CoreServices
             string currentScheme = new Uri(this.Url).Scheme.ToUpperInvariant();
             string newScheme = new Uri(browserControl.LocationURL).Scheme.ToUpperInvariant();
 
-            if (currentScheme == newScheme)
-                return false;
-
-            return (currentScheme == HTTPS || newScheme == HTTPS);
+            return currentScheme != newScheme && (currentScheme == HTTPS || newScheme == HTTPS);
         }
         private const string HTTPS = "HTTPS";
 
@@ -271,7 +250,7 @@ namespace OpenLiveWriter.CoreServices
                     Trace.WriteLine("Error checking for WarnOnZoneCrossing " + e.ToString());
                 }
 
-                return (warnOnZoneCrossing == 1);
+                return warnOnZoneCrossing == 1;
             }
         }
 
@@ -280,7 +259,7 @@ namespace OpenLiveWriter.CoreServices
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">event args</param>
-        private void browserControl_ProgressChange(object sender, BrowserProgressChangeEventArgs e)
+        private void BrowserControl_ProgressChange(object sender, BrowserProgressChangeEventArgs e)
         {
             if (progressHost.CancelRequested)
                 throw new OperationCancelledException();
@@ -297,12 +276,12 @@ namespace OpenLiveWriter.CoreServices
                 if (longMax > longComp)
                 {
                     intMax = int.MaxValue;
-                    intComp = (int)(((double)longComp / longMax) * intMax);
+                    intComp = (int)((double)longComp / longMax * intMax);
                 }
                 else
                 {
                     intComp = int.MaxValue;
-                    intMax = (int)(((double)longMax / longComp) * intComp);
+                    intMax = (int)((double)longMax / longComp * intComp);
                 }
             }
 
@@ -317,10 +296,7 @@ namespace OpenLiveWriter.CoreServices
         {
             get
             {
-                if (_title != null)
-                    return _title;
-                else
-                    return Url;
+                return Title ?? Url;
             }
         }
 
@@ -458,7 +434,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 get
                 {
-                    if (_exception == null && IsInRange(_result, 400, 599) || _result < -1)
+                    if ((_exception == null && IsInRange(_result, 400, 599)) || _result < -1)
                         _exception = GetExceptionForStatusCode(_result, _url);
                     return _exception;
                 }
@@ -467,7 +443,7 @@ namespace OpenLiveWriter.CoreServices
 
             private bool IsInRange(int value, int startRange, int endRange)
             {
-                return (value >= startRange && value <= endRange);
+                return value >= startRange && value <= endRange;
             }
 
             private WebPageDownloaderException GetExceptionForStatusCode(int statusCode, string url)
@@ -506,26 +482,12 @@ namespace OpenLiveWriter.CoreServices
 
         public WebPageDownloaderException(int statusCode, string message, string finalUrl) : base(message)
         {
-            _statusCode = statusCode;
-            _finalUrl = finalUrl;
-        }
-        private readonly int _statusCode = -1;
-        private readonly string _finalUrl = null;
-
-        public int StatusCode
-        {
-            get
-            {
-                return _statusCode;
-            }
+            StatusCode = statusCode;
+            Url = finalUrl;
         }
 
-        public string Url
-        {
-            get
-            {
-                return _finalUrl;
-            }
-        }
+        public int StatusCode { get; } = -1;
+
+        public string Url { get; } = null;
     }
 }

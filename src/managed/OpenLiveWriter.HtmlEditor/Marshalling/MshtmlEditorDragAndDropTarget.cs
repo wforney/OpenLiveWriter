@@ -162,8 +162,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
         public override void Dispose()
         {
-            if (emptyDataObject != null)
-                emptyDataObject.Dispose();
+            emptyDataObject?.Dispose();
 
             base.Dispose();
         }
@@ -335,12 +334,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         public static IOleDataObject ExtractOleDataObject(IDataObject dataObject)
         {
             OleDataObject oleDataObject = OleDataObject.CreateFrom(dataObject);
-            if (oleDataObject != null)
-                return oleDataObject.IOleDataObject;
-            else
-            {
-                return null;
-            }
+            return oleDataObject?.IOleDataObject;
         }
 
         public IOleDataObject SafeExtractOleDataObject(IDataObject dataObject)
@@ -356,12 +350,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <returns>effects allowed for drop</returns>
         private DragDropEffects ProvideDragFeedback(DragEventArgs e)
         {
-            if ((e.AllowedEffect & DragDropEffects.Copy) > 0)
-                return DragDropEffects.Copy;
-            else if ((e.AllowedEffect & DragDropEffects.Link) > 0)
-                return DragDropEffects.Link;
-            else
-                return DragDropEffects.None;
+            return (e.AllowedEffect & DragDropEffects.Copy) > 0
+                ? DragDropEffects.Copy
+                : (e.AllowedEffect & DragDropEffects.Link) > 0 ? DragDropEffects.Link : DragDropEffects.None;
         }
 
         /// <summary>
@@ -446,10 +437,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             Debug.Fail("Unexpected call to IDropTarget.DragEnter");
 
-            if (mshtmlDropTargetImpl != null)
-            {
-                mshtmlDropTargetImpl.DragEnter(pDataObj, grfKeyState, pt, ref pdwEffect);
-            }
+            mshtmlDropTargetImpl?.DragEnter(pDataObj, grfKeyState, pt, ref pdwEffect);
         }
 
         /// <summary>
@@ -462,10 +450,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             Debug.Fail("Unexpected call to IDropTarget.DragOver");
 
-            if (mshtmlDropTargetImpl != null)
-            {
-                mshtmlDropTargetImpl.DragOver(grfKeyState, pt, ref pdwEffect);
-            }
+            mshtmlDropTargetImpl?.DragOver(grfKeyState, pt, ref pdwEffect);
         }
 
         /// <summary>
@@ -475,10 +460,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             Debug.Fail("Unexpected call to IDropTarget.DragLeave");
 
-            if (mshtmlDropTargetImpl != null)
-            {
-                mshtmlDropTargetImpl.DragLeave();
-            }
+            mshtmlDropTargetImpl?.DragLeave();
         }
 
         /// <summary>
@@ -492,10 +474,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             Debug.Fail("Unexpected call to IDropTarget.Drop");
 
-            if (mshtmlDropTargetImpl != null)
-            {
-                mshtmlDropTargetImpl.Drop(pDataObj, grfKeyState, pt, ref pdwEffect);
-            }
+            mshtmlDropTargetImpl?.Drop(pDataObj, grfKeyState, pt, ref pdwEffect);
         }
 
         #endregion

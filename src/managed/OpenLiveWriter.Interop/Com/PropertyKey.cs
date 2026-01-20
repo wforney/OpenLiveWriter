@@ -1,5 +1,5 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for details.
+﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the MIT license. See LICENSE
+// file in the project root for details.
 
 using System;
 using System.Runtime.InteropServices;
@@ -10,39 +10,28 @@ namespace OpenLiveWriter.Interop.Com
     /// Defines a unique key for a Shell Property
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct PropertyKey : IEquatable<PropertyKey>
+    public readonly struct PropertyKey : IEquatable<PropertyKey>
     {
         #region Private Fields
 
         private readonly Guid formatId;
-        private readonly Int32 propertyId;
+        private readonly int propertyId;
 
-        #endregion
+        #endregion Private Fields
 
         #region Public Properties
+
         /// <summary>
         /// A unique GUID for the property
         /// </summary>
-        public Guid FormatId
-        {
-            get
-            {
-                return formatId;
-            }
-        }
+        public Guid FormatId => this.formatId;
 
         /// <summary>
-        ///  Property identifier (PID)
+        /// Property identifier (PID)
         /// </summary>
-        public Int32 PropertyId
-        {
-            get
-            {
-                return propertyId;
-            }
-        }
+        public int PropertyId => this.propertyId;
 
-        #endregion
+        #endregion Public Properties
 
         #region Public Construction
 
@@ -51,7 +40,7 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         /// <param name="formatId">A unique GUID for the property</param>
         /// <param name="propertyId">Property identifier (PID)</param>
-        public PropertyKey(Guid formatId, Int32 propertyId)
+        public PropertyKey(Guid formatId, int propertyId)
         {
             this.formatId = formatId;
             this.propertyId = propertyId;
@@ -62,20 +51,20 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         /// <param name="formatId">A string represenstion of a GUID for the property</param>
         /// <param name="propertyId">Property identifier (PID)</param>
-        public PropertyKey(string formatId, Int32 propertyId)
+        public PropertyKey(string formatId, int propertyId)
         {
             this.formatId = new Guid(formatId);
             this.propertyId = propertyId;
         }
 
         // Convenience ctor to initialize Windows Ribbon framework property key.
-        public PropertyKey(Int32 index, VarEnum id)
+        public PropertyKey(int index, VarEnum id)
         {
             this.formatId = new Guid(index, 0x7363, 0x696e, new byte[] { 0x84, 0x41, 0x79, 0x8a, 0xcf, 0x5a, 0xeb, 0xb7 });
             this.propertyId = Convert.ToInt32(id);
         }
 
-        #endregion
+        #endregion Public Construction
 
         #region IEquatable<PropertyKey> Members
 
@@ -84,12 +73,9 @@ namespace OpenLiveWriter.Interop.Com
         /// </summary>
         /// <param name="other">The object to compare against.</param>
         /// <returns>Equality result.</returns>
-        public bool Equals(PropertyKey other)
-        {
-            return other.Equals((object)this);
-        }
+        public bool Equals(PropertyKey other) => other.Equals((object)this);
 
-        #endregion
+        #endregion IEquatable<PropertyKey> Members
 
         #region equality and hashing
 
@@ -97,10 +83,7 @@ namespace OpenLiveWriter.Interop.Com
         /// Returns the hash code of the object. This is vital for performance of value types.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return formatId.GetHashCode() ^ propertyId;
-        }
+        public override int GetHashCode() => this.formatId.GetHashCode() ^ this.propertyId;
 
         /// <summary>
         /// Returns whether this object is equal to another. This is vital for performance of value types.
@@ -110,13 +93,17 @@ namespace OpenLiveWriter.Interop.Com
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             if (!(obj is PropertyKey))
+            {
                 return false;
+            }
 
             PropertyKey other = (PropertyKey)obj;
-            return other.formatId.Equals(formatId) && (other.propertyId == propertyId);
+            return other.formatId.Equals(this.formatId) && (other.propertyId == this.propertyId);
         }
 
         /// <summary>
@@ -125,11 +112,7 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="a">Object a.</param>
         /// <param name="b">Object b.</param>
         /// <returns>true if object a equals object b. false otherwise.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "b"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "a")]
-        public static bool operator ==(PropertyKey a, PropertyKey b)
-        {
-            return a.Equals(b);
-        }
+        public static bool operator ==(PropertyKey a, PropertyKey b) => a.Equals(b);
 
         /// <summary>
         /// Implements the != (inequality) operator.
@@ -137,26 +120,19 @@ namespace OpenLiveWriter.Interop.Com
         /// <param name="a">Object a.</param>
         /// <param name="b">Object b.</param>
         /// <returns>true if object a does not equal object b. false otherwise.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "b"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "a")]
-        public static bool operator !=(PropertyKey a, PropertyKey b)
-        {
-            return !a.Equals(b);
-        }
+        public static bool operator !=(PropertyKey a, PropertyKey b) => !a.Equals(b);
 
         /// <summary>
         /// Override ToString() to provide a user friendly string representation
         /// </summary>
         /// <returns>String representing the property key</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object)")]
-        public override string ToString()
-        {
-            return String.Format("{0}, {1}", formatId.ToString("B"), propertyId);
-        }
+        public override string ToString() => string.Format("{0}, {1}", this.formatId.ToString("B"), this.propertyId);
 
-        #endregion
+        #endregion equality and hashing
 
-        static readonly System.Collections.Generic.Dictionary<PropertyKey, GCHandle> s_pinnedCache =
+        private static readonly System.Collections.Generic.Dictionary<PropertyKey, GCHandle> s_pinnedCache =
             new System.Collections.Generic.Dictionary<PropertyKey, GCHandle>(16);
+
         public IntPtr ToPointer()
         {
             if (!s_pinnedCache.ContainsKey(this))

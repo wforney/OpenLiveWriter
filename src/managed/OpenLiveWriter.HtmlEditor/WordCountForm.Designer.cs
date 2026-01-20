@@ -62,7 +62,7 @@ namespace OpenLiveWriter.HtmlEditor
             this.buttonClose.TabIndex = 7;
             this.buttonClose.Text = "Close";
             this.buttonClose.UseVisualStyleBackColor = true;
-            this.buttonClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.buttonClose.Click += new System.EventHandler(this.BtnClose_Click);
             //
             // gbTableHeader
             //

@@ -35,13 +35,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
 
         public StaticSiteConfigValidator ValidateLocalSitePath()
         {
-            if(!Directory.Exists(_config.LocalSitePath))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(_config.LocalSitePath)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathLocalSitePathNotFound),
                     _config.LocalSitePath);
-
-            return this;
         }
 
         public StaticSiteConfigValidator ValidatePostsPath()
@@ -55,13 +54,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     Res.Get(StringId.SSGErrorPathPostsEmpty));
 
             // If the Posts path doesn't exist, display an error
-            if (!Directory.Exists(postsPathFull))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(postsPathFull)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathPostsNotFound),
                     postsPathFull);
-
-            return this;
         }
 
         public StaticSiteConfigValidator ValidatePagesPath()
@@ -77,13 +75,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     Res.Get(StringId.SSGErrorPathPagesEmpty));
 
             // If the path doesn't exist, display an error
-            if (!Directory.Exists(pagesPathFull))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(pagesPathFull)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathPagesNotFound),
                     pagesPathFull);
-
-            return this;
         }
 
         public StaticSiteConfigValidator ValidateDraftsPath()
@@ -99,13 +96,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     Res.Get(StringId.SSGErrorPathDraftsEmpty));
 
             // If the path doesn't exist, display an error
-            if (!Directory.Exists(draftsPathFull))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(draftsPathFull)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathDraftsNotFound),
                     draftsPathFull);
-
-            return this;
         }
 
         public StaticSiteConfigValidator ValidateImagesPath()
@@ -121,13 +117,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     Res.Get(StringId.SSGErrorPathImagesEmpty));
 
             // If the path doesn't exist, display an error
-            if (!Directory.Exists(imagesPathFull))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(imagesPathFull)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathImagesNotFound),
                     imagesPathFull);
-
-            return this;
         }
 
         public StaticSiteConfigValidator ValidateOutputPath()
@@ -143,13 +138,12 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
                     Res.Get(StringId.SSGErrorPathOutputEmpty));
 
             // If the path doesn't exist, display an error
-            if (!Directory.Exists(outputPathFull))
-                throw new StaticSiteConfigValidationException(
+            return Directory.Exists(outputPathFull)
+                ? this
+                : throw new StaticSiteConfigValidationException(
                     Res.Get(StringId.SSGErrorPathFolderNotFound),
                     Res.Get(StringId.SSGErrorPathOutputNotFound),
                     outputPathFull);
-
-            return this;
         }
 
         #endregion
@@ -158,22 +152,20 @@ namespace OpenLiveWriter.BlogClient.Clients.StaticSite
         {
             if (!_config.BuildingEnabled) return this; // Don't validate if building isn't enabled
 
-            if (_config.BuildCommand.Trim() == string.Empty)
-                throw new StaticSiteConfigValidationException(
-                Res.Get(StringId.SSGErrorBuildCommandEmptyTitle),
-                Res.Get(StringId.SSGErrorBuildCommandEmptyText));
-
-            return this;
+            return _config.BuildCommand.Trim() == string.Empty
+                ? throw new StaticSiteConfigValidationException(
+                    Res.Get(StringId.SSGErrorBuildCommandEmptyTitle),
+                    Res.Get(StringId.SSGErrorBuildCommandEmptyText))
+                : this;
         }
 
         public StaticSiteConfigValidator ValidatePublishCommand()
         {
-            if (_config.PublishCommand.Trim() == string.Empty)
-                throw new StaticSiteConfigValidationException(
-                Res.Get(StringId.SSGErrorPublishCommandEmptyTitle),
-                Res.Get(StringId.SSGErrorPublishCommandEmptyText));
-
-            return this;
+            return _config.PublishCommand.Trim() == string.Empty
+                ? throw new StaticSiteConfigValidationException(
+                    Res.Get(StringId.SSGErrorPublishCommandEmptyTitle),
+                    Res.Get(StringId.SSGErrorPublishCommandEmptyText))
+                : this;
         }
     }
 

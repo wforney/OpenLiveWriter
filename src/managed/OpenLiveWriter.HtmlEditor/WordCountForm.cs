@@ -45,14 +45,7 @@ namespace OpenLiveWriter.HtmlEditor
             labelParagraphsValue.Text = String.Format(CultureInfo.CurrentCulture, "{0}", wc.Paragraphs);
 
             // If the text is not the whole document then show the user a message to tell them
-            if (bOnlySelectedText)
-            {
-                gbTableHeader.Text = Res.Get(StringId.StatisticsSelection);
-            }
-            else
-            {
-                gbTableHeader.Text = Res.Get(StringId.Statistics);
-            }
+            gbTableHeader.Text = bOnlySelectedText ? Res.Get(StringId.StatisticsSelection) : Res.Get(StringId.Statistics);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -75,9 +68,9 @@ namespace OpenLiveWriter.HtmlEditor
             DisplayHelper.AutoFitSystemButton(buttonClose, buttonClose.Width, int.MaxValue);
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void BtnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 

@@ -26,10 +26,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 string rsdFileUrl = ExtractEditUri(homepage, weblogDOM);
 
                 // do the detection
-                if (rsdFileUrl != null)
-                    return DetectFromRsdUrl(rsdFileUrl);
-                else
-                    return null;
+                return rsdFileUrl == null ? null : DetectFromRsdUrl(rsdFileUrl);
             }
             catch (Exception ex)
             {
@@ -81,8 +78,7 @@ namespace OpenLiveWriter.BlogClient.Detection
                 // look for link tags within the head
                 foreach (IHTMLElement element in firstHeadElement.getElementsByTagName("LINK"))
                 {
-                    IHTMLLinkElement linkElement = element as IHTMLLinkElement;
-                    if (linkElement != null)
+                    if (element is IHTMLLinkElement linkElement)
                     {
                         string linkRel = linkElement.rel;
                         if (linkRel != null && (linkRel.ToUpperInvariant().Equals("EDITURI")))

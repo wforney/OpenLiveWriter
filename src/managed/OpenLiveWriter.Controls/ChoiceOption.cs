@@ -82,18 +82,15 @@ namespace OpenLiveWriter.Controls
 
         private Size Render(BidiGraphics g, int width, int height)
         {
-            int maxWidth = 0;
+
             // Start at the top left after padding
             Point origin = new Point(HORIZONTAL_PADDING, VERTICAL_PADDING);
 
             // Draw the green arrow
-            Image arrow;
-            if (IsHovered)
-                arrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.arrow_hover.png");
-            else
-                arrow = ResourceHelper.LoadAssemblyResourceBitmap("Images.arrow.png");
-            if (g != null)
-                g.DrawImage(true, arrow, origin.X, origin.Y + 3);
+            Image arrow = IsHovered
+                ? ResourceHelper.LoadAssemblyResourceBitmap("Images.arrow_hover.png")
+                : ResourceHelper.LoadAssemblyResourceBitmap("Images.arrow.png");
+            g?.DrawImage(true, arrow, origin.X, origin.Y + 3);
             origin.Offset(arrow.Width + HORIZONTAL_PADDING, 0);
 
             TextFormatFlags textFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.WordBreak;
@@ -111,7 +108,7 @@ namespace OpenLiveWriter.Controls
             }
 
             origin.Offset(0, headingSize.Height + INSIDE_VERTICAL_PADDING);
-            maxWidth = headingSize.Width;
+            int maxWidth = headingSize.Width;
 
             // Draw the subheading
             if (!string.IsNullOrEmpty(SubHeading))
@@ -135,10 +132,7 @@ namespace OpenLiveWriter.Controls
             // Draw the image
             if (OptionImage != null)
             {
-                if (g != null)
-                {
-                    g.DrawImage(false, OptionImage, origin);
-                }
+                g?.DrawImage(false, OptionImage, origin);
 
                 origin.Offset(0, OptionImage.Height);
                 maxWidth = Math.Max(OptionImage.Width, maxWidth);

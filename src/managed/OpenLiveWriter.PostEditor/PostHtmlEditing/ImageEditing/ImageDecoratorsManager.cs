@@ -404,7 +404,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             }
         }
 
-        internal void ApplyCustomizeDefaultSettingsHook(ImageDecoratorEditorContext context, IProperties settings)
+        internal void ApplyCustomizeDefaultSettingsHook(IImageDecoratorEditorContext context, IProperties settings)
         {
             if (RawImageDecorator is IImageDecoratorDefaultSettingsCustomizer)
             {

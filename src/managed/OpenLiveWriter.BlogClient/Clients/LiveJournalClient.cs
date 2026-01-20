@@ -36,8 +36,7 @@ namespace OpenLiveWriter.BlogClient.Clients
 
         protected override string NodeToText(XmlNode node)
         {
-            XmlElement childNode = node.FirstChild as XmlElement;
-            if (childNode != null && childNode.LocalName == "base64")
+            if (node.FirstChild is XmlElement childNode && childNode.LocalName == "base64")
             {
                 try
                 {
@@ -174,7 +173,7 @@ namespace OpenLiveWriter.BlogClient.Clients
                 FormatBlogPost(post),
                 new XmlRpcBoolean(publish));
 
-            return (result.InnerText == "1");
+            return result.InnerText == "1";
         }
 
         public override string DoBeforePublishUploadWork(IFileUploadContext uploadContext)
@@ -190,14 +189,13 @@ namespace OpenLiveWriter.BlogClient.Clients
             Stack challenges = new Stack(challengeNodes.Count);
             foreach (XmlNode node in challengeNodes)
                 challenges.Push(node.InnerText);
-
-            // login
-            long bytesAvailable = long.MaxValue;
             doc = frm.PerformGet("Login", (string)challenges.Pop(),
                 "Login.ClientVersion", ApplicationEnvironment.UserAgent);
             XmlNode remainingQuotaNode = doc.SelectSingleNode("/FBResponse/LoginResponse/Quota/Remaining");
+
+            // login
             if (remainingQuotaNode != null)
-                bytesAvailable = long.Parse(remainingQuotaNode.InnerText, CultureInfo.InvariantCulture);
+                _ = long.Parse(remainingQuotaNode.InnerText, CultureInfo.InvariantCulture);
 
             // upload picture
             using (Stream fileContents = uploadContext.GetContents())
@@ -211,29 +209,18 @@ namespace OpenLiveWriter.BlogClient.Clients
             }
 
             XmlNode picUrlNode = doc.SelectSingleNode("/FBResponse/UploadPicResponse/URL");
-            if (picUrlNode != null)
-            {
-                return picUrlNode.InnerText;
-            }
-            else
-            {
-                throw new BlogClientInvalidServerResponseException("LiveJournal.UploadPic", "No URL returned from server", doc.OuterXml);
-            }
+            return picUrlNode != null
+                ? picUrlNode.InnerText
+                : throw new BlogClientInvalidServerResponseException("LiveJournal.UploadPic", "No URL returned from server", doc.OuterXml);
         }
 
         protected override BlogClientProviderException ExceptionForFault(string faultCode, string faultString)
         {
-            if (
-                (faultCode == "100") ||
+            return (faultCode == "100") ||
                 (faultCode == "101") ||
-                (faultCode.ToUpperInvariant() == "SERVER" && faultString.StartsWith("invalid login", StringComparison.OrdinalIgnoreCase)))
-            {
-                return new BlogClientAuthenticationException(faultCode, faultString);
-            }
-            else
-            {
-                return null;
-            }
+                (faultCode.ToUpperInvariant() == "SERVER" && faultString.StartsWith("invalid login", StringComparison.OrdinalIgnoreCase))
+                ? new BlogClientAuthenticationException(faultCode, faultString)
+                : (BlogClientProviderException)null;
         }
 
         private void ExtractStandardPostFields(XmlNode postNode, BlogPost blogPost)

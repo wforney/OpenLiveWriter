@@ -19,8 +19,8 @@ namespace OpenLiveWriter.Interop.Com.StructuredStorage
         /// </summary>
         /// <param name="storage">The IStorage from which to construct this storage.</param>
         /// <param name="writable">Whether the storage is writable.</param>
-        public Storage(string path, StorageMode mode, bool writable) :
-            this(OpenStorage(path, mode, writable, new CompoundFileOpener()), writable)
+        public Storage(string path, StorageMode mode, bool writable)
+            : this(OpenStorage(path, mode, writable, new CompoundFileOpener()), writable)
         {
         }
 

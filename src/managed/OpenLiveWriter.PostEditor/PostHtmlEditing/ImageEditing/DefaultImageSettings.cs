@@ -51,7 +51,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
                             PluginSettingsAdaptor settings = new PluginSettingsAdaptor(decoratorDefaultSettings);
                             IProperties decoratorCurrentSettings = decorators.GetImageDecoratorSettings(decoratorId);
                             CopySettings(decoratorCurrentSettings, settings);
-                            ImageDecoratorEditorContext editorContext =
+                            IImageDecoratorEditorContext editorContext =
                                 new ImageDecoratorEditorContextImpl(decoratorCurrentSettings, null, imageInfo, new NoOpUndoUnitFactory(), _decoratorsManager.CommandManager);
                             decorator.ApplyCustomizeDefaultSettingsHook(editorContext, settings);
                         }

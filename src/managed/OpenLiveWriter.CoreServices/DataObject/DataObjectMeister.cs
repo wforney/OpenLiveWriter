@@ -20,7 +20,7 @@ namespace OpenLiveWriter.CoreServices
         /// the DataObjectMeister</param>
         public DataObjectMeister(IDataObject ido)
         {
-            m_dataObject = ido;
+            IDataObject = ido;
         }
 
         /// <summary>
@@ -28,13 +28,7 @@ namespace OpenLiveWriter.CoreServices
         /// the Meister into a method that needs both its high-level data parsing
         /// as well as low-level access to the underlying data object
         /// </summary>
-        public IDataObject IDataObject
-        {
-            get
-            {
-                return m_dataObject;
-            }
-        }
+        public IDataObject IDataObject { get; }
 
         public BrowserData BrowserData
         {
@@ -42,7 +36,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedBrowserCreate)
                 {
-                    m_browserData = BrowserData.Create(m_dataObject);
+                    m_browserData = BrowserData.Create(IDataObject);
                     haveAttemptedBrowserCreate = true;
                 }
 
@@ -62,7 +56,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedHTMLCreate)
                 {
-                    m_htmlData = HTMLData.Create(m_dataObject);
+                    m_htmlData = HTMLData.Create(IDataObject);
                     haveAttemptedHTMLCreate = true;
                 }
 
@@ -82,7 +76,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedFileCreate)
                 {
-                    m_fileData = FileData.Create(m_dataObject);
+                    m_fileData = FileData.Create(IDataObject);
                     haveAttemptedFileCreate = true;
                 }
 
@@ -102,7 +96,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttempedURLCreate)
                 {
-                    m_urlData = URLData.Create(m_dataObject);
+                    m_urlData = URLData.Create(IDataObject);
                     haveAttempedURLCreate = true;
                 }
 
@@ -122,7 +116,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedTextCreate)
                 {
-                    m_textData = TextData.Create(m_dataObject);
+                    m_textData = TextData.Create(IDataObject);
                     haveAttemptedTextCreate = true;
                 }
 
@@ -142,7 +136,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedImageCreate)
                 {
-                    m_imageData = ImageData.Create(m_dataObject);
+                    m_imageData = ImageData.Create(IDataObject);
                     haveAttemptedImageCreate = true;
                 }
 
@@ -170,7 +164,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedLightWeightCreate)
                 {
-                    m_lightWeightHTMLDocumentData = LightWeightHTMLDocumentData.Create(m_dataObject);
+                    m_lightWeightHTMLDocumentData = LightWeightHTMLDocumentData.Create(IDataObject);
                     haveAttemptedLightWeightCreate = true;
                 }
 
@@ -186,7 +180,7 @@ namespace OpenLiveWriter.CoreServices
             {
                 if (!haveAttemptedLiveClipboardCreate)
                 {
-                    _liveClipboardData = LiveClipboardData.Create(m_dataObject);
+                    _liveClipboardData = LiveClipboardData.Create(IDataObject);
                     haveAttemptedLiveClipboardCreate = true;
                 }
 
@@ -195,10 +189,5 @@ namespace OpenLiveWriter.CoreServices
         }
         private LiveClipboardData _liveClipboardData;
         private bool haveAttemptedLiveClipboardCreate = false;
-
-        /// <summary>
-        /// The DataObjectMeister's underlying IDataObject.
-        /// </summary>
-        private readonly IDataObject m_dataObject;
     }
 }

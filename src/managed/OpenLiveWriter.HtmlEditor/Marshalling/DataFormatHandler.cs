@@ -128,19 +128,17 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         protected DragDropEffects ProvideMoveAsDefaultWithCopyOverride(int keyState, DragDropEffects supportedEffects)
         {
             // effects to return
-            DragDropEffects effects;
+            DragDropEffects effects = ((keyState & 8) > 0) && ((supportedEffects & DragDropEffects.Copy) > 0)
+                ? DragDropEffects.Copy
+                // default to move if supported
+                : (supportedEffects & DragDropEffects.Move) > 0
+                    ? DragDropEffects.Move
+                    // allow copy if that is all that is supported
+                    : (supportedEffects & DragDropEffects.Copy) > 0
+                        ? DragDropEffects.Copy
+                        : DragDropEffects.None;
 
             // do copy if supported and the control key is down
-            if (((keyState & 8) > 0) && ((supportedEffects & DragDropEffects.Copy) > 0))
-                effects = DragDropEffects.Copy;
-            // default to move if supported
-            else if ((supportedEffects & DragDropEffects.Move) > 0)
-                effects = DragDropEffects.Move;
-            // allow copy if that is all that is supported
-            else if ((supportedEffects & DragDropEffects.Copy) > 0)
-                effects = DragDropEffects.Copy;
-            else
-                effects = DragDropEffects.None;
 
             // return effects
             return effects;
@@ -149,11 +147,9 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <summary>
         /// Data object meister representing the data that is being handled
         /// </summary>
-        protected DataObjectMeister DataMeister { get { return dataMeister; } }
-        private readonly DataObjectMeister dataMeister;
+        protected DataObjectMeister DataMeister { get; }
 
-        protected DataFormatHandlerContext HandlerContext { get { return handlerContext; } }
-        private readonly DataFormatHandlerContext handlerContext;
+        protected DataFormatHandlerContext HandlerContext { get; }
 
         /// <summary>
         /// Constructor for data format handlers.
@@ -161,8 +157,8 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// <param name="dataObject"></param>
         protected DataFormatHandler(DataObjectMeister dataObject, DataFormatHandlerContext handlerContext)
         {
-            this.dataMeister = dataObject;
-            this.handlerContext = handlerContext;
+            DataMeister = dataObject;
+            HandlerContext = handlerContext;
         }
     }
 

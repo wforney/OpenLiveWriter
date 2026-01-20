@@ -212,7 +212,7 @@ namespace OpenLiveWriter.Interop.Com
             }
             else if (value.GetType() == typeof(float?))
             {
-                propVar.SetDouble((double)((value as float?).Value));
+                propVar.SetDouble((double)(value as float?).Value);
             }
             else if (value.GetType() == typeof(float))
             {
@@ -228,39 +228,39 @@ namespace OpenLiveWriter.Interop.Com
             }
             else if (value.GetType() == typeof(string[]))
             {
-                propVar.SetStringVector((value as string[]));
+                propVar.SetStringVector(value as string[]);
             }
             else if (value.GetType() == typeof(short[]))
             {
-                propVar.SetShortVector((value as short[]));
+                propVar.SetShortVector(value as short[]);
             }
             else if (value.GetType() == typeof(ushort[]))
             {
-                propVar.SetUShortVector((value as ushort[]));
+                propVar.SetUShortVector(value as ushort[]);
             }
             else if (value.GetType() == typeof(int[]))
             {
-                propVar.SetIntVector((value as int[]));
+                propVar.SetIntVector(value as int[]);
             }
             else if (value.GetType() == typeof(uint[]))
             {
-                propVar.SetUIntVector((value as uint[]));
+                propVar.SetUIntVector(value as uint[]);
             }
             else if (value.GetType() == typeof(long[]))
             {
-                propVar.SetLongVector((value as long[]));
+                propVar.SetLongVector(value as long[]);
             }
             else if (value.GetType() == typeof(ulong[]))
             {
-                propVar.SetULongVector((value as ulong[]));
+                propVar.SetULongVector(value as ulong[]);
             }
             else if (value.GetType() == typeof(DateTime[]))
             {
-                propVar.SetDateTimeVector((value as DateTime[]));
+                propVar.SetDateTimeVector(value as DateTime[]);
             }
             else if (value.GetType() == typeof(bool[]))
             {
-                propVar.SetBoolVector((value as bool[]));
+                propVar.SetBoolVector(value as bool[]);
             }
             else
             {
@@ -272,7 +272,7 @@ namespace OpenLiveWriter.Interop.Com
 
         public bool IsNull()
         {
-            return (VarType == VarEnum.VT_EMPTY || VarType == VarEnum.VT_NULL);
+            return VarType == VarEnum.VT_EMPTY || VarType == VarEnum.VT_NULL;
         }
 
         public void SetError()
@@ -283,7 +283,7 @@ namespace OpenLiveWriter.Interop.Com
 
         public bool IsError()
         {
-            return (VarType == VarEnum.VT_ERROR);
+            return VarType == VarEnum.VT_ERROR;
         }
 
         /// <summary>
@@ -616,7 +616,7 @@ namespace OpenLiveWriter.Interop.Com
         {
             get
             {
-                return (valueType == (ushort)VarEnum.VT_EMPTY || valueType == (ushort)VarEnum.VT_NULL);
+                return valueType == (ushort)VarEnum.VT_EMPTY || valueType == (ushort)VarEnum.VT_NULL;
             }
         }
 
@@ -690,25 +690,25 @@ namespace OpenLiveWriter.Interop.Com
                         return decVal;
                     case VarEnum.VT_ARRAY | VarEnum.VT_UNKNOWN:
                         return CrackSingleDimSafeArray(valueData);
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_LPWSTR):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_LPWSTR:
                         return GetStringVector();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_I2):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_I2:
                         return GetVector<Int16>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_UI2):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_UI2:
                         return GetVector<UInt16>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_I4):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_I4:
                         return GetVector<Int32>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_UI4):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_UI4:
                         return GetVector<UInt32>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_I8):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_I8:
                         return GetVector<Int64>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_UI8):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_UI8:
                         return GetVector<UInt64>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_R8):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_R8:
                         return GetVector<Double>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_BOOL):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_BOOL:
                         return GetVector<Boolean>();
-                    case (VarEnum.VT_VECTOR | VarEnum.VT_FILETIME):
+                    case VarEnum.VT_VECTOR | VarEnum.VT_FILETIME:
                         return GetVector<DateTime>();
                     default:
                         // if the value cannot be marshaled
@@ -773,7 +773,7 @@ namespace OpenLiveWriter.Interop.Com
 
         bool boolVal // VARIANT_BOOL boolVal;
         {
-            get { return (iVal == 0 ? false : true); }
+            get { return iVal != 0; }
         }
 
         int scode // SCODE scode;
@@ -799,7 +799,7 @@ namespace OpenLiveWriter.Interop.Com
                 bits[0] = (int)valueData;
                 bits[1] = valueDataExt;
                 bits[2] = (wReserved3 << 16) | wReserved2;
-                bits[3] = (wReserved1 << 16);
+                bits[3] = wReserved1 << 16;
                 return new decimal(bits);
             }
         }
@@ -856,7 +856,7 @@ namespace OpenLiveWriter.Interop.Com
                 // because the size of the blob is represented as a 4-byte int
                 // but the pointer is immediately after that.
                 pBlobData = new IntPtr(
-                    (Int64)(BitConverter.ToInt32(GetDataBytes(), sizeof(int))) +
+                    (Int64)BitConverter.ToInt32(GetDataBytes(), sizeof(int)) +
                     (Int64)(BitConverter.ToInt32(GetDataBytes(), 2 * sizeof(int)) << 32));
             }
             else

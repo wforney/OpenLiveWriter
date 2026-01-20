@@ -83,7 +83,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
 
         #region IImageDecoratorDefaultSettingsCustomizer Members
 
-        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(ImageDecoratorEditorContext context, IProperties defaultSettings)
+        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(IImageDecoratorEditorContext context, IProperties defaultSettings)
         {
             HtmlImageTargetDecoratorSettings defaultTargetSettings = new HtmlImageTargetDecoratorSettings(defaultSettings, context.ImgElement);
             HtmlImageTargetDecoratorSettings targetSettings = new HtmlImageTargetDecoratorSettings(context.Settings, context.ImgElement);

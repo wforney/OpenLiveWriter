@@ -467,13 +467,10 @@ namespace OpenLiveWriter.Interop.Windows
             get
             {
                 UIntPtr size = Kernel32.GlobalSize(hGlobal);
-                if (size == UIntPtr.Zero)
-                {
-                    throw new Win32Exception(
-                        Marshal.GetLastWin32Error(), "Unexpected error calling GlobalSize");
-                }
-
-                return size;
+                return size == UIntPtr.Zero
+                    ? throw new Win32Exception(
+                        Marshal.GetLastWin32Error(), "Unexpected error calling GlobalSize")
+                    : size;
             }
         }
 

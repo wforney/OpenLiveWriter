@@ -87,8 +87,8 @@ namespace OpenLiveWriter.BlogClient
         }
 
         internal List<ImageViewer> ImageViewers { get { return imageViewers; } }
-        private static readonly LazyLoader<List<ImageViewer>> imageViewers = new LazyLoader<List<ImageViewer>>(_ImageViewers);
-        static List<ImageViewer> _ImageViewers()
+        private static readonly LazyLoader<List<ImageViewer>> imageViewers = new LazyLoader<List<ImageViewer>>(ImageViewersInternal);
+        static List<ImageViewer> ImageViewersInternal()
         {
             return (List<ImageViewer>)CabbedXmlResourceFileDownloader.Instance.
                                           ProcessLocalResource(
@@ -137,8 +137,6 @@ namespace OpenLiveWriter.BlogClient
 
     public class ImageViewer
     {
-        private readonly string name;
-        private readonly string pattern;
         private readonly XmlElement single;
         private readonly XmlElement group;
 
@@ -152,31 +150,23 @@ namespace OpenLiveWriter.BlogClient
             if (single == null && group == null)
                 throw new ArgumentNullException();
 
-            this.name = name;
-            this.pattern = pattern;
+            Name = name;
+            Pattern = pattern;
             this.single = single;
             this.group = group;
         }
 
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; }
 
-        public string Pattern
-        {
-            get { return pattern; }
-        }
+        public string Pattern { get; }
 
         public ImageViewerGroupSupport GroupSupport
         {
             get
             {
-                if (group == null)
-                    return ImageViewerGroupSupport.None;
-                if (single == null)
-                    return ImageViewerGroupSupport.Required;
-                return ImageViewerGroupSupport.Supported;
+                return group == null
+                    ? ImageViewerGroupSupport.None
+                    : single == null ? ImageViewerGroupSupport.Required : ImageViewerGroupSupport.Supported;
             }
         }
 
@@ -204,8 +194,7 @@ namespace OpenLiveWriter.BlogClient
                 bool isMatch = true;
                 foreach (XmlAttribute attr in single.Attributes)
                 {
-                    string attrVal = ((IHTMLElement)anchor).getAttribute(attr.Name, 2) as string;
-                    if (attrVal == null || attrVal != attr.Value)
+                    if (!(((IHTMLElement)anchor).getAttribute(attr.Name, 2) is string attrVal) || attrVal != attr.Value)
                     {
                         isMatch = false;
                         break;
@@ -229,8 +218,7 @@ namespace OpenLiveWriter.BlogClient
                     Regex reverseRegex = new Regex(Regex.Escape(attr.Value).Replace(Regex.Escape("{group-name}"), "(.+?)"));
                     Match m;
 
-                    string attrVal = ((IHTMLElement)anchor).getAttribute(attr.Name, 2) as string;
-                    if (attrVal == null || !(m = reverseRegex.Match(attrVal)).Success)
+                    if (!(((IHTMLElement)anchor).getAttribute(attr.Name, 2) is string attrVal) || !(m = reverseRegex.Match(attrVal)).Success)
                     {
                         isMatch = false;
                         break;

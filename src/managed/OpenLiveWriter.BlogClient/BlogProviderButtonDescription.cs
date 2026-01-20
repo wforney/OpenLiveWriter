@@ -31,69 +31,27 @@ namespace OpenLiveWriter.BlogClient
 
         protected void Init(string id, string imageUrl, Bitmap image, string description, string clickUrl, string contentUrl, Size contentDisplaySize, string notificationUrl)
         {
-            _id = id;
-            _imageUrl = imageUrl;
-            _image = image;
-            _description = description;
-            _clickUrl = clickUrl;
-            _contentUrl = contentUrl;
+            Id = id;
+            ImageUrl = imageUrl;
+            Image = image;
+            Description = description;
+            ClickUrl = clickUrl;
+            ContentUrl = contentUrl;
             _contentDisplaySize = contentDisplaySize;
-            _notificationUrl = notificationUrl;
+            NotificationUrl = notificationUrl;
         }
 
-        public string Id
-        {
-            get
-            {
-                return _id;
-            }
-        }
-        private string _id;
+        public string Id { get; private set; }
 
-        public string ImageUrl
-        {
-            get
-            {
-                return _imageUrl;
-            }
-        }
-        private string _imageUrl;
+        public string ImageUrl { get; private set; }
 
-        public Bitmap Image
-        {
-            get
-            {
-                return _image;
-            }
-        }
-        private Bitmap _image;
+        public Bitmap Image { get; private set; }
 
-        public string Description
-        {
-            get
-            {
-                return _description;
-            }
-        }
-        private string _description;
+        public string Description { get; private set; }
 
-        public string ClickUrl
-        {
-            get
-            {
-                return _clickUrl;
-            }
-        }
-        private string _clickUrl;
+        public string ClickUrl { get; private set; }
 
-        public string ContentUrl
-        {
-            get
-            {
-                return _contentUrl;
-            }
-        }
-        private string _contentUrl;
+        public string ContentUrl { get; private set; }
 
         public Size ContentDisplaySize
         {
@@ -104,14 +62,7 @@ namespace OpenLiveWriter.BlogClient
         }
         private Size _contentDisplaySize;
 
-        public string NotificationUrl
-        {
-            get
-            {
-                return _notificationUrl;
-            }
-        }
-        private string _notificationUrl;
+        public string NotificationUrl { get; private set; }
 
         public bool SupportsClick
         {
@@ -228,27 +179,22 @@ namespace OpenLiveWriter.BlogClient
 
         protected void Init(TimeSpan pollingInterval, string notificationText, Bitmap notificationImage, bool clearNotificationOnClick)
         {
-            _pollingInterval = pollingInterval;
-            _notificationText = notificationText;
-            _notificationImage = notificationImage;
-            _clearNotificationOnClick = clearNotificationOnClick;
+            PollingInterval = pollingInterval;
+            NotificationText = notificationText;
+            NotificationImage = notificationImage;
+            ClearNotificationOnClick = clearNotificationOnClick;
         }
 
         // interval until next notification check
-        public TimeSpan PollingInterval { get { return _pollingInterval; } }
+        public TimeSpan PollingInterval { get; private set; }
 
         // url for custom button image
-        public Bitmap NotificationImage { get { return _notificationImage; } }
+        public Bitmap NotificationImage { get; private set; }
 
         // text for notification
-        public string NotificationText { get { return _notificationText; } }
+        public string NotificationText { get; private set; }
 
         // clear notification image on click?
-        public bool ClearNotificationOnClick { get { return _clearNotificationOnClick; } }
-
-        private TimeSpan _pollingInterval;
-        private string _notificationText;
-        private Bitmap _notificationImage;
-        private bool _clearNotificationOnClick;
+        public bool ClearNotificationOnClick { get; private set; }
     }
 }

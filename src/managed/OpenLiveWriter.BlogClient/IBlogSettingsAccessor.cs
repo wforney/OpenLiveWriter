@@ -103,9 +103,7 @@ namespace OpenLiveWriter.BlogClient
 
         public int? GetOrder(string pluginId)
         {
-            if (int.TryParse(GetStringValue(pluginId, 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int order))
-                return order;
-            return null;
+            return int.TryParse(GetStringValue(pluginId, 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int order) ? order : (int?)null;
         }
 
         public void Set(string pluginId, bool enabled, int order)
@@ -120,9 +118,7 @@ namespace OpenLiveWriter.BlogClient
             if (strVal == null)
                 return null;
             string[] chunks = strVal.Split(',');
-            if (chunks.Length < index + 1)
-                return null;
-            return chunks[index];
+            return chunks.Length < index + 1 ? null : chunks[index];
         }
 
         public void CopyTo(BlogPublishingPluginSettings settings)
@@ -154,34 +150,18 @@ namespace OpenLiveWriter.BlogClient
 
         public WriterEditingManifestDownloadInfo(string sourceUrl, DateTime expires, DateTime lastModified, string eTag)
         {
-            _sourceUrl = sourceUrl;
-            _expires = expires;
-            _lastModified = lastModified;
-            _eTag = eTag;
+            SourceUrl = sourceUrl;
+            Expires = expires;
+            LastModified = lastModified;
+            ETag = eTag;
         }
 
-        public string SourceUrl
-        {
-            get { return _sourceUrl; }
-        }
-        private readonly string _sourceUrl;
+        public string SourceUrl { get; }
 
-        public DateTime Expires
-        {
-            get { return _expires; }
-        }
-        private readonly DateTime _expires;
+        public DateTime Expires { get; }
 
-        public DateTime LastModified
-        {
-            get { return _lastModified; }
-        }
-        private readonly DateTime _lastModified;
+        public DateTime LastModified { get; }
 
-        public string ETag
-        {
-            get { return _eTag; }
-        }
-        private readonly string _eTag;
+        public string ETag { get; }
     }
 }

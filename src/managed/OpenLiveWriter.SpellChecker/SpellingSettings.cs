@@ -30,8 +30,7 @@ namespace OpenLiveWriter.SpellChecker
 
         public static void FireChangedEvent()
         {
-            if (SpellingSettingsChanged != null)
-                SpellingSettingsChanged(null, new EventArgs());
+            SpellingSettingsChanged?.Invoke(null, new EventArgs());
         }
 
         /// <summary>

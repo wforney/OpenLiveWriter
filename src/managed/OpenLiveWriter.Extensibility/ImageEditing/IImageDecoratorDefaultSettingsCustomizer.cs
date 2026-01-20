@@ -15,6 +15,6 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
         /// </summary>
         /// <param name="context"></param>
         /// <param name="defaultSettings">An empty settings object that should be populated with the default settings</param>
-        void CustomizeDefaultSettingsBeforeSave(ImageDecoratorEditorContext context, IProperties defaultSettings);
+        void CustomizeDefaultSettingsBeforeSave(IImageDecoratorEditorContext context, IProperties defaultSettings);
     }
 }

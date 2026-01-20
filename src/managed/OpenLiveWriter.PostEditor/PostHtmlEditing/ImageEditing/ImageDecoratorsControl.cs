@@ -23,7 +23,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
     /// <summary>
     /// Summary description for ImageDecoratorsControl.
     /// </summary>
-    public class ImageDecoratorsControl : LightweightControlContainerControl, ImageDecoratorEditorContext
+    public class ImageDecoratorsControl : LightweightControlContainerControl, IImageDecoratorEditorContext
     {
         private ColumnHeader columnHeaderDecorators;
         private ListView listViewDecoratorsTable;
@@ -536,8 +536,8 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing
             get { return _imageInfo.EnforcedAspectRatio; }
         }
 
-        public ImageDecoratorEditorContext HostEditorContext { set { _hostEditorContext = value; } }
-        private ImageDecoratorEditorContext _hostEditorContext;
+        public IImageDecoratorEditorContext HostEditorContext { set { _hostEditorContext = value; } }
+        private IImageDecoratorEditorContext _hostEditorContext;
 
         #endregion
     }

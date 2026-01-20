@@ -145,7 +145,7 @@ namespace OpenLiveWriter.Interop.Windows
         {
             get
             {
-                return InternetGetConnectedState(out uint flags, 0);
+                return InternetGetConnectedState(out _, 0);
             }
         }
 
@@ -349,7 +349,6 @@ namespace OpenLiveWriter.Interop.Windows
         {
 
             ArrayList list = new ArrayList();
-            Win32_Find_Data findData = new Win32_Find_Data();
 
             // Set up buffer
             int bufferSize = Marshal.SizeOf(typeof(Win32_Find_Data)) + Kernel32.MAX_PATH + 14;
@@ -359,7 +358,7 @@ namespace OpenLiveWriter.Interop.Windows
             {
                 if (m_hFind != IntPtr.Zero)
                 {
-                    findData = (Win32_Find_Data)Marshal.PtrToStructure(buffer, typeof(Win32_Find_Data));
+                    Win32_Find_Data findData = (Win32_Find_Data)Marshal.PtrToStructure(buffer, typeof(Win32_Find_Data));
                     list.Add(findData);
 
                     //Iterate over the next files
@@ -434,12 +433,11 @@ namespace OpenLiveWriter.Interop.Windows
 
             // try to get the extended information.  If this returns false, there was an
             // error (likely, the buffer isn't large enough)
-            if (!WinInet.InternetGetLastResponseInfo(
-                out uint errorCode,
+            if (!InternetGetLastResponseInfo(
+                out _,
                 stringBuffer,
                 ref bufferLength))
             {
-
                 // If the buffer wasn't large enough
                 int error = Marshal.GetLastWin32Error();
                 if (error == ERROR.INSUFFICIENT_BUFFER)
@@ -447,8 +445,8 @@ namespace OpenLiveWriter.Interop.Windows
                     // Resize the buffer to the size specified in the results of the
                     // last call and try again.
                     stringBuffer.Capacity = (int)bufferLength;
-                    WinInet.InternetGetLastResponseInfo(
-                        out errorCode,
+                    _ = InternetGetLastResponseInfo(
+                        out _,
                         stringBuffer,
                         ref bufferLength);
 
@@ -517,7 +515,6 @@ namespace OpenLiveWriter.Interop.Windows
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
         public string cAlternateFileName;
     }
-
 
     /// <summary>
     /// Enumeration of WinInet option flags
@@ -872,62 +869,62 @@ namespace OpenLiveWriter.Interop.Windows
     {
         public const int BASE = 12000;
 
-        public const int OUT_OF_HANDLES = (BASE + 1);
-        public const int TIMEOUT = (BASE + 2);
-        public const int EXTENDED_ERROR = (BASE + 3);
-        public const int INTERNAL_ERROR = (BASE + 4);
-        public const int INVALID_URL = (BASE + 5);
-        public const int UNRECOGNIZED_SCHEME = (BASE + 6);
-        public const int NAME_NOT_RESOLVED = (BASE + 7);
-        public const int PROTOCOL_NOT_FOUND = (BASE + 8);
-        public const int INVALID_OPTION = (BASE + 9);
-        public const int BAD_OPTION_LENGTH = (BASE + 10);
-        public const int OPTION_NOT_SETTABLE = (BASE + 11);
-        public const int SHUTDOWN = (BASE + 12);
-        public const int INCORRECT_USER_NAME = (BASE + 13);
-        public const int INCORRECT_PASSWORD = (BASE + 14);
-        public const int LOGIN_FAILURE = (BASE + 15);
-        public const int INVALID_OPERATION = (BASE + 16);
-        public const int OPERATION_CANCELLED = (BASE + 17);
-        public const int INCORRECT_HANDLE_TYPE = (BASE + 18);
-        public const int INCORRECT_HANDLE_STATE = (BASE + 19);
-        public const int NOT_PROXY_REQUEST = (BASE + 20);
-        public const int REGISTRY_VALUE_NOT_FOUND = (BASE + 21);
-        public const int BAD_REGISTRY_PARAMETER = (BASE + 22);
-        public const int NO_DIRECT_ACCESS = (BASE + 23);
-        public const int NO_CONTEXT = (BASE + 24);
-        public const int NO_CALLBACK = (BASE + 25);
-        public const int REQUEST_PENDING = (BASE + 26);
-        public const int INCORRECT_FORMAT = (BASE + 27);
-        public const int ITEM_NOT_FOUND = (BASE + 28);
-        public const int CANNOT_CONNECT = (BASE + 29);
-        public const int CONNECTION_ABORTED = (BASE + 30);
-        public const int CONNECTION_RESET = (BASE + 31);
-        public const int FORCE_RETRY = (BASE + 32);
-        public const int INVALID_PROXY_REQUEST = (BASE + 33);
-        public const int NEED_UI = (BASE + 34);
+        public const int OUT_OF_HANDLES = BASE + 1;
+        public const int TIMEOUT = BASE + 2;
+        public const int EXTENDED_ERROR = BASE + 3;
+        public const int INTERNAL_ERROR = BASE + 4;
+        public const int INVALID_URL = BASE + 5;
+        public const int UNRECOGNIZED_SCHEME = BASE + 6;
+        public const int NAME_NOT_RESOLVED = BASE + 7;
+        public const int PROTOCOL_NOT_FOUND = BASE + 8;
+        public const int INVALID_OPTION = BASE + 9;
+        public const int BAD_OPTION_LENGTH = BASE + 10;
+        public const int OPTION_NOT_SETTABLE = BASE + 11;
+        public const int SHUTDOWN = BASE + 12;
+        public const int INCORRECT_USER_NAME = BASE + 13;
+        public const int INCORRECT_PASSWORD = BASE + 14;
+        public const int LOGIN_FAILURE = BASE + 15;
+        public const int INVALID_OPERATION = BASE + 16;
+        public const int OPERATION_CANCELLED = BASE + 17;
+        public const int INCORRECT_HANDLE_TYPE = BASE + 18;
+        public const int INCORRECT_HANDLE_STATE = BASE + 19;
+        public const int NOT_PROXY_REQUEST = BASE + 20;
+        public const int REGISTRY_VALUE_NOT_FOUND = BASE + 21;
+        public const int BAD_REGISTRY_PARAMETER = BASE + 22;
+        public const int NO_DIRECT_ACCESS = BASE + 23;
+        public const int NO_CONTEXT = BASE + 24;
+        public const int NO_CALLBACK = BASE + 25;
+        public const int REQUEST_PENDING = BASE + 26;
+        public const int INCORRECT_FORMAT = BASE + 27;
+        public const int ITEM_NOT_FOUND = BASE + 28;
+        public const int CANNOT_CONNECT = BASE + 29;
+        public const int CONNECTION_ABORTED = BASE + 30;
+        public const int CONNECTION_RESET = BASE + 31;
+        public const int FORCE_RETRY = BASE + 32;
+        public const int INVALID_PROXY_REQUEST = BASE + 33;
+        public const int NEED_UI = BASE + 34;
 
-        public const int HANDLE_EXISTS = (BASE + 36);
-        public const int SEC_CERT_DATE_INVALID = (BASE + 37);
-        public const int SEC_CERT_CN_INVALID = (BASE + 38);
-        public const int HTTP_TO_HTTPS_ON_REDIR = (BASE + 39);
-        public const int HTTPS_TO_HTTP_ON_REDIR = (BASE + 40);
-        public const int MIXED_SECURITY = (BASE + 41);
-        public const int CHG_POST_IS_NON_SECURE = (BASE + 42);
-        public const int POST_IS_NON_SECURE = (BASE + 43);
-        public const int CLIENT_AUTH_CERT_NEEDED = (BASE + 44);
-        public const int INVALID_CA = (BASE + 45);
-        public const int CLIENT_AUTH_NOT_SETUP = (BASE + 46);
-        public const int ASYNC_THREAD_FAILED = (BASE + 47);
-        public const int REDIRECT_SCHEME_CHANGE = (BASE + 48);
-        public const int DIALOG_PENDING = (BASE + 49);
-        public const int RETRY_DIALOG = (BASE + 50);
-        public const int HTTPS_HTTP_SUBMIT_REDIR = (BASE + 52);
-        public const int INSERT_CDROM = (BASE + 53);
-        public const int FORTEZZA_LOGIN_NEEDED = (BASE + 54);
-        public const int SEC_CERT_ERRORS = (BASE + 55);
-        public const int SEC_CERT_NO_REV = (BASE + 56);
-        public const int SEC_CERT_REV_FAILED = (BASE + 57);
+        public const int HANDLE_EXISTS = BASE + 36;
+        public const int SEC_CERT_DATE_INVALID = BASE + 37;
+        public const int SEC_CERT_CN_INVALID = BASE + 38;
+        public const int HTTP_TO_HTTPS_ON_REDIR = BASE + 39;
+        public const int HTTPS_TO_HTTP_ON_REDIR = BASE + 40;
+        public const int MIXED_SECURITY = BASE + 41;
+        public const int CHG_POST_IS_NON_SECURE = BASE + 42;
+        public const int POST_IS_NON_SECURE = BASE + 43;
+        public const int CLIENT_AUTH_CERT_NEEDED = BASE + 44;
+        public const int INVALID_CA = BASE + 45;
+        public const int CLIENT_AUTH_NOT_SETUP = BASE + 46;
+        public const int ASYNC_THREAD_FAILED = BASE + 47;
+        public const int REDIRECT_SCHEME_CHANGE = BASE + 48;
+        public const int DIALOG_PENDING = BASE + 49;
+        public const int RETRY_DIALOG = BASE + 50;
+        public const int HTTPS_HTTP_SUBMIT_REDIR = BASE + 52;
+        public const int INSERT_CDROM = BASE + 53;
+        public const int FORTEZZA_LOGIN_NEEDED = BASE + 54;
+        public const int SEC_CERT_ERRORS = BASE + 55;
+        public const int SEC_CERT_NO_REV = BASE + 56;
+        public const int SEC_CERT_REV_FAILED = BASE + 57;
     }
 
     /// <summary>
@@ -935,8 +932,8 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct ERROR_FTP
     {
-        public const int TRANSFER_IN_PROGRESS = (ERROR_INTERNET.BASE + 110);
-        public const int DROPPED = (ERROR_INTERNET.BASE + 111);
-        public const int NO_PASSIVE_MODE = (ERROR_INTERNET.BASE + 112);
+        public const int TRANSFER_IN_PROGRESS = ERROR_INTERNET.BASE + 110;
+        public const int DROPPED = ERROR_INTERNET.BASE + 111;
+        public const int NO_PASSIVE_MODE = ERROR_INTERNET.BASE + 112;
     }
 }

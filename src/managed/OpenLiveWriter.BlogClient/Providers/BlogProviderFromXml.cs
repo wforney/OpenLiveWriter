@@ -83,8 +83,7 @@ namespace OpenLiveWriter.BlogClient.Providers
             }
 
             StringId postApiUrlLabel = StringId.CWSelectProviderApiUrlLabel;
-            XmlElement postApiUrlDescriptionNode = providerNode.SelectSingleNode("postApiUrlLabel") as XmlElement;
-            if (postApiUrlDescriptionNode != null)
+            if (providerNode.SelectSingleNode("postApiUrlLabel") is XmlElement postApiUrlDescriptionNode)
             {
                 try
                 {
@@ -127,10 +126,7 @@ namespace OpenLiveWriter.BlogClient.Providers
 
         private static string NodeText(XmlNode node)
         {
-            if (node != null)
-                return node.InnerText.Trim();
-            else
-                return String.Empty;
+            return node == null ? string.Empty : node.InnerText.Trim();
         }
     }
 }

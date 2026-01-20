@@ -39,11 +39,11 @@ namespace OpenLiveWriter.FileDestinations
                     webPublishDestination = value;
 
                     // notify listeners
-                    if (DestinationChanged != null)
-                        DestinationChanged(this, EventArgs.Empty);
+                    DestinationChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
+
         private WebPublishDestination webPublishDestination = new WebPublishDestination(null);
 
         /// <summary>
@@ -64,12 +64,11 @@ namespace OpenLiveWriter.FileDestinations
                     publishPath = value;
 
                     // fire event
-                    if (PublishPathChanged != null)
-                        PublishPathChanged(this, EventArgs.Empty);
+                    PublishPathChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
-        private string publishPath = String.Empty;
+        private string publishPath = string.Empty;
 
         public string FullPublishPath
         {
@@ -85,14 +84,9 @@ namespace OpenLiveWriter.FileDestinations
         {
             get
             {
-                if (Destination.Profile.Type == DestinationProfile.DestType.FTP)
-                {
-                    return Destination.Profile.FtpPublishPath;
-                }
-                else
-                {
-                    return Destination.Profile.LocalPublishPath;
-                }
+                return Destination.Profile.Type == DestinationProfile.DestType.FTP
+                    ? Destination.Profile.FtpPublishPath
+                    : Destination.Profile.LocalPublishPath;
             }
         }
 
@@ -101,7 +95,7 @@ namespace OpenLiveWriter.FileDestinations
             get
             {
                 string websiteUrl = Destination.Profile.WebsiteURL;
-                return (websiteUrl != null && websiteUrl.Length > 0);
+                return websiteUrl != null && websiteUrl.Length > 0;
             }
         }
 
@@ -111,7 +105,7 @@ namespace OpenLiveWriter.FileDestinations
             {
                 string destURL = Destination.Profile.WebsiteURL;
                 if ((destURL.Length > 0) && !destURL.EndsWith("/", StringComparison.OrdinalIgnoreCase))
-                    destURL = destURL + "/";
+                    destURL += "/";
                 return destURL;
             }
         }
@@ -125,7 +119,6 @@ namespace OpenLiveWriter.FileDestinations
         /// Notify users that the publish folder has changed
         /// </summary>
         public event EventHandler PublishPathChanged;
-
 
         /// <summary>
         /// Cleans up the file separators in a path name based on whether the current

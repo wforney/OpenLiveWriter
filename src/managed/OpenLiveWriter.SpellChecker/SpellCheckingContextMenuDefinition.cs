@@ -67,7 +67,7 @@ namespace OpenLiveWriter.SpellChecker
                             FixSpellingCommand.Identifier += suggestion.Suggestion;
                             FixSpellingCommand.Text = suggestion.Suggestion;
                             FixSpellingCommand.MenuText = suggestion.Suggestion;
-                            FixSpellingCommand.Execute += new EventHandler(_spellingManager.fixSpellingApplyCommand_Execute);
+                            FixSpellingCommand.Execute += new EventHandler(_spellingManager.FixSpellingApplyCommand_Execute);
                             FixSpellingCommand.Tag = suggestion.Suggestion;
                             commandManager.Add(FixSpellingCommand);
 

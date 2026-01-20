@@ -25,14 +25,13 @@ namespace OpenLiveWriter.BlogClient
 
         public static string GetAbsoluteUrl(string url, string sourceUrl)
         {
-            if (url == String.Empty)
-                return String.Empty;
-            else if (url.IndexOf(BlogClientHelper.BlogHomepageUrlToken, StringComparison.OrdinalIgnoreCase) != -1)
-                return url;
-            else if (url.IndexOf(BlogClientHelper.BlogPostApiUrlToken, StringComparison.OrdinalIgnoreCase) != -1)
-                return url;
-            else
-                return UrlHelper.UrlCombineIfRelative(sourceUrl, url);
+            return url == string.Empty
+                ? string.Empty
+                : url.IndexOf(BlogClientHelper.BlogHomepageUrlToken, StringComparison.OrdinalIgnoreCase) != -1
+                ? url
+                : url.IndexOf(BlogClientHelper.BlogPostApiUrlToken, StringComparison.OrdinalIgnoreCase) != -1
+                    ? url
+                    : UrlHelper.UrlCombineIfRelative(sourceUrl, url);
         }
 
         public static string FormatUrl(string url, string homepageUrl, string postApiUrl, string hostBlogId)
@@ -127,15 +126,12 @@ namespace OpenLiveWriter.BlogClient
             CookieString cookieString = null;
             NetworkCredential credential = null;
 
-            if (credentials != null && credentials.Username != String.Empty)
+            if (credentials != null && credentials.Username != string.Empty)
             {
                 credential = new NetworkCredential(credentials.Username, credentials.Password);
             }
 
-            if (cookieString != null || credential != null)
-                return new WinInetCredentialsContext(credential, cookieString);
-            else
-                return null;
+            return cookieString != null || credential != null ? new WinInetCredentialsContext(credential, cookieString) : null;
         }
 
         public static object PerformBlogOperationWithTimeout(string blogId, BlogClientOperation operation, int timeoutMs)

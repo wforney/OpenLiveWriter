@@ -34,7 +34,7 @@ namespace OpenLiveWriter.PostEditor.PostHtmlEditing.ImageEditing.Decorators
             return new HtmlAlignEditor(commandManager);
         }
 
-        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(ImageDecoratorEditorContext context, IProperties defaultSettings)
+        void IImageDecoratorDefaultSettingsCustomizer.CustomizeDefaultSettingsBeforeSave(IImageDecoratorEditorContext context, IProperties defaultSettings)
         {
             HtmlAlignDecoratorSettings settings = new HtmlAlignDecoratorSettings(defaultSettings, context.ImgElement);
             settings.DefaultAlignment = settings.Alignment;

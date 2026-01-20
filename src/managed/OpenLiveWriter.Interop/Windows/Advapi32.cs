@@ -46,11 +46,11 @@ namespace OpenLiveWriter.Interop.Windows
         public const uint QUERY_VALUE = 0x0001;
         public const uint ENUMERATE_SUB_KEYS = 0x0008;
         public const uint NOTIFY = 0x0010;
-        public const uint READ = (STANDARD_RIGHTS.READ | KEY.QUERY_VALUE | KEY.ENUMERATE_SUB_KEYS | KEY.NOTIFY) & ~(STANDARD_RIGHTS.SYNCHRONIZE);
+        public const uint READ = (STANDARD_RIGHTS.READ | KEY.QUERY_VALUE | KEY.ENUMERATE_SUB_KEYS | KEY.NOTIFY) & ~STANDARD_RIGHTS.SYNCHRONIZE;
     }
 
     //from WinReg.h
-    public struct HKEY
+    public readonly struct HKEY
     {
         public static readonly UIntPtr CLASSES_ROOT = new UIntPtr(0x80000000);
         public static readonly UIntPtr CURRENT_USER = new UIntPtr(0x80000001);

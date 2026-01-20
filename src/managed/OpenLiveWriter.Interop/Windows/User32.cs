@@ -227,7 +227,7 @@ namespace OpenLiveWriter.Interop.Windows
             [MarshalAs(UnmanagedType.U4)] int cPoints //size of the array
             );
 
-        public static readonly int GWL_EXSTYLE = (-20);
+        public static readonly int GWL_EXSTYLE = -20;
         public const uint WS_EX_LAYOUTRTL = 0x00400000; // Right to left mirroring
 
         [DllImport("User32.dll")]
@@ -497,7 +497,7 @@ namespace OpenLiveWriter.Interop.Windows
             public static Int32 FLASHW_STOP = 0;
             public static Int32 FLASHW_CAPTION = 1;
             public static Int32 FLASHW_TRAY = 2;
-            public static Int32 FLASHW_ALL = (FlashStatus.FLASHW_CAPTION | FlashStatus.FLASHW_TRAY);
+            public static Int32 FLASHW_ALL = FlashStatus.FLASHW_CAPTION | FlashStatus.FLASHW_TRAY;
             public static Int32 FLASHW_TIMER = 4;
             public static Int32 FLASHW_TIMERNOFG = 12;
         };
@@ -854,10 +854,7 @@ namespace OpenLiveWriter.Interop.Windows
         public Int32 right;
         public Int32 bottom;
 
-        public static implicit operator Rectangle(RECT rect)
-        {
-            return Rectangle.FromLTRB(rect.left, rect.top, rect.right, rect.bottom);
-        }
+        public static implicit operator Rectangle(RECT rect) => Rectangle.FromLTRB(rect.left, rect.top, rect.right, rect.bottom);
 
         public static implicit operator RECT(Rectangle rectangle)
         {
@@ -1032,7 +1029,6 @@ namespace OpenLiveWriter.Interop.Windows
         public const uint LAYOUTRTL = 0x8000;
     }
 
-
     /// <summary>
     /// Window field offsets for GetWindowLong().
     /// </summary>
@@ -1191,8 +1187,8 @@ namespace OpenLiveWriter.Interop.Windows
     /// </summary>
     public struct HT
     {
-        public const int ERROR = (-2);
-        public const int TRANSPARENT = (-1);
+        public const int ERROR = -2;
+        public const int TRANSPARENT = -1;
         public const int NOWHERE = 0;
         public const int CLIENT = 1;
         public const int CAPTION = 2;
@@ -1225,7 +1221,7 @@ namespace OpenLiveWriter.Interop.Windows
     /// <summary>
     /// Constants for WM_SYSCOMMAND
     /// </summary>
-    public struct SC
+    public readonly struct SC
     {
         public static readonly UIntPtr SIZE = new UIntPtr(0xF000);
         public static readonly UIntPtr MOVE = new UIntPtr(0xF010);
@@ -1318,7 +1314,7 @@ namespace OpenLiveWriter.Interop.Windows
         MOUSE_LL = 14
     }
 
-    public struct HWND
+    public readonly struct HWND
     {
         public static readonly IntPtr DESKTOP = new IntPtr(0);
         public static readonly IntPtr TOP = new IntPtr(0);
@@ -1351,7 +1347,7 @@ namespace OpenLiveWriter.Interop.Windows
     /// <summary>
     /// Key flags used to extract extended key information from lParam
     /// </summary>
-    public struct KF
+    public readonly struct KF
     {
         public static readonly IntPtr EXTENDED = new IntPtr(0x0100);
         public static readonly IntPtr DLGMODE = new IntPtr(0x0800);
@@ -1616,14 +1612,14 @@ namespace OpenLiveWriter.Interop.Windows
         //this is the same value
         private const Int16 First = -601;
 
-        public const Int16 InitDone = (First - 0x0000);
-        public const Int16 SelChange = (First - 0x0001);
-        public const Int16 FolderChange = (First - 0x0002);
-        public const Int16 ShareViolation = (First - 0x0003);
-        public const Int16 Help = (First - 0x0004);
-        public const Int16 FileOk = (First - 0x0005);
-        public const Int16 TypeChange = (First - 0x0006);
-        public const Int16 IncludeItem = (First - 0x0007);
+        public const Int16 InitDone = First - 0x0000;
+        public const Int16 SelChange = First - 0x0001;
+        public const Int16 FolderChange = First - 0x0002;
+        public const Int16 ShareViolation = First - 0x0003;
+        public const Int16 Help = First - 0x0004;
+        public const Int16 FileOk = First - 0x0005;
+        public const Int16 TypeChange = First - 0x0006;
+        public const Int16 IncludeItem = First - 0x0007;
     }
 
     /// <summary>

@@ -40,9 +40,7 @@ namespace OpenLiveWriter.Localization.Bidi
         {
             get
             {
-                if (IsRightToLeft)
-                    return (MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
-                return (MessageBoxOptions)0;
+                return IsRightToLeft ? MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading : (MessageBoxOptions)0;
             }
         }
 
@@ -86,14 +84,14 @@ namespace OpenLiveWriter.Localization.Bidi
         {
             if (IsRightToLeft && control.RightToLeft != RightToLeft.No)
             {
-                if (!forceAutoLayout && control is IRtlAware)
+                if (!forceAutoLayout && control is IRtlAware aware)
                 {
-                    ((IRtlAware)control).Layout();
+                    aware.Layout();
                 }
                 else
                 {
-                    bool isMirroredForm = control is Form
-                                          && ((Form)control).RightToLeftLayout;
+                    bool isMirroredForm = control is Form form
+                                          && form.RightToLeftLayout;
 
                     foreach (Control childControl in childControls)
                     {

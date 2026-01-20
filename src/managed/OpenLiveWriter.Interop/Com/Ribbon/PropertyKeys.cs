@@ -328,30 +328,29 @@ namespace OpenLiveWriter.Interop.Com.Ribbon
         {
             if (commandInvalidationFlags == null)
             {
-                commandInvalidationFlags = new Dictionary<PropertyKey, CommandInvalidationFlags>(MAX_KEYS);
+                commandInvalidationFlags = new Dictionary<PropertyKey, CommandInvalidationFlags>(MAX_KEYS)
+                {
+                    // State
+                    { PropertyKeys.DecimalPlaces, CommandInvalidationFlags.State },
+                    { PropertyKeys.Enabled, CommandInvalidationFlags.State },
+                    { PropertyKeys.FormatString, CommandInvalidationFlags.State },
+                    { PropertyKeys.Increment, CommandInvalidationFlags.State },
+                    { PropertyKeys.Pinned, CommandInvalidationFlags.State },
+                    { PropertyKeys.RecentItems, CommandInvalidationFlags.State },
+                    { PropertyKeys.RepresentativeString, CommandInvalidationFlags.State },
 
-                // State
-                commandInvalidationFlags.Add(PropertyKeys.DecimalPlaces, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.Enabled, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.FormatString, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.Increment, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.Pinned, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.RecentItems, CommandInvalidationFlags.State);
-                commandInvalidationFlags.Add(PropertyKeys.RepresentativeString, CommandInvalidationFlags.State);
-
-                // Value
-                commandInvalidationFlags.Add(PropertyKeys.SelectedItem, CommandInvalidationFlags.Value);
-                commandInvalidationFlags.Add(PropertyKeys.BooleanValue, CommandInvalidationFlags.Value);
-                commandInvalidationFlags.Add(PropertyKeys.MaxValue, CommandInvalidationFlags.Value);
-                commandInvalidationFlags.Add(PropertyKeys.MinValue, CommandInvalidationFlags.Value);
-                commandInvalidationFlags.Add(PropertyKeys.DecimalValue, CommandInvalidationFlags.Value);
-                commandInvalidationFlags.Add(PropertyKeys.StringValue, CommandInvalidationFlags.Value);
+                    // Value
+                    { PropertyKeys.SelectedItem, CommandInvalidationFlags.Value },
+                    { PropertyKeys.BooleanValue, CommandInvalidationFlags.Value },
+                    { PropertyKeys.MaxValue, CommandInvalidationFlags.Value },
+                    { PropertyKeys.MinValue, CommandInvalidationFlags.Value },
+                    { PropertyKeys.DecimalValue, CommandInvalidationFlags.Value },
+                    { PropertyKeys.StringValue, CommandInvalidationFlags.Value }
+                };
                 Debug.Assert(commandInvalidationFlags.Count == MAX_KEYS);
             }
 
-            if (commandInvalidationFlags.TryGetValue(key, out CommandInvalidationFlags flags))
-                return flags;
-            return CommandInvalidationFlags.Property;
+            return commandInvalidationFlags.TryGetValue(key, out CommandInvalidationFlags flags) ? flags : CommandInvalidationFlags.Property;
         }
     }
 }

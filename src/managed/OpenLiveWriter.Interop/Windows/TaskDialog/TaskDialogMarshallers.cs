@@ -50,7 +50,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
 
                 for (int i = 0; i < buttons.Length; i++)
                 {
-                    IntPtr dest = new IntPtr(buffer.ToInt64() + i * elementSize);
+                    IntPtr dest = new IntPtr(buffer.ToInt64() + (i * elementSize));
                     Marshal.StructureToPtr(buttons[i], dest, false);
                 }
             }
@@ -69,7 +69,7 @@ namespace OpenLiveWriter.Interop.Windows.TaskDialog
                 for (int i = 0; i < cButtons; i++)
                 {
                     Marshal.DestroyStructure(
-                        new IntPtr(temp.ToInt64() + i * elementSize),
+                        new IntPtr(temp.ToInt64() + (i * elementSize)),
                         typeof(T));
                 }
 

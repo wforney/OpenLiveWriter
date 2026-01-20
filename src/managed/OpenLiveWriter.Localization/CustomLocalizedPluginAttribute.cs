@@ -21,16 +21,11 @@ namespace OpenLiveWriter.Localization
     [AttributeUsage(AttributeTargets.Class)]
     public class CustomLocalizedPluginAttribute : Attribute
     {
-        private readonly string _name;
-
         public CustomLocalizedPluginAttribute(string name)
         {
-            _name = name;
+            Name = name;
         }
 
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
     }
 }

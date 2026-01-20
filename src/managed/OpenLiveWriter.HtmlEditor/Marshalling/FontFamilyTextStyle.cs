@@ -40,12 +40,7 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
 
         public bool Equals(FontFamilyTextStyle obj)
         {
-            if ((object)obj == null)
-            {
-                return false;
-            }
-
-            return FontFamily.Equals(obj.FontFamily, StringComparison.OrdinalIgnoreCase);
+            return !(obj is null) && FontFamily.Equals(obj.FontFamily, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()

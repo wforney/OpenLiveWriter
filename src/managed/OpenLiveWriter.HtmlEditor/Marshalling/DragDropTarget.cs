@@ -1,11 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
+using OpenLiveWriter.CoreServices;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using OpenLiveWriter.CoreServices;
 
 namespace OpenLiveWriter.HtmlEditor.Marshalling
 {
@@ -69,23 +69,14 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
                 targetControl = null;
             }
 
-            if (dataFormatFactory != null)
-            {
-                dataFormatFactory.Dispose();
-                dataFormatFactory = null;
-            }
+            dataFormatFactory?.Dispose();
+            dataFormatFactory = null;
         }
 
         #endregion
 
         #region Properties
-        protected DataFormatHandler ActiveDataFormatHandler
-        {
-            get
-            {
-                return dataFormatHandler;
-            }
-        }
+        protected DataFormatHandler ActiveDataFormatHandler { get; private set; }
         #endregion
 
         #region Drag and Drop Event Handlers
@@ -100,12 +91,12 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             try
             {
                 // see if we can get a data format handler for the dragged data
-                dataFormatHandler = dataFormatFactory.CreateFrom(new DataObjectMeister(e.Data), DataFormatHandlerContext.DragAndDrop);
-                if (dataFormatHandler != null)
+                ActiveDataFormatHandler = dataFormatFactory.CreateFrom(new DataObjectMeister(e.Data), DataFormatHandlerContext.DragAndDrop);
+                if (ActiveDataFormatHandler != null)
                 {
                     OnBeforeBeginDrag(e);
                     // tell format handler that we are beginning a drag
-                    dataFormatHandler.BeginDrag();
+                    ActiveDataFormatHandler.BeginDrag();
                 }
                 else
                 {
@@ -135,10 +126,10 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
             try
             {
                 // provide feedback if this is our drag/drop
-                if (dataFormatHandler != null)
+                if (ActiveDataFormatHandler != null)
                 {
                     // provide drop feedback
-                    e.Effect = dataFormatHandler.ProvideDragFeedback(new Point(e.X, e.Y), e.KeyState, e.AllowedEffect);
+                    e.Effect = ActiveDataFormatHandler.ProvideDragFeedback(new Point(e.X, e.Y), e.KeyState, e.AllowedEffect);
                 }
                 else
                 {
@@ -173,14 +164,14 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         {
             try
             {
-                if (dataFormatHandler != null)
+                if (ActiveDataFormatHandler != null)
                 {
                     // prepare for the drop and fire the event (use wait cursor because
                     // this operation may require large amounts of IO)
                     using (new WaitCursor())
                     {
                         // insert the data
-                        bool dropHandled = dataFormatHandler.DataDropped(GetDataAction(e.Effect));
+                        bool dropHandled = ActiveDataFormatHandler.DataDropped(GetDataAction(e.Effect));
                         if (!dropHandled)
                         {
                             //let the drag source know that the drop failed (prevents move operations from accidentally
@@ -210,11 +201,11 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// </summary>
         private void ResetDataFormatHandler()
         {
-            if (dataFormatHandler != null)
+            if (ActiveDataFormatHandler != null)
             {
-                dataFormatHandler.EndDrag();
-                dataFormatHandler.Dispose();
-                dataFormatHandler = null;
+                ActiveDataFormatHandler.EndDrag();
+                ActiveDataFormatHandler.Dispose();
+                ActiveDataFormatHandler = null;
             }
         }
 
@@ -255,8 +246,6 @@ namespace OpenLiveWriter.HtmlEditor.Marshalling
         /// Handle to the control we are receiving drag/drop events from.
         /// </summary>
         private Control targetControl = null;
-
-        private DataFormatHandler dataFormatHandler;
         #endregion
     }
 }

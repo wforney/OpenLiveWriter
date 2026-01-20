@@ -57,7 +57,7 @@ namespace OpenLiveWriter.Controls
         {
             get
             {
-                return ((LightweightControl)(List[index]));
+                return (LightweightControl)List[index];
             }
             set
             {
@@ -247,7 +247,7 @@ namespace OpenLiveWriter.Controls
             /// <param name="mappings"></param>
             public LightweightControlEnumerator(LightweightControlCollection mappings)
             {
-                this.temp = ((IEnumerable)(mappings));
+                this.temp = (IEnumerable)mappings;
                 this.baseEnumerator = temp.GetEnumerator();
             }
 
@@ -258,7 +258,7 @@ namespace OpenLiveWriter.Controls
             {
                 get
                 {
-                    return ((LightweightControl)(baseEnumerator.Current));
+                    return (LightweightControl)baseEnumerator.Current;
                 }
             }
 

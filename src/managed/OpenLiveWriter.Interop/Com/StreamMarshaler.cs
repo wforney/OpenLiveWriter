@@ -43,11 +43,8 @@ namespace OpenLiveWriter.Interop.Com
         {
             if (pNativeData == IntPtr.Zero) return null;
 
-            Object rcw = Marshal.GetObjectForIUnknown(pNativeData);
-            if (!(rcw is IStream))
-                throw new MarshalDirectiveException("The object must implement IStream.");
-
-            return new ComStream((IStream)rcw);
+            var rcw = Marshal.GetObjectForIUnknown(pNativeData);
+            return rcw is IStream stream ? (object)new ComStream(stream) : throw new MarshalDirectiveException("The object must implement IStream.");
         }
 
         /// <summary>

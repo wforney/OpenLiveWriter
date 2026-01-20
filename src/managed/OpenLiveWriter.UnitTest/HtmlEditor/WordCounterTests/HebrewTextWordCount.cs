@@ -36,7 +36,6 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
             CountText("Simple English Text.", 3, 20);
         }
 
-
         [TestMethod]
         public void SanityEnglishMultiline()
         {
@@ -49,14 +48,12 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
             CountText("This is a " + Environment.NewLine + "multiline text", 5);
         }
 
-
-
         [TestMethod]
         public void CyrillicText()
         {
             CountText("ДЖem", 1, 4);
         }
-        
+
         [TestMethod]
         public void OneHebrewWordText()
         {
@@ -75,11 +72,10 @@ namespace OpenLiveWriter.UnitTest.HtmlEditor.WordCounterTests
             CountText("משפט עם חמש " + "\n" + "מילים בעברית", 5);
         }
 
-
         [TestMethod]
         public void MixedHebrewEnglishWords()
         {
-            CountText("מילה בעברית and an english word", 6);            
+            CountText("מילה בעברית and an english word", 6);
 
         }
 

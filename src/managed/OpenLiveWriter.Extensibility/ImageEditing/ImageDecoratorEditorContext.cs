@@ -12,7 +12,7 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
     /// <summary>
     /// Provides runtime callbacks for ImageDecoratorEditors to use when editing an image's decoration settings.
     /// </summary>
-    public interface ImageDecoratorEditorContext
+    public interface IImageDecoratorEditorContext
     {
         /// <summary>
         /// Callback to tell the editor that the image decorators should be reapplied.

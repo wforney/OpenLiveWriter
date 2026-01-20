@@ -1,14 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
-using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
 using mshtml;
 using OpenLiveWriter.CoreServices;
 using OpenLiveWriter.Mshtml;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace OpenLiveWriter.SpellChecker
 {
@@ -28,8 +25,8 @@ namespace OpenLiveWriter.SpellChecker
         /// Initialize word range for the entire body of the document
         /// </summary>
         /// <param name="mshtml">mshtml control</param>
-        public MshtmlWordRange(MshtmlControl mshtmlControl) :
-            this(mshtmlControl.HTMLDocument, false, null, null)
+        public MshtmlWordRange(MshtmlControl mshtmlControl)
+            : this(mshtmlControl.HTMLDocument, false, null, null)
         {
         }
 
@@ -67,8 +64,8 @@ namespace OpenLiveWriter.SpellChecker
         {
             // save references
             this.htmlDocument = document;
-            this.markupServices = markupServices;
-            this.selectionRange = selectionRange;
+            MarkupServices = markupServices;
+            SelectionRange = selectionRange;
             this.filter = filter;
             this.damageFunction = damageFunction;
 
@@ -82,11 +79,11 @@ namespace OpenLiveWriter.SpellChecker
 
             //create the range for holding the current word.
             //Be sure to set its gravity so that it stays around text that get replaced.
-            currentWordRange = MarkupServices.CreateMarkupRange(wordStart, wordEnd);
-            currentWordRange.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Left;
-            currentWordRange.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
+            CurrentWordRange = MarkupServices.CreateMarkupRange(wordStart, wordEnd);
+            CurrentWordRange.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Left;
+            CurrentWordRange.End.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
 
-            currentVirtualPosition = currentWordRange.End.Clone();
+            currentVirtualPosition = CurrentWordRange.End.Clone();
         }
 
         public static void ExpandRangeToWordBoundaries(MarkupRange range)
@@ -101,16 +98,16 @@ namespace OpenLiveWriter.SpellChecker
 
         public bool IsCurrentWordUrlPart()
         {
-            return IsRangeInUrl(currentWordRange);
+            return IsRangeInUrl(CurrentWordRange);
         }
 
         public bool FilterApplies()
         {
-            return filter != null && filter(currentWordRange);
+            return filter != null && filter(CurrentWordRange);
         }
         public bool FilterAppliesRanged(int offset, int length)
         {
-            MarkupRange adjustedRange = currentWordRange.Clone();
+            MarkupRange adjustedRange = CurrentWordRange.Clone();
             MarkupHelpers.AdjustMarkupRange(ref stagingTextRange, adjustedRange, offset, length);
             return filter != null && filter(adjustedRange);
         }
@@ -121,7 +118,7 @@ namespace OpenLiveWriter.SpellChecker
         /// <returns></returns>
         public bool HasNext()
         {
-            return currentWordRange.End.IsLeftOf(selectionRange.End);
+            return CurrentWordRange.End.IsLeftOf(SelectionRange.End);
         }
 
         /// <summary>
@@ -129,19 +126,19 @@ namespace OpenLiveWriter.SpellChecker
         /// </summary>
         public void Next()
         {
-            currentWordRange.End.MoveToPointer(currentVirtualPosition);
+            CurrentWordRange.End.MoveToPointer(currentVirtualPosition);
 
             do
             {
                 //advance the start pointer to the beginning of next word
-                if(!currentWordRange.End.IsEqualTo(selectionRange.Start)) //avoids skipping over the first word
+                if(!CurrentWordRange.End.IsEqualTo(SelectionRange.Start)) //avoids skipping over the first word
                 {
                     //fix bug 1848 - move the start to the end pointer before advancing to the next word
                     //this ensures that the "next begin" is after the current selection.
-                    currentWordRange.Start.MoveToPointer(currentWordRange.End);
-                    currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
+                    CurrentWordRange.Start.MoveToPointer(CurrentWordRange.End);
+                    CurrentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
 
-                    currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDBEGIN);
+                    CurrentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDBEGIN);
                 }
                 else
                 {
@@ -151,14 +148,14 @@ namespace OpenLiveWriter.SpellChecker
                     //Note: theoretically, the selection adjustment in the constructor
                     //guarantees that we will be flush against the first word, so we could
                     //probably do nothing, but it works, so we'll keep it.
-                    currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDEND);
-                    currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
+                    CurrentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDEND);
+                    CurrentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
                 }
 
                 //advance the end pointer to the end of next word
-                currentWordRange.End.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDEND);
+                CurrentWordRange.End.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_NEXTWORDEND);
 
-                if(currentWordRange.Start.IsRightOf(currentWordRange.End))
+                if(CurrentWordRange.Start.IsRightOf(CurrentWordRange.End))
                 {
                     //Note: this was a condition that caused several bugs that caused us to stop
                     //spell-checking correctly, so this logic is here in case we still have edge
@@ -174,27 +171,27 @@ namespace OpenLiveWriter.SpellChecker
                     //is at. Since the End pointer always advances on each iteration, this should not
                     //cause an infinite loop. The worst case scenario is that we check the same word
                     //more than once.
-                    currentWordRange.Start.MoveToPointer(currentWordRange.End);
-                    currentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
+                    CurrentWordRange.Start.MoveToPointer(CurrentWordRange.End);
+                    CurrentWordRange.Start.MoveUnit(_MOVEUNIT_ACTION.MOVEUNIT_PREVWORDBEGIN);
                 }
-            } while( MarkupHelpers.GetRangeTextFast(currentWordRange) == null &&
-                     currentWordRange.End.IsLeftOf(selectionRange.End));
+            } while( MarkupHelpers.GetRangeTextFast(CurrentWordRange) == null &&
+                     CurrentWordRange.End.IsLeftOf(SelectionRange.End));
 
-            currentVirtualPosition.MoveToPointer(currentWordRange.End);
+            currentVirtualPosition.MoveToPointer(CurrentWordRange.End);
 
-            if(currentWordRange.End.IsRightOf(selectionRange.End))
+            if(CurrentWordRange.End.IsRightOf(SelectionRange.End))
             {
                 //then collapse the range so that CurrentWord returns Empty;
-                currentWordRange.Start.MoveToPointer(currentWordRange.End);
+                CurrentWordRange.Start.MoveToPointer(CurrentWordRange.End);
             }
             else
             {
-                MarkupRange testRange = currentWordRange.Clone();
+                MarkupRange testRange = CurrentWordRange.Clone();
                 testRange.Collapse(false);
-                testRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_NEXTCHAR, selectionRange.End);
+                testRange.End.MoveUnitBounded(_MOVEUNIT_ACTION.MOVEUNIT_NEXTCHAR, SelectionRange.End);
                 if (MarkupHelpers.GetRangeHtmlFast(testRange) == ".")
                 {
-                    currentWordRange.End.MoveToPointer(testRange.End);
+                    CurrentWordRange.End.MoveToPointer(testRange.End);
                 }
             }
         }
@@ -219,14 +216,14 @@ namespace OpenLiveWriter.SpellChecker
         {
             get
             {
-                return currentWordRange.Text ?? "";
+                return CurrentWordRange.Text ?? "";
             }
         }
 
         public void PlaceCursor()
         {
-            currentWordRange.Collapse(false);
-            currentWordRange.ToTextRange().select();
+            CurrentWordRange.Collapse(false);
+            CurrentWordRange.ToTextRange().select();
         }
 
         /// <summary>
@@ -235,7 +232,7 @@ namespace OpenLiveWriter.SpellChecker
         public void Highlight(int offset, int length)
         {
             // select word
-            MarkupRange highlightRange = currentWordRange.Clone();
+            MarkupRange highlightRange = CurrentWordRange.Clone();
             MarkupHelpers.AdjustMarkupRange(highlightRange, offset, length);
 
             try
@@ -258,7 +255,7 @@ namespace OpenLiveWriter.SpellChecker
             // clear document selection
             try
             {
-                ((IHTMLDocument2) (htmlDocument)).selection.empty();
+                ((IHTMLDocument2) htmlDocument).selection.empty();
             }
             catch (COMException ce)
             {
@@ -272,39 +269,24 @@ namespace OpenLiveWriter.SpellChecker
         /// </summary>
         public void Replace(int offset, int length, string newText)
         {
-            MarkupRange origRange = currentWordRange.Clone();
+            MarkupRange origRange = CurrentWordRange.Clone();
             // set the text
-            currentWordRange.Text = StringHelper.Replace(currentWordRange.Text, offset, length, newText);
+            CurrentWordRange.Text = StringHelper.Replace(CurrentWordRange.Text, offset, length, newText);
             damageFunction(origRange);
         }
 
         /// <summary>
         /// Markup services for mshtml control
         /// </summary>
-        private MshtmlMarkupServices MarkupServices
-        {
-            get { return markupServices; }
-        }
+        private MshtmlMarkupServices MarkupServices { get; set; }
 
         /// <summary>
         /// Control we are providing a word range for
         /// </summary>
         //private MshtmlControl mshtmlControl ;
         private IHTMLDocument htmlDocument;
-        private MshtmlMarkupServices markupServices;
 
-        /// <summary>
-        /// Range over which we are iterating
-        /// </summary>
-        private MarkupRange selectionRange;
-
-        public MarkupRange SelectionRange
-        {
-            get
-            {
-                return selectionRange;
-            }
-        }
+        public MarkupRange SelectionRange { get; private set; }
 
         /// <summary>
         /// In order to fix the "vs." defect (trailing periods need to
@@ -319,17 +301,6 @@ namespace OpenLiveWriter.SpellChecker
 
         private IHTMLTxtRange stagingTextRange;
 
-        /// <summary>
-        /// Pointer to current word
-        /// </summary>
-        private MarkupRange currentWordRange;
-
-        public MarkupRange CurrentWordRange
-        {
-            get
-            {
-                return currentWordRange;
-            }
-        }
+        public MarkupRange CurrentWordRange { get; private set; }
     }
 }

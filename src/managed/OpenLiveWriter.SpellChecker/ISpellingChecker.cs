@@ -102,7 +102,7 @@ namespace OpenLiveWriter.SpellChecker
     /// <summary>
     /// Suggestion for a misspelled word
     /// </summary>
-    public struct SpellingSuggestion
+    public readonly struct SpellingSuggestion
     {
         /// <summary>
         /// Initialize with hte appropriate suggestion and score
@@ -148,17 +148,12 @@ namespace OpenLiveWriter.SpellChecker
         public SpellingCheckerException( string message, int nativeError )
             : base( message )
         {
-            this.nativeError = nativeError ;
+            NativeError = nativeError ;
         }
 
         /// <summary>
         /// Underlying error code from native implementation
         /// </summary>
-        public int NativeError { get { return nativeError; } }
-
-        /// <summary>
-        /// Underlying native error code
-        /// </summary>
-        private readonly int nativeError = 0 ;
+        public int NativeError { get; } = 0;
     }
 }

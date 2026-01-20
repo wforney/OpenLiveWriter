@@ -63,7 +63,7 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
         private ControlState _loadedState = ControlState.Uninitialized;
         private IImageTargetEditor _imageTargetEditor;
 
-        public void LoadEditor(ImageDecoratorEditorContext context, object state, IImageTargetEditor imageTargetEditor)
+        public void LoadEditor(IImageDecoratorEditorContext context, object state, IImageTargetEditor imageTargetEditor)
         {
             _loadedState = ControlState.Loading;
             _context = context;
@@ -160,14 +160,14 @@ namespace OpenLiveWriter.Extensibility.ImageEditing
             get { return FormBorderStyle.FixedDialog; }
         }
 
-        internal protected ImageDecoratorEditorContext EditorContext
+        internal protected IImageDecoratorEditorContext EditorContext
         {
             get
             {
                 return _context;
             }
         }
-        private ImageDecoratorEditorContext _context;
+        private IImageDecoratorEditorContext _context;
 
         internal protected object State
         {

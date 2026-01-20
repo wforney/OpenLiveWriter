@@ -65,8 +65,8 @@ namespace OpenLiveWriter.SpellChecker
                 (IHTMLDocument4)_htmlDocument);
             //start new highlighter
             _spellingChecker.StartChecking();
-            _spellingChecker.WordIgnored += new EventHandler(_spellingChecker_WordIgnored);
-            _spellingChecker.WordAdded += new EventHandler(_spellingChecker_WordAdded);
+            _spellingChecker.WordIgnored += new EventHandler(SpellingChecker_WordIgnored);
+            _spellingChecker.WordAdded += new EventHandler(SpellingChecker_WordAdded);
 
         }
 
@@ -86,8 +86,8 @@ namespace OpenLiveWriter.SpellChecker
             {
                 _ignoredOnce.Clear();
                 _spellingChecker.StopChecking();
-                _spellingChecker.WordIgnored -= new EventHandler(_spellingChecker_WordIgnored);
-                _spellingChecker.WordAdded -= new EventHandler(_spellingChecker_WordAdded);
+                _spellingChecker.WordIgnored -= new EventHandler(SpellingChecker_WordIgnored);
+                _spellingChecker.WordAdded -= new EventHandler(SpellingChecker_WordAdded);
             }
             //clear listeners
         }
@@ -161,17 +161,17 @@ namespace OpenLiveWriter.SpellChecker
             CommandManager.BeginUpdate();
 
             Command commandAddToDictionary = new Command(CommandId.AddToDictionary);
-            commandAddToDictionary.Execute += new EventHandler(addToDictionary_Execute);
+            commandAddToDictionary.Execute += new EventHandler(AddToDictionary_Execute);
             CommandManager.Add(commandAddToDictionary);
 
             Command commandIgnoreAll = new Command(CommandId.IgnoreAll);
-            commandIgnoreAll.Execute += new EventHandler(ignoreAllCommand_Execute);
+            commandIgnoreAll.Execute += new EventHandler(IgnoreAllCommand_Execute);
 
             CommandManager.Add(commandIgnoreAll);
-            CommandManager.Add(CommandId.IgnoreOnce, ignoreOnceCommand_Execute);
+            CommandManager.Add(CommandId.IgnoreOnce, IgnoreOnceCommand_Execute);
 
             Command commandOpenSpellingForm = new Command(CommandId.OpenSpellingForm);
-            commandOpenSpellingForm.Execute += new EventHandler(openSpellingForm_Execute);
+            commandOpenSpellingForm.Execute += new EventHandler(OpenSpellingForm_Execute);
             CommandManager.Add(commandOpenSpellingForm);
 
             CommandManager.EndUpdate();
@@ -195,13 +195,13 @@ namespace OpenLiveWriter.SpellChecker
         private MisspelledWordInfo _currentWordInfo;
 
         //handlers for various commands
-        public void fixSpellingApplyCommand_Execute(object sender, EventArgs e)
+        public void FixSpellingApplyCommand_Execute(object sender, EventArgs e)
         {
             Command command = (Command)sender;
             _replaceWordFunction(_currentWordInfo.WordRange.Start, _currentWordInfo.WordRange.End, command.Tag as string);
         }
 
-        private void ignoreOnceCommand_Execute(object sender, EventArgs e)
+        private void IgnoreOnceCommand_Execute(object sender, EventArgs e)
         {
             IgnoreCore(_currentWordInfo.WordRange);
         }
@@ -218,7 +218,7 @@ namespace OpenLiveWriter.SpellChecker
             }
         }
 
-        private void ignoreAllCommand_Execute(object sender, EventArgs e)
+        private void IgnoreAllCommand_Execute(object sender, EventArgs e)
         {
             using (new WaitCursor())
             {
@@ -226,12 +226,12 @@ namespace OpenLiveWriter.SpellChecker
             }
         }
 
-        private void _spellingChecker_WordIgnored(object sender, EventArgs e)
+        private void SpellingChecker_WordIgnored(object sender, EventArgs e)
         {
             _spellingHighlighter.UnhighlightWord((string)sender);
         }
 
-        private void addToDictionary_Execute(object sender, EventArgs e)
+        private void AddToDictionary_Execute(object sender, EventArgs e)
         {
             using (new WaitCursor())
             {
@@ -239,12 +239,12 @@ namespace OpenLiveWriter.SpellChecker
             }
         }
 
-        private void _spellingChecker_WordAdded(object sender, EventArgs e)
+        private void SpellingChecker_WordAdded(object sender, EventArgs e)
         {
             _spellingHighlighter.UnhighlightWord((string)sender);
         }
 
-        private void openSpellingForm_Execute(object sender, EventArgs e)
+        private void OpenSpellingForm_Execute(object sender, EventArgs e)
         {
             _mshtmlControl.MarkupServices.BeginUndoUnit(Guid.NewGuid().ToString());
 
@@ -288,8 +288,8 @@ namespace OpenLiveWriter.SpellChecker
             if (_spellingHighlighter != null)
             {
                 _spellingChecker.StopChecking();
-                _spellingChecker.WordIgnored -= new EventHandler(_spellingChecker_WordIgnored);
-                _spellingChecker.WordAdded -= new EventHandler(_spellingChecker_WordAdded);
+                _spellingChecker.WordIgnored -= new EventHandler(SpellingChecker_WordIgnored);
+                _spellingChecker.WordAdded -= new EventHandler(SpellingChecker_WordAdded);
                 _spellingHighlighter.Dispose();
             }
         }
@@ -311,10 +311,7 @@ namespace OpenLiveWriter.SpellChecker
             get
             {
                 Command cmdIgnoreOnce = CommandManager.Get(CommandId.IgnoreOnce);
-                if (cmdIgnoreOnce != null && cmdIgnoreOnce.On && cmdIgnoreOnce.Enabled)
-                    return true;
-
-                return false;
+                return cmdIgnoreOnce != null && cmdIgnoreOnce.On && cmdIgnoreOnce.Enabled;
             }
             set
             {

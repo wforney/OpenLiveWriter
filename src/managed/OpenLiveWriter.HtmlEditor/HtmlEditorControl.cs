@@ -31,6 +31,7 @@ using OpenLiveWriter.Mshtml;
 using OpenLiveWriter.Mshtml.Mshtml_Interop;
 using OpenLiveWriter.SpellChecker;
 using IDataObject = System.Windows.Forms.IDataObject;
+using System.Linq;
 
 namespace OpenLiveWriter.HtmlEditor
 {
@@ -39,13 +40,13 @@ namespace OpenLiveWriter.HtmlEditor
         #region Construction/Disposal
         public HtmlEditorControl(IMainFrameWindow mainFrameWindow, IStatusBar statusBar, MshtmlOptions options, ISpellingChecker spellingChecker, IInternetSecurityManager internetSecurityManager, CommandManager commandManager)
         {
-            _commandManager = commandManager;
+            CommandManager = commandManager;
 
             // save reference to main frame window
-            _mainFrameWindow = mainFrameWindow;
+            FrameWindow = mainFrameWindow;
             _statusBar = statusBar;
 
-            _spellingChecker = spellingChecker;
+            SpellingChecker = spellingChecker;
 
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -66,20 +67,20 @@ namespace OpenLiveWriter.HtmlEditor
             {
                 _internetSecurityManager = new InternetSecurityManagerShim(internetSecurityManager);
                 // If mainFrameWindow == null, then we are pre-caching mshtml and don't want it to steal focus
-                _mshtmlEditor = new MshtmlEditor(this, options, (mainFrameWindow == null));
+                MshtmlEditor = new MshtmlEditor(this, options, mainFrameWindow == null);
             }
             else
             {
-                _mshtmlEditor = _editorCache.Editor;
+                MshtmlEditor = _editorCache.Editor;
                 _internetSecurityManager = _editorCache.SecurityManager;
                 _internetSecurityManager.SecurityManager = internetSecurityManager;
 
                 _editorCache = null;
-                _mshtmlEditor.Active = true;
-                _mshtmlEditor.MshtmlControl.ProtectFocus = false;
-                _mshtmlEditor.ClearContextMenuHandlers();
-                _mshtmlEditor.SetServiceProvider(this);
-                _mshtmlEditor.UpdateOptions(options, true);
+                MshtmlEditor.Active = true;
+                MshtmlEditor.MshtmlControl.ProtectFocus = false;
+                MshtmlEditor.ClearContextMenuHandlers();
+                MshtmlEditor.SetServiceProvider(this);
+                MshtmlEditor.UpdateOptions(options, true);
             }
 
             _mshtmlOptions = options;
@@ -95,25 +96,25 @@ namespace OpenLiveWriter.HtmlEditor
             _internetSecurityManager.HandleProcessUrlAction = HandleProcessUrlAction;
 
             //  Automation uses this to find the editor to automate it
-            _mshtmlEditor.Name = "BorderControl";
+            MshtmlEditor.Name = "BorderControl";
 
             // subscribe to key events
-            _mshtmlEditor.DocumentComplete += new EventHandler(_mshtmlEditor_DocumentComplete);
-            _mshtmlEditor.DocumentEvents.GotFocus += htmlEditor_GotFocus;
-            _mshtmlEditor.DocumentEvents.LostFocus += htmlEditor_LostFocus;
-            _mshtmlEditor.DocumentEvents.KeyDown += new HtmlEventHandler(DocumentEvents_KeyDown);
-            _mshtmlEditor.DocumentEvents.KeyUp += new HtmlEventHandler(DocumentEvents_KeyUp);
-            _mshtmlEditor.DocumentEvents.KeyPress += new HtmlEventHandler(DocumentEvents_KeyPress);
-            _mshtmlEditor.DocumentEvents.MouseDown += new HtmlEventHandler(DocumentEvents_MouseDown);
-            _mshtmlEditor.DocumentEvents.MouseUp += new HtmlEventHandler(DocumentEvents_MouseUp);
-            _mshtmlEditor.DocumentEvents.SelectionChanged += new EventHandler(DocumentEvents_SelectionChanged);
-            _mshtmlEditor.DisplayChanged += new EventHandler(_mshtmlEditor_DisplayChanged);
-            _mshtmlEditor.DocumentEvents.Click += new HtmlEventHandler(DocumentEvents_Click);
-            _mshtmlEditor.CommandKey += new KeyEventHandler(_mshtmlEditor_CommandKey);
-            _mshtmlEditor.DropTargetHandler = new MshtmlEditor.DropTargetUIHandler(_mshtmlEditor_GetDropTarget);
-            _mshtmlEditor.BeforeShowContextMenu += new EventHandler(_mshtmlEditor_BeforeShowContextMenu);
-            _mshtmlEditor.MshtmlControl.DLControlFlagsChanged += new EventHandler(_mshtmlControl_DLControlFlagsChanged);
-            _mshtmlEditor.TranslateAccelerator += new HtmlEditDesignerEventHandler(_mshtmlEditor_TranslateAccelerator);
+            MshtmlEditor.DocumentComplete += new EventHandler(MshtmlEditor_DocumentComplete);
+            MshtmlEditor.DocumentEvents.GotFocus += HtmlEditor_GotFocus;
+            MshtmlEditor.DocumentEvents.LostFocus += HtmlEditor_LostFocus;
+            MshtmlEditor.DocumentEvents.KeyDown += new HtmlEventHandler(DocumentEvents_KeyDown);
+            MshtmlEditor.DocumentEvents.KeyUp += new HtmlEventHandler(DocumentEvents_KeyUp);
+            MshtmlEditor.DocumentEvents.KeyPress += new HtmlEventHandler(DocumentEvents_KeyPress);
+            MshtmlEditor.DocumentEvents.MouseDown += new HtmlEventHandler(DocumentEvents_MouseDown);
+            MshtmlEditor.DocumentEvents.MouseUp += new HtmlEventHandler(DocumentEvents_MouseUp);
+            MshtmlEditor.DocumentEvents.SelectionChanged += new EventHandler(DocumentEvents_SelectionChanged);
+            MshtmlEditor.DisplayChanged += new EventHandler(MshtmlEditor_DisplayChanged);
+            MshtmlEditor.DocumentEvents.Click += new HtmlEventHandler(DocumentEvents_Click);
+            MshtmlEditor.CommandKey += new KeyEventHandler(MshtmlEditor_CommandKey);
+            MshtmlEditor.DropTargetHandler = new MshtmlEditor.DropTargetUIHandler(MshtmlEditor_GetDropTarget);
+            MshtmlEditor.BeforeShowContextMenu += new EventHandler(MshtmlEditor_BeforeShowContextMenu);
+            MshtmlEditor.MshtmlControl.DLControlFlagsChanged += new EventHandler(MshtmlControl_DLControlFlagsChanged);
+            MshtmlEditor.TranslateAccelerator += new HtmlEditDesignerEventHandler(MshtmlEditor_TranslateAccelerator);
 
             InitDamageServices();
 
@@ -143,7 +144,7 @@ namespace OpenLiveWriter.HtmlEditor
                                 {
                                     // Apply the previous block's font size to this new block.
                                     var fontSizeTextStyle = new FontSizeTextStyle(_fontSizeBeforeEnter.Value);
-                                    fontSizeTextStyle.Apply(MarkupServices, currentSelection, _mshtmlEditor.Commands);
+                                    fontSizeTextStyle.Apply(MarkupServices, currentSelection, MshtmlEditor.Commands);
 
                                     // Force MSHTML to re-select inside the font tag we just created.
                                     IHTMLElement fontElement = currentSelection.Start.SeekElementRight(_fontTagWithFontSizeFilter, currentSelection.End);
@@ -232,19 +233,19 @@ namespace OpenLiveWriter.HtmlEditor
 
         public bool TrackKeyboardLanguageChanges
         {
-            get { return _mshtmlEditor.TrackKeyboardLanguageChanges; }
-            set { _mshtmlEditor.TrackKeyboardLanguageChanges = value; }
+            get { return MshtmlEditor.TrackKeyboardLanguageChanges; }
+            set { MshtmlEditor.TrackKeyboardLanguageChanges = value; }
         }
 
         public event EventHandler KeyboardLanguageChanged
         {
-            add { _mshtmlEditor.KeyboardLanguageChanged += value; }
-            remove { _mshtmlEditor.KeyboardLanguageChanged -= value; }
+            add { MshtmlEditor.KeyboardLanguageChanged += value; }
+            remove { MshtmlEditor.KeyboardLanguageChanged -= value; }
         }
 
         private readonly RtlAcceleratorTranslator rtlAcceleratorTranslator = new RtlAcceleratorTranslator();
 
-        int _mshtmlEditor_TranslateAccelerator(int inEvtDispId, IHTMLEventObj pIEventObj)
+        int MshtmlEditor_TranslateAccelerator(int inEvtDispId, IHTMLEventObj pIEventObj)
         {
             KeyEventArgs e = rtlAcceleratorTranslator.ProcessEvent(inEvtDispId, pIEventObj);
             if (e != null)
@@ -275,63 +276,51 @@ namespace OpenLiveWriter.HtmlEditor
             PostEditorEvent -= new MshtmlEditor.EditDesignerEventHandler(HtmlEditorControl_PostEditorEvent);
             HandleClear -= new HtmlEditorSelectionOperationEventHandler(TryMoveIntoNextTable);
 
-            if (components != null)
-            {
-                components.Dispose();
-            }
+            components?.Dispose();
 
             // detach behaviors
             DetachBehaviors();
 
             // dispose drag and drop manager
-            if (mshtmlEditorDragAndDropTarget != null)
-            {
-                mshtmlEditorDragAndDropTarget.Dispose();
-                mshtmlEditorDragAndDropTarget = null;
-            }
+            mshtmlEditorDragAndDropTarget?.Dispose();
+            mshtmlEditorDragAndDropTarget = null;
+            _dataFormatHandlerFactory?.Dispose();
+            _dataFormatHandlerFactory = null;
 
-            if (_dataFormatHandlerFactory != null)
-            {
-                _dataFormatHandlerFactory.Dispose();
-                _dataFormatHandlerFactory = null;
-            }
-
-            if (_damageServices != null)
-                _damageServices.Dispose();
+            _damageServices?.Dispose();
 
             // dispose link navigator
-            if (linkNavigator != null)
-                linkNavigator.Dispose();
+            LinkNavigator?.Dispose();
 
-            if (_mshtmlEditor != null)
+            if (MshtmlEditor != null)
             {
-                _mshtmlEditor.DocumentComplete -= new EventHandler(_mshtmlEditor_DocumentComplete);
-                _mshtmlEditor.DocumentEvents.GotFocus -= htmlEditor_GotFocus;
-                _mshtmlEditor.DocumentEvents.LostFocus -= htmlEditor_LostFocus;
-                _mshtmlEditor.DocumentEvents.KeyDown -= new HtmlEventHandler(DocumentEvents_KeyDown);
-                _mshtmlEditor.DocumentEvents.KeyUp -= new HtmlEventHandler(DocumentEvents_KeyUp);
-                _mshtmlEditor.DocumentEvents.KeyPress -= new HtmlEventHandler(DocumentEvents_KeyPress);
-                _mshtmlEditor.DocumentEvents.MouseDown -= new HtmlEventHandler(DocumentEvents_MouseDown);
-                _mshtmlEditor.DocumentEvents.MouseUp -= new HtmlEventHandler(DocumentEvents_MouseUp);
-                _mshtmlEditor.DocumentEvents.SelectionChanged -= new EventHandler(DocumentEvents_SelectionChanged);
-                _mshtmlEditor.DisplayChanged -= new EventHandler(_mshtmlEditor_DisplayChanged);
-                _mshtmlEditor.DocumentEvents.Click -= new HtmlEventHandler(DocumentEvents_Click);
-                _mshtmlEditor.CommandKey -= new KeyEventHandler(_mshtmlEditor_CommandKey);
-                _mshtmlEditor.BeforeShowContextMenu -= new EventHandler(_mshtmlEditor_BeforeShowContextMenu);
-                _mshtmlEditor.DropTargetHandler = null;
-                _mshtmlEditor.PreHandleEvent -= new HtmlEditDesignerEventHandler(OnPreHandleEvent);
-                _mshtmlEditor.MshtmlControl.DLControlFlagsChanged -= new EventHandler(_mshtmlControl_DLControlFlagsChanged);
-                _mshtmlEditor.TranslateAccelerator -= new HtmlEditDesignerEventHandler(_mshtmlEditor_TranslateAccelerator);
+                MshtmlEditor.DocumentComplete -= new EventHandler(MshtmlEditor_DocumentComplete);
+                MshtmlEditor.DocumentEvents.GotFocus -= HtmlEditor_GotFocus;
+                MshtmlEditor.DocumentEvents.LostFocus -= HtmlEditor_LostFocus;
+                MshtmlEditor.DocumentEvents.KeyDown -= new HtmlEventHandler(DocumentEvents_KeyDown);
+                MshtmlEditor.DocumentEvents.KeyUp -= new HtmlEventHandler(DocumentEvents_KeyUp);
+                MshtmlEditor.DocumentEvents.KeyPress -= new HtmlEventHandler(DocumentEvents_KeyPress);
+                MshtmlEditor.DocumentEvents.MouseDown -= new HtmlEventHandler(DocumentEvents_MouseDown);
+                MshtmlEditor.DocumentEvents.MouseUp -= new HtmlEventHandler(DocumentEvents_MouseUp);
+                MshtmlEditor.DocumentEvents.SelectionChanged -= new EventHandler(DocumentEvents_SelectionChanged);
+                MshtmlEditor.DisplayChanged -= new EventHandler(MshtmlEditor_DisplayChanged);
+                MshtmlEditor.DocumentEvents.Click -= new HtmlEventHandler(DocumentEvents_Click);
+                MshtmlEditor.CommandKey -= new KeyEventHandler(MshtmlEditor_CommandKey);
+                MshtmlEditor.BeforeShowContextMenu -= new EventHandler(MshtmlEditor_BeforeShowContextMenu);
+                MshtmlEditor.DropTargetHandler = null;
+                MshtmlEditor.PreHandleEvent -= new HtmlEditDesignerEventHandler(OnPreHandleEvent);
+                MshtmlEditor.MshtmlControl.DLControlFlagsChanged -= new EventHandler(MshtmlControl_DLControlFlagsChanged);
+                MshtmlEditor.TranslateAccelerator -= new HtmlEditDesignerEventHandler(MshtmlEditor_TranslateAccelerator);
 
                 if (ShouldCacheEditor())
                 {
-                    _mshtmlEditor.Active = false;
-                    _editorCache = new CachedEditorAndSecurityManager { Editor = _mshtmlEditor, SecurityManager = _internetSecurityManager };
+                    MshtmlEditor.Active = false;
+                    _editorCache = new CachedEditorAndSecurityManager { Editor = MshtmlEditor, SecurityManager = _internetSecurityManager };
                 }
                 else
                 {
-                    _mshtmlEditor.Dispose();
-                    _mshtmlEditor = null;
+                    MshtmlEditor.Dispose();
+                    MshtmlEditor = null;
                 }
             }
         }
@@ -376,8 +365,8 @@ namespace OpenLiveWriter.HtmlEditor
 
         public event MshtmlEditor.EditDesignerEventHandler PostEditorEvent
         {
-            add { _mshtmlEditor.PostEditorEvent += value; }
-            remove { _mshtmlEditor.PostEditorEvent -= value; }
+            add { MshtmlEditor.PostEditorEvent += value; }
+            remove { MshtmlEditor.PostEditorEvent -= value; }
         }
 
         /// <summary>
@@ -386,7 +375,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// <param name="contextMenuHandler">handler to register</param>
         public void RegisterContextMenuHandler(ShowContextMenuHandler contextMenuHandler)
         {
-            _mshtmlEditor.RegisterContextMenuHandler(contextMenuHandler);
+            MshtmlEditor.RegisterContextMenuHandler(contextMenuHandler);
         }
 
         public IDataFormatHandlerFactory DataFormatHandlerFactory
@@ -400,8 +389,7 @@ namespace OpenLiveWriter.HtmlEditor
                 _dataFormatHandlerFactory = value;
 
                 //dispose the existing drag and drop target
-                if (mshtmlEditorDragAndDropTarget != null)
-                    mshtmlEditorDragAndDropTarget.Dispose();
+                mshtmlEditorDragAndDropTarget?.Dispose();
 
                 //initialize the drag drop targeting for this control
                 mshtmlEditorDragAndDropTarget = new MshtmlEditorDragAndDropTarget(this, _dataFormatHandlerFactory);
@@ -414,7 +402,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         public virtual void SaveFile()
         {
-            _mshtmlEditor.SaveToFile();
+            MshtmlEditor.SaveToFile();
         }
 
         public void PageSetup()
@@ -469,8 +457,7 @@ namespace OpenLiveWriter.HtmlEditor
         public event EventHandler HtmlInserted;
         protected virtual void OnHtmlInserted(EventArgs e)
         {
-            if (HtmlInserted != null)
-                HtmlInserted(this, e);
+            HtmlInserted?.Invoke(this, e);
         }
 
         /// <summary>
@@ -502,8 +489,7 @@ namespace OpenLiveWriter.HtmlEditor
                 }
                 else
                 {
-                    if (CommandKey != null)
-                        CommandKey(this, e);
+                    CommandKey?.Invoke(this, e);
                 }
             }
 
@@ -540,7 +526,7 @@ namespace OpenLiveWriter.HtmlEditor
                 case Keys.Right:
                     if (e.Shift == false)
                     {
-                        _mshtmlEditor.MshtmlControl.Invalidate(true);
+                        MshtmlEditor.MshtmlControl.Invalidate(true);
                     }
 
                     break;
@@ -554,7 +540,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (KeyDown != null)
             {
-                foreach (HtmlEventHandler handler in KeyDown.GetInvocationList())
+                foreach (HtmlEventHandler handler in KeyDown.GetInvocationList().Cast<HtmlEventHandler>())
                 {
                     handler(this, evt);
 
@@ -569,7 +555,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (KeyUp != null)
             {
-                foreach (HtmlEventHandler handler in KeyUp.GetInvocationList())
+                foreach (HtmlEventHandler handler in KeyUp.GetInvocationList().Cast<HtmlEventHandler>())
                 {
                     handler(this, evt);
 
@@ -584,7 +570,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (KeyPress != null)
             {
-                foreach (HtmlEventHandler handler in KeyPress.GetInvocationList())
+                foreach (HtmlEventHandler handler in KeyPress.GetInvocationList().Cast<HtmlEventHandler>())
                 {
                     handler(this, evt);
 
@@ -602,7 +588,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (HandleCopy != null)
             {
-                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleCopy.GetInvocationList())
+                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleCopy.GetInvocationList().Cast<HtmlEditorSelectionOperationEventHandler>())
                 {
                     handler(ea);
 
@@ -621,7 +607,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (HandleCut != null)
             {
-                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleCut.GetInvocationList())
+                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleCut.GetInvocationList().Cast<HtmlEditorSelectionOperationEventHandler>())
                 {
                     handler(ea);
 
@@ -639,7 +625,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (HandleClear != null)
             {
-                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleClear.GetInvocationList())
+                foreach (HtmlEditorSelectionOperationEventHandler handler in HandleClear.GetInvocationList().Cast<HtmlEditorSelectionOperationEventHandler>())
                 {
                     handler(ea);
 
@@ -824,7 +810,7 @@ namespace OpenLiveWriter.HtmlEditor
                     if (MarkupServices.CreateMarkupRange(firstTd, false).IsEmptyOfContent())
                     {
                         // The table behavior leaves an empty space in the table, so make sure we remove it before inserting.
-                        firstTd.innerHTML = String.Empty;
+                        firstTd.innerHTML = string.Empty;
                     }
 
                     // Move the content at the cursor into the <td>.
@@ -872,7 +858,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (MouseDown != null)
             {
-                foreach (HtmlEventHandler handler in MouseDown.GetInvocationList())
+                foreach (HtmlEventHandler handler in MouseDown.GetInvocationList().Cast<HtmlEventHandler>())
                 {
                     handler(this, evt);
 
@@ -887,7 +873,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             if (MouseUp != null)
             {
-                foreach (HtmlEventHandler handler in MouseUp.GetInvocationList())
+                foreach (HtmlEventHandler handler in MouseUp.GetInvocationList().Cast<HtmlEventHandler>())
                 {
                     handler(this, evt);
 
@@ -904,11 +890,11 @@ namespace OpenLiveWriter.HtmlEditor
         {
             add
             {
-                _mshtmlEditor.HelpRequest += value;
+                MshtmlEditor.HelpRequest += value;
             }
             remove
             {
-                _mshtmlEditor.HelpRequest -= value;
+                MshtmlEditor.HelpRequest -= value;
             }
         }
 
@@ -1001,7 +987,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private readonly IHTMLElementFilter _fontTagWithFontSizeFilter = ElementFilters.CreateCompoundElementFilter(
             ElementFilters.CreateTagIdFilter("font"),
-            e => !String.IsNullOrEmpty(((IHTMLElement2)e).currentStyle.fontSize as string)
+            e => !string.IsNullOrEmpty(((IHTMLElement2)e).currentStyle.fontSize as string)
         );
 
         public virtual bool IsRTLTemplate
@@ -1029,7 +1015,7 @@ namespace OpenLiveWriter.HtmlEditor
             if (output == DBNull.Value)
                 return null;
 
-            UInt32 zoneInt = (UInt32)output;
+            uint zoneInt = (uint)output;
             InternetSecurityZone zone = (InternetSecurityZone)zoneInt;
             return zone;
         }
@@ -1041,7 +1027,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private IMshtmlCommand GetMshtmlCommand(uint key)
         {
-            return _mshtmlEditor.Commands[key] as IMshtmlCommand;
+            return MshtmlEditor.Commands[key] as IMshtmlCommand;
         }
 
         private void DocumentEvents_Click(object o, HtmlEventArgs e)
@@ -1062,8 +1048,8 @@ namespace OpenLiveWriter.HtmlEditor
         {
             RECT elementRect = new RECT
             {
-                top = Int32.MaxValue,
-                left = Int32.MaxValue
+                top = int.MaxValue,
+                left = int.MaxValue
             };
 
             bool foundChild = false;
@@ -1145,7 +1131,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         public virtual IHTMLElement PostBodyElement
         {
-            get { return _mshtmlEditor.HTMLDocument.body; }
+            get { return MshtmlEditor.HTMLDocument.body; }
         }
 
         #endregion
@@ -1159,7 +1145,7 @@ namespace OpenLiveWriter.HtmlEditor
         }
 
         #region Document Event Handling
-        private void _mshtmlEditor_DocumentComplete(object sender, EventArgs e)
+        private void MshtmlEditor_DocumentComplete(object sender, EventArgs e)
         {
             if (!_initialDocumentLoaded)
             {
@@ -1179,8 +1165,7 @@ namespace OpenLiveWriter.HtmlEditor
             ResetForDocumentComplete();
 
             //reset the damage services
-            if (_damageServices != null)
-                _damageServices.Reset();
+            _damageServices?.Reset();
 
             //reset the selection so that we don't keep a stale selection object around.
             //Note: This fixes a bug that caused exceptions when switching editing templates while
@@ -1298,7 +1283,7 @@ namespace OpenLiveWriter.HtmlEditor
                 try
                 {
 
-                    if (_mshtmlEditor.MshtmlControl.DocumentIsComplete)
+                    if (MshtmlEditor.MshtmlControl.DocumentIsComplete)
                     {
 #if SELECTION_DEBUG
                         if (SelectionDebugDialog == null)
@@ -1340,9 +1325,9 @@ namespace OpenLiveWriter.HtmlEditor
                                         else
                                         {
                                             // WinLive 196005: In some circumstances we do not want to empty an invalid selection.
-                                            if (_selectionIsInvalid == false)
+                                            if (SelectionIsInvalid == false)
                                             {
-                                                _selectionIsInvalid = true;
+                                                SelectionIsInvalid = true;
                                                 OnCommandStateChanged();
                                             }
                                         }
@@ -1359,9 +1344,9 @@ namespace OpenLiveWriter.HtmlEditor
                                 }
                                 else
                                 {
-                                    if (_selectionIsInvalid == true)
+                                    if (SelectionIsInvalid == true)
                                     {
-                                        _selectionIsInvalid = false;
+                                        SelectionIsInvalid = false;
                                         OnCommandStateChanged();
                                     }
                                 }
@@ -1427,21 +1412,14 @@ namespace OpenLiveWriter.HtmlEditor
             return true;
         }
 
-        private bool _selectionIsInvalid;
-        public bool SelectionIsInvalid
-        {
-            get
-            {
-                return _selectionIsInvalid;
-            }
-        }
+        public bool SelectionIsInvalid { get; private set; }
 
         private void ResetSelection()
         {
             try
             {
                 // Keep it within the postBody div!
-                _mshtmlEditor.DocumentEvents.SelectionChanged -= new EventHandler(DocumentEvents_SelectionChanged);
+                MshtmlEditor.DocumentEvents.SelectionChanged -= new EventHandler(DocumentEvents_SelectionChanged);
                 IHTMLElement postBody = PostBodyElement;
                 if (postBody != null)
                 {
@@ -1452,10 +1430,10 @@ namespace OpenLiveWriter.HtmlEditor
             }
             finally
             {
-                _mshtmlEditor.DocumentEvents.SelectionChanged += new EventHandler(DocumentEvents_SelectionChanged);
+                MshtmlEditor.DocumentEvents.SelectionChanged += new EventHandler(DocumentEvents_SelectionChanged);
             }
 
-            _defaultSelection = new HtmlEditorSelection(_mshtmlEditor, HTMLDocument);
+            _defaultSelection = new HtmlEditorSelection(MshtmlEditor, HTMLDocument);
             ((IHtmlEditorComponentContext)this).Selection = _defaultSelection;
         }
 
@@ -1486,13 +1464,7 @@ namespace OpenLiveWriter.HtmlEditor
                             ele.innerHTML = CurrentDefaultFont.ApplyFont("");
                     }
 
-                    IHTMLElement finalElement = FindFontElement(true);
-
-                    if (finalElement == null)
-                    {
-                        finalElement = FindFontElement(false);
-                    }
-
+                    IHTMLElement finalElement = FindFontElement(true) ?? FindFontElement(false);
                     if (finalElement != null && string.IsNullOrEmpty(finalElement.innerHTML))
                     {
                         MarkupServices.CreateMarkupRange(finalElement, false).ToTextRange().select();
@@ -1508,19 +1480,14 @@ namespace OpenLiveWriter.HtmlEditor
         {
             IHTMLElement returnElement = null;
             MarkupPointer markupPointer = SelectedMarkupRange.Start.Clone();
-            MarkupContext mc = null;
-
-            if (right)
-                mc = markupPointer.Right(true);
-            else
-                mc = markupPointer.Left(true);
+            _ = right ? markupPointer.Right(true) : markupPointer.Left(true);
 
             // Starting from <div>|... walk to the right we are in the middle of any formatting
             // tags we might have inserted.  For example we want to go from <div>|<font><u><em><strong></...
             // to <div><font><u><em><strong>|</...
-            while (mc.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_EnterScope)
+            while (((MarkupContext)null).Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_EnterScope)
             {
-                IHTMLElement tempElement = mc.Element;
+                IHTMLElement tempElement = ((MarkupContext)null).Element;
 
                 // If we found something other then the tags
                 // used for defining the font we have walked to far
@@ -1532,10 +1499,7 @@ namespace OpenLiveWriter.HtmlEditor
                     break;
 
                 returnElement = tempElement;
-                if (right)
-                    mc = markupPointer.Right(true);
-                else
-                    mc = markupPointer.Left(true);
+                _ = right ? markupPointer.Right(true) : markupPointer.Left(true);
             }
 
             return returnElement;
@@ -1546,24 +1510,23 @@ namespace OpenLiveWriter.HtmlEditor
             _selection = newSelection;
 
             // fire our own selection changed event
-            if (SelectionChanged != null)
-                SelectionChanged(this, EventArgs.Empty);
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
 
             // fire our command-state changed event
             OnCommandStateChanged();
         }
 
-        private void _mshtmlEditor_BeforeShowContextMenu(object sender, EventArgs e)
+        private void MshtmlEditor_BeforeShowContextMenu(object sender, EventArgs e)
         {
             //FireDefaultSelectionChanged();
         }
 
-        private void _mshtmlEditor_DisplayChanged(object sender, EventArgs e)
+        private void MshtmlEditor_DisplayChanged(object sender, EventArgs e)
         {
             OnAggressiveCommandStateChanged();
         }
 
-        public int _mshtmlEditor_GetDropTarget(OpenLiveWriter.Interop.Com.IDropTarget pDropTarget, out OpenLiveWriter.Interop.Com.IDropTarget ppDropTarget)
+        public int MshtmlEditor_GetDropTarget(Interop.Com.IDropTarget pDropTarget, out Interop.Com.IDropTarget ppDropTarget)
         {
             try
             {
@@ -1577,11 +1540,10 @@ namespace OpenLiveWriter.HtmlEditor
             }
         }
 
-        private void _mshtmlEditor_CommandKey(object sender, KeyEventArgs e)
+        private void MshtmlEditor_CommandKey(object sender, KeyEventArgs e)
         {
             OnCommandKey(e);
         }
-
 
         #endregion
 
@@ -1590,14 +1552,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// <summary>
         /// Get the spelling-checker (demand-create and cache/re-use)
         /// </summary>
-        protected ISpellingChecker SpellingChecker
-        {
-            get
-            {
-                return _spellingChecker;
-            }
-        }
-        private readonly ISpellingChecker _spellingChecker;
+        protected ISpellingChecker SpellingChecker { get; }
 
         #endregion
 
@@ -1614,33 +1569,21 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return _mshtmlEditor.HTMLDocument;
+                return MshtmlEditor.HTMLDocument;
             }
         }
 
-        protected MshtmlEditor MshtmlEditor
-        {
-            get
-            {
-                return _mshtmlEditor;
-            }
-        }
+        protected MshtmlEditor MshtmlEditor { get; private set; }
 
         protected MshtmlMarkupServices MarkupServices
         {
             get
             {
-                return _mshtmlEditor.MshtmlControl.MarkupServices;
+                return MshtmlEditor.MshtmlControl.MarkupServices;
             }
         }
 
-        protected IMainFrameWindow FrameWindow
-        {
-            get
-            {
-                return _mainFrameWindow;
-            }
-        }
+        protected IMainFrameWindow FrameWindow { get; }
 
         bool IHtmlEditorComponentContext.EditMode
         {
@@ -1651,14 +1594,11 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return _mshtmlEditor != null && _mshtmlEditor.MshtmlControl.EditMode;
+                return MshtmlEditor != null && MshtmlEditor.MshtmlControl.EditMode;
             }
         }
 
-        protected EditorLinkNavigator LinkNavigator
-        {
-            get { return linkNavigator; }
-        }
+        protected EditorLinkNavigator LinkNavigator { get; private set; }
 
         public IUndoUnit CreateUndoUnit()
         {
@@ -1689,7 +1629,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return _mshtmlEditor.MshtmlControl.OleUndoManager;
+                return MshtmlEditor.MshtmlControl.OleUndoManager;
             }
         }
 
@@ -1714,7 +1654,7 @@ namespace OpenLiveWriter.HtmlEditor
         private bool ContainsMultipleAnchors()
         {
             //used to check for multiple anchors within the selection
-            if (_mshtmlEditor.MshtmlControl.DocumentIsComplete) //avoids case where this gets called before startup completes
+            if (MshtmlEditor.MshtmlControl.DocumentIsComplete) //avoids case where this gets called before startup completes
             {
                 MarkupRange markupRange = SelectedMarkupRange;
                 if (markupRange != null)
@@ -1742,7 +1682,7 @@ namespace OpenLiveWriter.HtmlEditor
         private IHTMLElement GetCurrentEditableAnchorElement()
         {
             IHTMLElement anchor = null;
-            if (_mshtmlEditor.MshtmlControl.DocumentIsComplete) //avoids case where this gets called before startup completes
+            if (MshtmlEditor.MshtmlControl.DocumentIsComplete) //avoids case where this gets called before startup completes
             {
                 MarkupRange markupRange = SelectedMarkupRange;
                 if (markupRange != null)
@@ -1799,7 +1739,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return Selection != null ? Selection.SelectedMarkupRange : null;
+                return Selection?.SelectedMarkupRange;
             }
         }
 
@@ -2049,8 +1989,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             // get a list of all of the undo units
             ArrayList undoUnitArray = new ArrayList();
-            int result;
-            while ((result = undoUnits.Next(1, out IOleUndoUnit current, IntPtr.Zero)) == HRESULT.S_OK)
+            while ((_ = undoUnits.Next(1, out IOleUndoUnit current, IntPtr.Zero)) == HRESULT.S_OK)
                 undoUnitArray.Add(current);
 
             // return the list in an array
@@ -2134,7 +2073,7 @@ namespace OpenLiveWriter.HtmlEditor
                     else
                     {
                         if (_tempTextNode != null && _tempTextNode.parentNode != null)
-                            (_tempTextNode).removeNode(true);
+                            _tempTextNode.removeNode(true);
                     }
                 }
                 catch (Exception e)
@@ -2154,11 +2093,9 @@ namespace OpenLiveWriter.HtmlEditor
         protected Container components = null;
 
         private MshtmlEditorDragAndDropTarget mshtmlEditorDragAndDropTarget;
-        private MshtmlEditor _mshtmlEditor;
         private readonly MshtmlOptions _mshtmlOptions;
-        private readonly IMainFrameWindow _mainFrameWindow;
         private readonly IStatusBar _statusBar;
-        private String _originalText;
+        private string _originalText;
 
         [ThreadStatic]
         private static CachedEditorAndSecurityManager _editorCache;
@@ -2172,11 +2109,6 @@ namespace OpenLiveWriter.HtmlEditor
         private IHtmlEditorSelection _defaultSelection;
         private int _suspendSelectionValidationDepth;
         private HtmlEditorControlDamageServices _damageServices;
-
-        /// <summary>
-        /// Object used to do navigation to links embedded in the document
-        /// </summary>
-        private EditorLinkNavigator linkNavigator;
 
         #endregion
 
@@ -2326,7 +2258,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             IHTMLElement[] editableElements = EditableElements;
             IHTMLElement nearestElement = null;
-            int nearestElementDistance = Int32.MaxValue;
+            int nearestElementDistance = int.MaxValue;
 
             foreach (IHTMLElement element in editableElements)
             {
@@ -2336,11 +2268,7 @@ namespace OpenLiveWriter.HtmlEditor
                     return element;
                 else
                 {
-                    int distance;
-                    if (fromClientPoint.Y < rect.top)
-                        distance = rect.top - fromClientPoint.Y;
-                    else
-                        distance = fromClientPoint.Y - rect.bottom;
+                    int distance = fromClientPoint.Y < rect.top ? rect.top - fromClientPoint.Y : fromClientPoint.Y - rect.bottom;
                     if (distance < nearestElementDistance)
                     {
                         nearestElementDistance = distance;
@@ -2463,7 +2391,7 @@ namespace OpenLiveWriter.HtmlEditor
                 // global (client area) coordinates
                 null,		// element coordinates are relative to (not used for GLOBAL)
                 0,			// HT_OPTIONS (don't hit test beyond EOL)
-                out uint htRes);	// HT_RESULTS (1 indicates hit test is over a glyph)
+                out _);	// HT_RESULTS (1 indicates hit test is over a glyph)
         }
         #endregion
 
@@ -2473,8 +2401,7 @@ namespace OpenLiveWriter.HtmlEditor
         /// </summary>
         private void UpdateSelection(MarkupRange selection)
         {
-            if (selection != null)
-                selection.ToTextRange().select();
+            selection?.ToTextRange().select();
 
             //fire the selection changed event since the IHTMLTxtRange object doesn't
             (MshtmlEditor.MshtmlControl.DocumentEvents as HTMLDocumentEvents2).onselectionchange(null);
@@ -2482,8 +2409,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         public void UpdateSelection(IHTMLControlRange selection)
         {
-            if (selection != null)
-                selection.select();
+            selection?.select();
 
             //fire the selection changed event since the IHTMLControlRange object doesn't
             (MshtmlEditor.MshtmlControl.DocumentEvents as HTMLDocumentEvents2).onselectionchange(null);
@@ -2573,7 +2499,7 @@ namespace OpenLiveWriter.HtmlEditor
                     // We only need to insert the ending new line if there was a div or image added
                     bool allowNewLineInsert = ShouldAllowNewLineInsert(html);
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document is not ready. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document is not ready. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     try
                     {
@@ -2595,7 +2521,7 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                     catch (COMException ex)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "RemoveBlockOrTableElement Failed ({0},{1},{2},{4}): {3}", stagingRange.Start.Positioned, stagingRange.End.Positioned, end.Positioned, ex, start.Positioned));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "RemoveBlockOrTableElement Failed ({0},{1},{2},{4}): {3}", stagingRange.Start.Positioned, stagingRange.End.Positioned, end.Positioned, ex, start.Positioned));
                         throw;
                     }
 
@@ -2607,7 +2533,7 @@ namespace OpenLiveWriter.HtmlEditor
                         ForceTablesToInheritFontColor(stagingRange);
                     }
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after RemoveBlockOrTableElement. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after RemoveBlockOrTableElement. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     IDisposable damageTracker = null;
                     try
@@ -2616,11 +2542,11 @@ namespace OpenLiveWriter.HtmlEditor
                     }
                     catch (COMException ex)
                     {
-                        Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "CreateDamageTracking Failed ({0}): {1}", end.Positioned, ex));
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "CreateDamageTracking Failed ({0}): {1}", end.Positioned, ex));
                         throw;
                     }
 
-                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after CreateDamageTracking. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                    Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after CreateDamageTracking. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                     using (damageTracker)
                     {
@@ -2634,7 +2560,7 @@ namespace OpenLiveWriter.HtmlEditor
                             start.PushGravity(_POINTER_GRAVITY.POINTER_GRAVITY_Left);
                             end.PushGravity(_POINTER_GRAVITY.POINTER_GRAVITY_Right);
 
-                            Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, String.Format(CultureInfo.InvariantCulture, "Staging document corrupt after applying gravity. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
+                            Trace.Assert(stagingRange.Positioned && stagingRange.Start.Positioned && stagingRange.End.Positioned && sc1.Positioned && sc2.Positioned, string.Format(CultureInfo.InvariantCulture, "Staging document corrupt after applying gravity. stagingRange:({0}),stagingRange.Start:({1}),stagingRange.End:({2}),sc1:({3}),sc2:({4})", stagingRange.Positioned, stagingRange.Start.Positioned, stagingRange.End.Positioned, sc1.Positioned, sc2.Positioned));
 
                             try
                             {
@@ -2643,7 +2569,7 @@ namespace OpenLiveWriter.HtmlEditor
                             catch (COMException ex)
                             {
                                 Trace.WriteLine(
-                                    String.Format(CultureInfo.InvariantCulture, "MarkupServices.Move Failed ({0},{1},{2}): {3}",
+                                    string.Format(CultureInfo.InvariantCulture, "MarkupServices.Move Failed ({0},{1},{2}): {3}",
                                                   stagingRange.Start.Positioned, stagingRange.End.Positioned,
                                                   end.Positioned, ex));
                                 throw;
@@ -2695,7 +2621,7 @@ namespace OpenLiveWriter.HtmlEditor
                     // Covers the case of <p>&nbsp;</p>.
                     paragraphIsEmpty = true;
                 }
-                else if (String.IsNullOrEmpty(paragraphElement.innerText))
+                else if (string.IsNullOrEmpty(paragraphElement.innerText))
                 {
                     IHTMLElementCollection children = (IHTMLElementCollection)paragraphElement.children;
                     if (children != null && children.length == 1)
@@ -2786,7 +2712,7 @@ namespace OpenLiveWriter.HtmlEditor
             SimpleHtmlParser p = new SimpleHtmlParser(html);
             for (Element el; null != (el = p.Next());)
             {
-                if (el is BeginTag && (((BeginTag)el).NameEquals("div") || ((BeginTag)el).NameEquals("img")))
+                if (el is BeginTag beginTag && (beginTag.NameEquals("div") || beginTag.NameEquals("img")))
                 {
                     return true;
                 }
@@ -2988,10 +2914,7 @@ namespace OpenLiveWriter.HtmlEditor
         public IHTMLElement ElementAtPoint(Point screenPoint)
         {
             Point clientPoint = EditorControl.PointToClient(screenPoint);
-            if (PointIsOverDocumentArea(clientPoint.X, clientPoint.Y))
-                return HTMLDocument.elementFromPoint(clientPoint.X, clientPoint.Y);
-            else
-                return null;
+            return PointIsOverDocumentArea(clientPoint.X, clientPoint.Y) ? HTMLDocument.elementFromPoint(clientPoint.X, clientPoint.Y) : null;
         }
 
         /// <summary>
@@ -3009,10 +2932,11 @@ namespace OpenLiveWriter.HtmlEditor
 
             // see if the point is over one of the scrollbars
             bool pointOverVerticalScrollBar = x >= (EditorControl.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth);
-            bool pointOverHorizontalScrollBar = ((body.offsetWidth - body2.scrollWidth) < SystemInformation.VerticalScrollBarWidth) && (y >= EditorControl.ClientRectangle.Height - SystemInformation.HorizontalScrollBarHeight);
+            bool pointOverHorizontalScrollBar = ((body.offsetWidth - body2.scrollWidth) < SystemInformation.VerticalScrollBarWidth) &&
+                (y >= EditorControl.ClientRectangle.Height - SystemInformation.HorizontalScrollBarHeight);
 
             // return true if it is not over one of the two scroll-bars
-            return (!(pointOverVerticalScrollBar || pointOverHorizontalScrollBar));
+            return !(pointOverVerticalScrollBar || pointOverHorizontalScrollBar);
         }
         #endregion
 
@@ -3020,12 +2944,12 @@ namespace OpenLiveWriter.HtmlEditor
 
         IWin32Window IHtmlMarshallingTarget.FrameWindow
         {
-            get { return _mainFrameWindow; }
+            get { return FrameWindow; }
         }
 
         public void Invoke(ThreadStart func)
         {
-            _mainFrameWindow.BeginInvoke(new InvokeInUIThreadDelegate(func), null);
+            FrameWindow.BeginInvoke(new InvokeInUIThreadDelegate(func), null);
         }
 
         IHTMLDocument2 IHtmlMarshallingTarget.HtmlDocument
@@ -3052,40 +2976,15 @@ namespace OpenLiveWriter.HtmlEditor
             }
         }
 
-        public bool MarshalImagesSupported
-        {
-            get { return marshalImagesSupported; }
-            set { marshalImagesSupported = value; }
-        }
-        private bool marshalImagesSupported;
+        public bool MarshalImagesSupported { get; set; }
 
-        public bool MarshalFilesSupported
-        {
-            get { return marshalFilesSupported; }
-            set { marshalFilesSupported = value; }
-        }
-        private bool marshalFilesSupported;
+        public bool MarshalFilesSupported { get; set; }
 
-        public bool MarshalHtmlSupported
-        {
-            get { return marshalHtmlSupported; }
-            set { marshalHtmlSupported = value; }
-        }
-        private bool marshalHtmlSupported;
+        public bool MarshalHtmlSupported { get; set; }
 
-        public bool MarshalTextSupported
-        {
-            get { return marshalTextSupported; }
-            set { marshalTextSupported = value; }
-        }
-        private bool marshalTextSupported;
+        public bool MarshalTextSupported { get; set; }
 
-        public bool MarshalUrlSupported
-        {
-            get { return marshalUrlSupported; }
-            set { marshalUrlSupported = value; }
-        }
-        private bool marshalUrlSupported;
+        public bool MarshalUrlSupported { get; set; }
 
         #endregion
 
@@ -3098,11 +2997,11 @@ namespace OpenLiveWriter.HtmlEditor
 
                 if (!_mshtmlInit)
                 {
-                    _mshtmlEditor.RightToLeft = RightToLeft.No;
+                    MshtmlEditor.RightToLeft = RightToLeft.No;
                     _mshtmlInit = true;
                 }
 
-                return _mshtmlEditor;
+                return MshtmlEditor;
                 //if ( _editorControl == null )
                 //{
                 //    _editorControl = new BorderControl();
@@ -3137,12 +3036,12 @@ namespace OpenLiveWriter.HtmlEditor
         public virtual void LoadHtmlFile(string filePath)
         {
             // load the content
-            _mshtmlEditor.LoadFromFile(filePath);
+            MshtmlEditor.LoadFromFile(filePath);
         }
 
         public virtual void LoadHtmlString(string html)
         {
-            _mshtmlEditor.LoadFromString(html);
+            MshtmlEditor.LoadFromString(html);
         }
 
         public string GetEditedHtml(bool preferWellFormed)
@@ -3155,8 +3054,7 @@ namespace OpenLiveWriter.HtmlEditor
             string html = GetEditedHtmlCore(preferWellFormed);
 
             TemporaryFixupArgs args = new TemporaryFixupArgs(html);
-            if (PerformTemporaryFixupsToEditedHtml != null)
-                PerformTemporaryFixupsToEditedHtml(args);
+            PerformTemporaryFixupsToEditedHtml?.Invoke(args);
 
             return args.Html;
         }
@@ -3175,22 +3073,22 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return _mshtmlEditor.IsDirty;
+                return MshtmlEditor.IsDirty;
             }
             set
             {
-                _mshtmlEditor.IsDirty = value;
+                MshtmlEditor.IsDirty = value;
             }
         }
         public event EventHandler IsDirtyEvent
         {
             add
             {
-                _mshtmlEditor.IsDirtyEvent += value;
+                MshtmlEditor.IsDirtyEvent += value;
             }
             remove
             {
-                _mshtmlEditor.IsDirtyEvent -= value;
+                MshtmlEditor.IsDirtyEvent -= value;
             }
         }
 
@@ -3206,15 +3104,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                if (_mshtmlEditor.HasContiguousSelection)
-                {
-                    return SelectedMarkupRange.Text;
-
-                }
-                else
-                {
-                    return null;
-                }
+                return MshtmlEditor.HasContiguousSelection ? SelectedMarkupRange.Text : null;
             }
         }
 
@@ -3222,14 +3112,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                if (_mshtmlEditor.HasContiguousSelection)
-                {
-                    return SelectedMarkupRange.HtmlText;
-                }
-                else
-                {
-                    return null;
-                }
+                return MshtmlEditor.HasContiguousSelection ? SelectedMarkupRange.HtmlText : null;
             }
         }
 
@@ -3317,8 +3200,7 @@ namespace OpenLiveWriter.HtmlEditor
                 selectionRange.Collapse(HtmlInsertionOptions.MoveCursorAfter != (options & HtmlInsertionOptions.MoveCursorAfter));
 
                 IHTMLTxtRange textRange = selectionRange.ToTextRange();
-                if (textRange != null)
-                    textRange.select();
+                textRange?.select();
             }
 
             // Allow subclasses to do postprocessing on the inserted HTML
@@ -3415,14 +3297,12 @@ namespace OpenLiveWriter.HtmlEditor
 
         protected void FireBeforeInitialInsertion()
         {
-            if (BeforeInitialInsertion != null)
-                BeforeInitialInsertion(this, EventArgs.Empty);
+            BeforeInitialInsertion?.Invoke(this, EventArgs.Empty);
         }
 
         protected void FireAfterInitialInsertion()
         {
-            if (AfterInitialInsertion != null)
-                AfterInitialInsertion(this, EventArgs.Empty);
+            AfterInitialInsertion?.Invoke(this, EventArgs.Empty);
         }
 
         public void SelectControlElement(IHTMLControlElement controlElement)
@@ -3524,7 +3404,7 @@ namespace OpenLiveWriter.HtmlEditor
                     fCompleted = spellCheckerForm.Completed;
                 }
 
-                if (fCompleted && _mainFrameWindow != null && _mainFrameWindow is IWordRangeProvider)
+                if (fCompleted && FrameWindow != null && FrameWindow is IWordRangeProvider provider)
                 {
                     // Spell check the subject, it doesn't support the "ignore once" feature
                     using (SpellCheckerForm spellCheckerForm = new SpellCheckerForm(SpellingChecker, EditorControl.FindForm(), false))
@@ -3532,7 +3412,7 @@ namespace OpenLiveWriter.HtmlEditor
                         //  center the spell-checking form over the document body
                         spellCheckerForm.StartPosition = FormStartPosition.CenterParent;
 
-                        IWordRangeProvider wordRangeProvider = (IWordRangeProvider)_mainFrameWindow;
+                        IWordRangeProvider wordRangeProvider = provider;
                         IWordRange wordRangeSubject = wordRangeProvider.GetSubjectSpellcheckWordRange();
 
                         spellCheckerForm.CheckSpelling(wordRangeSubject);
@@ -3568,30 +3448,27 @@ namespace OpenLiveWriter.HtmlEditor
         /// <param name="e"></param>
         protected virtual void OnDocumentComplete(EventArgs e)
         {
-            if (DocumentComplete != null)
-                DocumentComplete(this, e);
+            DocumentComplete?.Invoke(this, e);
 
             // OnDocumentComplete can be called multiple times with the same MshtmlEditor, so we need to make sure that
             // we don't have multiple hooks into the same event.
             MshtmlEditor.PreHandleEvent -= new HtmlEditDesignerEventHandler(OnPreHandleEvent);
             MshtmlEditor.PreHandleEvent += new HtmlEditDesignerEventHandler(OnPreHandleEvent);
 
-            if (linkNavigator == null) // Don't new one of these up every time- only if we don't have one yet.
-                linkNavigator = new EditorLinkNavigator(this, FrameWindow, _statusBar, this.DocumentEvents);
+            if (LinkNavigator == null) // Don't new one of these up every time- only if we don't have one yet.
+                LinkNavigator = new EditorLinkNavigator(this, FrameWindow, _statusBar, DocumentEvents);
         }
 
         public event EventHandler GotFocus;
-        protected void htmlEditor_GotFocus(object sender, EventArgs e)
+        protected void HtmlEditor_GotFocus(object sender, EventArgs e)
         {
-            if (GotFocus != null)
-                GotFocus(sender, e);
+            GotFocus?.Invoke(sender, e);
         }
 
         public event EventHandler LostFocus;
-        protected void htmlEditor_LostFocus(object sender, EventArgs e)
+        protected void HtmlEditor_LostFocus(object sender, EventArgs e)
         {
-            if (LostFocus != null)
-                LostFocus(sender, e);
+            LostFocus?.Invoke(sender, e);
         }
 
         protected virtual void AttachBehaviors(IHtmlEditorComponentContext context)
@@ -3627,7 +3504,7 @@ namespace OpenLiveWriter.HtmlEditor
             get
             {
                 string fontFamily = GetMshtmlCommand(IDM.FONTNAME).GetValue() as string;
-                return fontFamily ?? String.Empty;
+                return fontFamily ?? string.Empty;
             }
         }
 
@@ -3644,7 +3521,7 @@ namespace OpenLiveWriter.HtmlEditor
             MshtmlEditor.UpdateOptions(options, updateComposeSettings);
         }
 
-        void _mshtmlControl_DLControlFlagsChanged(object sender, EventArgs e)
+        void MshtmlControl_DLControlFlagsChanged(object sender, EventArgs e)
         {
             // Make sure we keep our copy of the dlctl flags up to date.
             _mshtmlOptions.DLCTLOptions = MshtmlEditor.MshtmlControl.AmbientDLControl;
@@ -3694,7 +3571,7 @@ namespace OpenLiveWriter.HtmlEditor
                         // If the selection contains no text, the control displays the font size of the start of the
                         // selection.
                         string selectionText = selection.Text ?? string.Empty;
-                        if (String.IsNullOrEmpty(selectionText.Trim()))
+                        if (string.IsNullOrEmpty(selectionText.Trim()))
                         {
                             return GetFontSizeAt(selection.Start);
                         }
@@ -3704,7 +3581,7 @@ namespace OpenLiveWriter.HtmlEditor
                             delegate (MarkupRange currentRange, MarkupContext context, string text)
                             {
                                 text = text ?? string.Empty;
-                                if (String.IsNullOrEmpty(text.Trim()))
+                                if (string.IsNullOrEmpty(text.Trim()))
                                 {
                                     // Continue walking the range.
                                     return true;
@@ -3782,7 +3659,7 @@ namespace OpenLiveWriter.HtmlEditor
                         if (currentElement != null && context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_EnterScope)
                         {
                             if (MarkupServices.GetElementTagId(currentElement) == _ELEMENT_TAG_ID.TAGID_FONT &&
-                               !String.IsNullOrEmpty(currentElement.style.fontSize as string))
+                               !string.IsNullOrEmpty(currentElement.style.fontSize as string))
                             {
                                 currentElement.style.fontSize = string.Empty;
                             }
@@ -3824,8 +3701,8 @@ namespace OpenLiveWriter.HtmlEditor
                 int value = SystemColors.WindowText.ToArgb();
                 try
                 {
-                    if (color is int)
-                        value = ColorHelper.BGRToColor((int)color).ToArgb();
+                    if (color is int v)
+                        value = ColorHelper.BGRToColor(v).ToArgb();
                 }
                 catch (Exception e)
                 {
@@ -3993,12 +3870,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         private bool IsSelection(_ELEMENT_TAG_ID tagId)
         {
-            if (_initialDocumentLoaded)
-            {
-                return SelectedMarkupRange.IsTagId(tagId, true);
-            }
-
-            return false;
+            return _initialDocumentLoaded && SelectedMarkupRange.IsTagId(tagId, true);
         }
 
         bool IHtmlEditorCommandSource.SelectionSuperscript
@@ -4306,7 +4178,7 @@ namespace OpenLiveWriter.HtmlEditor
                         // If the element is empty, MSHTML won't render the cursor on the correct side of the canvas
                         // until the the users starts typing. We can force the empty element to render correctly by
                         // setting the inflateBlock property.
-                        if (String.IsNullOrEmpty(element.innerHTML))
+                        if (string.IsNullOrEmpty(element.innerHTML))
                         {
                             ((IHTMLElement3)element).inflateBlock = true;
                         }
@@ -4415,16 +4287,13 @@ namespace OpenLiveWriter.HtmlEditor
 
         EditorTextAlignment IHtmlEditorCommandSource.GetSelectionAlignment()
         {
-            if (GetMshtmlCommand(IDM.JUSTIFYLEFT).Latched)
-                return EditorTextAlignment.Left;
-            else if (GetMshtmlCommand(IDM.JUSTIFYCENTER).Latched)
-                return EditorTextAlignment.Center;
-            else if (GetMshtmlCommand(IDM.JUSTIFYRIGHT).Latched)
-                return EditorTextAlignment.Right;
-            else if (GetMshtmlCommand(IDM.JUSTIFYFULL).Latched)
-                return EditorTextAlignment.Justify;
-            else
-                return EditorTextAlignment.None;
+            return GetMshtmlCommand(IDM.JUSTIFYLEFT).Latched
+                ? EditorTextAlignment.Left
+                : GetMshtmlCommand(IDM.JUSTIFYCENTER).Latched
+                    ? EditorTextAlignment.Center
+                    : GetMshtmlCommand(IDM.JUSTIFYRIGHT).Latched
+                        ? EditorTextAlignment.Right
+                        : GetMshtmlCommand(IDM.JUSTIFYFULL).Latched ? EditorTextAlignment.Justify : EditorTextAlignment.None;
         }
 
         void IHtmlEditorCommandSource.ApplyAlignment(EditorTextAlignment alignment)
@@ -4504,10 +4373,10 @@ namespace OpenLiveWriter.HtmlEditor
 
         void IHtmlEditorCommandSource.ApplyBlockquote()
         {
-            ExecuteBlockCommand(new CommandExecutor(applyBlockquote));
+            ExecuteBlockCommand(new CommandExecutor(ApplyBlockquote));
         }
 
-        private void applyBlockquote()
+        private void ApplyBlockquote()
         {
             MarkupRange selection = SelectedMarkupRange;
             selection.Start.Gravity = _POINTER_GRAVITY.POINTER_GRAVITY_Right;
@@ -4582,10 +4451,10 @@ namespace OpenLiveWriter.HtmlEditor
 
         LinkInfo IHtmlEditorCommandSource.DiscoverCurrentLink()
         {
-            String hyperlink = null;
-            String text = null;
-            String title = null;
-            String rel = null;
+            string hyperlink = null;
+            string text = null;
+            string title = null;
+            string rel = null;
             bool newWindow = false;
 
             IHTMLElement anchor = GetCurrentEditableAnchorElement();
@@ -4673,8 +4542,8 @@ namespace OpenLiveWriter.HtmlEditor
                             GlossaryLinkItem item = GlossaryManager.Instance.FindEntry(info.AnchorText.Trim());
                             if (item != null)
                             {
-                                if (item.Url != String.Empty) hyperlinkForm.Hyperlink = item.Url;
-                                if (item.Title != String.Empty) hyperlinkForm.LinkTitle = item.Title;
+                                if (item.Url != string.Empty) hyperlinkForm.Hyperlink = item.Url;
+                                if (item.Title != string.Empty) hyperlinkForm.LinkTitle = item.Title;
                                 hyperlinkForm.IsInGlossary = true;
                             }
                         }
@@ -4713,7 +4582,7 @@ namespace OpenLiveWriter.HtmlEditor
                                 }
                                 else
                                 {
-                                    InsertImageLink(String.Empty, String.Empty, false, String.Empty);
+                                    InsertImageLink(string.Empty, string.Empty, false, string.Empty);
                                 }
                             }
                             else
@@ -4766,7 +4635,7 @@ namespace OpenLiveWriter.HtmlEditor
 
         void IHtmlEditorCommandSource.OpenLink()
         {
-            string href = String.Empty;
+            string href = string.Empty;
             try
             {
                 // get href
@@ -4801,7 +4670,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                return _mainFrameWindow;
+                return FrameWindow;
             }
         }
 
@@ -4844,7 +4713,7 @@ namespace OpenLiveWriter.HtmlEditor
             bool pointOverHorizontalScrollBar = ((body.offsetWidth - body2.scrollWidth) < SystemInformation.VerticalScrollBarWidth) && (clientPoint.Y >= MshtmlEditor.ClientRectangle.Height - SystemInformation.HorizontalScrollBarHeight);
 
             // return true if it is not over one of the two scroll-bars
-            return (!(pointOverVerticalScrollBar || pointOverHorizontalScrollBar));
+            return !(pointOverVerticalScrollBar || pointOverHorizontalScrollBar);
         }
 
         bool IHtmlEditorComponentContext.OverrideCursor
@@ -4901,7 +4770,6 @@ namespace OpenLiveWriter.HtmlEditor
 
         //used to prevent selection change events while the selection is being updated.
         private int _selectionChanging = 0;
-        private readonly string editorId = Guid.NewGuid().ToString();
 
         void IHtmlEditorComponentContext.BeginSelectionChange()
         {
@@ -4926,17 +4794,14 @@ namespace OpenLiveWriter.HtmlEditor
 
         void IHtmlEditorComponentContext.FireSelectionChanged()
         {
-            this.FireSelectionChanged();
+            FireSelectionChanged();
         }
 
         IHtmlEditorSelection IHtmlEditorComponentContext.Selection
         {
             get
             {
-                if (_selection != null)
-                    return _selection;
-                else
-                    return _defaultSelection;
+                return _selection ?? _defaultSelection;
             }
 
             set
@@ -4948,13 +4813,10 @@ namespace OpenLiveWriter.HtmlEditor
 
         DragDropEffects IHtmlEditorComponentContext.DoDragDrop(IDataObject dataObject, DragDropEffects allowedEffects)
         {
-            return _mshtmlEditor.DoDragDrop(dataObject, allowedEffects);
+            return MshtmlEditor.DoDragDrop(dataObject, allowedEffects);
         }
 
-        public string EditorId
-        {
-            get { return editorId; }
-        }
+        public string EditorId { get; } = Guid.NewGuid().ToString();
 
         public IMshtmlDocumentEvents DocumentEvents
         {
@@ -5057,7 +4919,7 @@ namespace OpenLiveWriter.HtmlEditor
 
                 if (targetUndoUnit != null)
                 {
-                    _originalText = _mshtmlEditor.HTMLDocument.body.innerText;
+                    _originalText = MshtmlEditor.HTMLDocument.body.innerText;
 
                     UndoManager.UndoTo(targetUndoUnit);
 
@@ -5077,12 +4939,12 @@ namespace OpenLiveWriter.HtmlEditor
             // Make local copy of _originalText
             string originalText = _originalText;
 
-            if (String.IsNullOrEmpty(originalText))
+            if (string.IsNullOrEmpty(originalText))
                 return;
 
             // Setup pointers
-            MarkupPointer startPointer = MarkupServices.CreateMarkupPointer(_mshtmlEditor.HTMLDocument.body, _ELEMENT_ADJACENCY.ELEM_ADJ_BeforeBegin);
-            MarkupPointer endPointer = MarkupServices.CreateMarkupPointer(_mshtmlEditor.HTMLDocument.body, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterEnd);
+            MarkupPointer startPointer = MarkupServices.CreateMarkupPointer(MshtmlEditor.HTMLDocument.body, _ELEMENT_ADJACENCY.ELEM_ADJ_BeforeBegin);
+            MarkupPointer endPointer = MarkupServices.CreateMarkupPointer(MshtmlEditor.HTMLDocument.body, _ELEMENT_ADJACENCY.ELEM_ADJ_AfterEnd);
             MarkupPointer beginDamagePointer = startPointer.Clone();
             MarkupPointer endDamagePointer = endPointer.Clone();
             int idx;
@@ -5092,7 +4954,7 @@ namespace OpenLiveWriter.HtmlEditor
                 delegate (MarkupRange currentRange, MarkupContext context, string text)
                 {
                     if (context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_Text &&
-                        !String.IsNullOrEmpty(text))
+                        !string.IsNullOrEmpty(text))
                     {
                         idx = originalText.IndexOf(text);
                         if (idx == 0)
@@ -5132,7 +4994,7 @@ namespace OpenLiveWriter.HtmlEditor
                     delegate (MarkupRange currentRange, MarkupContext context, string text)
                     {
                         if (context.Context == _MARKUP_CONTEXT_TYPE.CONTEXT_TYPE_Text &&
-                        !String.IsNullOrEmpty(text))
+                        !string.IsNullOrEmpty(text))
                         {
                             idx = originalText.LastIndexOf(text);
                             // If the text falls at the end of the expected text string
@@ -5196,7 +5058,7 @@ namespace OpenLiveWriter.HtmlEditor
 
                 if (targetRedoUnit != null)
                 {
-                    _originalText = _mshtmlEditor.HTMLDocument.body.innerText;
+                    _originalText = MshtmlEditor.HTMLDocument.body.innerText;
 
                     UndoManager.RedoTo(targetRedoUnit);
 
@@ -5326,7 +5188,7 @@ namespace OpenLiveWriter.HtmlEditor
                     baseUrl = UrlHelper.GetBaseUrl(dataObject.HTMLData.SourceURL);
                     using (PasteSpecialForm pasteSpecialForm = new PasteSpecialForm())
                     {
-                        if (pasteSpecialForm.ShowDialog(_mainFrameWindow) == DialogResult.OK)
+                        if (pasteSpecialForm.ShowDialog(FrameWindow) == DialogResult.OK)
                         {
                             PasteSpecialForm.PasteType formatting = pasteSpecialForm.ChosenFormatting;
 
@@ -5376,7 +5238,7 @@ namespace OpenLiveWriter.HtmlEditor
                     html = dataObject.TextData.Text;
                     using (PasteSpecialFormText pasteSpecialForm = new PasteSpecialFormText())
                     {
-                        if (pasteSpecialForm.ShowDialog(_mainFrameWindow) == DialogResult.OK)
+                        if (pasteSpecialForm.ShowDialog(FrameWindow) == DialogResult.OK)
                         {
                             PasteSpecialFormText.PasteType formatting = pasteSpecialForm.ChosenFormatting;
 
@@ -5399,7 +5261,7 @@ namespace OpenLiveWriter.HtmlEditor
                                     {
                                         using (IUndoUnit undo = CreateUndoUnit())
                                         {
-                                            html = HtmlCleaner.PreserveFormatting(html, String.Empty);
+                                            html = HtmlCleaner.PreserveFormatting(html, string.Empty);
                                             InsertHtml(html, true);
                                             undo.Commit();
                                         }
@@ -5413,7 +5275,7 @@ namespace OpenLiveWriter.HtmlEditor
                 else
                 {
                     //non html or text data on clipboard--file, etc.
-                    DisplayMessage.Show(MessageId.PasteSpecialInvalidData, _mainFrameWindow);
+                    DisplayMessage.Show(MessageId.PasteSpecialInvalidData, FrameWindow);
                 }
             }
         }
@@ -5473,12 +5335,7 @@ namespace OpenLiveWriter.HtmlEditor
         {
             get
             {
-                if (CleanHtmlOnPasteOverride.HasValue)
-                {
-                    return CleanHtmlOnPasteOverride.Value;
-                }
-
-                return true;
+                return CleanHtmlOnPasteOverride ?? true;
             }
         }
 
@@ -5491,14 +5348,7 @@ namespace OpenLiveWriter.HtmlEditor
         internal static int undoDepth;
         internal int uncommittedCount;
 
-        private readonly CommandManager _commandManager;
-        public CommandManager CommandManager
-        {
-            get
-            {
-                return _commandManager;
-            }
-        }
+        public CommandManager CommandManager { get; }
 
         public bool CanClear
         {
@@ -5569,15 +5419,13 @@ namespace OpenLiveWriter.HtmlEditor
         public event EventHandler CommandStateChanged;
         protected virtual void OnCommandStateChanged()
         {
-            if (CommandStateChanged != null)
-                CommandStateChanged(this, EventArgs.Empty);
+            CommandStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler AggressiveCommandStateChanged;
         protected virtual void OnAggressiveCommandStateChanged()
         {
-            if (AggressiveCommandStateChanged != null)
-                AggressiveCommandStateChanged(this, EventArgs.Empty);
+            AggressiveCommandStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -5589,8 +5437,7 @@ namespace OpenLiveWriter.HtmlEditor
             try
             {
                 // forward SnapRect out via events
-                if (SnapRectEvent != null)
-                    SnapRectEvent(pIElement, ref prcNEW, elementCorner);
+                SnapRectEvent?.Invoke(pIElement, ref prcNEW, elementCorner);
 
                 // anytime the editor calls SnapRect it implies an edit -- force the editor dirty
                 IsDirty = true;
@@ -5616,10 +5463,7 @@ namespace OpenLiveWriter.HtmlEditor
             // editor. If there is no behavior, DON'T TOUCH ppBehavior!
 
             OnFindBehavior(bstrBehavior, bstrBehaviorUrl, pSite, out IElementBehaviorRaw behavior);
-            if (behavior != null)
-                ppBehavior = behavior;
-            else
-                throw new NotImplementedException();
+            ppBehavior = behavior ?? throw new NotImplementedException();
         }
 
         protected virtual void OnFindBehavior(string bstrBehavior, string bstrBehaviorUrl, IElementBehaviorSite pSite, out IElementBehaviorRaw ppBehavior)
@@ -5734,12 +5578,7 @@ namespace OpenLiveWriter.HtmlEditor
             UseDivForCarriageReturn = true;
         }
 
-        public bool UseDivForCarriageReturn
-        {
-            get { return _useDivForCarriageReturn; }
-            set { _useDivForCarriageReturn = value; }
-        }
-        private bool _useDivForCarriageReturn;
+        public bool UseDivForCarriageReturn { get; set; }
     }
 
     internal class InternetSecurityManagerShim : IInternetSecurityManager

@@ -15,14 +15,11 @@ namespace OpenLiveWriter.Extensibility.BlogClient
     {
         public BlogClientAttribute(string typeName, string protocolName)
         {
-            _typeName = typeName;
-            _protocolName = protocolName;
+            TypeName = typeName;
+            ProtocolName = protocolName;
         }
 
-        public string TypeName
-        {
-            get { return _typeName; }
-        }
+        public string TypeName { get; }
 
         /// <summary>
         /// The name of the standard protocol that this blog client
@@ -30,13 +27,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
         /// API-specific options (i.e. Spaces has different maxRecentPosts
         /// values depending on MetaWeblog or Atom API).
         /// </summary>
-        public string ProtocolName
-        {
-            get { return _protocolName; }
-        }
-
-        private readonly string _typeName;
-        private readonly string _protocolName;
+        public string ProtocolName { get; }
     }
 
     public interface IBlogClient
@@ -140,53 +131,41 @@ namespace OpenLiveWriter.Extensibility.BlogClient
     {
         public PageInfo(string id, string title, DateTime datePublished, string parentId)
         {
-            _id = id;
-            _title = title;
-            _datePublished = datePublished;
-            _parentId = parentId;
+            Id = id;
+            Title = title;
+            DatePublished = datePublished;
+            ParentId = parentId;
         }
 
-        public string Id { get { return _id; } }
+        public string Id { get; }
 
-        public string Title { get { return _title; } }
+        public string Title { get; }
 
-        public DateTime DatePublished { get { return _datePublished; } }
+        public DateTime DatePublished { get; }
 
-        public string ParentId { get { return _parentId; } }
+        public string ParentId { get; }
 
         public object Clone()
         {
             return new PageInfo(Id, Title, DatePublished, ParentId);
         }
-
-        private readonly string _id;
-        private readonly string _title;
-        private readonly DateTime _datePublished;
-        private readonly string _parentId;
     }
 
     public class AuthorInfo : ICloneable
     {
         public AuthorInfo(string id, string name)
         {
-            _id = id;
-            if (name != String.Empty)
-                _name = name;
-            else
-                _name = _id;
+            Id = id;
+            Name = name != string.Empty ? name : Id;
         }
 
-        public string Id { get { return _id; } }
+        public string Id { get; }
 
-        public string Name { get { return _name; } }
+        public string Name { get; }
 
         public object Clone()
         {
             return new AuthorInfo(Id, Name);
         }
-
-        private readonly string _id;
-        private readonly string _name;
-
     }
 }

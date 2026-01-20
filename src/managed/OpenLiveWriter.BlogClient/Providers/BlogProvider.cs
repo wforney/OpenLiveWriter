@@ -1,19 +1,18 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for details.
+// Copyright (c) .NET Foundation. All rights reserved. Licensed under the MIT license. See LICENSE
+// file in the project root for details.
 
-using System;
-using System.Drawing;
-using System.IO;
-using System.Collections;
-using System.Globalization;
-using System.Xml;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
+using OpenLiveWriter.Api;
 using OpenLiveWriter.CoreServices;
 using OpenLiveWriter.CoreServices.Settings;
 using OpenLiveWriter.Extensibility.BlogClient;
-using OpenLiveWriter.Api;
 using OpenLiveWriter.Localization;
+using System;
+using System.Collections;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace OpenLiveWriter.BlogClient.Providers
 {
@@ -21,447 +20,178 @@ namespace OpenLiveWriter.BlogClient.Providers
 
     public class BlogClientOptions : IBlogClientOptions
     {
+        public const string CATEGORY_SCHEME = "categoryScheme";
+
+        public const string CHARACTER_SET = "characterSet";
+
+        public const string DHTML_IMAGE_VIEWER = "dhtmlImageViewer";
+
+        public const string IMAGE_ENDPOINT = "imageEndpoint";
+
+        public const string POST_BODY_BACKGROUND_COLOR = "postBodyBackgroundColor";
+
+        public const string REQUIRES_XHTML = "requiresXHTML";
+
+        public const string SUPPORTS_CATEGORIES = "supportsCategories";
+
+        public const string SUPPORTS_EMBEDS = "supportsEmbeds";
+
+        public const string SUPPORTS_NEW_CATEGORIES = "supportsNewCategories";
+
+        public const string SUPPORTS_SCRIPTS = "supportsScripts";
+
+        public const string TEMPLATE_IS_RTL = "templateIsRTL";
+        private int _maxPostTitleLength;
+
+        // The "none" value for comments is supported by MT and TypePad but not WordPress
+
         public BlogClientOptions()
         {
             // accept default options (see private data declarations for defaults)
         }
 
-        public bool SupportsHttps
-        {
-            get { return _supportsHttps; }
-            set { _supportsHttps = value; }
-        }
-
-        public bool SupportsCategories
-        {
-            get { return _supportsCategories; }
-            set { _supportsCategories = value; }
-        }
-
-        public bool SupportsMultipleCategories
-        {
-            get { return _supportsMultipleCategories; }
-            set { _supportsMultipleCategories = value; }
-        }
-
-        public bool SupportsHierarchicalCategories
-        {
-            get { return _supportsHeirarchicalCategories; }
-            set { _supportsHeirarchicalCategories = value; }
-        }
-
-        public bool SupportsNewCategories
-        {
-            get { return _supportsNewCategories; }
-            set { _supportsNewCategories = value; }
-        }
-
-        public bool SupportsNewCategoriesInline
-        {
-            get { return _supportsNewCategoriesInline; }
-            set { _supportsNewCategoriesInline = value; }
-        }
-
-        public bool SupportsSuggestCategories
-        {
-            get { return _supportsSuggestCategories; }
-            set { _supportsSuggestCategories = value; }
-        }
-
-        public bool SupportsCategoriesInline
-        {
-            get { return _supportsCategoriesInline; }
-            set { _supportsCategoriesInline = value; }
-        }
-
-        public bool SupportsCategoryIds
-        {
-            get { return _supportsCategoryIds; }
-            set { _supportsCategoryIds = value; }
-        }
-
-        public string CategoryScheme
-        {
-            get { return _categoryScheme; }
-            set { _categoryScheme = value; }
-        }
-
-        public bool SupportsCommentPolicy
-        {
-            get { return _supportsCommentPolicy; }
-            set { _supportsCommentPolicy = value; }
-        }
-
-        public bool SupportsPingPolicy
-        {
-            get { return _supportsPingPolicy; }
-            set { _supportsPingPolicy = value; }
-        }
-
-        public bool SupportsTrackbacks
-        {
-            get { return _supportsTrackbacks; }
-            set { _supportsTrackbacks = value; }
-        }
-
-        public bool SupportsKeywords
-        {
-            get { return _supportsKeywords; }
-            set { _supportsKeywords = value; }
-        }
-
-        public bool SupportsGetKeywords
-        {
-            get { return _supportsGetKeywords; }
-            set { _supportsGetKeywords = value; }
-        }
-
-        public bool SupportsExcerpt
-        {
-            get { return _supportsExcerpt; }
-            set { _supportsExcerpt = value; }
-        }
-
-        public bool SupportsExtendedEntries
-        {
-            get { return _supportsExtendedEntries; }
-            set { _supportsExtendedEntries = value; }
-        }
-
-        public bool SupportsFileUpload
-        {
-            get { return _supportsFileUpload; }
-            set { _supportsFileUpload = value; }
-        }
-
-        public bool SupportsPages
-        {
-            get { return _supportsPages; }
-            set { _supportsPages = value; }
-        }
-
-        public bool SupportsPageParent
-        {
-            get { return _supportsPageParent; }
-            set { _supportsPageParent = value; }
-        }
-
-        public bool SupportsPageOrder
-        {
-            get { return _supportsPageOrder; }
-            set { _supportsPageOrder = value; }
-        }
-
-        public bool SupportsPageTrackbacks
-        {
-            get { return _supportsPageTrackbacks; }
-            set { _supportsPageTrackbacks = value; }
-        }
-
-        public bool SupportsSlug
-        {
-            get { return _supportsSlug; }
-            set { _supportsSlug = value; }
-        }
-
-        public bool SupportsPassword
-        {
-            get { return _supportsPassword; }
-            set { _supportsPassword = value; }
-        }
-
-        public bool SupportsAuthor
-        {
-            get { return _supportsAuthor; }
-            set { _supportsAuthor = value; }
-        }
-
-        public SupportsFeature SupportsScripts
-        {
-            get { return _supportsScripts; }
-            set { _supportsScripts = value; }
-        }
-
-        public SupportsFeature SupportsEmbeds
-        {
-            get { return _supportsEmbeds; }
-            set { _supportsEmbeds = value; }
-        }
-
-        // @SharedCanvas - not used yet, make sure this makes sense when it used, and the value is read from anywhere it needs to
-        public SupportsFeature SupportsImageUpload
-        {
-            get { return _supportsImageUpload; }
-            set { _supportsImageUpload = value; }
-        }
-
-        public bool SupportsCustomDate
-        {
-            get { return _supportsCustomDate; }
-            set { _supportsCustomDate = value; }
-        }
-
-        public bool SupportsCustomDateUpdate
-        {
-            get { return _supportsCustomDateUpdate; }
-            set { _supportsCustomDateUpdate = value; }
-        }
-
-        public bool SupportsPostAsDraft
-        {
-            get { return _supportsPostAsDraft; }
-            set { _supportsPostAsDraft = value; }
-        }
-
-        public bool CommentPolicyAsBoolean
-        {
-            get { return _commentPolicyAsBoolean; }
-            set { _commentPolicyAsBoolean = value; }
-        }
-
-        public int AllowPolicyFalseValue
-        {
-            get { return _allowPolicyFalseValue; }
-            set { _allowPolicyFalseValue = value; }
-        }
-
-        public TrackbackDelimiter TrackbackDelimiter
-        {
-            get { return _trackbackDelimiter; }
-            set { _trackbackDelimiter = value; }
-        }
-
-        public bool FuturePublishDateWarning
-        {
-            get { return _futurePublishDateWarning; }
-            set { _futurePublishDateWarning = value; }
-        }
-
-        public bool UseSpacesTemplateHack
-        {
-            get { return _useSpacesTemplateHack; }
-            set { _useSpacesTemplateHack = value; }
-        }
-
-        public bool UseSpacesCIDMemberName
-        {
-            get { return _supportsSpacesCIDUrls; }
-            set { _supportsSpacesCIDUrls = value; }
-        }
-
-        public string PostDateFormat
-        {
-            get { return _postDateFormat; }
-            set { _postDateFormat = value; }
-        }
-
-        public string FileUploadNameFormat
-        {
-            get { return _fileUploadFormat; }
-            set { _fileUploadFormat = value; }
-        }
-
-        public bool UseLocalTime
-        {
-            get { return _useLocalTime; }
-            set { _useLocalTime = value; }
-        }
-
-        public string CharacterSet
-        {
-            get { return _characterSet; }
-            set { _characterSet = value; }
-        }
-
-        public bool RequiresXHTML
-        {
-            get { return _requiresXHTML; }
-            set { _requiresXHTML = value; }
-        }
-
-        public string DhtmlImageViewer
-        {
-            get { return _dhtmlImageViewer; }
-            set { _dhtmlImageViewer = value; }
-        }
-
-        public int PostBodyBackgroundColor
-        {
-            get { return _postBodyBackgroundColor; }
-            set { _postBodyBackgroundColor = value; }
-        }
-
-        public string ContentFilter
-        {
-            get { return _contentFilter; }
-            set { _contentFilter = value; }
-        }
-
-        public string PermalinkFormat
-        {
-            get { return _permalinkFormat; }
-            set { _permalinkFormat = value; }
-        }
-
-        public string HomepageLinkText
-        {
-            get { return _homepageLinkText; }
-            set { _homepageLinkText = value; }
-        }
-
-        public string AdminLinkText
-        {
-            get { return _adminLinkText; }
-            set { _adminLinkText = value; }
-        }
-
-        public string AdminUrl
-        {
-            get { return _adminUrl; }
-            set { _adminUrl = value; }
-        }
-
-        public string PostEditingUrl
-        {
-            get { return _postEditingUrl; }
-            set { _postEditingUrl = value; }
-        }
-
-        public string PostEditingUrlPostIdPattern
-        {
-            get { return _postEditingUrlPostIdPattern; }
-            set { _postEditingUrlPostIdPattern = value; }
-        }
-
-        public string ImagePostingUrl
-        {
-            get { return _imagePostingUrl; }
-            set { _imagePostingUrl = value; }
-        }
-
-        public bool SupportsPostSynchronization
-        {
-            get { return _postSynchronizationEnabled; }
-            set { _postSynchronizationEnabled = value; }
-        }
-
-        public bool SupportsAutoUpdate
-        {
-            get { return _supportsAutoUpdate; }
-            set { _supportsAutoUpdate = value; }
-        }
-
-        public bool HasRTLFeatures
-        {
-            get { return IsRTLTemplate; }
-        }
-
-        public bool IsRTLTemplate
-        {
-            get { return _templateIsRTL; }
-            set { _templateIsRTL = value; }
-        }
-
-        public string DefaultView
-        {
-            get { return _defaultView; }
-            set { _defaultView = value; }
-        }
-
-        public bool RequiresHtmlTitles
-        {
-            get { return _requiresHtmlTitles; }
-            set { _requiresHtmlTitles = value; }
-        }
-
-        public bool LinkToSkyDriveSelfPage
-        {
-            get { return _linkToSkyDriveSelfPage; }
-            set { _linkToSkyDriveSelfPage = value; }
-        }
-
-        public SupportsFeature ReturnsHtmlTitlesOnGet
-        {
-            get { return _returnsHtmlTitlesOnGet; }
-            set { _returnsHtmlTitlesOnGet = value; }
-        }
-
-        public bool SupportsEmptyTitles
-        {
-            get { return _supportsEmptyTitles; }
-            set { _supportsEmptyTitles = value; }
-        }
-
-        public int MaxRecentPosts
-        {
-            get { return _maxRecentPosts; }
-            set { _maxRecentPosts = value; }
-        }
-
-        public int MaxCategoryNameLength
-        {
-            get { return _maxCategoryNameLength; }
-            set { _maxCategoryNameLength = value; }
-        }
-
-        public string ServiceName
-        {
-            get { return _serviceName; }
-            set { _serviceName = value; }
-        }
-
-        public string InvalidPostIdFaultCodePattern
-        {
-            get { return _invalidPostIdFaultCodePattern; }
-            set { _invalidPostIdFaultCodePattern = value; }
-        }
-
-        public string InvalidPostIdFaultStringPattern
-        {
-            get { return _invalidPostIdFaultStringPattern; }
-            set { _invalidPostIdFaultStringPattern = value; }
-        }
-
-        public bool UsePicasaImgMaxAlways
-        {
-            get { return usePicasaImgMaxAlways; }
-            set { usePicasaImgMaxAlways = value; }
-        }
-
-        public bool UsePicasaS1600h
-        {
-            get { return usePicasaS1600h; }
-            set { usePicasaS1600h = value; }
-        }
-
-        public bool KeywordsAsTags
-        {
-            get { return _keywordsAsTags; }
-            set { _keywordsAsTags = value; }
-        }
+        public string AdminLinkText { get; set; } = string.Empty;
+
+        public string AdminUrl { get; set; } = string.Empty;
+
+        public int AllowPolicyFalseValue { get; set; } = 0;
+
+        public string CategoryScheme { get; set; } = null;
+
+        public string CharacterSet { get; set; } = string.Empty;
+
+        public bool CommentPolicyAsBoolean { get; set; } = false;
+
+        public string ContentFilter { get; set; } = string.Empty;
+
+        public string DefaultView { get; set; } = string.Empty;
+
+        public string DhtmlImageViewer { get; set; }
+
+        public string FileUploadNameFormat { get; set; } = string.Empty;
+
+        public bool FuturePublishDateWarning { get; set; } = false;
+
+        public bool HasRTLFeatures => IsRTLTemplate;
+
+        public string HomepageLinkText { get; set; } = string.Empty;
+
+        public string ImagePostingUrl { get; set; } = string.Empty;
+
+        public string InvalidPostIdFaultCodePattern { get; set; } = string.Empty;
+
+        public string InvalidPostIdFaultStringPattern { get; set; } = string.Empty;
+
+        public bool IsRTLTemplate { get; set; } = false;
+
+        public bool KeywordsAsTags { get; set; } = false;
+
+        public bool LinkToSkyDriveSelfPage { get; set; } = false;
+
+        public int MaxCategoryNameLength { get; set; } = 0;
 
         public int MaxPostTitleLength
         {
-            get { return _maxPostTitleLength > 0 ? _maxPostTitleLength : int.MaxValue; }
-            set { _maxPostTitleLength = value; }
+            get => this._maxPostTitleLength > 0 ? this._maxPostTitleLength : int.MaxValue; set => this._maxPostTitleLength = value;
         }
 
-        public const string CHARACTER_SET = "characterSet";
-        public const string SUPPORTS_EMBEDS = "supportsEmbeds";
-        public const string SUPPORTS_SCRIPTS = "supportsScripts";
-        public const string REQUIRES_XHTML = "requiresXHTML";
-        public const string TEMPLATE_IS_RTL = "templateIsRTL";
-        public const string DHTML_IMAGE_VIEWER = "dhtmlImageViewer";
-        public const string IMAGE_ENDPOINT = "imageEndpoint";
-        public const string SUPPORTS_NEW_CATEGORIES = "supportsNewCategories";
-        public const string CATEGORY_SCHEME = "categoryScheme";
-        public const string SUPPORTS_CATEGORIES = "supportsCategories";
-        public const string POST_BODY_BACKGROUND_COLOR = "postBodyBackgroundColor";
+        public int MaxRecentPosts { get; set; } = -1;
 
-        public static IBlogClientOptions ApplyOptionOverrides(OptionReader optionReader, IBlogClientOptions existingOptions)
-        {
-            return ApplyOptionOverrides(optionReader, existingOptions, true);
-        }
+        public string PermalinkFormat { get; set; } = string.Empty;
+
+        public int PostBodyBackgroundColor { get; set; } = Color.Transparent.ToArgb();
+
+        public string PostDateFormat { get; set; } = string.Empty;
+
+        public string PostEditingUrl { get; set; } = string.Empty;
+
+        public string PostEditingUrlPostIdPattern { get; set; } = string.Empty;
+
+        public bool RequiresHtmlTitles { get; set; } = true;
+
+        public bool RequiresXHTML { get; set; } = false;
+
+        public SupportsFeature ReturnsHtmlTitlesOnGet { get; set; } = SupportsFeature.Unknown;
+
+        public string ServiceName { get; set; } = string.Empty;
+
+        public bool SupportsAuthor { get; set; } = false;
+
+        public bool SupportsAutoUpdate { get; set; } = true;
+
+        public bool SupportsCategories { get; set; } = false;
+
+        public bool SupportsCategoriesInline { get; set; } = true;
+
+        public bool SupportsCategoryIds { get; set; } = false;
+
+        public bool SupportsCommentPolicy { get; set; } = false;
+
+        public bool SupportsCustomDate { get; set; } = true;
+
+        public bool SupportsCustomDateUpdate { get; set; } = true;
+
+        public SupportsFeature SupportsEmbeds { get; set; } = SupportsFeature.Unknown;
+
+        public bool SupportsEmptyTitles { get; set; } = true;
+
+        public bool SupportsExcerpt { get; set; } = false;
+
+        public bool SupportsExtendedEntries { get; set; } = false;
+
+        public bool SupportsFileUpload { get; set; } = false;
+
+        public bool SupportsGetKeywords { get; set; } = false;
+
+        public bool SupportsHierarchicalCategories { get; set; } = false;
+
+        public bool SupportsHttps { get; set; } = false;
+
+        // @SharedCanvas - not used yet, make sure this makes sense when it used, and the value is
+        // read from anywhere it needs to
+        public SupportsFeature SupportsImageUpload { get; set; } = SupportsFeature.Yes;
+
+        public bool SupportsKeywords { get; set; } = false;
+
+        public bool SupportsMultipleCategories { get; set; } = false;
+        public bool SupportsNewCategories { get; set; } = false;
+
+        public bool SupportsNewCategoriesInline { get; set; } = false;
+
+        public bool SupportsPageOrder { get; set; } = false;
+
+        public bool SupportsPageParent { get; set; } = false;
+
+        public bool SupportsPages { get; set; } = false;
+
+        public bool SupportsPageTrackbacks { get; set; } = false;
+
+        public bool SupportsPassword { get; set; } = false;
+
+        public bool SupportsPingPolicy { get; set; } = false;
+
+        public bool SupportsPostAsDraft { get; set; } = true;
+
+        public bool SupportsPostSynchronization { get; set; } = true;
+
+        public SupportsFeature SupportsScripts { get; set; } = SupportsFeature.Unknown;
+
+        public bool SupportsSlug { get; set; } = false;
+
+        public bool SupportsSuggestCategories { get; set; } = false;
+        public bool SupportsTrackbacks { get; set; } = false;
+        public TrackbackDelimiter TrackbackDelimiter { get; set; } = TrackbackDelimiter.ArrayElement;
+        public bool UseLocalTime { get; set; } = false;
+
+        public bool UsePicasaImgMaxAlways { get; set; } = true;
+
+        public bool UsePicasaS1600h { get; set; } = true;
+
+        public bool UseSpacesCIDMemberName { get; set; } = false;
+
+        public bool UseSpacesTemplateHack { get; set; } = false;
+
+        public static IBlogClientOptions ApplyOptionOverrides(OptionReader optionReader, IBlogClientOptions existingOptions) => ApplyOptionOverrides(optionReader, existingOptions, true);
 
         public static IBlogClientOptions ApplyOptionOverrides(OptionReader optionReader, IBlogClientOptions existingOptions, bool includeIrregularities)
         {
@@ -575,57 +305,10 @@ namespace OpenLiveWriter.BlogClient.Providers
                 writer.Write(options);
             }
 
-            Process.Start(clientOptionsFile);
+            _ = Process.Start(clientOptionsFile);
         }
 
-        private class OptionStreamWriter : DisplayableBlogClientOptionWriter
-        {
-            public OptionStreamWriter(StreamWriter output)
-            {
-                _output = output;
-            }
-
-            protected override void WriteOption(string name, string value)
-            {
-                _output.WriteLine("{0,-30}     {1}", name, value);
-            }
-
-            private readonly StreamWriter _output;
-        }
-
-        private static string ReadText(string textValue, string defaultValue)
-        {
-            if (textValue != null)
-            {
-                return textValue.Trim();
-
-            }
-            else
-                return defaultValue;
-        }
-
-        internal static bool ReadBool(string boolValue, bool defaultValue)
-        {
-            return StringHelper.ToBool(boolValue, defaultValue);
-        }
-
-        private static TrackbackDelimiter ReadTrackbackDelimiter(string delimiterValue, TrackbackDelimiter defaultValue)
-        {
-            if (delimiterValue != null)
-            {
-                switch (delimiterValue.Trim().ToUpperInvariant())
-                {
-                    case "ARRAYELEMENT":
-                        return TrackbackDelimiter.ArrayElement;
-                    case "SPACE":
-                        return TrackbackDelimiter.Space;
-                    case "COMMA":
-                        return TrackbackDelimiter.Comma;
-                }
-            }
-
-            return defaultValue;
-        }
+        internal static bool ReadBool(string boolValue, bool defaultValue) => StringHelper.ToBool(boolValue, defaultValue);
 
         private static int ReadInt(string intValue, int defaultValue)
         {
@@ -652,10 +335,13 @@ namespace OpenLiveWriter.BlogClient.Providers
                 {
                     case "UNKNOWN":
                         return SupportsFeature.Unknown;
+
                     case "YES":
                         return SupportsFeature.Yes;
+
                     case "NO":
                         return SupportsFeature.No;
+
                     default:
                         throw new ArgumentException("Invalid value for SupportsFeature: " + supportsFeatureValue);
                 }
@@ -666,79 +352,352 @@ namespace OpenLiveWriter.BlogClient.Providers
             }
         }
 
-        private bool _supportsHttps = false;
-        private bool _supportsCategories = false;
-        private bool _supportsMultipleCategories = false;
-        private bool _supportsHeirarchicalCategories = false;
-        private bool _supportsNewCategories = false;
-        private bool _supportsNewCategoriesInline = false;
-        private bool _supportsSuggestCategories = false;
-        private bool _supportsCategoriesInline = true;
-        private bool _supportsCategoryIds = false;
-        private bool _supportsCommentPolicy = false;
-        private string _categoryScheme = null;
-        private bool _supportsPingPolicy = false;
-        private bool _supportsTrackbacks = false;
-        private bool _supportsKeywords = false;
-        private bool _supportsGetKeywords = false;
-        private bool _supportsExcerpt = false;
-        private bool _supportsExtendedEntries = false;
-        private bool _supportsFileUpload = false;
+        private static string ReadText(string textValue, string defaultValue) => textValue != null ? textValue.Trim() : defaultValue;
 
-        private bool _supportsPages = false;
-        private bool _supportsPageParent = false;
-        private bool _supportsPageOrder = false;
-        private bool _supportsPageTrackbacks = false;
-        private bool _supportsSlug = false;
-        private bool _supportsPassword = false;
-        private bool _supportsAuthor = false;
-        private bool _supportsCustomDate = true;
-        private bool _supportsCustomDateUpdate = true;
-        private bool _supportsPostAsDraft = true;
+        private static TrackbackDelimiter ReadTrackbackDelimiter(string delimiterValue, TrackbackDelimiter defaultValue)
+        {
+            if (delimiterValue != null)
+            {
+                switch (delimiterValue.Trim().ToUpperInvariant())
+                {
+                    case "ARRAYELEMENT":
+                        return TrackbackDelimiter.ArrayElement;
 
-        private SupportsFeature _supportsScripts = SupportsFeature.Unknown;
-        private SupportsFeature _supportsEmbeds = SupportsFeature.Unknown;
-        private SupportsFeature _supportsImageUpload = SupportsFeature.Yes;
+                    case "SPACE":
+                        return TrackbackDelimiter.Space;
 
-        private bool _supportsAutoUpdate = true;
-        private bool _templateIsRTL = false;
+                    case "COMMA":
+                        return TrackbackDelimiter.Comma;
+                }
+            }
 
-        private bool _commentPolicyAsBoolean = false;  // The "none" value for comments is supported by MT and TypePad but not WordPress
-        private int _allowPolicyFalseValue = 0;
-        private TrackbackDelimiter _trackbackDelimiter = TrackbackDelimiter.ArrayElement;
-        private bool _futurePublishDateWarning = false;
-        private bool _useSpacesTemplateHack = false;
-        private bool _supportsSpacesCIDUrls = false;
-        private string _postDateFormat = String.Empty;
-        private string _fileUploadFormat = String.Empty;
-        private bool _useLocalTime = false;
-        private string _characterSet = String.Empty;
-        private bool _requiresXHTML = false;
-        private string _contentFilter = String.Empty;
-        private bool _postSynchronizationEnabled = true;
-        private bool _requiresHtmlTitles = true;
-        private bool _linkToSkyDriveSelfPage = false;
-        private SupportsFeature _returnsHtmlTitlesOnGet = SupportsFeature.Unknown;
-        private bool _supportsEmptyTitles = true;
-        private string _defaultView = String.Empty;
-        private string _permalinkFormat = String.Empty;
-        private string _homepageLinkText = String.Empty;
-        private string _adminLinkText = String.Empty;
-        private string _adminUrl = String.Empty;
-        private string _postEditingUrl = String.Empty;
-        private string _postEditingUrlPostIdPattern = String.Empty;
-        private string _imagePostingUrl = String.Empty;
-        private int _maxRecentPosts = -1;
-        private int _maxCategoryNameLength = 0;
-        private string _serviceName = String.Empty;
-        private string _invalidPostIdFaultCodePattern = String.Empty;
-        private string _invalidPostIdFaultStringPattern = String.Empty;
-        private bool usePicasaImgMaxAlways = true;
-        private bool usePicasaS1600h = true;
-        private string _dhtmlImageViewer;
-        private int _postBodyBackgroundColor = Color.Transparent.ToArgb();
-        private bool _keywordsAsTags = false;
-        private int _maxPostTitleLength;
+            return defaultValue;
+        }
+
+        private class OptionStreamWriter : DisplayableBlogClientOptionWriter
+        {
+            private readonly StreamWriter _output;
+
+            public OptionStreamWriter(StreamWriter output) => this._output = output;
+
+            protected override void WriteOption(string name, string value) => this._output.WriteLine("{0,-30}     {1}", name, value);
+        }
+    }
+
+    public class BlogProvider : BlogProviderDescription, IBlogProvider
+    {
+        private static readonly SettingsPersisterHelper _postEditorSettings = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("PostEditor");
+
+        private static readonly bool WP_ENABLED = _postEditorSettings.GetBoolean("M1Enabled", false);
+
+        private string _homepageContentPattern;
+
+        private Regex _homepageContentRegex;
+
+        private string _homepageUrlPattern;
+
+        private Regex _homepageUrlRegex;
+
+        private ProviderFault[] _providerFaults;
+
+        private RsdClientTypeMapping[] _rsdClientTypeMappings;
+
+        private string _rsdEngineNamePattern;
+
+        private Regex _rsdEngineNameRegex;
+
+        private string _rsdHomepageLinkPattern;
+
+        private Regex _rsdHomepageLinkRegex;
+
+        protected BlogProvider()
+        {
+        }
+
+        public bool Visible { get; private set; }
+
+        private Regex HomepageContentRegex
+        {
+            get
+            {
+                if (this._homepageContentRegex == null && this._homepageContentPattern != string.Empty)
+                {
+                    try
+                    {
+                        this._homepageContentRegex = new Regex(this._homepageContentPattern, RegexOptions.IgnoreCase);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Trace.Fail("Invalid regular expression: " + this._homepageContentPattern);
+                    }
+                }
+
+                return this._homepageContentRegex;
+            }
+        }
+
+        private Regex HompepageUrlRegex
+        {
+            get
+            {
+                if (this._homepageUrlRegex == null && this._homepageUrlPattern != string.Empty)
+                {
+                    try
+                    {
+                        this._homepageUrlRegex = new Regex(this._homepageUrlPattern, RegexOptions.IgnoreCase);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Trace.Fail("Invalid regular expression: " + this._homepageUrlPattern);
+                    }
+                }
+
+                return this._homepageUrlRegex;
+            }
+        }
+
+        private Regex RsdEngineNameRegex
+        {
+            get
+            {
+                if (this._rsdEngineNameRegex == null && this._rsdEngineNamePattern != string.Empty)
+                {
+                    try
+                    {
+                        this._rsdEngineNameRegex = new Regex(this._rsdEngineNamePattern, RegexOptions.IgnoreCase);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Trace.Fail("Invalid regular expression: " + this._rsdEngineNamePattern);
+                    }
+                }
+
+                return this._rsdEngineNameRegex;
+            }
+        }
+
+        private Regex RsdHomepageLinkRegex
+        {
+            get
+            {
+                if (this._rsdHomepageLinkRegex == null && this._rsdHomepageLinkPattern != string.Empty)
+                {
+                    try
+                    {
+                        this._rsdHomepageLinkRegex = new Regex(this._rsdHomepageLinkPattern, RegexOptions.IgnoreCase);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Trace.Fail("Invalid regular expression: " + this._rsdHomepageLinkPattern);
+                    }
+                }
+
+                return this._rsdHomepageLinkRegex;
+            }
+        }
+
+        public virtual IBlogClientOptions ConstructBlogOptions(IBlogClientOptions defaultOptions) => defaultOptions;
+
+        public virtual BlogAccount DetectAccountFromRsdEngineName(RsdServiceDescription rsdServiceDescription) => IsMatch(RsdEngineNameRegex, rsdServiceDescription.EngineName) ? ScanForSupportedRsdApi(rsdServiceDescription) : null;
+
+        public virtual BlogAccount DetectAccountFromRsdHomepageLink(RsdServiceDescription rsdServiceDescription) => IsMatch(RsdHomepageLinkRegex, rsdServiceDescription.HomepageLink) ? ScanForSupportedRsdApi(rsdServiceDescription) : null;
+
+        public virtual MessageId DisplayMessageForProviderError(string faultCode, string faultString)
+        {
+            foreach (ProviderFault providerFault in this._providerFaults)
+            {
+                if (providerFault.IsMatch(faultCode, faultString))
+                {
+                    return providerFault.MessageId;
+                }
+            }
+
+            return MessageId.None;
+        }
+
+        public virtual bool IsProviderForHomepageContent(string homepageContent) => IsMatch(HomepageContentRegex, homepageContent);
+
+        public virtual bool IsProviderForHomepageUrl(string homepageUrl) => IsMatch(HompepageUrlRegex, homepageUrl);
+
+        protected void Init(
+                                                                                                    string id, string name, string description, string link, string clientType, string postApiUrl,
+            StringId postApiUrlLabel,
+            string appid,
+            string homepageUrlPattern, string homepageContentPattern,
+            RsdClientTypeMapping[] rsdClientTypeMappings, string rsdEngineNamePattern, string rsdHomepageLinkPattern,
+            ProviderFault[] providerFaults,
+            bool visible)
+        {
+            base.Init(id, name, description, link, clientType, postApiUrl, postApiUrlLabel, appid);
+            this._homepageUrlPattern = homepageUrlPattern;
+            this._homepageContentPattern = homepageContentPattern;
+            this._rsdClientTypeMappings = rsdClientTypeMappings.Clone() as RsdClientTypeMapping[];
+            this._rsdEngineNamePattern = rsdEngineNamePattern;
+            this._rsdHomepageLinkPattern = rsdHomepageLinkPattern;
+            this._providerFaults = providerFaults;
+            Visible = visible;
+        }
+
+        private bool IsMatch(Regex regex, string inputText) => regex != null && regex.IsMatch(inputText);
+
+        private BlogAccount ScanForSupportedRsdApi(RsdServiceDescription rsdServiceDescription)
+        {
+            // initialize client type mappings (including mapping "implied" from ClientType itself
+            ArrayList rsdClientTypeMappings = new ArrayList(this._rsdClientTypeMappings)
+            {
+                new RsdClientTypeMapping(ClientType, ClientType)
+            };
+
+            // scan for a match
+            foreach (RsdClientTypeMapping mapping in rsdClientTypeMappings)
+            {
+                RsdApi rsdApi = rsdServiceDescription.ScanForApi(mapping.RsdClientType);
+                if (rsdApi != null)
+                {
+                    // HACK: the internal spaces.msn-int site has a bug that causes it to return the
+                    // production API URL, so force storage.msn.com to storage.msn-int.com
+                    string postApiUrl = rsdApi.ApiLink;
+                    if (rsdServiceDescription.HomepageLink.IndexOf("msn-int", StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        postApiUrl = postApiUrl.Replace("storage.msn.com", "storage.msn-int.com");
+                    }
+
+                    return new BlogAccount(Name, mapping.ClientType, postApiUrl, rsdApi.BlogId);
+                }
+            }
+
+            // no match
+            return null;
+        }
+
+        protected readonly struct RsdClientTypeMapping
+        {
+            public readonly string ClientType;
+
+            public readonly string RsdClientType;
+
+            public RsdClientTypeMapping(string rsdClientType, string clientType)
+            {
+                this.RsdClientType = rsdClientType;
+                this.ClientType = clientType;
+            }
+        }
+
+        protected class ProviderFault
+        {
+            private readonly string _faultCodePattern;
+
+            private readonly string _faultStringPattern;
+
+            private readonly string _messageId;
+
+            public ProviderFault(string faultCodePattern, string faultStringPattern, string messageId)
+            {
+                this._faultCodePattern = faultCodePattern;
+                this._faultStringPattern = faultStringPattern;
+                this._messageId = messageId;
+            }
+
+            public MessageId MessageId
+            {
+                get
+                {
+                    try
+                    {
+                        return (MessageId)MessageId.Parse(typeof(MessageId), this._messageId, false);
+                    }
+                    catch (ArgumentException)
+                    {
+                        return MessageId.None;
+                    }
+                }
+            }
+
+            public bool IsMatch(string faultCode, string faultString)
+            {
+                return this._faultCodePattern != string.Empty &&
+                    this._faultStringPattern != string.Empty
+                    ? FaultCodeMatches(faultCode) && FaultStringMatches(faultString)
+                    : this._faultCodePattern != string.Empty
+                        ? FaultCodeMatches(faultCode)
+                        : this._faultStringPattern != string.Empty && FaultStringMatches(faultString);
+            }
+
+            private bool FaultCodeMatches(string faultCode)
+            {
+                try // defend against invalid regex in provider or manifest file
+                {
+                    Regex regex = new Regex(this._faultCodePattern, RegexOptions.IgnoreCase);
+                    return regex.IsMatch(faultCode);
+                }
+                catch (ArgumentException e)
+                {
+                    Trace.Fail("Error processing regular expression: " + e.ToString());
+                    return false;
+                }
+            }
+
+            private bool FaultStringMatches(string faultString)
+            {
+                try // defend against invalid regex in provider or manifest file
+                {
+                    Regex regex = new Regex(this._faultStringPattern, RegexOptions.IgnoreCase);
+                    return regex.IsMatch(faultString);
+                }
+                catch (ArgumentException e)
+                {
+                    Trace.Fail("Error processing regular expression: " + e.ToString());
+                    return false;
+                }
+            }
+        }
+    }
+
+    public class BlogProviderDescription : IBlogProviderDescription
+    {
+        public BlogProviderDescription(
+            string id,
+            string name,
+            string description,
+            string link,
+            string clientType,
+            string postApiUrl,
+            StringId postApiUrlDescription,
+            string appid) =>
+            Init(id, name, description, link, clientType, postApiUrl, postApiUrlDescription, appid);
+
+        protected BlogProviderDescription()
+        {
+        }
+
+        public string AppId { get; private set; }
+
+        public string ClientType { get; private set; }
+
+        public string Description { get; private set; }
+
+        public string Id { get; private set; }
+
+        public string Link { get; private set; }
+
+        public string Name { get; private set; }
+
+        public string PostApiUrl { get; private set; }
+
+        public StringId PostApiUrlLabel { get; private set; }
+
+        protected void Init(
+                                                                            string id, string name, string description, string link, string clientType, string postApiUrl, StringId postApiUrlLabel, string appid)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Link = link;
+            ClientType = clientType;
+            PostApiUrl = postApiUrl;
+            PostApiUrlLabel = postApiUrlLabel;
+            AppId = appid;
+        }
     }
 
     public abstract class DisplayableBlogClientOptionWriter
@@ -780,14 +739,17 @@ namespace OpenLiveWriter.BlogClient.Providers
                 case "WebLayout":
                     defaultView = Res.Get(StringId.CapabilityValueWebLayout);
                     break;
+
                 case "WebPreview":
                     defaultView = Res.Get(StringId.CapabilityValueWebPreview);
                     break;
+
                 case "Normal":
                 case "":
                 case null:
                     defaultView = Res.Get(StringId.CapabilityValueNormal);
                     break;
+
                 default:
                     defaultView = clientOptions.DefaultView;
                     break;
@@ -795,7 +757,7 @@ namespace OpenLiveWriter.BlogClient.Providers
 
             WriteOption(Res.Get(StringId.CapabilityDefaultView), defaultView);
 
-            WriteOption(Res.Get(StringId.CapabilityCharacterSet), clientOptions.CharacterSet != String.Empty ? clientOptions.CharacterSet : "UTF-8");
+            WriteOption(Res.Get(StringId.CapabilityCharacterSet), clientOptions.CharacterSet != string.Empty ? clientOptions.CharacterSet : "UTF-8");
             WriteOption(Res.Get(StringId.CapabilityRequiresXHTML), clientOptions.RequiresXHTML);
             WriteOption(Res.Get(StringId.CapabilityTemplateIsRTL), clientOptions.IsRTLTemplate);
             WriteOption(Res.Get(StringId.CapabilityCategoryNameLimit), clientOptions.MaxCategoryNameLength != 0 ? clientOptions.MaxCategoryNameLength.ToString(CultureInfo.CurrentCulture) : Res.Get(StringId.CapabilityValueNoLimit));
@@ -803,10 +765,9 @@ namespace OpenLiveWriter.BlogClient.Providers
             WriteOption(Res.Get(StringId.CapabilityPostTitleLengthLimit), clientOptions.MaxPostTitleLength != int.MaxValue ? clientOptions.MaxPostTitleLength.ToString(CultureInfo.CurrentCulture) : Res.Get(StringId.Unknown));
         }
 
-        private void WriteOption(string name, bool value)
-        {
-            WriteOption(name, value ? Res.Get(StringId.Yes) : Res.Get(StringId.No));
-        }
+        protected abstract void WriteOption(string name, string value);
+
+        private void WriteOption(string name, bool value) => WriteOption(name, value ? Res.Get(StringId.Yes) : Res.Get(StringId.No));
 
         private void WriteOption(string name, SupportsFeature value)
         {
@@ -815,391 +776,15 @@ namespace OpenLiveWriter.BlogClient.Providers
                 case SupportsFeature.Yes:
                     WriteOption(name, Res.Get(StringId.Yes));
                     break;
+
                 case SupportsFeature.No:
                     WriteOption(name, Res.Get(StringId.No));
                     break;
+
                 case SupportsFeature.Unknown:
                     WriteOption(name, Res.Get(StringId.Unknown));
                     break;
             }
         }
-
-        protected abstract void WriteOption(string name, string value);
-    }
-
-    public class BlogProviderDescription : IBlogProviderDescription
-    {
-        public BlogProviderDescription(
-            string id, string name, string description, string link, string clientType, string postApiUrl, StringId postApiUrlDescription, string appid)
-        {
-            Init(id, name, description, link, clientType, postApiUrl, postApiUrlDescription, appid);
-        }
-
-        protected BlogProviderDescription()
-        {
-        }
-
-        protected void Init(
-            string id, string name, string description, string link, string clientType, string postApiUrl, StringId postApiUrlLabel, string appid)
-        {
-            _id = id;
-            _name = name;
-            _description = description;
-            _link = link;
-            _clientType = clientType;
-            _postApiUrl = postApiUrl;
-            _postApiUrlLabel = postApiUrlLabel;
-            _appid = appid;
-        }
-
-        public string Id
-        {
-            get { return _id; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        public string Description
-        {
-            get { return _description; }
-        }
-
-        public string Link
-        {
-            get { return _link; }
-        }
-
-        public string ClientType
-        {
-            get { return _clientType; }
-        }
-
-        public string PostApiUrl
-        {
-            get { return _postApiUrl; }
-        }
-
-        public StringId PostApiUrlLabel
-        {
-            get { return _postApiUrlLabel; }
-        }
-
-        public string AppId
-        {
-            get { return _appid; }
-        }
-
-        private string _id;
-        private string _name;
-        private string _description;
-        private string _link;
-        private string _clientType;
-        private string _postApiUrl;
-        private StringId _postApiUrlLabel;
-        private string _appid;
-    }
-
-    public class BlogProvider : BlogProviderDescription, IBlogProvider
-    {
-        protected BlogProvider()
-        {
-        }
-
-        protected void Init(
-            string id, string name, string description, string link, string clientType, string postApiUrl,
-            StringId postApiUrlLabel,
-            string appid,
-            string homepageUrlPattern, string homepageContentPattern,
-            RsdClientTypeMapping[] rsdClientTypeMappings, string rsdEngineNamePattern, string rsdHomepageLinkPattern,
-            ProviderFault[] providerFaults,
-            bool visible)
-        {
-            base.Init(id, name, description, link, clientType, postApiUrl, postApiUrlLabel, appid);
-            _homepageUrlPattern = homepageUrlPattern;
-            _homepageContentPattern = homepageContentPattern;
-            _rsdClientTypeMappings = rsdClientTypeMappings.Clone() as RsdClientTypeMapping[];
-            _rsdEngineNamePattern = rsdEngineNamePattern;
-            _rsdHomepageLinkPattern = rsdHomepageLinkPattern;
-            _providerFaults = providerFaults;
-            _visible = visible;
-        }
-
-        public bool Visible
-        {
-            get { return _visible; }
-        }
-
-        virtual public bool IsProviderForHomepageUrl(string homepageUrl)
-        {
-            return IsMatch(HompepageUrlRegex, homepageUrl);
-        }
-
-        virtual public bool IsProviderForHomepageContent(string homepageContent)
-        {
-            return IsMatch(HomepageContentRegex, homepageContent);
-        }
-
-        virtual public MessageId DisplayMessageForProviderError(string faultCode, string faultString)
-        {
-            foreach (ProviderFault providerFault in _providerFaults)
-            {
-                if (providerFault.IsMatch(faultCode, faultString))
-                    return providerFault.MessageId;
-            }
-
-            return MessageId.None;
-        }
-
-        virtual public BlogAccount DetectAccountFromRsdHomepageLink(RsdServiceDescription rsdServiceDescription)
-        {
-            if (IsMatch(RsdHomepageLinkRegex, rsdServiceDescription.HomepageLink))
-            {
-                return ScanForSupportedRsdApi(rsdServiceDescription);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        virtual public BlogAccount DetectAccountFromRsdEngineName(RsdServiceDescription rsdServiceDescription)
-        {
-            if (IsMatch(RsdEngineNameRegex, rsdServiceDescription.EngineName))
-            {
-                return ScanForSupportedRsdApi(rsdServiceDescription);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private BlogAccount ScanForSupportedRsdApi(RsdServiceDescription rsdServiceDescription)
-        {
-            // initialize client type mappings (including mapping "implied" from ClientType itself
-            ArrayList rsdClientTypeMappings = new ArrayList(_rsdClientTypeMappings);
-            rsdClientTypeMappings.Add(new RsdClientTypeMapping(ClientType, ClientType));
-
-            // scan for a match
-            foreach (RsdClientTypeMapping mapping in rsdClientTypeMappings)
-            {
-                RsdApi rsdApi = rsdServiceDescription.ScanForApi(mapping.RsdClientType);
-                if (rsdApi != null)
-                {
-                    // HACK: the internal spaces.msn-int site has a bug that causes it to return
-                    // the production API URL, so force storage.msn.com to storage.msn-int.com
-                    string postApiUrl = rsdApi.ApiLink;
-                    if (rsdServiceDescription.HomepageLink.IndexOf("msn-int", StringComparison.OrdinalIgnoreCase) != -1)
-                        postApiUrl = postApiUrl.Replace("storage.msn.com", "storage.msn-int.com");
-
-                    return new BlogAccount(Name, mapping.ClientType, postApiUrl, rsdApi.BlogId);
-                }
-            }
-
-            // no match
-            return null;
-        }
-
-        public virtual IBlogClientOptions ConstructBlogOptions(IBlogClientOptions defaultOptions)
-        {
-            return defaultOptions;
-        }
-
-        private bool IsMatch(Regex regex, string inputText)
-        {
-            if (regex == null)
-                return false;
-            else
-                return regex.IsMatch(inputText);
-        }
-
-        private Regex HompepageUrlRegex
-        {
-            get
-            {
-                if (_homepageUrlRegex == null && _homepageUrlPattern != String.Empty)
-                {
-                    try
-                    {
-                        _homepageUrlRegex = new Regex(_homepageUrlPattern, RegexOptions.IgnoreCase);
-                    }
-                    catch (ArgumentException)
-                    {
-                        Trace.Fail("Invalid regular expression: " + _homepageUrlPattern);
-                    }
-                }
-
-                return _homepageUrlRegex;
-            }
-        }
-
-        private Regex HomepageContentRegex
-        {
-            get
-            {
-                if (_homepageContentRegex == null && _homepageContentPattern != String.Empty)
-                {
-                    try
-                    {
-                        _homepageContentRegex = new Regex(_homepageContentPattern, RegexOptions.IgnoreCase);
-                    }
-                    catch (ArgumentException)
-                    {
-                        Trace.Fail("Invalid regular expression: " + _homepageContentPattern);
-                    }
-                }
-
-                return _homepageContentRegex;
-            }
-        }
-
-        private Regex RsdEngineNameRegex
-        {
-            get
-            {
-                if (_rsdEngineNameRegex == null && _rsdEngineNamePattern != String.Empty)
-                {
-                    try
-                    {
-                        _rsdEngineNameRegex = new Regex(_rsdEngineNamePattern, RegexOptions.IgnoreCase);
-                    }
-                    catch (ArgumentException)
-                    {
-                        Trace.Fail("Invalid regular expression: " + _rsdEngineNamePattern);
-                    }
-                }
-
-                return _rsdEngineNameRegex;
-            }
-        }
-
-        private Regex RsdHomepageLinkRegex
-        {
-            get
-            {
-                if (_rsdHomepageLinkRegex == null && _rsdHomepageLinkPattern != String.Empty)
-                {
-                    try
-                    {
-                        _rsdHomepageLinkRegex = new Regex(_rsdHomepageLinkPattern, RegexOptions.IgnoreCase);
-                    }
-                    catch (ArgumentException)
-                    {
-                        Trace.Fail("Invalid regular expression: " + _rsdHomepageLinkPattern);
-                    }
-                }
-
-                return _rsdHomepageLinkRegex;
-            }
-        }
-
-        private bool _visible;
-        private RsdClientTypeMapping[] _rsdClientTypeMappings;
-        private string _rsdEngineNamePattern;
-        private Regex _rsdEngineNameRegex;
-        private string _rsdHomepageLinkPattern;
-        private Regex _rsdHomepageLinkRegex;
-        private string _homepageUrlPattern;
-        private Regex _homepageUrlRegex;
-        private string _homepageContentPattern;
-        private Regex _homepageContentRegex;
-        private ProviderFault[] _providerFaults;
-
-        private static readonly SettingsPersisterHelper _postEditorSettings = ApplicationEnvironment.PreferencesSettingsRoot.GetSubSettings("PostEditor");
-        private static readonly bool WP_ENABLED = _postEditorSettings.GetBoolean("M1Enabled", false);
-
-        protected struct RsdClientTypeMapping
-        {
-            public RsdClientTypeMapping(string rsdClientType, string clientType)
-            {
-                RsdClientType = rsdClientType;
-                ClientType = clientType;
-            }
-            public readonly string RsdClientType;
-            public readonly string ClientType;
-
-        }
-
-        protected class ProviderFault
-        {
-            public ProviderFault(string faultCodePattern, string faultStringPattern, string messageId)
-            {
-                _faultCodePattern = faultCodePattern;
-                _faultStringPattern = faultStringPattern;
-                _messageId = messageId;
-
-            }
-
-            public bool IsMatch(string faultCode, string faultString)
-            {
-                if (_faultCodePattern != String.Empty && _faultStringPattern != String.Empty)
-                {
-                    return FaultCodeMatches(faultCode) && FaultStringMatches(faultString);
-                }
-                else if (_faultCodePattern != String.Empty)
-                {
-                    return FaultCodeMatches(faultCode);
-                }
-                else if (_faultStringPattern != String.Empty)
-                {
-                    return FaultStringMatches(faultString);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            public MessageId MessageId
-            {
-                get
-                {
-                    try
-                    {
-                        return (MessageId)MessageId.Parse(typeof(MessageId), _messageId, false);
-                    }
-                    catch (ArgumentException)
-                    {
-                        return MessageId.None;
-                    }
-                }
-            }
-
-            private bool FaultCodeMatches(string faultCode)
-            {
-                try // defend against invalid regex in provider or manifest file
-                {
-                    Regex regex = new Regex(_faultCodePattern, RegexOptions.IgnoreCase);
-                    return regex.IsMatch(faultCode);
-                }
-                catch (ArgumentException e)
-                {
-                    Trace.Fail("Error processing regular expression: " + e.ToString());
-                    return false;
-                }
-            }
-
-            private bool FaultStringMatches(string faultString)
-            {
-                try // defend against invalid regex in provider or manifest file
-                {
-                    Regex regex = new Regex(_faultStringPattern, RegexOptions.IgnoreCase);
-                    return regex.IsMatch(faultString);
-                }
-                catch (ArgumentException e)
-                {
-                    Trace.Fail("Error processing regular expression: " + e.ToString());
-                    return false;
-                }
-            }
-
-            private readonly string _faultCodePattern;
-            private readonly string _faultStringPattern;
-            private readonly string _messageId;
-        }
     }
 }
-

@@ -43,10 +43,7 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
         public override bool Equals(object obj)
         {
-            if (obj is BlogPostCategory)
-                return Equals(this, (BlogPostCategory)obj, false);
-            else
-                return false;
+            return obj is BlogPostCategory category && Equals(this, category, false);
         }
 
         public static bool Equals(BlogPostCategory x, BlogPostCategory y, bool lenientNameComparison)
@@ -66,17 +63,9 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
             string selfNameUpper = x.Name.ToUpperInvariant();
             string otherNameUpper = y.Name.ToUpperInvariant();
-            if (selfNameUpper == otherNameUpper)
-                return true;
-
-            if (lenientNameComparison
+            return selfNameUpper == otherNameUpper || (lenientNameComparison
                     && HtmlUtils.UnEscapeEntities(selfNameUpper, HtmlUtils.UnEscapeMode.Default)
-                        == HtmlUtils.UnEscapeEntities(otherNameUpper, HtmlUtils.UnEscapeMode.Default))
-            {
-                return true;
-            }
-
-            return false;
+                        == HtmlUtils.UnEscapeEntities(otherNameUpper, HtmlUtils.UnEscapeMode.Default));
         }
 
         public override string ToString()
@@ -92,21 +81,17 @@ namespace OpenLiveWriter.Extensibility.BlogClient
 
         public int CompareTo(object obj)
         {
-            BlogPostCategory category = obj as BlogPostCategory;
-            if (category == null)
-                throw new ArgumentException("Object can't be compared to a BlogPostCategory");
-
+            BlogPostCategory category = obj as BlogPostCategory ?? throw new ArgumentException("Object can't be compared to a BlogPostCategory");
             bool thisIsCategoryNone = BlogPostCategoryNone.IsCategoryNone(this);
             bool otherIsCategoryNone = BlogPostCategoryNone.IsCategoryNone(category);
 
-            if (thisIsCategoryNone && otherIsCategoryNone)
-                return 0;
-            if (thisIsCategoryNone)
-                return -1;
-            if (otherIsCategoryNone)
-                return 1;
-
-            return String.Compare(Name, category.Name, StringComparison.Ordinal);
+            return thisIsCategoryNone && otherIsCategoryNone
+                ? 0
+                : thisIsCategoryNone
+                    ? -1
+                    : otherIsCategoryNone
+                        ? 1
+                        : string.Compare(Name, category.Name, StringComparison.Ordinal);
         }
 
         public object Clone()

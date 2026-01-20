@@ -412,10 +412,7 @@ namespace OpenLiveWriter.BrowserControl
             OLECMDF cmdf = Browser.QueryStatusWB(cmdID);
 
             // return the appropriate value
-            if ((cmdf & OLECMDF.OLECMDF_ENABLED) > 0)
-                return true;
-            else
-                return false;
+            return (cmdf & OLECMDF.OLECMDF_ENABLED) > 0;
         }
 
         /// <summary>
@@ -489,10 +486,7 @@ namespace OpenLiveWriter.BrowserControl
                             IntPtr.Zero);
 
                         // check to see if the command is enabled
-                        if ((oleCmd.cmdf & OpenLiveWriter.Interop.Com.OLECMDF.ENABLED) > 0)
-                            return true;
-                        else
-                            return false;
+                        return (oleCmd.cmdf & OpenLiveWriter.Interop.Com.OLECMDF.ENABLED) > 0;
                     }
                     else // not an HTML document
                         return false;
@@ -584,7 +578,7 @@ namespace OpenLiveWriter.BrowserControl
     /// <summary>
     /// Structure containing commonly used browser locations
     /// </summary>
-    internal struct BrowserLocations
+    internal readonly struct BrowserLocations
     {
         public static readonly string AboutBlank = "about:blank";
     }

@@ -230,7 +230,8 @@ namespace OpenLiveWriter.ApplicationFramework.Skinning
             //_sidebarGradientTopColor = useThemeColors ? Colorize(Color.FromArgb(134, 209, 240)) : SystemColors.Control;
             SidebarGradientTopColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
             SidebarGradientBottomColor = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
-            SidebarTextColor = SystemColors.HotTrack;
+            // TODO: Fix the colors.
+            //SidebarTextColor = SystemColors.HotTrack;
             SidebarHeaderBackgroundColor = !useThemeColors ? SystemColors.Control : Colorize(Color.FromArgb(255, 255, 255));
             SidebarHeaderTextColor = Color.FromArgb(53, 90, 136);
             FrameGradientLight = useThemeColors ? Colorize(Color.FromArgb(255, 255, 255)) : SystemColors.Control;
