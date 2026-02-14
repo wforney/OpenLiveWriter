@@ -292,6 +292,34 @@ namespace OpenLiveWriter
 
             if (PlatformHelper.RunningOnWin7OrHigher())
                 TaskbarManager.Instance.ApplicationId = ApplicationEnvironment.TaskbarApplicationId;
+
+            // Ensure the .wpost file association exists so the Jump List works correctly.
+            // This is normally set up during Squirrel install, but may be missing for
+            // xcopy/zip installs or if the registry entry was deleted.
+            EnsureWpostFileAssociation();
+        }
+
+        /// <summary>
+        /// Checks whether the .wpost ProgId is registered and registers it if missing.
+        /// This is a fallback for installations that did not go through the Squirrel installer.
+        /// </summary>
+        private static void EnsureWpostFileAssociation()
+        {
+            try
+            {
+                string progId = FileHelper.GetProgIDFromExtension(".wpost");
+                if (string.IsNullOrEmpty(progId))
+                {
+                    Trace.WriteLine("Missing .wpost ProgId, attempting to register...");
+                    SetAssociation(".wpost", "OPEN_LIVE_WRITER",
+                        Application.ExecutablePath, "Open Live Writer post");
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Failed to register .wpost file association: " + ex);
+                // Non-critical -- the Jump List won't work but the app will still function.
+            }
         }
 
         /// <summary>
