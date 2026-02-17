@@ -307,12 +307,20 @@ namespace OpenLiveWriter
         {
             try
             {
+                const string wpostProgId = "OPEN_LIVE_WRITER";
                 string progId = FileHelper.GetProgIDFromExtension(".wpost");
                 if (string.IsNullOrEmpty(progId))
                 {
                     Trace.WriteLine("Missing .wpost ProgId, attempting to register...");
-                    SetAssociation(".wpost", "OPEN_LIVE_WRITER",
+                    SetAssociation(".wpost", wpostProgId,
                         Application.ExecutablePath, "Open Live Writer post");
+                    progId = wpostProgId;
+                }
+
+                if (string.Equals(progId, wpostProgId, StringComparison.OrdinalIgnoreCase))
+                {
+                    Registry.ClassesRoot.CreateSubKey(wpostProgId)
+                        ?.SetValue("AppUserModelID", ApplicationEnvironment.TaskbarApplicationId);
                 }
             }
             catch (Exception ex)
