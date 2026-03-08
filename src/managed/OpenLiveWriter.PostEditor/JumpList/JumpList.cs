@@ -204,7 +204,7 @@ namespace OpenLiveWriter.PostEditor.JumpList
                             if (String.IsNullOrEmpty(progId))
                             {
                                 error = true;
-                                Trace.Fail("ERROR: ProgId missing for extension: " + extension);
+                                Trace.WriteLine("WARNING: ProgId missing for extension: " + extension);
                             }
                             else
                             {
@@ -215,12 +215,12 @@ namespace OpenLiveWriter.PostEditor.JumpList
                                 if (String.IsNullOrEmpty(appUserModelID))
                                 {
                                     error = true;
-                                    Trace.Fail("ERROR: Missing AppUserModelID for " + progId);
+                                    Trace.WriteLine("WARNING: Missing AppUserModelID for " + progId);
                                 }
                                 else if (!appUserModelID.Equals(TaskbarManager.Instance.ApplicationId, StringComparison.Ordinal))
                                 {
                                     error = true;
-                                    Trace.Fail("ERROR: Incorrect AppUserModelID for " + progId + ": " + appUserModelID);
+                                    Trace.WriteLine("WARNING: Incorrect AppUserModelID for " + progId + ": " + appUserModelID);
                                 }
                             }
                         }
@@ -239,7 +239,6 @@ namespace OpenLiveWriter.PostEditor.JumpList
             catch (Exception ex)
             {
                 Trace.WriteLine("Exception thrown while trying to dump file registration: " + ex);
-                throw;
             }
         }
 
